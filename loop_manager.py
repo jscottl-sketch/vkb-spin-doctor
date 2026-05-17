@@ -1,14 +1,20 @@
 """
 loop_manager.py — Minimum Viable Loop Engine.
 Reads goal from goal.txt, loops plan → work → verify → store → cost check.
+Phases B+C+D: DB cache, scout agent, source reputation, tag taxonomy.
 Writes morning_report.md when done.
 """
+import re
 import sys
 import datetime
 from pathlib import Path
 
 from aafl_core import AAFLCore
-from memory_bank import store
+from memory_bank import (
+    store, search_solution, search_failures, store_solution,
+    update_source, TAGS,
+)
+from researcher import scout
 from cost_guard import CostGuard, CostGuardError
 from evaluator import evaluate
 
@@ -22,6 +28,19 @@ def load_goal() -> str:
             "goal.txt not found — create it with your goal on the first line"
         )
     return goal_path.read_text(encoding="utf-8").strip()
+
+
+def _detect_game(goal: str) -> str:
+    text = goal.lower()
+    if "war thunder" in text:
+        return "war_thunder"
+    if "elite dangerous" in text or "elite: dangerous" in text:
+        return "elite_dangerous"
+    if "star citizen" in text:
+        return "star_citizen"
+    if "dcs" in text:
+        return "dcs"
+    return "unknown"
 
 
 def _write_report(path: Path, iterations: int, best: dict | None,
@@ -64,19 +83,56 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     print(f"[LOOP] Goal: {goal}")
     print(f"[LOOP] Max iterations: {max_loop_iters}")
 
+    # ── Phase B — check DB for past solution ──────────────────────────────────
+    past = search_solution(goal)
+    if past:
+        print(f"[DB] Past solution found (score {past['ai_score']}) — using it")
+        _write_report(
+            HERE / "morning_report.md",
+            iterations=0,
+            best={
+                "id":            past.get("id", "n/a"),
+                "quality_score": past["ai_score"],
+                "plan":          "(from DB cache)",
+                "work":          past.get("approach", ""),
+            },
+            total_cost=0.0,
+            stop_reason="db_cache_hit",
+        )
+        print(f"[LOOP] Done (DB cache hit).")
+        return
+
     iterations    = 0
     best_attempt  = None
     stop_reason   = "max_iterations"
     prev_feedback = ""
 
     while iterations < max_loop_iters:
-        # Hard stop — create a file named STOP in the project folder
         if (HERE / "STOP").exists():
             stop_reason = "STOP file found"
             break
 
         iterations += 1
         print(f"\n[LOOP] === Iteration {iterations}/{max_loop_iters} ===")
+
+        # ── Phase C — scout ───────────────────────────────────────────────────
+        try:
+            briefing_data = scout(goal)
+            n_sources     = len(briefing_data["results"])
+            print(f"[SCOUT] Briefing ready — {n_sources} source(s) found")
+            briefing_text = briefing_data["briefing"]
+        except Exception as exc:
+            print(f"[SCOUT] Failed ({exc}) — continuing without web context")
+            briefing_data = {"results": []}
+            briefing_text = ""
+
+        # ── Phase B — failure injection ───────────────────────────────────────
+        past_failures = search_failures(goal)
+        failure_note  = ""
+        if past_failures:
+            failure_note = "Approaches that failed previously:\n" + "\n".join(
+                f"- {f}" for f in past_failures
+            )
 
         # ── Plan ──────────────────────────────────────────────────────────────
         try:
@@ -86,8 +142,14 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             break
 
         print("[LOOP] Planning...")
+        plan_prompt = f"Plan how to achieve this goal step by step: {goal}"
+        if briefing_text:
+            plan_prompt += f"\n\n{briefing_text}"
+        if failure_note:
+            plan_prompt += f"\n\n{failure_note}"
+
         plan_result = aafl.run(
-            task=f"Plan how to achieve this goal step by step: {goal}",
+            task=plan_prompt,
             task_type="reason",
             max_tokens=512,
         )
@@ -99,7 +161,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
 
         plan_text = plan_result.response
 
-        # ── Loop detection ─────────────────────────────────────────────────────
+        # ── Loop detection ────────────────────────────────────────────────────
         try:
             guard.detect_loop(plan_text[:60])
         except CostGuardError as e:
@@ -148,14 +210,58 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             prev_feedback = ""
             print(f"[LOOP] Score >= 7 — goal met.")
 
-        # ── Store ─────────────────────────────────────────────────────────────
+        # ── Phase D — tag inference ───────────────────────────────────────────
+        tags_str  = ""
+        try:
+            guard.check_before_call(0.0)
+            tag_prompt = (
+                f"From this list: {TAGS}\n"
+                f"Pick up to 5 tags that best describe this goal: {goal}\n"
+                f"Reply with ONLY the tag names separated by commas. No explanation."
+            )
+            tag_result = aafl.run(task=tag_prompt, task_type="fast", max_tokens=50)
+            guard.record_call(tag_result.cost_usd)
+            if tag_result.ok:
+                raw_tags  = [t.strip().lower() for t in tag_result.response.split(",")]
+                valid_tags = [t for t in raw_tags if t in TAGS][:5]
+                tags_str   = ",".join(valid_tags)
+        except CostGuardError as e:
+            stop_reason = f"cost_guard: {e}"
+            break
+        except Exception:
+            pass
+
+        game = _detect_game(goal)
+
+        # ── Phase B — store solution ──────────────────────────────────────────
+        failure_reason = prev_feedback if not goal_met else None
+        store_solution(
+            problem=goal,
+            approach=work_text[:200],
+            worked=goal_met,
+            failure_reason=failure_reason,
+            ai_score=score,
+            tags=tags_str,
+            cost_tokens=0,
+            iterations=iterations,
+            game=game,
+            hardware="vkb_nxt_evo",
+        )
+
+        # ── Phase C — update source reputation ───────────────────────────────
+        for src in briefing_data["results"]:
+            domain = src.get("domain", "")
+            if domain:
+                update_source(domain, score)
+
+        # ── Store to knowledge table ──────────────────────────────────────────
         entry_id = store({
             "title":         f"Loop attempt #{iterations}",
             "content":       work_text,
             "project":       "loop_manager",
             "source_type":   "loop_attempt",
             "quality_score": score,
-            "tags":          ["loop_attempt"],
+            "tags":          ["loop_attempt"] + (tags_str.split(",") if tags_str else []),
             "metadata":      {
                 "plan":              plan_text,
                 "goal_met":          goal_met,
@@ -166,9 +272,14 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
                 "eval_clarity":      scores["clarity"],
                 "eval_accuracy":     scores["accuracy"],
                 "eval_overall":      score,
+                "tags":              tags_str,
+                "game":              game,
             },
         })
-        print(f"[LOOP] Stored attempt: {entry_id}")
+
+        tag_display = tags_str if tags_str else "(none)"
+        print(f"[DB] Stored — score: {score} | tags: [{tag_display}] | iterations: {iterations}")
+
         out_dir = HERE / "loop_output"; out_dir.mkdir(exist_ok=True)
         (out_dir / f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')}_result.txt").write_text(work_text, encoding="utf-8")
 
@@ -185,7 +296,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             stop_reason = "goal_met"
             break
 
-        # ── End-of-iteration cost guard ────────────────────────────────────────
+        # ── End-of-iteration cost guard ───────────────────────────────────────
         try:
             guard.check_before_call(0.0)
         except CostGuardError as e:

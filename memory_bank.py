@@ -1,6 +1,9 @@
 """
 memory_bank.py — SQLite knowledge store.
 Implements knowledge + tags tables from Knowledge_Engine_Schema_v1.md.
+Phase B: solution_log table — search_solution, search_failures, store_solution.
+Phase C: source_reputation table — update_source, get_top_sources, get_blocked_sources.
+Phase D: TAGS constant, extended solution_log columns.
 DB path: data/knowledge_engine.db
 """
 import sqlite3
@@ -10,6 +13,15 @@ from datetime import datetime
 from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "data" / "knowledge_engine.db"
+
+# Phase D — tag vocabulary
+TAGS = [
+    "usb", "steam", "config_file", "spin", "bindings",
+    "registry", "companion_software", "polling_rate", "axis",
+    "overlay", "launch_order", "firmware", "driver", "power",
+    "war_thunder", "elite_dangerous", "star_citizen", "dcs",
+    "joystick", "wheel", "pedals", "mouse", "keyboard",
+]
 
 
 def _connect():
@@ -43,17 +55,165 @@ def _init_db(conn):
         );
         CREATE INDEX IF NOT EXISTS idx_tags_kid ON tags(knowledge_id);
         CREATE INDEX IF NOT EXISTS idx_tags_tag ON tags(tag);
+
+        CREATE TABLE IF NOT EXISTS solution_log (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            problem        TEXT    NOT NULL,
+            approach       TEXT    NOT NULL,
+            worked         INTEGER NOT NULL DEFAULT 0,
+            failure_reason TEXT,
+            ai_score       REAL    NOT NULL DEFAULT 0.0,
+            created_at     TEXT    NOT NULL,
+            tags           TEXT,
+            cost_tokens    INTEGER,
+            iterations     INTEGER,
+            game           TEXT,
+            hardware       TEXT,
+            verified_at    TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_sol_problem ON solution_log(problem);
+
+        CREATE TABLE IF NOT EXISTS source_reputation (
+            domain     TEXT PRIMARY KEY,
+            topic_tags TEXT    NOT NULL DEFAULT '',
+            times_used INTEGER NOT NULL DEFAULT 0,
+            avg_score  REAL    NOT NULL DEFAULT 0.0,
+            last_used  TEXT    NOT NULL DEFAULT ''
+        );
     """)
     conn.commit()
+    _migrate_solution_log(conn)
 
+
+def _migrate_solution_log(conn):
+    """Add Phase D columns to solution_log for DBs created before Phase D."""
+    new_cols = [
+        ("tags",        "TEXT"),
+        ("cost_tokens", "INTEGER"),
+        ("iterations",  "INTEGER"),
+        ("game",        "TEXT"),
+        ("hardware",    "TEXT"),
+        ("verified_at", "TEXT"),
+    ]
+    for col, typ in new_cols:
+        try:
+            conn.execute(f"ALTER TABLE solution_log ADD COLUMN {col} {typ}")
+            conn.commit()
+        except Exception:
+            pass  # column already exists
+
+
+# ── Phase B — solution log ────────────────────────────────────────────────────
+
+def search_solution(problem: str) -> dict | None:
+    """Return best past solution where worked=True, ordered by ai_score desc."""
+    conn = _connect()
+    _init_db(conn)
+    row = conn.execute(
+        """SELECT * FROM solution_log
+           WHERE worked=1 AND problem=?
+           ORDER BY ai_score DESC LIMIT 1""",
+        (problem,),
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def search_failures(problem: str) -> list[str]:
+    """Return all failure_reasons for failed attempts on this problem."""
+    conn = _connect()
+    _init_db(conn)
+    rows = conn.execute(
+        """SELECT failure_reason FROM solution_log
+           WHERE worked=0 AND problem=? AND failure_reason IS NOT NULL""",
+        (problem,),
+    ).fetchall()
+    conn.close()
+    return [r["failure_reason"] for r in rows]
+
+
+def store_solution(problem: str, approach: str, worked: bool,
+                   failure_reason: str | None, ai_score: float,
+                   tags: str = "", cost_tokens: int = 0,
+                   iterations: int = 1, game: str = "unknown",
+                   hardware: str = "vkb_nxt_evo") -> int:
+    """Insert a new solution_log row. Returns the new row id."""
+    conn = _connect()
+    _init_db(conn)
+    now = datetime.utcnow().isoformat()
+    cur = conn.execute(
+        """INSERT INTO solution_log
+           (problem, approach, worked, failure_reason, ai_score, created_at,
+            tags, cost_tokens, iterations, game, hardware, verified_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (problem, approach, 1 if worked else 0, failure_reason, ai_score, now,
+         tags, cost_tokens, iterations, game, hardware, now),
+    )
+    conn.commit()
+    row_id = cur.lastrowid
+    conn.close()
+    return row_id
+
+
+# ── Phase C — source reputation ───────────────────────────────────────────────
+
+def update_source(domain: str, score: float) -> None:
+    """Upsert source reputation: increment times_used, recalculate rolling avg_score."""
+    conn = _connect()
+    _init_db(conn)
+    now = datetime.utcnow().isoformat()
+    row = conn.execute(
+        "SELECT times_used, avg_score FROM source_reputation WHERE domain=?",
+        (domain,),
+    ).fetchone()
+    if row:
+        new_count = row["times_used"] + 1
+        new_avg   = round((row["avg_score"] * row["times_used"] + score) / new_count, 2)
+        conn.execute(
+            """UPDATE source_reputation
+               SET times_used=?, avg_score=?, last_used=? WHERE domain=?""",
+            (new_count, new_avg, now, domain),
+        )
+    else:
+        conn.execute(
+            """INSERT INTO source_reputation
+               (domain, topic_tags, times_used, avg_score, last_used)
+               VALUES (?, ?, ?, ?, ?)""",
+            (domain, "", 1, round(score, 2), now),
+        )
+    conn.commit()
+    conn.close()
+
+
+def get_top_sources(min_score: float = 7.0) -> list[str]:
+    """Return domains with avg_score >= min_score, ordered by avg_score desc."""
+    conn = _connect()
+    _init_db(conn)
+    rows = conn.execute(
+        """SELECT domain FROM source_reputation
+           WHERE avg_score >= ? ORDER BY avg_score DESC""",
+        (min_score,),
+    ).fetchall()
+    conn.close()
+    return [r["domain"] for r in rows]
+
+
+def get_blocked_sources(max_score: float = 3.0) -> list[str]:
+    """Return domains with avg_score <= max_score."""
+    conn = _connect()
+    _init_db(conn)
+    rows = conn.execute(
+        "SELECT domain FROM source_reputation WHERE avg_score <= ?",
+        (max_score,),
+    ).fetchall()
+    conn.close()
+    return [r["domain"] for r in rows]
+
+
+# ── Original functions ────────────────────────────────────────────────────────
 
 def store(entry: dict) -> str:
-    """Store a knowledge entry. Returns the entry ID.
-
-    Recognised keys: id, title, content, project, source_type, source_url,
-                     quality_score, status, parent_id, metadata (dict or JSON str),
-                     tags (list of str), created_at.
-    """
+    """Store a knowledge entry. Returns the entry ID."""
     conn = _connect()
     _init_db(conn)
     now  = datetime.utcnow().isoformat()
@@ -185,6 +345,18 @@ if __name__ == "__main__":
     r = recent(5)
     assert any(e["id"] == test_id for e in r), "recent() missed the entry"
     print(f"recent(5)  OK: {len(r)} result(s)")
+
+    sid = store_solution("_test_problem", "test approach xyz", True, None, 8.5)
+    print(f"store_solution()  OK: rowid={sid}")
+    found = search_solution("_test_problem")
+    assert found and found["ai_score"] == 8.5, "search_solution failed"
+    print(f"search_solution()  OK: score={found['ai_score']}")
+
+    update_source("example.com", 7.5)
+    update_source("example.com", 8.5)
+    top = get_top_sources(7.0)
+    assert "example.com" in top, "get_top_sources failed"
+    print(f"update_source / get_top_sources  OK: {top}")
 
     print("=" * 40)
     print(f"All checks passed. DB: {DB_PATH}")
