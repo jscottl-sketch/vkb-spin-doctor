@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v16 (MASTER)
+# VKB Spin Doctor — Project Handover v17 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** AAFL loop engine live. evaluator.py + researcher.py built. loop_manager --once tested and passing. sfl_agent.py v3 (~920 lines). Conductor module live. ED Bind Reset prevention built.
-**Last updated:** 17 May 2026 (AAFL loop components, HF fix, LangGraph)
-**Consolidates:** v15
+**Status:** AAFL loop engine live. Phases B+C+D complete — learning DB, scout agent, source reputation, tag taxonomy. loop_manager --once tested and passing (DB cache hit on second run). sfl_agent.py v3 (~920 lines). Conductor module live. ED Bind Reset prevention built.
+**Last updated:** 17 May 2026 (Phases B+C+D: learning DB, scout agent, source reputation, tag taxonomy)
+**Consolidates:** v16
 
 ---
 
@@ -59,14 +59,18 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 | GUI visual check (RUN_VKB.bat) | ✅ Done |
 | ED Bind Reset prevention | ✅ Built as problems/ed_bind_reset.py, wired into GUI Fix Mouse Spin tab |
 | aafl_core.py — provider routing | ✅ HuggingFace fixed → Mistral-7B-Instruct-v0.3 |
-| loop_manager.py — loop engine | ✅ --once flag, max_loop_iters/max_llm_calls decoupled. Tested: Gemini+Mistral, goal_met=True |
+| loop_manager.py — loop engine | ✅ --once flag, max_loop_iters/max_llm_calls decoupled. Phases B+C+D wired. |
 | evaluator.py — result scorer | ✅ Built — completeness/clarity/accuracy, 0-10, pure logic |
-| researcher.py — DuckDuckGo search | ✅ Built — ddgs package, fallback on error |
+| researcher.py — DuckDuckGo search + scout() | ✅ research() + scout() with source reputation filtering |
+| memory_bank.py — Phases B+C+D | ✅ solution_log, source_reputation, TAGS, all functions |
+| Phase B — DB cache + reflection loop | ✅ search_solution, search_failures, store_solution. Cache hit confirmed. |
+| Phase C — Scout agent + source reputation | ✅ scout(), update_source, get_top/blocked_sources. 6 sources in DB. |
+| Phase D — Extended DB + tag taxonomy | ✅ TAGS constant (23), extended solution_log columns, tag inference call |
 | LangGraph 1.2.0 | ✅ Installed |
 | Throttle slider in War Thunder | ⏸ Open (likely PS5/Xbox conflict — unplug and retry) |
 | Star Citizen full support | ⏸ Waiting |
-| evaluator.py wired into loop_manager | ⏸ Next |
-| researcher.py wired into planning step | ⏸ Next |
+| win_hardener module (9 problems) | ⏸ Next |
+| Fix Cerebras provider model name | ⏸ Next |
 
 ---
 
@@ -142,7 +146,7 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 | Log file | Every session saves to `sfl_logs/` |
 | Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
 | Flags | `--note`, `--folder`, `--budget` flags available |
-| Handover injection | Loads PROJECT_HANDOVER.md into system prompt on startup |
+| Handover injection | Loads VKB_SpinDoctor_Handover_v27.md into system prompt on startup |
 | call_aafl(prompt) | Convenience wrapper — routes any prompt through AAFLCore |
 
 ### Autonomy Control Panel v1 (built into sfl_agent)
@@ -183,11 +187,32 @@ aafl_core.py routes all LLM calls cheapest-first. Loop engine: loop_manager.py.
 | File | Role |
 |---|---|
 | aafl_core.py | Provider routing, LiteLLM wrapper, cheapest-first |
-| loop_manager.py | Plan→Work→Verify→Store loop. --once flag for single iteration |
+| loop_manager.py | Plan→Work→Verify→Store loop. Phases B+C+D wired. --once flag. |
 | evaluator.py | Scores results 0-10 (completeness/clarity/accuracy). Pure logic. |
-| researcher.py | DuckDuckGo search via ddgs. Returns top 5 results. Fallback on error. |
-| memory_bank.py | SQLite store — data/knowledge_engine.db |
+| researcher.py | research() + scout(). DuckDuckGo via ddgs. Source reputation filtering. |
+| memory_bank.py | SQLite store — knowledge, solution_log, source_reputation tables |
 | cost_guard.py | Cost + iteration brake. Raises CostGuardError before cap exceeded. |
+
+### Phase B — Learning DB (solution_log)
+
+Loop manager now:
+1. Checks DB for past solution before any LLM call — prints `[DB] Past solution found (score X)` and exits early
+2. Injects past failure_reasons into plan prompt if any failed attempts exist
+3. Calls store_solution() after every iteration with problem, approach, worked, ai_score, tags, iterations, game, hardware
+
+### Phase C — Scout Agent (source_reputation)
+
+Loop manager now:
+1. Calls scout(goal) before planning — prints `[SCOUT] Briefing ready — N source(s) found`
+2. Injects web briefing (top 3 sources) into plan prompt
+3. Calls update_source(domain, score) for each source after scoring
+4. Scout filters blocked domains (<= 3.0 avg) and prioritises top domains (>= 7.0 avg)
+
+### Phase D — Tag Taxonomy (TAGS constant)
+
+TAGS (23 tags): usb, steam, config_file, spin, bindings, registry, companion_software, polling_rate, axis, overlay, launch_order, firmware, driver, power, war_thunder, elite_dangerous, star_citizen, dcs, joystick, wheel, pedals, mouse, keyboard
+
+Loop manager makes a fast LLM call after scoring to pick up to 5 tags. Stores with solution_log row. Prints `[DB] Stored — score: X | tags: [tags] | iterations: N`.
 
 ---
 
@@ -261,31 +286,31 @@ VKB-SpinDoctor/
 ├── spin_doctor.py                     # ~1057 lines. Tabs: Fix / Conductor / Knowledge Base
 ├── sfl_agent.py                       # v3 — ~920 lines. ACP v1 + handover injection + call_aafl()
 ├── aafl_core.py                       # Provider routing — 13 providers, cheapest-first
-├── loop_manager.py                    # Loop engine — Plan→Work→Verify→Store. --once flag.
+├── loop_manager.py                    # Loop engine — Phases B+C+D. --once flag.
 ├── evaluator.py                       # Result scorer 0-10. Pure logic. No APIs.
-├── researcher.py                      # DuckDuckGo search via ddgs. Top 5 results.
-├── memory_bank.py                     # SQLite knowledge store
+├── researcher.py                      # research() + scout(). ddgs. Source reputation filtering.
+├── memory_bank.py                     # SQLite store — knowledge, solution_log, source_reputation
 ├── cost_guard.py                      # Cost + iteration brake
 ├── model_router.py                    # Model routing helpers
 ├── free_providers.py                  # Free provider list
-├── sl_loop.py                         # Gemma 4 local SFL
 ├── goal.txt                           # Current loop goal
 ├── RUN_VKB.bat                        # Double-click GUI launcher
 ├── GIT_BACKUP.bat                     # git add -A + commit + push
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
-├── PROJECT_HANDOVER.md                # This file — read by sfl_agent on startup
+├── VKB_SpinDoctor_Handover_v27.md     # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
 │   ├── conductor.py                   # Module 04 ✅ 619 lines
 │   └── ed_bind_reset.py               # ED Bind Reset prevention ✅
 ├── data/
 │   ├── devices.json                   # 98 devices with VID/PID lookup
-│   ├── knowledge_engine.db            # SQLite — loop attempt results
+│   ├── knowledge_engine.db            # SQLite — knowledge, solution_log, source_reputation
 │   └── cost_log.txt                   # CostGuard event log
 ├── loop_output/                       # Loop results (timestamped .txt files)
 ├── backups/                           # Auto-snapshots (vNN_<slug>/ naming)
 ├── sfl_logs/                          # SFL agent session logs
-└── session_logs/                      # WCCS session logs
+├── session_logs/                      # WCCS session logs
+└── archive_dead/                      # Archived obsolete files
 ```
 
 ---
@@ -363,6 +388,7 @@ VKB-SpinDoctor/
 | ✅ Done | v0.3-alpha | Knowledge Base tab in GUI (War Thunder, ED, Star Citizen cards) |
 | ✅ Done | v0.3-alpha | Conductor module (22 problems), ACP v1, 3-tab GUI |
 | ✅ Done | v0.3-alpha | AAFL loop engine (aafl_core, loop_manager, evaluator, researcher) |
+| ✅ Done | v0.3-alpha | Phases B+C+D — learning DB, scout agent, source reputation, tag taxonomy |
 | Next | v0.2 | Spin fix → Elite Dangerous + Star Citizen; ED Bind Reset prevention |
 | Soon | v0.3 | win_hardener module (9 problems) |
 | Soon | v0.4 | LM Studio + local AI wired in (Gemma 4 / Qwen2.5-VL) |
@@ -405,11 +431,12 @@ VKB-SpinDoctor/
 | Gemma 4 empty replies | Think mode eating tokens — Think OFF + MAX_TOKENS = 3000 |
 | Model not found (404) | Model string must be `claude-sonnet-4-6` |
 | Credits too low (400) | Top up at console.anthropic.com/settings/billing |
-| Agent guesses wrong path | Path injection is in v3 — if broken, check PROJECT_HANDOVER.md is present |
+| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v27.md is present |
 | Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
 | Claude Code auth conflict | Detected both claude.ai token + API key — uses API key. Working fine. |
 | Cerebras model fails | Model renamed — llama3.1-70b no longer valid. Check Cerebras docs for new name. |
 | loop_manager --once stops mid-loop | Normal: LLM call count hit cap. Fixed: max_loop_iters/max_llm_calls are now separate. |
+| Tags always empty in solution_log | Fast task type providers exhausted (Cerebras broken, LM Studio offline). Graceful fallback. |
 
 ---
 
@@ -428,15 +455,13 @@ VKB-SpinDoctor/
 
 | # | Task | Tool |
 |---|---|---|
-| 1 | Wire evaluator.py into loop_manager.py result scoring | Claude Code |
-| 2 | Wire researcher.py into loop planning step | Claude Code |
-| 3 | Fix Cerebras provider model name (llama3.1-70b renamed) | Claude Code |
-| 4 | win_hardener module (9 problems) | Claude Code |
-| 5 | Star Citizen full support | Claude Code |
-| 6 | Verify all 6 skills toggles ON at claude.ai/customize/skills | Manual |
+| 1 | Fix Cerebras provider model name (llama3.1-70b renamed) | Claude Code |
+| 2 | win_hardener module (9 problems) | Claude Code |
+| 3 | Star Citizen full support | Claude Code |
+| 4 | Verify all 6 skills toggles ON at claude.ai/customize/skills | Manual |
 
 ---
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read PROJECT_HANDOVER.md v16. AAFL loop engine live — loop_manager.py --once tested and passing (Gemini Flash plan + Mistral Codestral work). evaluator.py and researcher.py built. Next: wire evaluator into loop_manager scoring, fix Cerebras model name, then win_hardener module."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v27.md. AAFL loop engine live with Phases B+C+D complete — learning DB (solution_log), scout agent (researcher.py scout()), source reputation, tag taxonomy all wired into loop_manager.py. DB cache hit confirmed on second --once run. Next: fix Cerebras model name, then win_hardener module."
