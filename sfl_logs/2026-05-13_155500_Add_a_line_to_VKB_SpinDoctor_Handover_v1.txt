@@ -1,0 +1,883 @@
+SFL Agent v2 Log
+Started: 2026-05-13 15:55:00.526900
+Task: Add a line to VKB_SpinDoctor_Handover_v15.md under CURRENT PROJECT STATUS: "| sfl_agent.py dead-end detector + PowerShell bypass | ✅ Built |"
+============================================================
+
+Task: Add a line to VKB_SpinDoctor_Handover_v15.md under CURRENT PROJECT STATUS: "| sfl_agent.py dead-end detector + PowerShell bypass | ✅ Built |"
+Folder: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor
+Note: 
+Handover loaded: yes
+Token budget: unlimited
+
+--- Iteration 1 ---
+TOKENS: +7250in/+123out  => 7,373 tokens
+THOUGHT: I need to read the current handover file, find the CURRENT PROJECT STATUS table, and add the new line to it.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\VKB_SpinDoctor_Handover_v15.md' | Select-String -Pattern 'CURRENT PROJECT STATUS' -Context 0,20"
+OUTPUT: Get-Content : Cannot find path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\VKB_SpinDoctor_Handover_v15.md' because 
+it does not exist.
+At line:1 char:1
++ Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\VKB_SpinD ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Users\jscot\...Handover_v15.md:String) [Get-Content], ItemNotFoundEx 
+   ception
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand
+
+--- Iteration 2 ---
+TOKENS: +7528in/+123out  => 15,024 tokens
+THOUGHT: The file VKB_SpinDoctor_Handover_v15.md doesn't exist at that path. Let me check what files actually exist in the project folder to find the correct handover file.
+COMMAND: powershell.exe -Command "Get-ChildItem 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\' -Filter '*.md' | Select-Object Name, FullName"
+OUTPUT: Name                               FullName                                                                         
+----                               --------                                                                         
+PROJECT_HANDOVER.md                C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\PROJECT_HANDOVER.md               
+SFL_UPGRADE_BRIEF.md               C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\SFL_UPGRADE_BRIEF.md              
+Universal_Input_Device_Database.md C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\Universal_Input_Device_Database.md
+
+--- Iteration 3 ---
+TOKENS: +7712in/+146out  => 22,882 tokens
+THOUGHT: The handover file is PROJECT_HANDOVER.md, not VKB_SpinDoctor_Handover_v15.md. I need to read it, find the CURRENT PROJECT STATUS table, and insert the new row. Let me read the file first.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\PROJECT_HANDOVER.md' | Select-String -Pattern 'CURRENT PROJECT STATUS' -Context 0,30"
+OUTPUT: > ## CURRENT PROJECT STATUS
+  
+  | Component | Status |
+  |---|---|
+  | v0.1 spin fix ƒ?" War Thunder | ƒo. Working |
+  | usb_power_saver.py | ƒo. Built |
+  | steam_input_conflict.py | ƒo. Built |
+  | core/win_compat.py (pywin32 shim) | ƒo. Built |
+  | data/devices.json (98 VID/PID devices) | ƒo. Built |
+  | Universal_Input_Device_Database.md (44 problems) | ƒo. In folder |
+  | problems/conductor.py (619 lines, 22 problems) | ƒo. Built ƒ?" 3 live conflicts found on Scott's machine |
+  | spin_doctor.py ƒ?" 3 tabs (Fix / Conductor / KB) | ƒo. ~1057 lines, all tabs confirmed working |
+  | sfl_agent.py v3 ƒ?" ACP v1 + handover injection | ƒo. 575 lines, all tests green |
+  | Claude Code v2.1.119 | ƒo. Installed, working |
+  | Elite Dangerous spin fix | ƒo. Fixed at hardware level via VKB DevConfig |
+  | GUI visual check (RUN_VKB.bat) | ƒo. Done |
+  | Throttle slider in War Thunder | ƒ?÷ Open (likely PS5/Xbox conflict ƒ?" unplug and retry) |
+  | ED Bind Reset prevention | ƒo. Built as problems/ed_bind_reset.py, wired into GUI Fix Mouse Spin tab |
+  | Star Citizen full support | ƒ?÷ Waiting |
+  | Rename handover constant ƒÅ' PROJECT_HANDOVER.md | ƒ?÷ Quick Claude Code job |
+  
+  ---
+  
+  ## BIG VISION
+  
+  Not a VKB-specific tool. A **universal input device assistant** ƒ?" any hardware, any game, one tool.
+  
+  > *"The tool that should have existed the moment the first joystick was ever plugged into a PC."*
+  
+  For each game the tool provides:
+  - Top 10 most common + least common problems and fixes
+
+--- Iteration 4 ---
+TOKENS: +7997in/+150out  => 31,029 tokens
+THOUGHT: The file is PROJECT_HANDOVER.md not VKB_SpinDoctor_Handover_v15.md. I can see the CURRENT PROJECT STATUS table in the output but it was cut off. I need to read the full file, add the new row after the last row in that table, and write it back. Let me read the full file first.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\PROJECT_HANDOVER.md' -Raw"
+OUTPUT: # VKB Spin Doctor ƒ?" Project Handover v15 (MASTER)
+
+**Owner:** Scott (Croydon, England)
+**Status:** ACP v1 built. GUI 3 tabs confirmed working. sfl_agent.py v3 (575 lines). Conductor module live. ED Bind Reset prevention built.
+**Last updated:** 13 May 2026 (ED bind reset done)
+**Consolidates:** v11 ƒÅ' v14
+
+---
+
+## WHO IS SCOTT ƒ?" READ THIS FIRST
+
+- **Brain injury (BI) 2023** ƒ?" ONE STEP AT A TIME. No exceptions. Never stack steps.
+- **Beginner with code** ƒ?" explain what's being built as you go
+- **Always expand acronyms** on first use
+- **Always include keyboard shortcuts inline** (e.g. Windows key + X)
+- **Tables preferred** for structured info
+- **Number all options** ƒ?" Scott replies with just a number
+- **No bullshit** ƒ?" if something's hard or slow, say so upfront
+
+---
+
+## ACCA CODE
+
+| Code | Meaning |
+|---|---|
+| DRR | Don't require response |
+| DWR | Don't want response |
+| YO | Scott asking for Claude's opinion |
+| AIO | Claude giving its AI opinion |
+| SIB | Summarise in brief |
+| CR | Confidence rating 1ƒ?"10 |
+| WMBW | Why might be wrong |
+| WCBB | What could be better |
+| NRM | No-repeat mode |
+| BI | Brain injury |
+| SFL | Screenshot Feedback Loop |
+| + | Combine codes |
+| = | Define a new code |
+
+Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), NRM (no-repeat), EM (evidence)
+
+---
+
+## CURRENT PROJECT STATUS
+
+| Component | Status |
+|---|---|
+| v0.1 spin fix ƒ?" War Thunder | ƒo. Working |
+| usb_power_saver.py | ƒo. Built |
+| steam_input_conflict.py | ƒo. Built |
+| core/win_compat.py (pywin32 shim) | ƒo. Built |
+| data/devices.json (98 VID/PID devices) | ƒo. Built |
+| Universal_Input_Device_Database.md (44 problems) | ƒo. In folder |
+| problems/conductor.py (619 lines, 22 problems) | ƒo. Built ƒ?" 3 live conflicts found on Scott's machine |
+| spin_doctor.py ƒ?" 3 tabs (Fix / Conductor / KB) | ƒo. ~1057 lines, all tabs confirmed working |
+| sfl_agent.py v3 ƒ?" ACP v1 + handover injection | ƒo. 575 lines, all tests green |
+| Claude Code v2.1.119 | ƒo. Installed, working |
+| Elite Dangerous spin fix | ƒo. Fixed at hardware level via VKB DevConfig |
+| GUI visual check (RUN_VKB.bat) | ƒo. Done |
+| Throttle slider in War Thunder | ƒ?÷ Open (likely PS5/Xbox conflict ƒ?" unplug and retry) |
+| ED Bind Reset prevention | ƒo. Built as problems/ed_bind_reset.py, wired into GUI Fix Mouse Spin tab |
+| Star Citizen full support | ƒ?÷ Waiting |
+| Rename handover constant ƒÅ' PROJECT_HANDOVER.md | ƒ?÷ Quick Claude Code job |
+
+---
+
+## BIG VISION
+
+Not a VKB-specific tool. A **universal input device assistant** ƒ?" any hardware, any game, one tool.
+
+> *"The tool that should have existed the moment the first joystick was ever plugged into a PC."*
+
+For each game the tool provides:
+- Top 10 most common + least common problems and fixes
+- Most popular community keybind preferences
+- Downloadable keybind profiles stored locally
+- Visual keybinding maps stored locally
+- All accessible from the GUI Knowledge Base tab
+
+**The core product:** Steam "Generic Gamepad Configuration Support" is silently breaking joysticks and wheels for millions of players. Fix = uncheck one box. Nobody has built a tool that does this automatically. That's Spin Doctor.
+
+---
+
+## TWO-TOOL STRATEGY
+
+| Tool | Best for | Cost |
+|---|---|---|
+| Claude Code | Code jobs ƒ?" reads files as text, edits directly | API credits, very efficient |
+| SFL Agent (sfl_agent.py) | Visual tasks ƒ?" game UIs, screen diagnosis | ~$0.003/screenshot |
+
+**Rule:** Code jobs ƒÅ' Claude Code. Eyes-on-screen ƒÅ' SFL Agent.
+
+---
+
+## HOW TO RUN
+
+### Claude Code
+Admin terminal (Windows key + X ƒÅ' Terminal (Admin)):
+```
+cd "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor"
+```
+```
+claude
+```
+
+### SFL Agent
+```
+C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\sfl_agent.py"
+```
+
+With token budget (for long tasks):
+```
+C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\sfl_agent.py" --budget 30k
+```
+
+### GUI
+Double-click `RUN_VKB.bat`
+
+---
+
+## SFL AGENT ƒ?" KEY FEATURES
+
+sfl_agent.py is reusable on any project ƒ?" copy it to a new folder and create a PROJECT_HANDOVER.md there.
+
+| Feature | What it does |
+|---|---|
+| Path injection | Project folder injected into every Claude message |
+| Running memory | Claude sees all previous commands + outputs each loop |
+| Extend at limit | At 50 iterations asks "keep going?" instead of stopping |
+| Ask user | Claude can pause mid-task and ask Scott a question |
+| Log file | Every session saves to `sfl_logs/` |
+| Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
+| Flags | `--note`, `--folder`, `--budget` flags available |
+| Handover injection | Loads VKB_SpinDoctor_Handover_v12.md into system prompt on startup |
+
+### Autonomy Control Panel v1 (built into sfl_agent)
+
+| Feature | What it does |
+|---|---|
+| Heartbeats | Prints one-line status every 30s. No per-step approvals needed. |
+| Safe-op allow-list | Whitelist: reads, --help, --dry-run, --check, py_compile, git status. >5 files or wildcard = always asks. |
+| Auto-snapshot | Copies .py/.json/.xml to backups/auto_YYYYMMDD_HHMMSS/ before any edit. Keeps last 20. |
+| Token budget | Soft cap 80% = finish current task, stop new ones. Hard cap 100% = kill. |
+
+---
+
+## ENGINE ARCHITECTURE ƒ?" MICROKERNEL
+
+Drop a .py file into `/problems/` ƒ?" engine picks it up automatically. No registration needed.
+
+| Module ID | Name | Problems covered | Status |
+|---|---|---|---|
+| spin_fix | Spin Bug (Mouse Axis) | Removes mouse double-bind from flight axes | ƒo. Working (War Thunder) |
+| usb_power_saver | USB Power Saver | Disables Windows USB port power-off mid-session | ƒo. Built |
+| steam_input_conflict | Steam Input Conflict | Turns Steam Input OFF for WT, ED, MSFS, DCS, IL-2, AC7 | ƒo. Built |
+| conductor | Process Conductor | 22 problems ƒ?" companion software, input mappers, overlays, launch order | ƒo. Built |
+| win_hardener | Windows Hardener | 9 problems (USB power, registry, polling rate) | ƒ?÷ v0.2 |
+| identity | Device Identity | 7 problems (device naming, VID/PID, config name mismatch) | ƒ?÷ v0.3 |
+| config | Config Mediator | 6 problems (game config files ƒ?" WT spin fix lives here) | ƒ?÷ v0.2 |
+| physical | Physical Diagnostics | 5 problems (USB port, hub, power ƒ?" detect only) | ƒ?÷ v0.4 |
+
+### Conductor module ƒ?" what it covers (22 problems, 4 groups)
+
+| Group | What it scans |
+|---|---|
+| A | Companion software: G HUB, LGS, Synapse, iCUE, SteelSeries, Armoury Crate, MSI Center, TARGET, VKB DevCfg |
+| B | Input mappers: DS4Windows, Xpadder, JoyToKey, Joystick Gremlin, vJoy, X360CE, Steam overlay |
+| C | Overlay processes: GeForce Experience, Adrenalin, Discord, OBS, Xbox Game Bar |
+| D | Launch order advisory, HidHide state, compounded multi-companion warning |
+
+**Live conflicts found on Scott's machine:** Corsair iCUE, Steam overlay, NVIDIA GeForce Experience.
+
+Never auto-kills anything. Pure stdlib.
+
+---
+
+## UNIVERSAL INPUT DEVICE DATABASE ƒ?" SUMMARY
+
+File: `Universal_Input_Device_Database.md` ƒ?" 44 problems across all gaming hardware types.
+13 fully auto-fixable. 8 partially. 3 guide only.
+
+### Top 8 Universal Problems (cover ~80% of all complaints)
+
+| Rank | Problem | Auto-Fix? |
+|---|---|---|
+| 1 | Device not detected / seen as Xbox pad | ƒo. Full |
+| 2 | Bindings reset after update | ƒo. Backup/restore |
+| 3 | Double input / controller conflict | ƒo. Full |
+| 4 | Sensitivity wrong | ƒo. Starter values |
+| 5 | Axis drift at rest | ƒsÿ‹÷? Partial |
+| 6 | Inverted axes | ƒo. Full |
+| 7 | Steam Input interfering | ƒo. Full |
+| 8 | Wrong device name in config | ƒo. Full |
+
+### Hardware types covered
+Joystick/HOTAS, steering wheel, controller (Xbox/PS), mouse, pedals, button box, fight stick, TrackIR, guitar/rhythm, DDR dance mat, adaptive controller, VR controllers.
+
+---
+
+## THE 6 FIX CHAINS
+
+One root cause ƒÅ' multiple symptoms fixed simultaneously. This is how the AI brain will triage.
+
+| Chain | Root cause | What it fixes |
+|---|---|---|
+| 1 | Steam Generic Gamepad ON | Problems #1, #3, #7 ƒ?" three fixes from one Registry key |
+| 2 | Wrong USB port / hub | Detection failures, drift, FFB death |
+| 3 | Companion software conflict (G Hub vs Synapse vs iCUE) | Input lag, broken remaps, 1-second delay |
+| 4 | Device name changed post-update | Bindings silently ignored |
+| 5 | Polling rate stuck at 125Hz (8ms lag) | Sluggish feel ƒ?" free fix, nobody tells beginners |
+| 6 | joy.cpl corruption (from registry cleaners) | All joystick calibration broken |
+
+---
+
+## PROJECT FILES
+
+```
+VKB-SpinDoctor/
+ƒ"oƒ"?ƒ"? spin_doctor.py                     # ~1057 lines. Tabs: Fix / Conductor / Knowledge Base
+ƒ"oƒ"?ƒ"? sfl_agent.py                       # v3 ƒ?" 575 lines. ACP v1 + handover injection
+ƒ"oƒ"?ƒ"? sl_loop.py                         # Gemma 4 local SFL
+ƒ"oƒ"?ƒ"? RUN_VKB.bat                        # Double-click launcher
+ƒ"oƒ"?ƒ"? Universal_Input_Device_Database.md # 44 problems, all hardware types
+ƒ"oƒ"?ƒ"? VKB_SpinDoctor_Handover_v12.md     # Required by sfl_agent (handover injection reads this)
+ƒ"oƒ"?ƒ"? problems/
+ƒ"'   ƒ"oƒ"?ƒ"? __init__.py
+ƒ"'   ƒ"oƒ"?ƒ"? spin_fix.py                    # Module 01 ƒo.
+ƒ"'   ƒ"oƒ"?ƒ"? usb_power_saver.py             # Module 02 ƒo.
+ƒ"'   ƒ"oƒ"?ƒ"? steam_input_conflict.py        # Module 03 ƒo.
+ƒ"'   ƒ""ƒ"?ƒ"? conductor.py                   # Module 04 ƒo. 619 lines
+ƒ"oƒ"?ƒ"? core/
+ƒ"'   ƒ""ƒ"?ƒ"? win_compat.py                  # pywin32 shim ƒ?" tries pywin32, falls back gracefully
+ƒ"oƒ"?ƒ"? data/
+ƒ"'   ƒ""ƒ"?ƒ"? devices.json                   # 98 devices with VID/PID lookup
+ƒ"oƒ"?ƒ"? backups/                           # Auto-snapshots land here
+ƒ""ƒ"?ƒ"? sfl_logs/                          # Agent session logs
+```
+
+---
+
+## GAME CONFIG FILE PATHS
+
+| Game | Path | Format |
+|---|---|---|
+| War Thunder | `C:\Users\jscot\OneDrive\My Documents\My Games\WarThunder\Saves\226494292\production\` | .blk |
+| Elite Dangerous | `C:\Users\jscot\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings\` | .binds (XML) |
+| Star Citizen | `C:\Program Files\Roberts Space Industries\StarCitizen\LIVE\USER\Client\0\Controls\Mappings\` | .xml |
+| Arma Reforger | `Documents\My Games\ArmaReforger\profile\.save\settings\customInputConfigs\` | .json |
+
+---
+
+## ELITE DANGEROUS ƒ?" KEY NOTES
+
+- Spin bug already fixed at hardware level via VKB DevConfig. No .binds edit needed for spin.
+- No custom .binds file exists yet ƒ?" game uses built-in "KeyboardMouseOnly" default.
+- .binds file is only created once Scott launches ED and customises one binding.
+- When fixing spin via file: set `<MouseXMode Value="Bindings_MouseRoll" />` and `<MouseYMode>` to `Value=""`.
+- ED Bind Reset prevention: rename the .binds file ƒ?" ED never overwrites renamed files.
+
+---
+
+## KEYBINDING PROFILE LIBRARY (for v0.5)
+
+### Ready to use
+
+| Game | Source | Notes |
+|---|---|---|
+| Star Citizen | SubliminalsTV GitHub (github.com/SubliminalsTV/Subs-Curated-Bindings) | Free, updated every patch. Latest: 4.4 LIVE |
+| Star Citizen Enhanced | Gumroad (subliminalstv.gumroad.com/l/Enhanced_VKB_NXT) | Requires Joystick Gremlin. Patch 4.5 PTU |
+| War Thunder | WT Live community (live.warthunder.com/post/1112657/en) | Single stick simulator preset |
+| DCS World | DCS file repo (digitalcombatsimulator.com/en/files ƒ?" filter: VKB NXT) | Multiple aircraft |
+| X4: Foundations | Built into game (in-game preset menu) | Zero install ƒ?" added in 7.0 update |
+| Falcon BMS | BMS forum (forum.falcon-bms.com/topic/26999) | F-16 focused |
+| Arma Reforger | Workshop (reforger.armaplatform.com/workshop/660604C2DBCF99E2) | Helicopter only |
+| Elite Dangerous | Frontier Forums (forums.frontier.co.uk/threads/618833) | USB device ID needs auto-fix |
+
+### Manual setup required
+
+| Game | Guide |
+|---|---|
+| IL-2 Sturmovik: Great Battles | forum.il2sturmovik.com/topic/79819 |
+| Microsoft Flight Simulator 2024 | forums.flightsimulator.com/t/670496 |
+
+---
+
+## COMPETITIVE LANDSCAPE
+
+| Tool | Problem |
+|---|---|
+| Joystick Gremlin | Complex, requires vJoy driver, power-users only |
+| VKB DevConfig | Brand-locked to VKB, "obscure and arcane" |
+| TARGET (Thrustmaster) | Thrustmaster hardware only |
+| devreorder | Solves device order only, no GUI |
+| antimicro | Generic, no game awareness, no auto-detect |
+
+**The gap:** Nobody auto-detects AND fixes the full range of problems for beginners in one tool.
+
+---
+
+## MARKET EVIDENCE
+
+| Game | Evidence |
+|---|---|
+| War Thunder | VKB's own forum has dedicated threads. Multiple Steam discussions. |
+| Elite Dangerous | Steam thread from years ago still getting replies: "ship just flips in circles" |
+| DCS World | "Two controllers control your pitch axis at the same time and fight each other" |
+| X4: Foundations | "Started after installing my new X52. If I unplugged it the problem went away" |
+| Battlefield 6 | Community 56-link evidence pack ƒ?" 12,900 upvotes, 12,000 views, 1,200 comments |
+
+---
+
+## FULL ROADMAP
+
+| Phase | Version | What gets built |
+|---|---|---|
+| ƒo. Done | v0.1 | Spin bug fix ƒ?" War Thunder |
+| ƒo. Done | v0.3-alpha | Engine architecture, 4 modules, 98 VID/PID devices, win_compat shim |
+| ƒo. Done | v0.3-alpha | Knowledge Base tab in GUI (War Thunder, ED, Star Citizen cards) |
+| ƒo. Done | v0.3-alpha | Conductor module (22 problems), ACP v1, 3-tab GUI |
+| Next | v0.2 | Spin fix ƒÅ' Elite Dangerous + Star Citizen; ED Bind Reset prevention |
+| Soon | v0.3 | win_hardener module (9 problems) |
+| Soon | v0.4 | LM Studio + local AI wired in (Gemma 4 / Qwen2.5-VL) |
+| Soon | v0.5 | ChromaDB vector memory ƒ?" AI learns your setup |
+| Future | v0.6 | Keybinding profile library ƒ?" detect game, auto-install community profile |
+| Future | v0.7 | AI learns preferences, builds custom profiles, warns about patch breakage |
+| Future | v1.0 | Public release ƒ?" any hardware, any game. Package as .exe (no Python needed). |
+
+**Public launch targets:** r/hotas, r/Warthunder, r/EliteDangerous, r/starcitizen, VKB Discord, GitHub.
+
+---
+
+## HARDWARE & STACK
+
+| Item | Detail |
+|---|---|
+| Joystick | VKB Gladiator NXT EVO (Right-hand), arrived 25 April 2026 |
+| GPU | NVIDIA RTX 5090 (32GB VRAM) |
+| RAM | 48GB DDR5 |
+| OS | Windows 11 |
+| Python | 3.14 at `C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe` |
+| Terminal | Run as Admin ƒ?" Windows key + X ƒÅ' Terminal (Admin) |
+| Claude Code | v2.1.119 ƒ?" installed, working |
+| LM Studio | v0.4.12 ƒ?" models dir `D:\lm-models` |
+| Gemma 4 | Loaded, Think mode OFF |
+| Packages | mss, lmstudio, Pillow, anthropic |
+| API key | Windows environment variable `ANTHROPIC_API_KEY` |
+| API model | claude-sonnet-4-6 |
+| API cost | ~$0.003/screenshot (SFL agent). Claude Code much cheaper (text only). |
+| Balance | $20.00 loaded 12/05/2026 |
+| Console | https://console.anthropic.com/settings/billing |
+
+---
+
+## TROUBLESHOOTING
+
+| Problem | Fix |
+|---|---|
+| `python` not found | Use full path: `C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe` |
+| `localhost:1234` refused | Use `127.0.0.1:1234` |
+| LM Studio server drops | Don't reload models while server is running |
+| Gemma 4 empty replies | Think mode eating tokens ƒ?" Think OFF + MAX_TOKENS = 3000 |
+| Model not found (404) | Model string must be `claude-sonnet-4-6` |
+| Credits too low (400) | Top up at console.anthropic.com/settings/billing |
+| Agent guesses wrong path | Path injection is in v3 ƒ?" if broken, check handover file is present |
+| Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
+| Claude Code auth conflict | Detected both claude.ai token + API key ƒ?" uses API key. Working fine. |
+
+---
+
+## WHAT NOT TO DO
+
+- Don't rebuild anything marked ƒo. ƒ?" it exists, find the file
+- Don't add multiple games at once ƒ?" one game, test fully, then next
+- Don't use external packages unless absolutely necessary (Tkinter is sufficient for now)
+- Don't commit to GitHub without Scott's explicit decision
+- Don't auto-flash firmware ƒ?" warn and guide only, never auto-flash
+- Don't rebuild from scratch ƒ?" extend what's there
+
+---
+
+## NEXT PRIORITIES
+
+| # | Task | Tool |
+\|---|---|---|
+\| 1 | Wire Conductor recommendations into GUI | Claude Code |
+\| 2 | win_hardener module (9 problems) | Claude Code |\| 3 | Star Citizen full support | Claude Code |\| 4 | LM Studio local AI wired in (Gemma 4) | Claude Code |
+
+---
+
+## RESUME COMMAND
+
+> "Continuing VKB Spin Doctor. Read project knowledge + Handover v15. ACP v1 built into sfl_agent.py (575 lines) ƒ?" heartbeats, safe-op allow-list, auto-snapshot, token budget. GUI has 3 tabs, all working. Conductor module live (22 problems, 3 live conflicts found). Next: test --budget flag, then ED spin fix."
+
+--- Iteration 5 ---
+TOKENS: +8244in/+144out  => 39,417 tokens
+THOUGHT: The file is PROJECT_HANDOVER.md not VKB_SpinDoctor_Handover_v15.md. I need to read the full file content, find the CURRENT PROJECT STATUS table, add the new line, and write it back. Let me read the full file first to get the exact content.
+COMMAND: powershell.exe -Command "[System.IO.File]::ReadAllText('C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\PROJECT_HANDOVER.md')"
+SNAPSHOT: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\backups\v01_add_a_line_to_vkb_spindoctor_h
+OUTPUT: # VKB Spin Doctor - Project Handover v15 (MASTER)
+
+**Owner:** Scott (Croydon, England)
+**Status:** ACP v1 built. GUI 3 tabs confirmed working. sfl_agent.py v3 (575 lines). Conductor module live. ED Bind Reset prevention built.
+**Last updated:** 13 May 2026 (ED bind reset done)
+**Consolidates:** v11  v14
+
+---
+
+## WHO IS SCOTT - READ THIS FIRST
+
+- **Brain injury (BI) 2023** - ONE STEP AT A TIME. No exceptions. Never stack steps.
+- **Beginner with code** - explain what's being built as you go
+- **Always expand acronyms** on first use
+- **Always include keyboard shortcuts inline** (e.g. Windows key + X)
+- **Tables preferred** for structured info
+- **Number all options** - Scott replies with just a number
+- **No bullshit** - if something's hard or slow, say so upfront
+
+---
+
+## ACCA CODE
+
+| Code | Meaning |
+|---|---|
+| DRR | Don't require response |
+| DWR | Don't want response |
+| YO | Scott asking for Claude's opinion |
+| AIO | Claude giving its AI opinion |
+| SIB | Summarise in brief |
+| CR | Confidence rating 1-10 |
+| WMBW | Why might be wrong |
+| WCBB | What could be better |
+| NRM | No-repeat mode |
+| BI | Brain injury |
+| SFL | Screenshot Feedback Loop |
+| + | Combine codes |
+| = | Define a new code |
+
+Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), NRM (no-repeat), EM (evidence)
+
+---
+
+## CURRENT PROJECT STATUS
+
+| Component | Status |
+|---|---|
+| v0.1 spin fix - War Thunder | ? Working |
+| usb_power_saver.py | ? Built |
+| steam_input_conflict.py | ? Built |
+| core/win_compat.py (pywin32 shim) | ? Built |
+| data/devices.json (98 VID/PID devices) | ? Built |
+| Universal_Input_Device_Database.md (44 problems) | ? In folder |
+| problems/conductor.py (619 lines, 22 problems) | ? Built - 3 live conflicts found on Scott's machine |
+| spin_doctor.py - 3 tabs (Fix / Conductor / KB) | ? ~1057 lines, all tabs confirmed working |
+| sfl_agent.py v3 - ACP v1 + handover injection | ? 575 lines, all tests green |
+| Claude Code v2.1.119 | ? Installed, working |
+| Elite Dangerous spin fix | ? Fixed at hardware level via VKB DevConfig |
+| GUI visual check (RUN_VKB.bat) | ? Done |
+| Throttle slider in War Thunder | ? Open (likely PS5/Xbox conflict - unplug and retry) |
+| ED Bind Reset prevention | ? Built as problems/ed_bind_reset.py, wired into GUI Fix Mouse Spin tab |
+| Star Citizen full support | ? Waiting |
+| Rename handover constant  PROJECT_HANDOVER.md | ? Quick Claude Code job |
+
+---
+
+## BIG VISION
+
+Not a VKB-specific tool. A **universal input device assistant** - any hardware, any game, one tool.
+
+> *"The tool that should have existed the moment the first joystick was ever plugged into a PC."*
+
+For each game the tool provides:
+- Top 10 most common + least common problems and fixes
+- Most popular community keybind preferences
+- Downloadable keybind profiles stored locally
+- Visual keybinding maps stored locally
+- All accessible from the GUI Knowledge Base tab
+
+**The core product:** Steam "Generic Gamepad Configuration Support" is silently breaking joysticks and wheels for millions of players. Fix = uncheck one box. Nobody has built a tool that does this automatically. That's Spin Doctor.
+
+---
+
+## TWO-TOOL STRATEGY
+
+| Tool | Best for | Cost |
+|---|---|---|
+| Claude Code | Code jobs - reads files as text, edits directly | API credits, very efficient |
+| SFL Agent (sfl_agent.py) | Visual tasks - game UIs, screen diagnosis | ~$0.003/screenshot |
+
+**Rule:** Code jobs  Claude Code. Eyes-on-screen  SFL Agent.
+
+---
+
+## HOW TO RUN
+
+### Claude Code
+Admin terminal (Windows key + X  Terminal (Admin)):
+```
+cd "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor"
+```
+```
+claude
+```
+
+### SFL Agent
+```
+C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\sfl_agent.py"
+```
+
+With token budget (for long tasks):
+```
+C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\sfl_agent.py" --budget 30k
+```
+
+### GUI
+Double-click `RUN_VKB.bat`
+
+---
+
+## SFL AGENT - KEY FEATURES
+
+sfl_agent.py is reusable on any project - copy it to a new folder and create a PROJECT_HANDOVER.md there.
+
+| Feature | What it does |
+|---|---|
+| Path injection | Project folder injected into every Claude message |
+| Running memory | Claude sees all previous commands + outputs each loop |
+| Extend at limit | At 50 iterations asks "keep going?" instead of stopping |
+| Ask user | Claude can pause mid-task and ask Scott a question |
+| Log file | Every session saves to `sfl_logs/` |
+| Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
+| Flags | `--note`, `--folder`, `--budget` flags available |
+| Handover injection | Loads VKB_SpinDoctor_Handover_v12.md into system prompt on startup |
+
+### Autonomy Control Panel v1 (built into sfl_agent)
+
+| Feature | What it does |
+|---|---|
+| Heartbeats | Prints one-line status every 30s. No per-step approvals needed. |
+| Safe-op allow-list | Whitelist: reads, --help, --dry-run, --check, py_compile, git status. >5 files or wildcard = always asks. |
+| Auto-snapshot | Copies .py/.json/.xml to backups/auto_YYYYMMDD_HHMMSS/ before any edit. Keeps last 20. |
+| Token budget | Soft cap 80% = finish current task, stop new ones. Hard cap 100% = kill. |
+
+---
+
+## ENGINE ARCHITECTURE - MICROKERNEL
+
+Drop a .py file into `/problems/` - engine picks it up automatically. No registration needed.
+
+| Module ID | Name | Problems covered | Status |
+|---|---|---|---|
+| spin_fix | Spin Bug (Mouse Axis) | Removes mouse double-bind from flight axes | ? Working (War Thunder) |
+| usb_power_saver | USB Power Saver | Disables Windows USB port power-off mid-session | ? Built |
+| steam_input_conflict | Steam Input Conflict | Turns Steam Input OFF for WT, ED, MSFS, DCS, IL-2, AC7 | ? Built |
+| conductor | Process Conductor | 22 problems - companion software, input mappers, overlays, launch order | ? Built |
+| win_hardener | Windows Hardener | 9 problems (USB power, registry, polling rate) | ? v0.2 |
+| identity | Device Identity | 7 problems (device naming, VID/PID, config name mismatch) | ? v0.3 |
+| config | Config Mediator | 6 problems (game config files - WT spin fix lives here) | ? v0.2 |
+| physical | Physical Diagnostics | 5 problems (USB port, hub, power - detect only) | ? v0.4 |
+
+### Conductor module - what it covers (22 problems, 4 groups)
+
+| Group | What it scans |
+|---|---|
+| A | Companion software: G HUB, LGS, Synapse, iCUE, SteelSeries, Armoury Crate, MSI Center, TARGET, VKB DevCfg |
+| B | Input mappers: DS4Windows, Xpadder, JoyToKey, Joystick Gremlin, vJoy, X360CE, Steam overlay |
+| C | Overlay processes: GeForce Experience, Adrenalin, Discord, OBS, Xbox Game Bar |
+| D | Launch order advisory, HidHide state, compounded multi-companion warning |
+
+**Live conflicts found on Scott's machine:** Corsair iCUE, Steam overlay, NVIDIA GeForce Experience.
+
+Never auto-kills anything. Pure stdlib.
+
+---
+
+## UNIVERSAL INPUT DEVICE DATABASE - SUMMARY
+
+File: `Universal_Input_Device_Database.md` - 44 problems across all gaming hardware types.
+13 fully auto-fixable. 8 partially. 3 guide only.
+
+### Top 8 Universal Problems (cover ~80% of all complaints)
+
+| Rank | Problem | Auto-Fix? |
+|---|---|---|
+| 1 | Device not detected / seen as Xbox pad | ? Full |
+| 2 | Bindings reset after update | ? Backup/restore |
+| 3 | Double input / controller conflict | ? Full |
+| 4 | Sensitivity wrong | ? Starter values |
+| 5 | Axis drift at rest | ?? Partial |
+| 6 | Inverted axes | ? Full |
+| 7 | Steam Input interfering | ? Full |
+| 8 | Wrong device name in config | ? Full |
+
+### Hardware types covered
+Joystick/HOTAS, steering wheel, controller (Xbox/PS), mouse, pedals, button box, fight stick, TrackIR, guitar/rhythm, DDR dance mat, adaptive controller, VR controllers.
+
+---
+
+## THE 6 FIX CHAINS
+
+One root cause  multiple symptoms fixed simultaneously. This is how the AI brain will triage.
+
+| Chain | Root cause | What it fixes |
+|---|---|---|
+| 1 | Steam Generic Gamepad ON | Problems #1, #3, #7 - three fixes from one Registry key |
+| 2 | Wrong USB port / hub | Detection failures, drift, FFB death |
+| 3 | Companion software conflict (G Hub vs Synapse vs iCUE) | Input lag, broken remaps, 1-second delay |
+| 4 | Device name changed post-update | Bindings silently ignored |
+| 5 | Polling rate stuck at 125Hz (8ms lag) | Sluggish feel - free fix, nobody tells beginners |
+| 6 | joy.cpl corruption (from registry cleaners) | All joystick calibration broken |
+
+---
+
+## PROJECT FILES
+
+```
+VKB-SpinDoctor/
+ÃÄÄ spin_doctor.py                     # ~1057 lines. Tabs: Fix / Conductor / Knowledge Base
+ÃÄÄ sfl_agent.py                       # v3 - 575 lines. ACP v1 + handover injection
+ÃÄÄ sl_loop.py                         # Gemma 4 local SFL
+ÃÄÄ RUN_VKB.bat                        # Double-click launcher
+ÃÄÄ Universal_Input_Device_Database.md # 44 problems, all hardware types
+ÃÄÄ VKB_SpinDoctor_Handover_v12.md     # Required by sfl_agent (handover injection reads this)
+ÃÄÄ problems/
+³   ÃÄÄ __init__.py
+³   ÃÄÄ spin_fix.py                    # Module 01 ?
+³   ÃÄÄ usb_power_saver.py             # Module 02 ?
+³   ÃÄÄ steam_input_conflict.py        # Module 03 ?
+³   ÀÄÄ conductor.py                   # Module 04 ? 619 lines
+ÃÄÄ core/
+³   ÀÄÄ win_compat.py                  # pywin32 shim - tries pywin32, falls back gracefully
+ÃÄÄ data/
+³   ÀÄÄ devices.json                   # 98 devices with VID/PID lookup
+ÃÄÄ backups/                           # Auto-snapshots land here
+ÀÄÄ sfl_logs/                          # Agent session logs
+```
+
+---
+
+## GAME CONFIG FILE PATHS
+
+| Game | Path | Format |
+|---|---|---|
+| War Thunder | `C:\Users\jscot\OneDrive\My Documents\My Games\WarThunder\Saves\226494292\production\` | .blk |
+| Elite Dangerous | `C:\Users\jscot\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings\` | .binds (XML) |
+| Star Citizen | `C:\Program Files\Roberts Space Industries\StarCitizen\LIVE\USER\Client\0\Controls\Mappings\` | .xml |
+| Arma Reforger | `Documents\My Games\ArmaReforger\profile\.save\settings\customInputConfigs\` | .json |
+
+---
+
+## ELITE DANGEROUS - KEY NOTES
+
+- Spin bug already fixed at hardware level via VKB DevConfig. No .binds edit needed for spin.
+- No custom .binds file exists yet - game uses built-in "KeyboardMouseOnly" default.
+- .binds file is only created once Scott launches ED and customises one binding.
+- When fixing spin via file: set `<MouseXMode Value="Bindings_MouseRoll" />` and `<MouseYMode>` to `Value=""`.
+- ED Bind Reset prevention: rename the .binds file - ED never overwrites renamed files.
+
+---
+
+## KEYBINDING PROFILE LIBRARY (for v0.5)
+
+### Ready to use
+
+| Game | Source | Notes |
+|---|---|---|
+| Star Citizen | SubliminalsTV GitHub (github.com/SubliminalsTV/Subs-Curated-Bindings) | Free, updated every patch. Latest: 4.4 LIVE |
+| Star Citizen Enhanced | Gumroad (subliminalstv.gumroad.com/l/Enhanced_VKB_NXT) | Requires Joystick Gremlin. Patch 4.5 PTU |
+| War Thunder | WT Live community (live.warthunder.com/post/1112657/en) | Single stick simulator preset |
+| DCS World | DCS file repo (digitalcombatsimulator.com/en/files - filter: VKB NXT) | Multiple aircraft |
+| X4: Foundations | Built into game (in-game preset menu) | Zero install - added in 7.0 update |
+| Falcon BMS | BMS forum (forum.falcon-bms.com/topic/26999) | F-16 focused |
+| Arma Reforger | Workshop (reforger.armaplatform.com/workshop/660604C2DBCF99E2) | Helicopter only |
+| Elite Dangerous | Frontier Forums (forums.frontier.co.uk/threads/618833) | USB device ID needs auto-fix |
+
+### Manual setup required
+
+| Game | Guide |
+|---|---|
+| IL-2 Sturmovik: Great Battles | forum.il2sturmovik.com/topic/79819 |
+| Microsoft Flight Simulator 2024 | forums.flightsimulator.com/t/670496 |
+
+---
+
+## COMPETITIVE LANDSCAPE
+
+| Tool | Problem |
+|---|---|
+| Joystick Gremlin | Complex, requires vJoy driver, power-users only |
+| VKB DevConfig | Brand-locked to VKB, "obscure and arcane" |
+| TARGET (Thrustmaster) | Thrustmaster hardware only |
+| devreorder | Solves device order only, no GUI |
+| antimicro | Generic, no game awareness, no auto-detect |
+
+**The gap:** Nobody auto-detects AND fixes the full range of problems for beginners in one tool.
+
+---
+
+## MARKET EVIDENCE
+
+| Game | Evidence |
+|---|---|
+| War Thunder | VKB's own forum has dedicated threads. Multiple Steam discussions. |
+| Elite Dangerous | Steam thread from years ago still getting replies: "ship just flips in circles" |
+| DCS World | "Two controllers control your pitch axis at the same time and fight each other" |
+| X4: Foundations | "Started after installing my new X52. If I unplugged it the problem went away" |
+| Battlefield 6 | Community 56-link evidence pack - 12,900 upvotes, 12,000 views, 1,200 comments |
+
+---
+
+## FULL ROADMAP
+
+| Phase | Version | What gets built |
+|---|---|---|
+| ? Done | v0.1 | Spin bug fix - War Thunder |
+| ? Done | v0.3-alpha | Engine architecture, 4 modules, 98 VID/PID devices, win_compat shim |
+| ? Done | v0.3-alpha | Knowledge Base tab in GUI (War Thunder, ED, Star Citizen cards) |
+| ? Done | v0.3-alpha | Conductor module (22 problems), ACP v1, 3-tab GUI |
+| Next | v0.2 | Spin fix  Elite Dangerous + Star Citizen; ED Bind Reset prevention |
+| Soon | v0.3 | win_hardener module (9 problems) |
+| Soon | v0.4 | LM Studio + local AI wired in (Gemma 4 / Qwen2.5-VL) |
+| Soon | v0.5 | ChromaDB vector memory - AI learns your setup |
+| Future | v0.6 | Keybinding profile library - detect game, auto-install community profile |
+| Future | v0.7 | AI learns preferences, builds custom profiles, warns about patch breakage |
+| Future | v1.0 | Public release - any hardware, any game. Package as .exe (no Python needed). |
+
+**Public launch targets:** r/hotas, r/Warthunder, r/EliteDangerous, r/starcitizen, VKB Discord, GitHub.
+
+---
+
+## HARDWARE & STACK
+
+| Item | Detail |
+|---|---|
+| Joystick | VKB Gladiator NXT EVO (Right-hand), arrived 25 April 2026 |
+| GPU | NVIDIA RTX 5090 (32GB VRAM) |
+| RAM | 48GB DDR5 |
+| OS | Windows 11 |
+| Python | 3.14 at `C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe` |
+| Terminal | Run as Admin - Windows key + X  Terminal (Admin) |
+| Claude Code | v2.1.119 - installed, working |
+| LM Studio | v0.4.12 - models dir `D:\lm-models` |
+| Gemma 4 | Loaded, Think mode OFF |
+| Packages | mss, lmstudio, Pillow, anthropic |
+| API key | Windows environment variable `ANTHROPIC_API_KEY` |
+| API model | claude-sonnet-4-6 |
+| API cost | ~$0.003/screenshot (SFL agent). Claude Code much cheaper (text only). |
+| Balance | $20.00 loaded 12/05/2026 |
+| Console | https://console.anthropic.com/settings/billing |
+
+---
+
+## TROUBLESHOOTING
+
+| Problem | Fix |
+|---|---|
+| `python` not found | Use full path: `C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe` |
+| `localhost:1234` refused | Use `127.0.0.1:1234` |
+| LM Studio server drops | Don't reload models while server is running |
+| Gemma 4 empty replies | Think mode eating tokens - Think OFF + MAX_TOKENS = 3000 |
+| Model not found (404) | Model string must be `claude-sonnet-4-6` |
+| Credits too low (400) | Top up at console.anthropic.com/settings/billing |
+| Agent guesses wrong path | Path injection is in v3 - if broken, check handover file is present |
+| Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
+| Claude Code auth conflict | Detected both claude.ai token + API key - uses API key. Working fine. |
+
+---
+
+## WHAT NOT TO DO
+
+- Don't rebuild anything marked ? - it exists, find the file
+- Don't add multiple games at once - one game, test fully, then next
+- Don't use external packages unless absolutely necessary (Tkinter is sufficient for now)
+- Don't commit to GitHub without Scott's explicit decision
+- Don't auto-flash firmware - warn and guide only, never auto-flash
+- Don't rebuild from scratch - extend what's there
+
+---
+
+## NEXT PRIORITIES
+
+| # | Task | Tool |
+\|---|---|---|
+\| 1 | Wire Conductor recommendations into GUI | Claude Code |
+\| 2 | win_hardener module (9 problems) | Claude Code |\| 3 | Star Citizen full support | Claude Code |\| 4 | LM Studio local AI wired in (Gemma 4) | Claude Code |
+
+---
+
+## RESUME COMMAND
+
+> "Continuing VKB Spin Doctor. Read project knowledge + Handover v15. ACP v1 built into sfl_agent.py (575 lines) - heartbeats, safe-op allow-list, auto-snapshot, token budget. GUI has 3 tabs, all working. Conductor module live (22 problems, 3 live conflicts found). Next: test --budget flag, then ED spin fix."
+
+--- Iteration 6 ---
+TOKENS: +8476in/+249out  => 48,142 tokens
+THOUGHT: I need to read the full file content, find the CURRENT PROJECT STATUS table, and insert the new line. I can see the file is PROJECT_HANDOVER.md. Let me read it fully using Python to get clean content, then write it back with the new line added.
+COMMAND: powershell.exe -Command "& 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' -c \"
+import sys
+with open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/PROJECT_HANDOVER.md', 'r', encoding='utf-8') as f:
+    content = f.read()
+lines = content.split('\n')
+for i, line in enumerate(lines):
+    if 'ED Bind Reset prevention' in line and '|' in line:
+        print(f'LINE {i}: {line}')
+\""
+SNAPSHOT: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\backups\v02_add_a_line_to_vkb_spindoctor_h
+OUTPUT: The string is missing the terminator: ".
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : TerminatorExpectedAtEndOfString
+
+--- Iteration 7 ---

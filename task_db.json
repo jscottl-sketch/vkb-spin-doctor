@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "description": "Model Router \u2014 task-to-model database. Grows smarter over time.",
+  "task_types": {
+    "vision": {
+      "description": "Screenshot or game UI analysis",
+      "keywords": [
+        "screenshot",
+        "screen",
+        "image",
+        "see",
+        "look",
+        "ui",
+        "window",
+        "visual",
+        "game",
+        "display",
+        "pixel",
+        "what is on"
+      ],
+      "models": [
+        {
+          "name": "qwen2.5-vl-32b-instruct",
+          "provider": "lmstudio",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "gemini-2.5-pro",
+          "provider": "gemini",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "claude-sonnet-4-6",
+          "provider": "anthropic",
+          "cost_per_call": 0.003,
+          "attempts": 0,
+          "successes": 0
+        }
+      ]
+    },
+    "code": {
+      "description": "Write, edit, or debug Python / config files",
+      "keywords": [
+        "python",
+        "code",
+        "write",
+        "edit",
+        "file",
+        "function",
+        "bug",
+        "fix",
+        "class",
+        "import",
+        ".py",
+        "script",
+        "module",
+        "def ",
+        "json",
+        ".blk",
+        ".xml",
+        "parse",
+        "read file",
+        "save file"
+      ],
+      "models": [
+        {
+          "name": "qwen2.5-coder-32b-instruct",
+          "provider": "lmstudio",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "claude-sonnet-4-6",
+          "provider": "anthropic",
+          "cost_per_call": 0.01,
+          "attempts": 0,
+          "successes": 0
+        }
+      ]
+    },
+    "plan": {
+      "description": "Strategy, planning, reasoning, architecture",
+      "keywords": [
+        "plan",
+        "strategy",
+        "should",
+        "how to",
+        "decide",
+        "architect",
+        "design",
+        "best way",
+        "approach",
+        "what next",
+        "recommend",
+        "prioritise",
+        "roadmap",
+        "next step"
+      ],
+      "models": [
+        {
+          "name": "deepseek-r1-70b",
+          "provider": "lmstudio",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "cost_per_call": 0,
+          "attempts": 0,
+          "successes": 0
+        },
+        {
+          "name": "claude-sonnet-4-6",
+          "provider": "anthropic",
+          "cost_per_call": 0.01,
+          "attempts": 0,
+          "successes": 0
+        }
+      ]
+    },
+    "fast": {
+      "description": "Quick summaries, simple questions, short text tasks",
+      "keywords": [],
+      "models": [
+        {
+          "name": "llama-3.3-70b-versatile",
+          "provider": "groq",
+          "cost_per_call": 0,
+          "attempts": 1,
+          "successes": 0
+        },
+        {
+          "name": "phi-4",
+          "provider": "lmstudio",
+          "cost_per_call": 0,
+          "attempts": 1,
+          "successes": 1
+        },
+        {
+          "name": "claude-sonnet-4-6",
+          "provider": "anthropic",
+          "cost_per_call": 0.01,
+          "attempts": 0,
+          "successes": 0
+        }
+      ]
+    }
+  },
+  "logs": [
+    {
+      "ts": "2026-05-13T23:31:05",
+      "task_type": "fast",
+      "model": "llama-3.3-70b-versatile",
+      "success": false,
+      "elapsed_s": 0.0
+    },
+    {
+      "ts": "2026-05-13T23:31:27",
+      "task_type": "fast",
+      "model": "phi-4",
+      "success": true,
+      "elapsed_s": 22.07
+    }
+  ]
+}

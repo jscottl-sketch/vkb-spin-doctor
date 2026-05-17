@@ -1,0 +1,28 @@
+## SIFFS — Session Summary 17 May 2026
+
+**Goal:** Upload 6 custom skills + update WCCS skill with logging
+
+**Done:**
+1. All 6 custom skills uploaded to claude.ai/customize/skills ✅ (wccs-generator, session-log-writer, handover-updater, acca-code-logger, aafl-loop-runner, alp-audit)
+2. Found correct upload path: + button in chat → Skills → Add skill → upload zip
+3. Found skill management path: claude.ai/customize/skills
+4. WCCS skill replaced with v2 — now includes version incrementing and wccs_log.md logging
+5. Built RUN_WCCS.bat for one-click end-of-session saves
+6. Discovered "Save skill" button — can replace skills directly from SKILL.md file output in chat
+
+**ALP violations:**
+- Multiple messages wasted guessing UI paths before researching docs
+- Batch file errors (wrong Desktop path, spaces in zip paths) caused repeated rebuilds
+- Should have built the zip server-side from the start
+
+**New ALP rule:** ALP #13 — Research Anthropic docs FIRST for any platform question. One search costs less than 5 guesses.
+
+**Next priorities:**
+1. Verify all 6 skill toggles ON
+2. Test skills in fresh chat
+3. Add file-write step to loop_manager.py
+4. Delete old handover versions (v16-v19) from VKB-SpinDoctor folder
+
+---
+
+Now export this chat → save as **chat_latest.txt** in VKB-SpinDoctor → double-click **RUN_WCCS.bat**. 🦸

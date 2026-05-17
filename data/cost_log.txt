@@ -1,0 +1,23 @@
+[2026-05-15 09:54:27] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 09:54:27] CALL #1  cost=£0.000000  running=£0.000000  iter=1/50
+[2026-05-15 09:54:27] BLOCKED check_before_call: Cost cap exceeded: running=£0.0000 + estimated=£0.0010 > cap=£0.0000
+[2026-05-15 09:54:27] CostGuard init  max_cost=£999.0000  max_iter=3
+[2026-05-15 09:54:27] CALL #1  cost=£0.000000  running=£0.000000  iter=1/3
+[2026-05-15 09:54:27] CALL #2  cost=£0.000000  running=£0.000000  iter=2/3
+[2026-05-15 09:54:27] CALL #3  cost=£0.000000  running=£0.000000  iter=3/3
+[2026-05-15 09:54:27] BLOCKED check_before_call: Iteration cap: 3 >= 3
+[2026-05-15 09:54:27] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 09:54:27] BLOCKED detect_loop: Loop detected: 'run_python' repeated 3x in a row
+[2026-05-15 09:54:27] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 09:59:32] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 09:59:35] CALL #1  cost=£0.001286  running=£0.001286  iter=1/50
+[2026-05-15 09:59:35] BLOCKED check_before_call: Cost cap exceeded: running=£0.0013 + estimated=£0.0000 > cap=£0.0000
+[2026-05-15 10:00:38] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 10:00:54] CALL #1  cost=£0.000000  running=£0.000000  iter=1/50
+[2026-05-15 10:01:02] CALL #2  cost=£0.003589  running=£0.003589  iter=2/50
+[2026-05-15 10:02:50] CostGuard init  max_cost=£0.0000  max_iter=50
+[2026-05-15 10:02:54] CALL #1  cost=£0.001286  running=£0.001286  iter=1/50
+[2026-05-15 10:02:54] BLOCKED check_before_call: Cost cap exceeded: running=£0.0013 + estimated=£0.0000 > cap=£0.0000
+[2026-05-15 10:03:05] CostGuard init  max_cost=£0.0500  max_iter=50
+[2026-05-15 10:03:08] CALL #1  cost=£0.001286  running=£0.001286  iter=1/50
+[2026-05-15 10:03:15] CALL #2  cost=£0.002523  running=£0.003809  iter=2/50

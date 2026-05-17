@@ -1,0 +1,3534 @@
+SFL Agent v2 Log
+Started: 2026-05-12 22:21:04.907141
+Task: Read C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py and add support for Elite Dangerous binding files. The Elite Dangerous bindings folder is C:\Users\jscot\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings\ and files are .binds format (XML).
+============================================================
+
+Task: Read C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py and add support for Elite Dangerous binding files. The Elite Dangerous bindings folder is C:\Users\jscot\AppData\Local\Frontier Developments\Elite Dangerous\Options\Bindings\ and files are .binds format (XML).
+Folder: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor
+Note: 
+
+--- Iteration 1 ---
+THOUGHT: Let me start by reading the spin_doctor.py file to understand the current codebase.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Raw"
+OUTPUT: #!/usr/bin/env python3
+"""VKB Spin Doctor ƒ?" fixes mouse-axis spin for VKB joystick users."""
+
+import os
+import shutil
+import tkinter as tk
+from tkinter import messagebox
+from datetime import datetime
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).parent
+BACKUP_ROOT = SCRIPT_DIR / "backups"
+
+# ƒ"?ƒ"? Colours ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?
+BG_WIN    = "#1a252f"
+BG_CARD   = "#2c3e50"
+BG_GREY   = "#283747"
+FG_WHITE  = "#ecf0f1"
+FG_DIM    = "#7f8c8d"
+FG_DIMMER = "#5d6d7e"
+C_RED     = "#e74c3c"
+C_GREEN   = "#27ae60"
+C_BLUE    = "#2980b9"
+C_GREY    = "#555e6b"
+C_DIV     = "#1e2f3d"
+
+STATUS_DISPLAY = {
+    "spin_risk": ("ƒsÿ  SPIN RISK",           C_RED,   FG_WHITE),
+    "fixed":     ("ƒo"  FIXED",               C_GREEN, FG_WHITE),
+    "no_file":   ("ƒ?"  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+}
+
+
+# ƒ"?ƒ"? Path finders ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?
+
+def find_warthunder_machine_blk():
+    profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+    bases = [
+        profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+        profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+        profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+    ]
+    for base in bases:
+        if not base.is_dir():
+            continue
+        for entry in sorted(base.iterdir()):
+            if entry.name.isdigit():
+                candidate = entry / "production" / "machine.blk"
+                if candidate.exists():
+                    return candidate
+    return None
+
+
+def find_elite_binds():
+    base = (Path(os.environ.get("LOCALAPPDATA", ""))
+            / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+    if not base.is_dir():
+        return None
+    binds = list(base.glob("*.binds"))
+    return binds[0] if binds else None
+
+
+def find_starcitizen_xml():
+    base = Path("C:/Program Files/Roberts Space Industries"
+                "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+    if not base.is_dir():
+        return None
+    xmls = list(base.glob("*.xml"))
+    return xmls[0] if xmls else None
+
+
+# ƒ"?ƒ"? Status detection ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?
+
+def _blk_has_mouse_axis_in(filepath, target_blocks):
+    """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    stack = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        if (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in target_blocks
+                and s.startswith("mouseAxisId:")):
+            return True
+        if s == "}" and stack:
+            stack.pop()
+    return False
+
+
+def check_warthunder_status(filepath):
+    if filepath is None or not Path(filepath).exists():
+        return "no_file"
+    if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+        return "spin_risk"
+    return "fixed"
+
+
+def check_not_implemented(filepath):
+    return "no_file"
+
+
+# ƒ"?ƒ"? Backup & fix ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?
+
+def make_backup(filepath, game_name):
+    """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    dest_dir = BACKUP_ROOT / game_name / timestamp
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(filepath, dest_dir / Path(filepath).name)
+    return dest_dir
+
+
+def fix_warthunder(filepath):
+    """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    lines = content.splitlines(keepends=True)
+    result = []
+    stack = []
+    removed = 0
+
+    for line in lines:
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        skip = (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in ("ailerons", "elevator")
+                and s.startswith("mouseAxisId:"))
+        if skip:
+            removed += 1
+        else:
+            result.append(line)
+        if s == "}" and stack:
+            stack.pop()
+
+    if removed == 0:
+        return False, "No mouse axis bindings found ƒ?" file may already be fixed."
+    Path(filepath).write_text("".join(result), encoding="utf-8")
+    return True, f"Removed {removed} mouse axis binding(s)."
+
+
+def restore_last_backup(game_name, filepath):
+    """Copy the most recent backup back over filepath. Returns (ok, message)."""
+    backup_dir = BACKUP_ROOT / game_name
+    if not backup_dir.is_dir():
+        return False, "No backups found."
+    backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+    if not backups:
+        return False, "No backups found."
+    source = backups[0] / Path(filepath).name
+    if not source.exists():
+        return False, f"Backup does not contain {Path(filepath).name}."
+    shutil.copy2(source, filepath)
+    return True, f"Restored from backup dated {backups[0].name}."
+
+
+def has_backup(game_name):
+    backup_dir = BACKUP_ROOT / game_name
+    return backup_dir.is_dir() and any(backup_dir.iterdir())
+
+
+# ƒ"?ƒ"? GUI ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?ƒ"?
+
+class GameCard(tk.Frame):
+    def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+        bg = BG_GREY if greyed else BG_CARD
+        super().__init__(parent, bg=bg, padx=16, pady=14)
+
+        self.game_name = game_name
+        self.finder_fn = finder_fn
+        self.status_fn = status_fn
+        self.fix_fn    = fix_fn
+        self.greyed    = greyed
+        self.filepath  = finder_fn()
+
+        self._build(bg)
+        self.refresh()
+
+    def _build(self, bg):
+        tk.Label(self, text=self.game_name,
+                 font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+                 ).grid(row=0, column=0, sticky="w")
+
+        self.path_lbl = tk.Label(self, text="",
+                                  font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+                                  wraplength=520, justify="left")
+        self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+
+        self.status_lbl = tk.Label(self, text="",
+                                    font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+        self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+
+        if self.greyed:
+            tk.Label(self,
+                     text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+                     font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+                     wraplength=520, justify="left"
+                     ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+
+        btn_row = tk.Frame(self, bg=bg)
+        btn_row.grid(row=4, column=0, sticky="w")
+
+        self.fix_btn = tk.Button(
+            btn_row, text="Fix Mouse Spin",
+            font=("Segoe UI", 10, "bold"),
+            bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_fix)
+        self.fix_btn.pack(side="left", padx=(0, 8))
+
+        self.restore_btn = tk.Button(
+            btn_row, text="Restore Last Backup",
+            font=("Segoe UI", 10),
+            bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_restore)
+        self.restore_btn.pack(side="left", padx=(0, 8))
+
+        if self.greyed:
+            tk.Button(
+                btn_row, text="Re-scan",
+                font=("Segoe UI", 10),
+                bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+                relief="flat", cursor="hand2",
+                command=self._on_rescan
+            ).pack(side="left")
+
+    def refresh(self):
+        self.path_lbl.config(
+            text=str(self.filepath) if self.filepath
+            else "Binding file not found on this system"
+        )
+
+        status = self.status_fn(self.filepath)
+        label, bg_col, fg_col = STATUS_DISPLAY[status]
+        self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+
+        can_fix = (status == "spin_risk")
+        self.fix_btn.config(
+            state="normal" if can_fix else "disabled",
+            bg=C_RED if can_fix else C_GREY,
+            cursor="hand2" if can_fix else "arrow")
+
+        can_restore = has_backup(self.game_name) and self.filepath is not None
+        self.restore_btn.config(
+            state="normal" if can_restore else "disabled",
+            bg=FG_DIM if can_restore else C_GREY,
+            cursor="hand2" if can_restore else "arrow")
+
+    def _on_fix(self):
+        if not messagebox.askyesno(
+                "Confirm Fix",
+                f"Fix mouse spin for {self.game_name}?\n\n"
+                "Your binding file will be backed up first."):
+            return
+        try:
+            backup_dir = make_backup(self.filepath, self.game_name)
+        except Exception as e:
+            messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+            return
+        success, msg = self.fix_fn(self.filepath)
+        if success:
+            messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+        else:
+            messagebox.showerror("Fix Failed", msg)
+        self.refresh()
+
+    def _on_restore(self):
+        if not messagebox.askyesno(
+                "Confirm Restore",
+                f"Restore last backup for {self.game_name}?\n\n"
+                "This will undo your last fix."):
+            return
+        success, msg = restore_last_backup(self.game_name, self.filepath)
+        if success:
+            messagebox.showinfo("Restored", msg)
+        else:
+            messagebox.showerror("Restore Failed", msg)
+        self.refresh()
+
+    def _on_rescan(self):
+        self.filepath = self.finder_fn()
+        self.refresh()
+
+
+class SpinDoctorApp:
+    def __init__(self, root):
+        self.root = root
+        root.title("VKB Spin Doctor")
+        root.configure(bg=BG_WIN)
+        root.resizable(False, False)
+        self._build()
+
+    def _build(self):
+        hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+        hdr.pack(fill="x", padx=20)
+        tk.Label(hdr, text="VKB Spin Doctor",
+                 font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+                 ).pack(side="left")
+        tk.Label(hdr, text="  v1.0  ƒ?"  fixes mouse-axis spin for joystick users",
+                 font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+                 ).pack(side="left")
+
+        body = tk.Frame(self.root, bg=BG_WIN)
+        body.pack(fill="both", padx=20, pady=(0, 20))
+
+        GameCard(body,
+                 game_name="War Thunder",
+                 finder_fn=find_warthunder_machine_blk,
+                 status_fn=check_warthunder_status,
+                 fix_fn=fix_warthunder,
+                 greyed=False,
+                 ).pack(fill="x", pady=(0, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Elite Dangerous",
+                 finder_fn=find_elite_binds,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Star Citizen",
+                 finder_fn=find_starcitizen_xml,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 0))
+
+
+def main():
+    root = tk.Tk()
+    SpinDoctorApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
+
+--- Iteration 2 ---
+THOUGHT: Let me read the full spin_doctor.py file to understand its structure before making changes.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8 -Raw"
+OUTPUT: #!/usr/bin/env python3
+"""VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+
+import os
+import shutil
+import tkinter as tk
+from tkinter import messagebox
+from datetime import datetime
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).parent
+BACKUP_ROOT = SCRIPT_DIR / "backups"
+
+# ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+BG_WIN    = "#1a252f"
+BG_CARD   = "#2c3e50"
+BG_GREY   = "#283747"
+FG_WHITE  = "#ecf0f1"
+FG_DIM    = "#7f8c8d"
+FG_DIMMER = "#5d6d7e"
+C_RED     = "#e74c3c"
+C_GREEN   = "#27ae60"
+C_BLUE    = "#2980b9"
+C_GREY    = "#555e6b"
+C_DIV     = "#1e2f3d"
+
+STATUS_DISPLAY = {
+    "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+    "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+    "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+}
+
+
+# ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def find_warthunder_machine_blk():
+    profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+    bases = [
+        profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+        profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+        profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+    ]
+    for base in bases:
+        if not base.is_dir():
+            continue
+        for entry in sorted(base.iterdir()):
+            if entry.name.isdigit():
+                candidate = entry / "production" / "machine.blk"
+                if candidate.exists():
+                    return candidate
+    return None
+
+
+def find_elite_binds():
+    base = (Path(os.environ.get("LOCALAPPDATA", ""))
+            / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+    if not base.is_dir():
+        return None
+    binds = list(base.glob("*.binds"))
+    return binds[0] if binds else None
+
+
+def find_starcitizen_xml():
+    base = Path("C:/Program Files/Roberts Space Industries"
+                "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+    if not base.is_dir():
+        return None
+    xmls = list(base.glob("*.xml"))
+    return xmls[0] if xmls else None
+
+
+# ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def _blk_has_mouse_axis_in(filepath, target_blocks):
+    """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    stack = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        if (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in target_blocks
+                and s.startswith("mouseAxisId:")):
+            return True
+        if s == "}" and stack:
+            stack.pop()
+    return False
+
+
+def check_warthunder_status(filepath):
+    if filepath is None or not Path(filepath).exists():
+        return "no_file"
+    if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+        return "spin_risk"
+    return "fixed"
+
+
+def check_not_implemented(filepath):
+    return "no_file"
+
+
+# ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def make_backup(filepath, game_name):
+    """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    dest_dir = BACKUP_ROOT / game_name / timestamp
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(filepath, dest_dir / Path(filepath).name)
+    return dest_dir
+
+
+def fix_warthunder(filepath):
+    """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    lines = content.splitlines(keepends=True)
+    result = []
+    stack = []
+    removed = 0
+
+    for line in lines:
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        skip = (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in ("ailerons", "elevator")
+                and s.startswith("mouseAxisId:"))
+        if skip:
+            removed += 1
+        else:
+            result.append(line)
+        if s == "}" and stack:
+            stack.pop()
+
+    if removed == 0:
+        return False, "No mouse axis bindings found - file may already be fixed."
+    Path(filepath).write_text("".join(result), encoding="utf-8")
+    return True, f"Removed {removed} mouse axis binding(s)."
+
+
+def restore_last_backup(game_name, filepath):
+    """Copy the most recent backup back over filepath. Returns (ok, message)."""
+    backup_dir = BACKUP_ROOT / game_name
+    if not backup_dir.is_dir():
+        return False, "No backups found."
+    backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+    if not backups:
+        return False, "No backups found."
+    source = backups[0] / Path(filepath).name
+    if not source.exists():
+        return False, f"Backup does not contain {Path(filepath).name}."
+    shutil.copy2(source, filepath)
+    return True, f"Restored from backup dated {backups[0].name}."
+
+
+def has_backup(game_name):
+    backup_dir = BACKUP_ROOT / game_name
+    return backup_dir.is_dir() and any(backup_dir.iterdir())
+
+
+# ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+class GameCard(tk.Frame):
+    def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+        bg = BG_GREY if greyed else BG_CARD
+        super().__init__(parent, bg=bg, padx=16, pady=14)
+
+        self.game_name = game_name
+        self.finder_fn = finder_fn
+        self.status_fn = status_fn
+        self.fix_fn    = fix_fn
+        self.greyed    = greyed
+        self.filepath  = finder_fn()
+
+        self._build(bg)
+        self.refresh()
+
+    def _build(self, bg):
+        tk.Label(self, text=self.game_name,
+                 font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+                 ).grid(row=0, column=0, sticky="w")
+
+        self.path_lbl = tk.Label(self, text="",
+                                  font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+                                  wraplength=520, justify="left")
+        self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+
+        self.status_lbl = tk.Label(self, text="",
+                                    font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+        self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+
+        if self.greyed:
+            tk.Label(self,
+                     text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+                     font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+                     wraplength=520, justify="left"
+                     ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+
+        btn_row = tk.Frame(self, bg=bg)
+        btn_row.grid(row=4, column=0, sticky="w")
+
+        self.fix_btn = tk.Button(
+            btn_row, text="Fix Mouse Spin",
+            font=("Segoe UI", 10, "bold"),
+            bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_fix)
+        self.fix_btn.pack(side="left", padx=(0, 8))
+
+        self.restore_btn = tk.Button(
+            btn_row, text="Restore Last Backup",
+            font=("Segoe UI", 10),
+            bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_restore)
+        self.restore_btn.pack(side="left", padx=(0, 8))
+
+        if self.greyed:
+            tk.Button(
+                btn_row, text="Re-scan",
+                font=("Segoe UI", 10),
+                bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+                relief="flat", cursor="hand2",
+                command=self._on_rescan
+            ).pack(side="left")
+
+    def refresh(self):
+        self.path_lbl.config(
+            text=str(self.filepath) if self.filepath
+            else "Binding file not found on this system"
+        )
+
+        status = self.status_fn(self.filepath)
+        label, bg_col, fg_col = STATUS_DISPLAY[status]
+        self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+
+        can_fix = (status == "spin_risk")
+        self.fix_btn.config(
+            state="normal" if can_fix else "disabled",
+            bg=C_RED if can_fix else C_GREY,
+            cursor="hand2" if can_fix else "arrow")
+
+        can_restore = has_backup(self.game_name) and self.filepath is not None
+        self.restore_btn.config(
+            state="normal" if can_restore else "disabled",
+            bg=FG_DIM if can_restore else C_GREY,
+            cursor="hand2" if can_restore else "arrow")
+
+    def _on_fix(self):
+        if not messagebox.askyesno(
+                "Confirm Fix",
+                f"Fix mouse spin for {self.game_name}?\n\n"
+                "Your binding file will be backed up first."):
+            return
+        try:
+            backup_dir = make_backup(self.filepath, self.game_name)
+        except Exception as e:
+            messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+            return
+        success, msg = self.fix_fn(self.filepath)
+        if success:
+            messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+        else:
+            messagebox.showerror("Fix Failed", msg)
+        self.refresh()
+
+    def _on_restore(self):
+        if not messagebox.askyesno(
+                "Confirm Restore",
+                f"Restore last backup for {self.game_name}?\n\n"
+                "This will undo your last fix."):
+            return
+        success, msg = restore_last_backup(self.game_name, self.filepath)
+        if success:
+            messagebox.showinfo("Restored", msg)
+        else:
+            messagebox.showerror("Restore Failed", msg)
+        self.refresh()
+
+    def _on_rescan(self):
+        self.filepath = self.finder_fn()
+        self.refresh()
+
+
+class SpinDoctorApp:
+    def __init__(self, root):
+        self.root = root
+        root.title("VKB Spin Doctor")
+        root.configure(bg=BG_WIN)
+        root.resizable(False, False)
+        self._build()
+
+    def _build(self):
+        hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+        hdr.pack(fill="x", padx=20)
+        tk.Label(hdr, text="VKB Spin Doctor",
+                 font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+                 ).pack(side="left")
+        tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+                 font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+                 ).pack(side="left")
+
+        body = tk.Frame(self.root, bg=BG_WIN)
+        body.pack(fill="both", padx=20, pady=(0, 20))
+
+        GameCard(body,
+                 game_name="War Thunder",
+                 finder_fn=find_warthunder_machine_blk,
+                 status_fn=check_warthunder_status,
+                 fix_fn=fix_warthunder,
+                 greyed=False,
+                 ).pack(fill="x", pady=(0, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Elite Dangerous",
+                 finder_fn=find_elite_binds,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Star Citizen",
+                 finder_fn=find_starcitizen_xml,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 0))
+
+
+def main():
+    root = tk.Tk()
+    SpinDoctorApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
+
+--- Iteration 3 ---
+THOUGHT: Let me read the full file content first
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8 -Raw | Out-File -FilePath 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor_backup_read.txt' -Encoding UTF8; Write-Host 'Done'"
+OUTPUT: Done
+
+--- Iteration 4 ---
+THOUGHT: Let me read the backup file to get the full content of spin_doctor.py
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor_backup_read.txt' -Encoding UTF8 -Raw"
+OUTPUT: #!/usr/bin/env python3
+"""VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+
+import os
+import shutil
+import tkinter as tk
+from tkinter import messagebox
+from datetime import datetime
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).parent
+BACKUP_ROOT = SCRIPT_DIR / "backups"
+
+# ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+BG_WIN    = "#1a252f"
+BG_CARD   = "#2c3e50"
+BG_GREY   = "#283747"
+FG_WHITE  = "#ecf0f1"
+FG_DIM    = "#7f8c8d"
+FG_DIMMER = "#5d6d7e"
+C_RED     = "#e74c3c"
+C_GREEN   = "#27ae60"
+C_BLUE    = "#2980b9"
+C_GREY    = "#555e6b"
+C_DIV     = "#1e2f3d"
+
+STATUS_DISPLAY = {
+    "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+    "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+    "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+}
+
+
+# ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def find_warthunder_machine_blk():
+    profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+    bases = [
+        profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+        profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+        profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+    ]
+    for base in bases:
+        if not base.is_dir():
+            continue
+        for entry in sorted(base.iterdir()):
+            if entry.name.isdigit():
+                candidate = entry / "production" / "machine.blk"
+                if candidate.exists():
+                    return candidate
+    return None
+
+
+def find_elite_binds():
+    base = (Path(os.environ.get("LOCALAPPDATA", ""))
+            / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+    if not base.is_dir():
+        return None
+    binds = list(base.glob("*.binds"))
+    return binds[0] if binds else None
+
+
+def find_starcitizen_xml():
+    base = Path("C:/Program Files/Roberts Space Industries"
+                "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+    if not base.is_dir():
+        return None
+    xmls = list(base.glob("*.xml"))
+    return xmls[0] if xmls else None
+
+
+# ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def _blk_has_mouse_axis_in(filepath, target_blocks):
+    """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    stack = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        if (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in target_blocks
+                and s.startswith("mouseAxisId:")):
+            return True
+        if s == "}" and stack:
+            stack.pop()
+    return False
+
+
+def check_warthunder_status(filepath):
+    if filepath is None or not Path(filepath).exists():
+        return "no_file"
+    if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+        return "spin_risk"
+    return "fixed"
+
+
+def check_not_implemented(filepath):
+    return "no_file"
+
+
+# ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def make_backup(filepath, game_name):
+    """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    dest_dir = BACKUP_ROOT / game_name / timestamp
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(filepath, dest_dir / Path(filepath).name)
+    return dest_dir
+
+
+def fix_warthunder(filepath):
+    """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    lines = content.splitlines(keepends=True)
+    result = []
+    stack = []
+    removed = 0
+
+    for line in lines:
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        skip = (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in ("ailerons", "elevator")
+                and s.startswith("mouseAxisId:"))
+        if skip:
+            removed += 1
+        else:
+            result.append(line)
+        if s == "}" and stack:
+            stack.pop()
+
+    if removed == 0:
+        return False, "No mouse axis bindings found - file may already be fixed."
+    Path(filepath).write_text("".join(result), encoding="utf-8")
+    return True, f"Removed {removed} mouse axis binding(s)."
+
+
+def restore_last_backup(game_name, filepath):
+    """Copy the most recent backup back over filepath. Returns (ok, message)."""
+    backup_dir = BACKUP_ROOT / game_name
+    if not backup_dir.is_dir():
+        return False, "No backups found."
+    backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+    if not backups:
+        return False, "No backups found."
+    source = backups[0] / Path(filepath).name
+    if not source.exists():
+        return False, f"Backup does not contain {Path(filepath).name}."
+    shutil.copy2(source, filepath)
+    return True, f"Restored from backup dated {backups[0].name}."
+
+
+def has_backup(game_name):
+    backup_dir = BACKUP_ROOT / game_name
+    return backup_dir.is_dir() and any(backup_dir.iterdir())
+
+
+# ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+class GameCard(tk.Frame):
+    def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+        bg = BG_GREY if greyed else BG_CARD
+        super().__init__(parent, bg=bg, padx=16, pady=14)
+
+        self.game_name = game_name
+        self.finder_fn = finder_fn
+        self.status_fn = status_fn
+        self.fix_fn    = fix_fn
+        self.greyed    = greyed
+        self.filepath  = finder_fn()
+
+        self._build(bg)
+        self.refresh()
+
+    def _build(self, bg):
+        tk.Label(self, text=self.game_name,
+                 font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+                 ).grid(row=0, column=0, sticky="w")
+
+        self.path_lbl = tk.Label(self, text="",
+                                  font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+                                  wraplength=520, justify="left")
+        self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+
+        self.status_lbl = tk.Label(self, text="",
+                                    font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+        self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+
+        if self.greyed:
+            tk.Label(self,
+                     text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+                     font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+                     wraplength=520, justify="left"
+                     ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+
+        btn_row = tk.Frame(self, bg=bg)
+        btn_row.grid(row=4, column=0, sticky="w")
+
+        self.fix_btn = tk.Button(
+            btn_row, text="Fix Mouse Spin",
+            font=("Segoe UI", 10, "bold"),
+            bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_fix)
+        self.fix_btn.pack(side="left", padx=(0, 8))
+
+        self.restore_btn = tk.Button(
+            btn_row, text="Restore Last Backup",
+            font=("Segoe UI", 10),
+            bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._on_restore)
+        self.restore_btn.pack(side="left", padx=(0, 8))
+
+        if self.greyed:
+            tk.Button(
+                btn_row, text="Re-scan",
+                font=("Segoe UI", 10),
+                bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+                relief="flat", cursor="hand2",
+                command=self._on_rescan
+            ).pack(side="left")
+
+    def refresh(self):
+        self.path_lbl.config(
+            text=str(self.filepath) if self.filepath
+            else "Binding file not found on this system"
+        )
+
+        status = self.status_fn(self.filepath)
+        label, bg_col, fg_col = STATUS_DISPLAY[status]
+        self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+
+        can_fix = (status == "spin_risk")
+        self.fix_btn.config(
+            state="normal" if can_fix else "disabled",
+            bg=C_RED if can_fix else C_GREY,
+            cursor="hand2" if can_fix else "arrow")
+
+        can_restore = has_backup(self.game_name) and self.filepath is not None
+        self.restore_btn.config(
+            state="normal" if can_restore else "disabled",
+            bg=FG_DIM if can_restore else C_GREY,
+            cursor="hand2" if can_restore else "arrow")
+
+    def _on_fix(self):
+        if not messagebox.askyesno(
+                "Confirm Fix",
+                f"Fix mouse spin for {self.game_name}?\n\n"
+                "Your binding file will be backed up first."):
+            return
+        try:
+            backup_dir = make_backup(self.filepath, self.game_name)
+        except Exception as e:
+            messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+            return
+        success, msg = self.fix_fn(self.filepath)
+        if success:
+            messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+        else:
+            messagebox.showerror("Fix Failed", msg)
+        self.refresh()
+
+    def _on_restore(self):
+        if not messagebox.askyesno(
+                "Confirm Restore",
+                f"Restore last backup for {self.game_name}?\n\n"
+                "This will undo your last fix."):
+            return
+        success, msg = restore_last_backup(self.game_name, self.filepath)
+        if success:
+            messagebox.showinfo("Restored", msg)
+        else:
+            messagebox.showerror("Restore Failed", msg)
+        self.refresh()
+
+    def _on_rescan(self):
+        self.filepath = self.finder_fn()
+        self.refresh()
+
+
+class SpinDoctorApp:
+    def __init__(self, root):
+        self.root = root
+        root.title("VKB Spin Doctor")
+        root.configure(bg=BG_WIN)
+        root.resizable(False, False)
+        self._build()
+
+    def _build(self):
+        hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+        hdr.pack(fill="x", padx=20)
+        tk.Label(hdr, text="VKB Spin Doctor",
+                 font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+                 ).pack(side="left")
+        tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+                 font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+                 ).pack(side="left")
+
+        body = tk.Frame(self.root, bg=BG_WIN)
+        body.pack(fill="both", padx=20, pady=(0, 20))
+
+        GameCard(body,
+                 game_name="War Thunder",
+                 finder_fn=find_warthunder_machine_blk,
+                 status_fn=check_warthunder_status,
+                 fix_fn=fix_warthunder,
+                 greyed=False,
+                 ).pack(fill="x", pady=(0, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Elite Dangerous",
+                 finder_fn=find_elite_binds,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 6))
+
+        tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        GameCard(body,
+                 game_name="Star Citizen",
+                 finder_fn=find_starcitizen_xml,
+                 status_fn=check_not_implemented,
+                 fix_fn=lambda f: (False, "Not yet implemented."),
+                 greyed=True,
+                 ).pack(fill="x", pady=(2, 0))
+
+
+def main():
+    root = tk.Tk()
+    SpinDoctorApp(root)
+    root.mainloop()
+
+
+if __name__ == "__main__":
+    main()
+
+--- Iteration 5 ---
+THOUGHT: The file content is being truncated. Let me read it in chunks or use a different approach to get the full file content.
+COMMAND: powershell.exe -Command "$content = Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8 -Raw; Write-Host ('File length: ' + $content.Length); $content.Substring(0, [Math]::Min(3000, $content.Length))"
+OUTPUT: File length: 12010
+#!/usr/bin/env python3
+"""VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+
+import os
+import shutil
+import tkinter as tk
+from tkinter import messagebox
+from datetime import datetime
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).parent
+BACKUP_ROOT = SCRIPT_DIR / "backups"
+
+# ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+BG_WIN    = "#1a252f"
+BG_CARD   = "#2c3e50"
+BG_GREY   = "#283747"
+FG_WHITE  = "#ecf0f1"
+FG_DIM    = "#7f8c8d"
+FG_DIMMER = "#5d6d7e"
+C_RED     = "#e74c3c"
+C_GREEN   = "#27ae60"
+C_BLUE    = "#2980b9"
+C_GREY    = "#555e6b"
+C_DIV     = "#1e2f3d"
+
+STATUS_DISPLAY = {
+    "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+    "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+    "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+}
+
+
+# ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def find_warthunder_machine_blk():
+    profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+    bases = [
+        profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+        profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+        profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+    ]
+    for base in bases:
+        if not base.is_dir():
+            continue
+        for entry in sorted(base.iterdir()):
+            if entry.name.isdigit():
+                candidate = entry / "production" / "machine.blk"
+                if candidate.exists():
+                    return candidate
+    return None
+
+
+def find_elite_binds():
+    base = (Path(os.environ.get("LOCALAPPDATA", ""))
+            / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+    if not base.is_dir():
+        return None
+    binds = list(base.glob("*.binds"))
+    return binds[0] if binds else None
+
+
+def find_starcitizen_xml():
+    base = Path("C:/Program Files/Roberts Space Industries"
+                "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+    if not base.is_dir():
+        return None
+    xmls = list(base.glob("*.xml"))
+    return xmls[0] if xmls else None
+
+
+# ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def _blk_has_mouse_axis_in(filepath, target_blocks):
+    """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    stack = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        if (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in target_blocks
+                and s.startswith("mouseAxisId:")):
+            return True
+        if s == "}" and stack:
+            stack.pop()
+    return False
+
+
+def check_warthunder_status(filepath):
+    if filepath is None or not Pat
+
+--- Iteration 6 ---
+THOUGHT: Let me read the full file in chunks to understand the complete content before making changes.
+COMMAND: powershell.exe -Command "$content = Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8 -Raw; $content.Substring(0, [Math]::Min(4000, $content.Length))"
+OUTPUT: #!/usr/bin/env python3
+"""VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+
+import os
+import shutil
+import tkinter as tk
+from tkinter import messagebox
+from datetime import datetime
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).parent
+BACKUP_ROOT = SCRIPT_DIR / "backups"
+
+# ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+BG_WIN    = "#1a252f"
+BG_CARD   = "#2c3e50"
+BG_GREY   = "#283747"
+FG_WHITE  = "#ecf0f1"
+FG_DIM    = "#7f8c8d"
+FG_DIMMER = "#5d6d7e"
+C_RED     = "#e74c3c"
+C_GREEN   = "#27ae60"
+C_BLUE    = "#2980b9"
+C_GREY    = "#555e6b"
+C_DIV     = "#1e2f3d"
+
+STATUS_DISPLAY = {
+    "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+    "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+    "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+}
+
+
+# ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def find_warthunder_machine_blk():
+    profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+    bases = [
+        profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+        profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+        profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+    ]
+    for base in bases:
+        if not base.is_dir():
+            continue
+        for entry in sorted(base.iterdir()):
+            if entry.name.isdigit():
+                candidate = entry / "production" / "machine.blk"
+                if candidate.exists():
+                    return candidate
+    return None
+
+
+def find_elite_binds():
+    base = (Path(os.environ.get("LOCALAPPDATA", ""))
+            / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+    if not base.is_dir():
+        return None
+    binds = list(base.glob("*.binds"))
+    return binds[0] if binds else None
+
+
+def find_starcitizen_xml():
+    base = Path("C:/Program Files/Roberts Space Industries"
+                "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+    if not base.is_dir():
+        return None
+    xmls = list(base.glob("*.xml"))
+    return xmls[0] if xmls else None
+
+
+# ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def _blk_has_mouse_axis_in(filepath, target_blocks):
+    """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    stack = []
+    for line in content.splitlines():
+        s = line.strip()
+        if s.endswith("{") and not s.startswith("//"):
+            stack.append(s[:-1].strip())
+        if (len(stack) >= 2
+                and stack[-2] == "axes"
+                and stack[-1] in target_blocks
+                and s.startswith("mouseAxisId:")):
+            return True
+        if s == "}" and stack:
+            stack.pop()
+    return False
+
+
+def check_warthunder_status(filepath):
+    if filepath is None or not Path(filepath).exists():
+        return "no_file"
+    if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+        return "spin_risk"
+    return "fixed"
+
+
+def check_not_implemented(filepath):
+    return "no_file"
+
+
+# ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+def make_backup(filepath, game_name):
+    """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    dest_dir = BACKUP_ROOT / game_name / timestamp
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(filepath, dest_dir / Path(filepath).name)
+    return dest_dir
+
+
+def fix_warthunder(filepath):
+    """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+    content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+    lines = content.splitlines(keepends=True)
+    result = []
+    stack = []
+    removed = 0
+
+    for line in lines:
+        s = line
+
+--- Iteration 7 ---
+THOUGHT: The output keeps getting truncated. Let me try reading the file line by line to get the full content.
+COMMAND: powershell.exe -Command "$lines = Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8; for($i=0; $i -lt $lines.Count; $i++) { Write-Host ('{0:D4}: {1}' -f $i, $lines[$i]) }"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+0014: # ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0015: BG_WIN    = "#1a252f"
+0016: BG_CARD   = "#2c3e50"
+0017: BG_GREY   = "#283747"
+0018: FG_WHITE  = "#ecf0f1"
+0019: FG_DIM    = "#7f8c8d"
+0020: FG_DIMMER = "#5d6d7e"
+0021: C_RED     = "#e74c3c"
+0022: C_GREEN   = "#27ae60"
+0023: C_BLUE    = "#2980b9"
+0024: C_GREY    = "#555e6b"
+0025: C_DIV     = "#1e2f3d"
+0026: 
+0027: STATUS_DISPLAY = {
+0028:     "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+0029:     "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+0030:     "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+0031: }
+0032: 
+0033: 
+0034: # ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0035: 
+0036: def find_warthunder_machine_blk():
+0037:     profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+0038:     bases = [
+0039:         profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+0040:         profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+0041:         profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+0042:     ]
+0043:     for base in bases:
+0044:         if not base.is_dir():
+0045:             continue
+0046:         for entry in sorted(base.iterdir()):
+0047:             if entry.name.isdigit():
+0048:                 candidate = entry / "production" / "machine.blk"
+0049:                 if candidate.exists():
+0050:                     return candidate
+0051:     return None
+0052: 
+0053: 
+0054: def find_elite_binds():
+0055:     base = (Path(os.environ.get("LOCALAPPDATA", ""))
+0056:             / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+0057:     if not base.is_dir():
+0058:         return None
+0059:     binds = list(base.glob("*.binds"))
+0060:     return binds[0] if binds else None
+0061: 
+0062: 
+0063: def find_starcitizen_xml():
+0064:     base = Path("C:/Program Files/Roberts Space Industries"
+0065:                 "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+0066:     if not base.is_dir():
+0067:         return None
+0068:     xmls = list(base.glob("*.xml"))
+0069:     return xmls[0] if xmls else None
+0070: 
+0071: 
+0072: # ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0073: 
+0074: def _blk_has_mouse_axis_in(filepath, target_blocks):
+0075:     """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+0076:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0077:     stack = []
+0078:     for line in content.splitlines():
+0079:         s = line.strip()
+0080:         if s.endswith("{") and not s.startswith("//"):
+0081:             stack.append(s[:-1].strip())
+0082:         if (len(stack) >= 2
+0083:                 and stack[-2] == "axes"
+0084:                 and stack[-1] in target_blocks
+0085:                 and s.startswith("mouseAxisId:")):
+0086:             return True
+0087:         if s == "}" and stack:
+0088:             stack.pop()
+0089:     return False
+0090: 
+0091: 
+0092: def check_warthunder_status(filepath):
+0093:     if filepath is None or not Path(filepath).exists():
+0094:         return "no_file"
+0095:     if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+0096:         return "spin_risk"
+0097:     return "fixed"
+0098: 
+0099: 
+0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+0300:                  font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+0301:                  ).pack(side="left")
+0302:         tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+0303:                  font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+0304:                  ).pack(side="left")
+0305: 
+0306:         body = tk.Frame(self.root, bg=BG_WIN)
+0307:         body.pack(fill="both", padx=20, pady=(0, 20))
+0308: 
+0309:         GameCard(body,
+0310:                  game_name="War Thunder",
+0311:                  finder_fn=find_warthunder_machine_blk,
+0312:                  status_fn=check_warthunder_status,
+0313:                  fix_fn=fix_warthunder,
+0314:                  greyed=False,
+0315:                  ).pack(fill="x", pady=(0, 6))
+0316: 
+0317:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0318: 
+0319:         GameCard(body,
+0320:                  game_name="Elite Dangerous",
+0321:                  finder_fn=find_elite_binds,
+0322:                  status_fn=check_not_implemented,
+0323:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0324:                  greyed=True,
+0325:                  ).pack(fill="x", pady=(2, 6))
+0326: 
+0327:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0328: 
+0329:         GameCard(body,
+0330:                  game_name="Star Citizen",
+0331:                  finder_fn=find_starcitizen_xml,
+0332:                  status_fn=check_not_implemented,
+0333:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0334:                  greyed=True,
+0335:                  ).pack(fill="x", pady=(2, 0))
+0336: 
+0337: 
+0338: def main():
+0339:     root = tk.Tk()
+0340:     SpinDoctorApp(root)
+0341:     root.mainloop()
+0342: 
+0343: 
+0344: if __name__ == "__main__":
+0345:     main()
+
+--- Iteration 8 ---
+THOUGHT: Let me read more of the file to understand the full structure before making changes.
+COMMAND: powershell.exe -Command "$lines = Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\spin_doctor.py' -Encoding UTF8; for($i=0; $i -lt $lines.Count; $i++) { Write-Host ('{0:D4}: {1}' -f $i, $lines[$i]) }"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+0014: # ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0015: BG_WIN    = "#1a252f"
+0016: BG_CARD   = "#2c3e50"
+0017: BG_GREY   = "#283747"
+0018: FG_WHITE  = "#ecf0f1"
+0019: FG_DIM    = "#7f8c8d"
+0020: FG_DIMMER = "#5d6d7e"
+0021: C_RED     = "#e74c3c"
+0022: C_GREEN   = "#27ae60"
+0023: C_BLUE    = "#2980b9"
+0024: C_GREY    = "#555e6b"
+0025: C_DIV     = "#1e2f3d"
+0026: 
+0027: STATUS_DISPLAY = {
+0028:     "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+0029:     "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+0030:     "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+0031: }
+0032: 
+0033: 
+0034: # ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0035: 
+0036: def find_warthunder_machine_blk():
+0037:     profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+0038:     bases = [
+0039:         profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+0040:         profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+0041:         profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+0042:     ]
+0043:     for base in bases:
+0044:         if not base.is_dir():
+0045:             continue
+0046:         for entry in sorted(base.iterdir()):
+0047:             if entry.name.isdigit():
+0048:                 candidate = entry / "production" / "machine.blk"
+0049:                 if candidate.exists():
+0050:                     return candidate
+0051:     return None
+0052: 
+0053: 
+0054: def find_elite_binds():
+0055:     base = (Path(os.environ.get("LOCALAPPDATA", ""))
+0056:             / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+0057:     if not base.is_dir():
+0058:         return None
+0059:     binds = list(base.glob("*.binds"))
+0060:     return binds[0] if binds else None
+0061: 
+0062: 
+0063: def find_starcitizen_xml():
+0064:     base = Path("C:/Program Files/Roberts Space Industries"
+0065:                 "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+0066:     if not base.is_dir():
+0067:         return None
+0068:     xmls = list(base.glob("*.xml"))
+0069:     return xmls[0] if xmls else None
+0070: 
+0071: 
+0072: # ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0073: 
+0074: def _blk_has_mouse_axis_in(filepath, target_blocks):
+0075:     """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+0076:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0077:     stack = []
+0078:     for line in content.splitlines():
+0079:         s = line.strip()
+0080:         if s.endswith("{") and not s.startswith("//"):
+0081:             stack.append(s[:-1].strip())
+0082:         if (len(stack) >= 2
+0083:                 and stack[-2] == "axes"
+0084:                 and stack[-1] in target_blocks
+0085:                 and s.startswith("mouseAxisId:")):
+0086:             return True
+0087:         if s == "}" and stack:
+0088:             stack.pop()
+0089:     return False
+0090: 
+0091: 
+0092: def check_warthunder_status(filepath):
+0093:     if filepath is None or not Path(filepath).exists():
+0094:         return "no_file"
+0095:     if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+0096:         return "spin_risk"
+0097:     return "fixed"
+0098: 
+0099: 
+0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+0300:                  font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+0301:                  ).pack(side="left")
+0302:         tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+0303:                  font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+0304:                  ).pack(side="left")
+0305: 
+0306:         body = tk.Frame(self.root, bg=BG_WIN)
+0307:         body.pack(fill="both", padx=20, pady=(0, 20))
+0308: 
+0309:         GameCard(body,
+0310:                  game_name="War Thunder",
+0311:                  finder_fn=find_warthunder_machine_blk,
+0312:                  status_fn=check_warthunder_status,
+0313:                  fix_fn=fix_warthunder,
+0314:                  greyed=False,
+0315:                  ).pack(fill="x", pady=(0, 6))
+0316: 
+0317:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0318: 
+0319:         GameCard(body,
+0320:                  game_name="Elite Dangerous",
+0321:                  finder_fn=find_elite_binds,
+0322:                  status_fn=check_not_implemented,
+0323:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0324:                  greyed=True,
+0325:                  ).pack(fill="x", pady=(2, 6))
+0326: 
+0327:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0328: 
+0329:         GameCard(body,
+0330:                  game_name="Star Citizen",
+0331:                  finder_fn=find_starcitizen_xml,
+0332:                  status_fn=check_not_implemented,
+0333:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0334:                  greyed=True,
+0335:                  ).pack(fill="x", pady=(2, 0))
+0336: 
+0337: 
+0338: def main():
+0339:     root = tk.Tk()
+0340:     SpinDoctorApp(root)
+0341:     root.mainloop()
+0342: 
+0343: 
+0344: if __name__ == "__main__":
+0345:     main()
+
+--- Iteration 9 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 10 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 11 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 12 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 13 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 14 ---
+THOUGHT: Let me read the full file using Python to get all the content properly.
+COMMAND: powershell.exe -Command "& 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' -c "import sys; content = open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py', 'r', encoding='utf-8').read(); lines = content.split('\n'); [print(f'{i:04d}: {line}') for i, line in enumerate(lines)]""
+OUTPUT: At line:1 char:170
++ ... s/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py', 'r', encodin ...
++                                                                  ~
+Missing expression after ','.
+At line:1 char:171
++ ... Desktop/VKB-SpinDoctor/spin_doctor.py', 'r', encoding='utf-8').read() ...
++                                                  ~~~~~~~~~~~~~~~~
+Unexpected token 'encoding='utf-8'' in expression or statement.
+At line:1 char:170
++ ... s/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py', 'r', encodin ...
++                                                                  ~
+Missing closing ')' in expression.
+At line:1 char:187
++ ... esktop/VKB-SpinDoctor/spin_doctor.py', 'r', encoding='utf-8').read(); ...
++                                                                 ~
+Unexpected token ')' in expression or statement.
+At line:1 char:194
++ ... /VKB-SpinDoctor/spin_doctor.py', 'r', encoding='utf-8').read(); lines ...
++                                                                  ~
+An expression was expected after '('.
+At line:1 char:233
++ ... ncoding='utf-8').read(); lines = content.split('\n'); [print(f'{i:04d ...
++                                                                  ~
+Missing closing ')' in expression.
+At line:1 char:251
++ ... ad(); lines = content.split('\n'); [print(f'{i:04d}: {line}') for i,  ...
++                                                                 ~
+Unexpected token ')' in expression or statement.
+At line:1 char:256
++ ... ; lines = content.split('\n'); [print(f'{i:04d}: {line}') for i, line ...
++                                                                  ~
+Missing opening '(' after keyword 'for'.
+At line:1 char:258
++ ... ines = content.split('\n'); [print(f'{i:04d}: {line}') for i, line in ...
++                                                                 ~
+Missing argument in parameter list.
+At line:1 char:226
++ ... ncoding='utf-8').read(); lines = content.split('\n'); [print(f'{i:04d ...
++                                                           ~~~~~~~
+Unexpected attribute 'print'.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingExpressionAfterToken
+
+--- Iteration 15 ---
+THOUGHT: Let me use a Python script file to read and display the full content of spin_doctor.py
+COMMAND: powershell.exe -Command "$script = @'
+import sys
+with open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py', 'r', encoding='utf-8') as f:
+    content = f.read()
+lines = content.split('\n')
+for i, line in enumerate(lines):
+    print(f'{i:04d}: {line}')
+'@
+$script | Out-File -FilePath 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Encoding UTF8
+& 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py'"
+OUTPUT: The string is missing the terminator: '@.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : TerminatorExpectedAtEndOfString
+
+--- Iteration 16 ---
+THOUGHT: The here-string failed because there are quotes inside. Let me write the Python script to a file first using a different approach, then run it.
+COMMAND: powershell.exe -Command "Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value 'import sys' -Encoding UTF8; Add-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value 'with open(chr(67)+chr(58)+chr(47)+chr(85)+chr(115)+chr(101)+chr(114)+chr(115)+chr(47)+chr(106)+chr(115)+chr(99)+chr(111)+chr(116)+chr(47)+chr(79)+chr(110)+chr(101)+chr(68)+chr(114)+chr(105)+chr(118)+chr(101)+chr(47)+chr(68)+chr(101)+chr(115)+chr(107)+chr(116)+chr(111)+chr(112)+chr(47)+chr(86)+chr(75)+chr(66)+chr(45)+chr(83)+chr(112)+chr(105)+chr(110)+chr(68)+chr(111)+chr(99)+chr(116)+chr(111)+chr(114)+chr(47)+chr(115)+chr(112)+chr(105)+chr(110)+chr(95)+chr(100)+chr(111)+chr(99)+chr(116)+chr(111)+chr(114)+chr(46)+chr(112)+chr(121)), encoding=chr(117)+chr(116)+chr(102)+chr(45)+chr(56)) as f: content = f.read()' -Encoding UTF8"
+OUTPUT: 
+
+--- Iteration 17 ---
+THOUGHT: Let me read the spin_doctor.py file using a simpler approach - write a Python script to a file using Set-Content with the full content, then run it.
+COMMAND: powershell.exe -Command "Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Encoding UTF8 -Value 'with open(r`"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py`", encoding=`"utf-8`") as f: content = f.read()'; Add-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Encoding UTF8 -Value 'lines = content.split(`"\n`")'; Add-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Encoding UTF8 -Value 'for i, line in enumerate(lines): print(f\"{i:04d}: {line}\")'; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py'"
+OUTPUT: File "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py", line 1
+    with open(r`C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py`, encoding=`utf-8`) as f: content = f.read()
+               ^
+SyntaxError: invalid syntax
+
+--- Iteration 18 ---
+THOUGHT: Let me write the read_file.py using a different approach - writing each line separately using Set-Content with an array of strings, avoiding quote issues entirely.
+COMMAND: powershell.exe -Command "$lines = @(); $lines += 'import sys'; $lines += 'f = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py\", encoding=\"utf-8\")'; $lines += 'content = f.read()'; $lines += 'f.close()'; $lines += 'lines = content.split(chr(10))'; $lines += 'for i, line in enumerate(lines):'; $lines += '    print(str(i).zfill(4) + \": \" + line)'; Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value $lines -Encoding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py'"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor — fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+Traceback (most recent call last):
+  File "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py", line 7, in <module>
+    print(str(i).zfill(4) + ": " + line)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 8-9: character maps to <undefined>
+
+--- Iteration 19 ---
+THOUGHT: Good, I can read the file now. Let me get more lines to see the full content of spin_doctor.py
+COMMAND: powershell.exe -Command "$lines = @(); $lines += 'f = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py\", encoding=\"utf-8\")'; $lines += 'content = f.read()'; $lines += 'f.close()'; $lines += 'lines = content.split(chr(10))'; $lines += 'for i, line in enumerate(lines):'; $lines += '    sys.stdout.buffer.write((str(i).zfill(4) + \": \" + line + chr(10)).encode(\"utf-8\"))'; $lines += 'import sys' ; $lines = @('import sys') + $lines[0..4] + $lines[5..6]; Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value $lines -Encoding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' | Out-File -FilePath 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8; Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt'"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor â€” fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+0014: # â”€â”€ Colours â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+0015: BG_WIN    = "#1a252f"
+0016: BG_CARD   = "#2c3e50"
+0017: BG_GREY   = "#283747"
+0018: FG_WHITE  = "#ecf0f1"
+0019: FG_DIM    = "#7f8c8d"
+0020: FG_DIMMER = "#5d6d7e"
+0021: C_RED     = "#e74c3c"
+0022: C_GREEN   = "#27ae60"
+0023: C_BLUE    = "#2980b9"
+0024: C_GREY    = "#555e6b"
+0025: C_DIV     = "#1e2f3d"
+0026: 
+0027: STATUS_DISPLAY = {
+0028:     "spin_risk": ("âš   SPIN RISK",           C_RED,   FG_WHITE),
+0029:     "fixed":     ("âœ“  FIXED",               C_GREEN, FG_WHITE),
+0030:     "no_file":   ("â€”  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+0031: }
+0032: 
+0033: 
+0034: # â”€â”€ Path finders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+0035: 
+0036: def find_warthunder_machine_blk():
+0037:     profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+0038:     bases = [
+0039:         profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+0040:         profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+0041:         profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+0042:     ]
+0043:     for base in bases:
+0044:         if not base.is_dir():
+0045:             continue
+0046:         for entry in sorted(base.iterdir()):
+0047:             if entry.name.isdigit():
+0048:                 candidate = entry / "production" / "machine.blk"
+0049:                 if candidate.exists():
+0050:                     return candidate
+0051:     return None
+0052: 
+0053: 
+0054: def find_elite_binds():
+0055:     base = (Path(os.environ.get("LOCALAPPDATA", ""))
+0056:             / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+0057:     if not base.is_dir():
+0058:         return None
+0059:     binds = list(base.glob("*.binds"))
+0060:     return binds[0] if binds else None
+0061: 
+0062: 
+0063: def find_starcitizen_xml():
+0064:     base = Path("C:/Program Files/Roberts Space Industries"
+0065:                 "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+0066:     if not base.is_dir():
+0067:         return None
+0068:     xmls = list(base.glob("*.xml"))
+0069:     return xmls[0] if xmls else None
+0070: 
+0071: 
+0072: # â”€â”€ Status detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+0073: 
+0074: def _blk_has_mouse_axis_in(filepath, target_blocks):
+0075:     """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+0076:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0077:     stack = []
+0078:     for line in content.splitlines():
+0079:         s = line.strip()
+0080:         if s.endswith("{") and not s.startswith("//"):
+0081:             stack.append(s[:-1].strip())
+0082:         if (len(stack) >= 2
+0083:                 and stack[-2] == "axes"
+0084:                 and stack[-1] in target_blocks
+0085:                 and s.startswith("mouseAxisId:")):
+0086:             return True
+0087:         if s == "}" and stack:
+0088:             stack.pop()
+0089:     return False
+0090: 
+0091: 
+0092: def check_warthunder_status(filepath):
+0093:     if filepath is None or not Path(filepath).exists():
+0094:         return "no_file"
+0095:     if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+0096:         return "spin_risk"
+0097:     return "fixed"
+0098: 
+0099: 
+0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # â”€â”€ Backup & fix â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found â€” file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # â”€â”€ GUI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+0300:                  font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+0301:                  ).pack(side="left")
+0302:         tk.Label(hdr, text="  v1.0  â€”  fixes mouse-axis spin for joystick users",
+0303:                  font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+0304:                  ).pack(side="left")
+0305: 
+0306:         body = tk.Frame(self.root, bg=BG_WIN)
+0307:         body.pack(fill="both", padx=20, pady=(0, 20))
+0308: 
+0309:         GameCard(body,
+0310:                  game_name="War Thunder",
+0311:                  finder_fn=find_warthunder_machine_blk,
+0312:                  status_fn=check_warthunder_status,
+0313:                  fix_fn=fix_warthunder,
+0314:                  greyed=False,
+0315:                  ).pack(fill="x", pady=(0, 6))
+0316: 
+0317:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0318: 
+0319:         GameCard(body,
+0320:                  game_name="Elite Dangerous",
+0321:                  finder_fn=find_elite_binds,
+0322:                  status_fn=check_not_implemented,
+0323:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0324:                  greyed=True,
+0325:                  ).pack(fill="x", pady=(2, 6))
+0326: 
+0327:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0328: 
+0329:         GameCard(body,
+0330:                  game_name="Star Citizen",
+0331:                  finder_fn=find_starcitizen_xml,
+0332:                  status_fn=check_not_implemented,
+0333:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0334:                  greyed=True,
+0335:                  ).pack(fill="x", pady=(2, 0))
+0336: 
+0337: 
+0338: def main():
+0339:     root = tk.Tk()
+0340:     SpinDoctorApp(root)
+0341:     root.mainloop()
+0342: 
+0343: 
+0344: if __name__ == "__main__":
+0345:     main()
+0346:
+
+--- Iteration 20 ---
+THOUGHT: Let me read the full file content by saving it to a text file with proper encoding handling
+COMMAND: powershell.exe -Command "$lines = @('import sys', 'f = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py\", encoding=\"utf-8\")', 'content = f.read()', 'f.close()', 'lines = content.split(chr(10))', 'for i, line in enumerate(lines):', '    print(str(i).zfill(4) + \": \" + line)'); Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value $lines -Encoding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' 2>&1 | Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8; Write-Host 'Done'; Get-Item 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' | Select-Object Length"
+OUTPUT: Done
+
+Length
+------
+   969
+
+--- Iteration 21 ---
+THOUGHT: The file_content.txt only has 969 bytes which seems too small. Let me read the full file content by saving it to a text file with proper encoding using a different approach.
+COMMAND: powershell.exe -Command "$lines = @('import sys', 'f = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py\", encoding=\"utf-8\")', 'content = f.read()', 'f.close()', 'lines = content.split(chr(10))', 'for i, line in enumerate(lines):', '    print(str(i).zfill(4) + \": \" + line)'); Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value $lines -Encoding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' 2>&1 | Out-File -FilePath 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8; Write-Host 'Done'; Get-Item 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' | Select-Object Length"
+OUTPUT: Done
+
+Length
+------
+  1322
+
+--- Iteration 22 ---
+THOUGHT: Good, the file_content.txt now has 1322 bytes. Let me read its content to see the spin_doctor.py code.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor — fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+python.exe : Traceback (most recent call last):
+At line:1 char:382
++ ... oding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py", line 7, in <module>
+    print(str(i).zfill(4) + ": " + line)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 8-9: character maps to <undefined>
+
+--- Iteration 23 ---
+THOUGHT: The file read is failing with a traceback. The output file only has 13 lines before error. The print statement is probably failing due to encoding issues with the special characters in the file. Let me try reading the file differently - using a Python script that writes to a file directly with utf-8 encoding instead of printing to stdout.
+COMMAND: powershell.exe -Command "$script = @(
+'import sys',
+'f = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py\", encoding=\"utf-8\")',
+'content = f.read()',
+'f.close()',
+'out = open(r\"C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/file_content.txt\", \"w\", encoding=\"utf-8\")',
+'lines = content.split(chr(10))',
+'for i, line in enumerate(lines):',
+'    out.write(str(i).zfill(4) + \": \" + line + chr(10))',
+'out.close()'
+); Set-Content -Path 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py' -Value $script -Encoding UTF8; & 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\read_file.py'; Write-Host 'Script done'; Get-Item 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' | Select-Object Length"
+OUTPUT: Missing closing ')' in subexpression.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingEndParenthesisInSubexpression
+
+--- Iteration 24 ---
+THOUGHT: Let me try a different approach - write the read script using a here-string or by writing directly to a file using Set-Content with a simpler method. I'll use a Python one-liner approach via -c flag to avoid the file writing issues.
+COMMAND: powershell.exe -Command "& 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' -c \"import sys; f=open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/spin_doctor.py',encoding='utf-8'); content=f.read(); f.close(); out=open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/file_content.txt','w',encoding='utf-8'); [out.write(str(i).zfill(4)+': '+ln+'\n') for i,ln in enumerate(content.split('\n'))]; out.close()\" ; Write-Host 'Done'; Get-Item 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' | Select-Object Length"
+OUTPUT: Done
+
+Length
+------
+ 15122
+
+--- Iteration 25 ---
+THOUGHT: Now the file_content.txt has 15122 bytes. Let me read it in chunks to understand the full spin_doctor.py file.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -First 100"
+OUTPUT: 0000: #!/usr/bin/env python3
+0001: """VKB Spin Doctor - fixes mouse-axis spin for VKB joystick users."""
+0002: 
+0003: import os
+0004: import shutil
+0005: import tkinter as tk
+0006: from tkinter import messagebox
+0007: from datetime import datetime
+0008: from pathlib import Path
+0009: 
+0010: 
+0011: SCRIPT_DIR = Path(__file__).parent
+0012: BACKUP_ROOT = SCRIPT_DIR / "backups"
+0013: 
+0014: # ÄÄ Colours ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0015: BG_WIN    = "#1a252f"
+0016: BG_CARD   = "#2c3e50"
+0017: BG_GREY   = "#283747"
+0018: FG_WHITE  = "#ecf0f1"
+0019: FG_DIM    = "#7f8c8d"
+0020: FG_DIMMER = "#5d6d7e"
+0021: C_RED     = "#e74c3c"
+0022: C_GREEN   = "#27ae60"
+0023: C_BLUE    = "#2980b9"
+0024: C_GREY    = "#555e6b"
+0025: C_DIV     = "#1e2f3d"
+0026: 
+0027: STATUS_DISPLAY = {
+0028:     "spin_risk": ("?  SPIN RISK",           C_RED,   FG_WHITE),
+0029:     "fixed":     ("V  FIXED",               C_GREEN, FG_WHITE),
+0030:     "no_file":   ("-  NOT YET CUSTOMISED",  C_GREY,  FG_DIM),
+0031: }
+0032: 
+0033: 
+0034: # ÄÄ Path finders ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0035: 
+0036: def find_warthunder_machine_blk():
+0037:     profile = Path(os.environ.get("USERPROFILE", "C:/Users/Default"))
+0038:     bases = [
+0039:         profile / "OneDrive" / "My Documents" / "My Games" / "WarThunder" / "Saves",
+0040:         profile / "Documents"                  / "My Games" / "WarThunder" / "Saves",
+0041:         profile / "OneDrive" / "Documents"     / "My Games" / "WarThunder" / "Saves",
+0042:     ]
+0043:     for base in bases:
+0044:         if not base.is_dir():
+0045:             continue
+0046:         for entry in sorted(base.iterdir()):
+0047:             if entry.name.isdigit():
+0048:                 candidate = entry / "production" / "machine.blk"
+0049:                 if candidate.exists():
+0050:                     return candidate
+0051:     return None
+0052: 
+0053: 
+0054: def find_elite_binds():
+0055:     base = (Path(os.environ.get("LOCALAPPDATA", ""))
+0056:             / "Frontier Developments" / "Elite Dangerous" / "Options" / "Bindings")
+0057:     if not base.is_dir():
+0058:         return None
+0059:     binds = list(base.glob("*.binds"))
+0060:     return binds[0] if binds else None
+0061: 
+0062: 
+0063: def find_starcitizen_xml():
+0064:     base = Path("C:/Program Files/Roberts Space Industries"
+0065:                 "/StarCitizen/LIVE/USER/Client/0/Controls/Mappings")
+0066:     if not base.is_dir():
+0067:         return None
+0068:     xmls = list(base.glob("*.xml"))
+0069:     return xmls[0] if xmls else None
+0070: 
+0071: 
+0072: # ÄÄ Status detection ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0073: 
+0074: def _blk_has_mouse_axis_in(filepath, target_blocks):
+0075:     """Returns True if any of target_blocks inside an 'axes' parent has a mouseAxisId line."""
+0076:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0077:     stack = []
+0078:     for line in content.splitlines():
+0079:         s = line.strip()
+0080:         if s.endswith("{") and not s.startswith("//"):
+0081:             stack.append(s[:-1].strip())
+0082:         if (len(stack) >= 2
+0083:                 and stack[-2] == "axes"
+0084:                 and stack[-1] in target_blocks
+0085:                 and s.startswith("mouseAxisId:")):
+0086:             return True
+0087:         if s == "}" and stack:
+0088:             stack.pop()
+0089:     return False
+0090: 
+0091: 
+0092: def check_warthunder_status(filepath):
+0093:     if filepath is None or not Path(filepath).exists():
+0094:         return "no_file"
+0095:     if _blk_has_mouse_axis_in(filepath, {"ailerons", "elevator"}):
+0096:         return "spin_risk"
+0097:     return "fixed"
+0098: 
+0099:
+
+--- Iteration 26 ---
+THOUGHT: Let me read more of the file content to understand the full structure before making changes.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -Skip 100 -First 100"
+OUTPUT: 0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+
+--- Iteration 27 ---
+THOUGHT: Let me read more of the file to understand its full structure before making changes.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -Skip 100 -First 200"
+OUTPUT: 0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+
+--- Iteration 28 ---
+THOUGHT: Let me read more of the file content to understand the full structure before making changes.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -Skip 100 -First 300"
+OUTPUT: 0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+0300:                  font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+0301:                  ).pack(side="left")
+0302:         tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+0303:                  font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+0304:                  ).pack(side="left")
+0305: 
+0306:         body = tk.Frame(self.root, bg=BG_WIN)
+0307:         body.pack(fill="both", padx=20, pady=(0, 20))
+0308: 
+0309:         GameCard(body,
+0310:                  game_name="War Thunder",
+0311:                  finder_fn=find_warthunder_machine_blk,
+0312:                  status_fn=check_warthunder_status,
+0313:                  fix_fn=fix_warthunder,
+0314:                  greyed=False,
+0315:                  ).pack(fill="x", pady=(0, 6))
+0316: 
+0317:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0318: 
+0319:         GameCard(body,
+0320:                  game_name="Elite Dangerous",
+0321:                  finder_fn=find_elite_binds,
+0322:                  status_fn=check_not_implemented,
+0323:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0324:                  greyed=True,
+0325:                  ).pack(fill="x", pady=(2, 6))
+0326: 
+0327:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0328: 
+0329:         GameCard(body,
+0330:                  game_name="Star Citizen",
+0331:                  finder_fn=find_starcitizen_xml,
+0332:                  status_fn=check_not_implemented,
+0333:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0334:                  greyed=True,
+0335:                  ).pack(fill="x", pady=(2, 0))
+0336: 
+0337: 
+0338: def main():
+0339:     root = tk.Tk()
+0340:     SpinDoctorApp(root)
+0341:     root.mainloop()
+0342: 
+0343: 
+0344: if __name__ == "__main__":
+0345:     main()
+0346:
+
+--- Iteration 29 ---
+THOUGHT: The output seems to be truncating. Let me read more of the file content by getting different ranges.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -Skip 100 -First 50"
+OUTPUT: 0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+
+--- Iteration 30 ---
+THOUGHT: The file reading seems to be cutting off after line 111. Let me read the full file content in chunks to understand the complete structure before making changes.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Measure-Object -Line"
+OUTPUT: Lines Words Characters Property
+----- ----- ---------- --------
+  347
+
+--- Iteration 31 ---
+THOUGHT: Let me read the full file content by getting all 347 lines to understand the complete structure.
+COMMAND: powershell.exe -Command "Get-Content 'C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\file_content.txt' -Encoding UTF8 | Select-Object -Skip 100 -First 247"
+OUTPUT: 0100: def check_not_implemented(filepath):
+0101:     return "no_file"
+0102: 
+0103: 
+0104: # ÄÄ Backup & fix ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0105: 
+0106: def make_backup(filepath, game_name):
+0107:     """Copy filepath into ./backups/[game]/[timestamp]/. Returns the backup folder."""
+0108:     timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+0109:     dest_dir = BACKUP_ROOT / game_name / timestamp
+0110:     dest_dir.mkdir(parents=True, exist_ok=True)
+0111:     shutil.copy2(filepath, dest_dir / Path(filepath).name)
+0112:     return dest_dir
+0113: 
+0114: 
+0115: def fix_warthunder(filepath):
+0116:     """Remove mouseAxisId lines from ailerons and elevator blocks. Returns (ok, message)."""
+0117:     content = Path(filepath).read_text(encoding="utf-8", errors="replace")
+0118:     lines = content.splitlines(keepends=True)
+0119:     result = []
+0120:     stack = []
+0121:     removed = 0
+0122: 
+0123:     for line in lines:
+0124:         s = line.strip()
+0125:         if s.endswith("{") and not s.startswith("//"):
+0126:             stack.append(s[:-1].strip())
+0127:         skip = (len(stack) >= 2
+0128:                 and stack[-2] == "axes"
+0129:                 and stack[-1] in ("ailerons", "elevator")
+0130:                 and s.startswith("mouseAxisId:"))
+0131:         if skip:
+0132:             removed += 1
+0133:         else:
+0134:             result.append(line)
+0135:         if s == "}" and stack:
+0136:             stack.pop()
+0137: 
+0138:     if removed == 0:
+0139:         return False, "No mouse axis bindings found - file may already be fixed."
+0140:     Path(filepath).write_text("".join(result), encoding="utf-8")
+0141:     return True, f"Removed {removed} mouse axis binding(s)."
+0142: 
+0143: 
+0144: def restore_last_backup(game_name, filepath):
+0145:     """Copy the most recent backup back over filepath. Returns (ok, message)."""
+0146:     backup_dir = BACKUP_ROOT / game_name
+0147:     if not backup_dir.is_dir():
+0148:         return False, "No backups found."
+0149:     backups = sorted([d for d in backup_dir.iterdir() if d.is_dir()], reverse=True)
+0150:     if not backups:
+0151:         return False, "No backups found."
+0152:     source = backups[0] / Path(filepath).name
+0153:     if not source.exists():
+0154:         return False, f"Backup does not contain {Path(filepath).name}."
+0155:     shutil.copy2(source, filepath)
+0156:     return True, f"Restored from backup dated {backups[0].name}."
+0157: 
+0158: 
+0159: def has_backup(game_name):
+0160:     backup_dir = BACKUP_ROOT / game_name
+0161:     return backup_dir.is_dir() and any(backup_dir.iterdir())
+0162: 
+0163: 
+0164: # ÄÄ GUI ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+0165: 
+0166: class GameCard(tk.Frame):
+0167:     def __init__(self, parent, game_name, finder_fn, status_fn, fix_fn, greyed=False):
+0168:         bg = BG_GREY if greyed else BG_CARD
+0169:         super().__init__(parent, bg=bg, padx=16, pady=14)
+0170: 
+0171:         self.game_name = game_name
+0172:         self.finder_fn = finder_fn
+0173:         self.status_fn = status_fn
+0174:         self.fix_fn    = fix_fn
+0175:         self.greyed    = greyed
+0176:         self.filepath  = finder_fn()
+0177: 
+0178:         self._build(bg)
+0179:         self.refresh()
+0180: 
+0181:     def _build(self, bg):
+0182:         tk.Label(self, text=self.game_name,
+0183:                  font=("Segoe UI", 13, "bold"), bg=bg, fg=FG_WHITE
+0184:                  ).grid(row=0, column=0, sticky="w")
+0185: 
+0186:         self.path_lbl = tk.Label(self, text="",
+0187:                                   font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+0188:                                   wraplength=520, justify="left")
+0189:         self.path_lbl.grid(row=1, column=0, sticky="w", pady=(1, 6))
+0190: 
+0191:         self.status_lbl = tk.Label(self, text="",
+0192:                                     font=("Segoe UI", 9, "bold"), padx=10, pady=3)
+0193:         self.status_lbl.grid(row=2, column=0, sticky="w", pady=(0, 8))
+0194: 
+0195:         if self.greyed:
+0196:             tk.Label(self,
+0197:                      text="Launch the game, go to Controls, change any binding, then click Re-scan.",
+0198:                      font=("Segoe UI", 9, "italic"), bg=bg, fg=FG_DIMMER,
+0199:                      wraplength=520, justify="left"
+0200:                      ).grid(row=3, column=0, sticky="w", pady=(0, 8))
+0201: 
+0202:         btn_row = tk.Frame(self, bg=bg)
+0203:         btn_row.grid(row=4, column=0, sticky="w")
+0204: 
+0205:         self.fix_btn = tk.Button(
+0206:             btn_row, text="Fix Mouse Spin",
+0207:             font=("Segoe UI", 10, "bold"),
+0208:             bg=C_RED, fg=FG_WHITE, padx=14, pady=5,
+0209:             relief="flat", cursor="hand2",
+0210:             command=self._on_fix)
+0211:         self.fix_btn.pack(side="left", padx=(0, 8))
+0212: 
+0213:         self.restore_btn = tk.Button(
+0214:             btn_row, text="Restore Last Backup",
+0215:             font=("Segoe UI", 10),
+0216:             bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+0217:             relief="flat", cursor="hand2",
+0218:             command=self._on_restore)
+0219:         self.restore_btn.pack(side="left", padx=(0, 8))
+0220: 
+0221:         if self.greyed:
+0222:             tk.Button(
+0223:                 btn_row, text="Re-scan",
+0224:                 font=("Segoe UI", 10),
+0225:                 bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+0226:                 relief="flat", cursor="hand2",
+0227:                 command=self._on_rescan
+0228:             ).pack(side="left")
+0229: 
+0230:     def refresh(self):
+0231:         self.path_lbl.config(
+0232:             text=str(self.filepath) if self.filepath
+0233:             else "Binding file not found on this system"
+0234:         )
+0235: 
+0236:         status = self.status_fn(self.filepath)
+0237:         label, bg_col, fg_col = STATUS_DISPLAY[status]
+0238:         self.status_lbl.config(text=label, bg=bg_col, fg=fg_col)
+0239: 
+0240:         can_fix = (status == "spin_risk")
+0241:         self.fix_btn.config(
+0242:             state="normal" if can_fix else "disabled",
+0243:             bg=C_RED if can_fix else C_GREY,
+0244:             cursor="hand2" if can_fix else "arrow")
+0245: 
+0246:         can_restore = has_backup(self.game_name) and self.filepath is not None
+0247:         self.restore_btn.config(
+0248:             state="normal" if can_restore else "disabled",
+0249:             bg=FG_DIM if can_restore else C_GREY,
+0250:             cursor="hand2" if can_restore else "arrow")
+0251: 
+0252:     def _on_fix(self):
+0253:         if not messagebox.askyesno(
+0254:                 "Confirm Fix",
+0255:                 f"Fix mouse spin for {self.game_name}?\n\n"
+0256:                 "Your binding file will be backed up first."):
+0257:             return
+0258:         try:
+0259:             backup_dir = make_backup(self.filepath, self.game_name)
+0260:         except Exception as e:
+0261:             messagebox.showerror("Backup Error", f"Could not create backup:\n{e}")
+0262:             return
+0263:         success, msg = self.fix_fn(self.filepath)
+0264:         if success:
+0265:             messagebox.showinfo("Fixed!", f"{msg}\n\nBackup saved to:\n{backup_dir}")
+0266:         else:
+0267:             messagebox.showerror("Fix Failed", msg)
+0268:         self.refresh()
+0269: 
+0270:     def _on_restore(self):
+0271:         if not messagebox.askyesno(
+0272:                 "Confirm Restore",
+0273:                 f"Restore last backup for {self.game_name}?\n\n"
+0274:                 "This will undo your last fix."):
+0275:             return
+0276:         success, msg = restore_last_backup(self.game_name, self.filepath)
+0277:         if success:
+0278:             messagebox.showinfo("Restored", msg)
+0279:         else:
+0280:             messagebox.showerror("Restore Failed", msg)
+0281:         self.refresh()
+0282: 
+0283:     def _on_rescan(self):
+0284:         self.filepath = self.finder_fn()
+0285:         self.refresh()
+0286: 
+0287: 
+0288: class SpinDoctorApp:
+0289:     def __init__(self, root):
+0290:         self.root = root
+0291:         root.title("VKB Spin Doctor")
+0292:         root.configure(bg=BG_WIN)
+0293:         root.resizable(False, False)
+0294:         self._build()
+0295: 
+0296:     def _build(self):
+0297:         hdr = tk.Frame(self.root, bg=BG_WIN, pady=16)
+0298:         hdr.pack(fill="x", padx=20)
+0299:         tk.Label(hdr, text="VKB Spin Doctor",
+0300:                  font=("Segoe UI", 20, "bold"), bg=BG_WIN, fg=FG_WHITE
+0301:                  ).pack(side="left")
+0302:         tk.Label(hdr, text="  v1.0  -  fixes mouse-axis spin for joystick users",
+0303:                  font=("Segoe UI", 9), bg=BG_WIN, fg=FG_DIM
+0304:                  ).pack(side="left")
+0305: 
+0306:         body = tk.Frame(self.root, bg=BG_WIN)
+0307:         body.pack(fill="both", padx=20, pady=(0, 20))
+0308: 
+0309:         GameCard(body,
+0310:                  game_name="War Thunder",
+0311:                  finder_fn=find_warthunder_machine_blk,
+0312:                  status_fn=check_warthunder_status,
+0313:                  fix_fn=fix_warthunder,
+0314:                  greyed=False,
+0315:                  ).pack(fill="x", pady=(0, 6))
+0316: 
+0317:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0318: 
+0319:         GameCard(body,
+0320:                  game_name="Elite Dangerous",
+0321:                  finder_fn=find_elite_binds,
+0322:                  status_fn=check_not_implemented,
+0323:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0324:                  greyed=True,
+0325:                  ).pack(fill="x", pady=(2, 6))
+0326: 
+0327:         tk.Frame(body, bg=C_DIV, height=1).pack(fill="x", pady=2)
+0328: 
+0329:         GameCard(body,
+0330:                  game_name="Star Citizen",
+0331:                  finder_fn=find_starcitizen_xml,
+0332:                  status_fn=check_not_implemented,
+0333:                  fix_fn=lambda f: (False, "Not yet implemented."),
+0334:                  greyed=True,
+0335:                  ).pack(fill="x", pady=(2, 0))
+0336: 
+0337: 
+0338: def main():
+0339:     root = tk.Tk()
+0340:     SpinDoctorApp(root)
+0341:     root.mainloop()
+0342: 
+0343: 
+0344: if __name__ == "__main__":
+0345:     main()
+0346:
+
+--- Iteration 32 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 33 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 34 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 35 ---
+THOUGHT: 
+COMMAND: 
+
+--- Iteration 36 ---
+THOUGHT: It seems the Get-Content is truncating output. Let me use Python to read and display specific line ranges of the file_content.txt directly.
+COMMAND: powershell.exe -Command "& 'C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe' -c \"f=open('C:/Users/jscot/OneDrive/Desktop/VKB-SpinDoctor/file_content.txt',encoding='utf-8'); lines=f.readlines(); f.close(); [print(l,end='') for l in lines[100:200]]\""

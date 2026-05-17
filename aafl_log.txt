@@ -1,0 +1,46 @@
+[2026-05-15 00:25:14] START  dry_run=True  allow_paid=False
+[2026-05-15 00:26:49] START  dry_run=True  allow_paid=False
+[2026-05-15 00:26:49] DRY  code     lmstudio_coder       $0.00000  0.0s  'fix the off-by-one bug in spin_doctor.py'
+[2026-05-15 00:26:49] DRY  fast     lmstudio_fast        $0.00000  0.0s  'what is 2 + 2'
+[2026-05-15 00:26:49] DRY  reason   lmstudio_reason      $0.00000  0.0s  'should I use litellm or raw requests for this project'
+[2026-05-15 00:26:49] DRY  vision   lmstudio_vision      $0.00000  0.0s  'read this screenshot of the game UI'
+[2026-05-15 00:26:49] DRY  batch    mistral_code         $0.00000  0.0s  'convert all .blk files in the folder'
+[2026-05-15 00:26:49] DRY  embed    cohere_embed         $0.00000  0.0s  'find similar sentences using embeddings'
+[2026-05-15 00:26:59] START  dry_run=True  allow_paid=False
+[2026-05-15 00:26:59] DRY  code     lmstudio_coder       $0.00000  0.0s  'fix the off-by-one bug in spin_doctor.py'
+[2026-05-15 00:26:59] DRY  fast     lmstudio_fast        $0.00000  0.0s  'what is 2 + 2'
+[2026-05-15 00:26:59] DRY  reason   lmstudio_reason      $0.00000  0.0s  'should I use litellm or raw requests for this project'
+[2026-05-15 00:26:59] DRY  vision   lmstudio_vision      $0.00000  0.0s  'read this screenshot of the game UI'
+[2026-05-15 00:26:59] DRY  batch    mistral_code         $0.00000  0.0s  'convert all .blk files in the folder'
+[2026-05-15 00:26:59] DRY  embed    cohere_embed         $0.00000  0.0s  'find similar sentences using embeddings'
+[2026-05-15 01:57:08] START  dry_run=True  allow_paid=False
+[2026-05-15 01:57:08] DRY  code     lmstudio_coder       $0.00000  0.0s  'fix the off-by-one bug in spin_doctor.py'
+[2026-05-15 01:57:08] DRY  fast     lmstudio_fast        $0.00000  0.0s  'what is 2 + 2'
+[2026-05-15 01:57:08] DRY  reason   lmstudio_reason      $0.00000  0.0s  'should I use litellm or raw requests for this project'
+[2026-05-15 01:57:08] DRY  vision   lmstudio_vision      $0.00000  0.0s  'read this screenshot of the game UI'
+[2026-05-15 01:57:08] DRY  batch    mistral_code         $0.00000  0.0s  'convert all .blk files in the folder'
+[2026-05-15 01:57:08] DRY  embed    cohere_embed         $0.00000  0.0s  'find similar sentences using embeddings'
+[2026-05-15 09:38:46] START  dry_run=True  allow_paid=False
+[2026-05-15 09:38:46] DRY  code     lmstudio_coder       $0.00000  0.0s  'fix the off-by-one bug in spin_doctor.py'
+[2026-05-15 09:38:46] DRY  fast     lmstudio_fast        $0.00000  0.0s  'what is 2 + 2'
+[2026-05-15 09:38:46] DRY  reason   lmstudio_reason      $0.00000  0.0s  'should I use litellm or raw requests for this project'
+[2026-05-15 09:38:46] DRY  vision   lmstudio_vision      $0.00000  0.0s  'read this screenshot of the game UI'
+[2026-05-15 09:38:46] DRY  batch    mistral_code         $0.00000  0.0s  'convert all .blk files in the folder'
+[2026-05-15 09:38:46] DRY  embed    cohere_embed         $0.00000  0.0s  'find similar sentences using embeddings'
+[2026-05-15 09:48:46] START  dry_run=True  allow_paid=False
+[2026-05-15 09:48:46] DRY  code     lmstudio_coder       $0.00000  0.0s  'fix the off-by-one bug in spin_doctor.py'
+[2026-05-15 09:48:46] DRY  fast     lmstudio_fast        $0.00000  0.0s  'what is 2 + 2'
+[2026-05-15 09:48:46] DRY  reason   lmstudio_reason      $0.00000  0.0s  'should I use litellm or raw requests for this project'
+[2026-05-15 09:48:46] DRY  vision   lmstudio_vision      $0.00000  0.0s  'read this screenshot of the game UI'
+[2026-05-15 09:48:46] DRY  batch    mistral_code         $0.00000  0.0s  'convert all .blk files in the folder'
+[2026-05-15 09:48:46] DRY  embed    cohere_embed         $0.00000  0.0s  'find similar sentences using embeddings'
+[2026-05-15 09:59:32] START  dry_run=False  allow_paid=False
+[2026-05-15 09:59:35] OK   reason   gemini_flash         $0.00129  3.46s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-15 10:00:38] START  dry_run=False  allow_paid=False
+[2026-05-15 10:00:54] OK   reason   openrouter           $0.00000  15.89s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-15 10:01:02] OK   code     mistral_code         $0.00359  7.21s  'Execute this plan to achieve the goal.\n\nGoal: Write a Python'
+[2026-05-15 10:02:50] START  dry_run=False  allow_paid=False
+[2026-05-15 10:02:54] OK   reason   gemini_flash         $0.00129  3.86s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-15 10:03:05] START  dry_run=False  allow_paid=False
+[2026-05-15 10:03:08] OK   reason   gemini_flash         $0.00129  3.55s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-15 10:03:15] OK   code     mistral_code         $0.00252  6.55s  'Execute this plan to achieve the goal.\n\nGoal: Write a Python'

@@ -1,0 +1,1 @@
+Write a Python function called detect_spin_bug() that takes a config file path and returns True if joystick axes are inverted or duplicated, False otherwise. Save it as spin_bug_detector.py.

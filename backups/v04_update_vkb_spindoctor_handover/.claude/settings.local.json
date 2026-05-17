@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(py *)",
+      "PowerShell(& \"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" \"_acp_test.py\")",
+      "PowerShell(Get-Content *)",
+      "PowerShell(Rename-Item *)",
+      "PowerShell(python -c \"import ast; ast.parse\\(open\\(r'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\problems\\\\ed_bind_reset.py', encoding='utf-8'\\).read\\(\\)\\); ast.parse\\(open\\(r'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\spin_doctor.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "PowerShell(Get-Command *)",
+      "PowerShell(& \"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\bin\\\\python.exe\" -c \"import ast; ast.parse\\(open\\(r'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\problems\\\\ed_bind_reset.py', encoding='utf-8'\\).read\\(\\)\\); ast.parse\\(open\\(r'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\spin_doctor.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "PowerShell(& \"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\bin\\\\python.exe\" -c \"import sys; sys.path.insert\\(0, r'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor'\\); from problems import ed_bind_reset; r = ed_bind_reset.scan\\(\\); print\\('status:', r['status']\\); print\\('folder:', r['folder']\\); print\\('protected:', [p.name for p in r['protected']]\\); print\\('unprotected:', [p.name for p in r['unprotected']]\\)\")"
+    ]
+  }
+}
