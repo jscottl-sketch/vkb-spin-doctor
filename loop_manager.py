@@ -10,6 +10,7 @@ from pathlib import Path
 from aafl_core import AAFLCore
 from memory_bank import store
 from cost_guard import CostGuard, CostGuardError
+from evaluator import evaluate
 
 HERE = Path(__file__).parent
 
@@ -63,9 +64,10 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     print(f"[LOOP] Goal: {goal}")
     print(f"[LOOP] Max iterations: {max_loop_iters}")
 
-    iterations   = 0
-    best_attempt = None
-    stop_reason  = "max_iterations"
+    iterations    = 0
+    best_attempt  = None
+    stop_reason   = "max_iterations"
+    prev_feedback = ""
 
     while iterations < max_loop_iters:
         # Hard stop — create a file named STOP in the project folder
@@ -112,11 +114,11 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             break
 
         print("[LOOP] Working...")
+        work_task = f"Execute this plan to achieve the goal.\n\nGoal: {goal}\n\nPlan:\n{plan_text}"
+        if prev_feedback:
+            work_task += f"\n\nNote from previous attempt: {prev_feedback}"
         work_result = aafl.run(
-            task=(
-                f"Execute this plan to achieve the goal.\n\n"
-                f"Goal: {goal}\n\nPlan:\n{plan_text}"
-            ),
+            task=work_task,
             task_type="code",
             max_tokens=1024,
         )
@@ -128,32 +130,50 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
 
         work_text = work_result.response
 
-        # ── Verify ────────────────────────────────────────────────────────────
-        goal_met = aafl.verify_returns_nonempty(work_text)
-        print(f"[LOOP] Verify: goal_met={goal_met}")
+        # ── Evaluate ──────────────────────────────────────────────────────────
+        scores   = evaluate(work_text, goal)
+        score    = scores["overall"]
+        weak     = [k for k, v in scores.items() if k != "overall" and v < 7.0]
+        print(f"[LOOP] Score: {score}/10  "
+              f"(completeness={scores['completeness']}  "
+              f"clarity={scores['clarity']}  "
+              f"accuracy={scores['accuracy']})")
+
+        goal_met = score >= 7.0
+        if not goal_met:
+            weak_str      = ", ".join(weak) if weak else "overall quality"
+            prev_feedback = f"Previous score was {score}/10. Weak areas: {weak_str}. Improve these."
+            print(f"[LOOP] Score below 7 — weak: {weak_str}. Looping again.")
+        else:
+            prev_feedback = ""
+            print(f"[LOOP] Score >= 7 — goal met.")
 
         # ── Store ─────────────────────────────────────────────────────────────
         entry_id = store({
-            "title":       f"Loop attempt #{iterations}",
-            "content":     work_text,
-            "project":     "loop_manager",
-            "source_type": "loop_attempt",
-            "tags":        ["loop_attempt"],
-            "metadata":    {
-                "plan":           plan_text,
-                "goal_met":       goal_met,
-                "iteration":      iterations,
-                "plan_provider":  plan_result.provider_id,
-                "work_provider":  work_result.provider_id,
+            "title":         f"Loop attempt #{iterations}",
+            "content":       work_text,
+            "project":       "loop_manager",
+            "source_type":   "loop_attempt",
+            "quality_score": score,
+            "tags":          ["loop_attempt"],
+            "metadata":      {
+                "plan":              plan_text,
+                "goal_met":          goal_met,
+                "iteration":         iterations,
+                "plan_provider":     plan_result.provider_id,
+                "work_provider":     work_result.provider_id,
+                "eval_completeness": scores["completeness"],
+                "eval_clarity":      scores["clarity"],
+                "eval_accuracy":     scores["accuracy"],
+                "eval_overall":      score,
             },
         })
         print(f"[LOOP] Stored attempt: {entry_id}")
         out_dir = HERE / "loop_output"; out_dir.mkdir(exist_ok=True)
         (out_dir / f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')}_result.txt").write_text(work_text, encoding="utf-8")
 
-        score   = 1.0 if goal_met else 0.0
         attempt = {
-            "id":           entry_id,
+            "id":            entry_id,
             "quality_score": score,
             "plan":          plan_text,
             "work":          work_text,
