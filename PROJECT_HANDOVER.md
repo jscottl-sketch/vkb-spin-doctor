@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v15 (MASTER)
+# VKB Spin Doctor — Project Handover v16 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** ACP v1 built. GUI 3 tabs confirmed working. sfl_agent.py v3 (575 lines). Conductor module live. ED Bind Reset prevention built.
-**Last updated:** 13 May 2026 (ED bind reset done)
-**Consolidates:** v11 → v14
+**Status:** AAFL loop engine live. evaluator.py + researcher.py built. loop_manager --once tested and passing. sfl_agent.py v3 (~920 lines). Conductor module live. ED Bind Reset prevention built.
+**Last updated:** 17 May 2026 (AAFL loop components, HF fix, LangGraph)
+**Consolidates:** v15
 
 ---
 
@@ -53,14 +53,20 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 | Universal_Input_Device_Database.md (44 problems) | ✅ In folder |
 | problems/conductor.py (619 lines, 22 problems) | ✅ Built — 3 live conflicts found on Scott's machine |
 | spin_doctor.py — 3 tabs (Fix / Conductor / KB) | ✅ ~1057 lines, all tabs confirmed working |
-| sfl_agent.py v3 — ACP v1 + handover injection | ✅ 575 lines, all tests green |
+| sfl_agent.py v3 — ACP v1 + handover injection | ✅ ~920 lines, call_aafl() added |
 | Claude Code v2.1.119 | ✅ Installed, working |
 | Elite Dangerous spin fix | ✅ Fixed at hardware level via VKB DevConfig |
 | GUI visual check (RUN_VKB.bat) | ✅ Done |
-| Throttle slider in War Thunder | ⏸ Open (likely PS5/Xbox conflict — unplug and retry) |
 | ED Bind Reset prevention | ✅ Built as problems/ed_bind_reset.py, wired into GUI Fix Mouse Spin tab |
+| aafl_core.py — provider routing | ✅ HuggingFace fixed → Mistral-7B-Instruct-v0.3 |
+| loop_manager.py — loop engine | ✅ --once flag, max_loop_iters/max_llm_calls decoupled. Tested: Gemini+Mistral, goal_met=True |
+| evaluator.py — result scorer | ✅ Built — completeness/clarity/accuracy, 0-10, pure logic |
+| researcher.py — DuckDuckGo search | ✅ Built — ddgs package, fallback on error |
+| LangGraph 1.2.0 | ✅ Installed |
+| Throttle slider in War Thunder | ⏸ Open (likely PS5/Xbox conflict — unplug and retry) |
 | Star Citizen full support | ⏸ Waiting |
-| Rename handover constant → PROJECT_HANDOVER.md | ⏸ Quick Claude Code job |
+| evaluator.py wired into loop_manager | ⏸ Next |
+| researcher.py wired into planning step | ⏸ Next |
 
 ---
 
@@ -113,6 +119,11 @@ With token budget (for long tasks):
 C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\sfl_agent.py" --budget 30k
 ```
 
+### Loop Manager (one iteration test)
+```
+C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe "C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\loop_manager.py" --once
+```
+
 ### GUI
 Double-click `RUN_VKB.bat`
 
@@ -131,7 +142,8 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 | Log file | Every session saves to `sfl_logs/` |
 | Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
 | Flags | `--note`, `--folder`, `--budget` flags available |
-| Handover injection | Loads VKB_SpinDoctor_Handover_v12.md into system prompt on startup |
+| Handover injection | Loads PROJECT_HANDOVER.md into system prompt on startup |
+| call_aafl(prompt) | Convenience wrapper — routes any prompt through AAFLCore |
 
 ### Autonomy Control Panel v1 (built into sfl_agent)
 
@@ -141,6 +153,41 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 | Safe-op allow-list | Whitelist: reads, --help, --dry-run, --check, py_compile, git status. >5 files or wildcard = always asks. |
 | Auto-snapshot | Copies .py/.json/.xml to backups/auto_YYYYMMDD_HHMMSS/ before any edit. Keeps last 20. |
 | Token budget | Soft cap 80% = finish current task, stop new ones. Hard cap 100% = kill. |
+
+---
+
+## AAFL — PROVIDER ROUTING
+
+aafl_core.py routes all LLM calls cheapest-first. Loop engine: loop_manager.py.
+
+### Provider Status (as of 17 May 2026)
+
+| Provider | Model | Tier | Status |
+|---|---|---|---|
+| LM Studio Coder 32B | openai/qwen2.5-coder-32b-instruct | 1 (local) | ✅ When LM Studio running |
+| LM Studio VL 32B | openai/qwen2.5-vl-32b-instruct | 1 (local) | ✅ When LM Studio running |
+| LM Studio DeepSeek R1 | openai/deepseek-r1-70b | 1 (local) | ✅ When LM Studio running |
+| LM Studio Phi-4 14B | openai/phi-4-14b | 1 (local) | ✅ When LM Studio running |
+| Cerebras Llama 3.1 70B | cerebras/llama3.1-70b | 2 (free) | ⚠️ Model renamed — fails currently |
+| Groq Llama 3.3 70B | groq/llama-3.3-70b-versatile | 2 (free) | Key needed |
+| Groq DeepSeek R1 | groq/deepseek-r1-distill-llama-70b | 2 (free) | Key needed |
+| Gemini 2.5 Flash | gemini/gemini-2.5-flash | 2 (free) | ✅ Working |
+| Mistral Codestral | mistral/codestral-latest | 2 (free) | ✅ Working |
+| OpenRouter Auto | openrouter/openrouter/auto | 3 (fallback) | Key needed |
+| HuggingFace Mistral-7B | huggingface/mistralai/Mistral-7B-Instruct-v0.3 | 3 (fallback) | Key needed |
+| Cohere Embeddings | cohere/embed-english-v3.0 | 3 (embed) | Key needed |
+| Claude Sonnet (PAID) | claude-sonnet-4-6 | 99 (paid) | Blocked unless allow_paid=True |
+
+### Loop Engine Components
+
+| File | Role |
+|---|---|
+| aafl_core.py | Provider routing, LiteLLM wrapper, cheapest-first |
+| loop_manager.py | Plan→Work→Verify→Store loop. --once flag for single iteration |
+| evaluator.py | Scores results 0-10 (completeness/clarity/accuracy). Pure logic. |
+| researcher.py | DuckDuckGo search via ddgs. Returns top 5 results. Fallback on error. |
+| memory_bank.py | SQLite store — data/knowledge_engine.db |
+| cost_guard.py | Cost + iteration brake. Raises CostGuardError before cap exceeded. |
 
 ---
 
@@ -192,14 +239,9 @@ File: `Universal_Input_Device_Database.md` — 44 problems across all gaming har
 | 7 | Steam Input interfering | ✅ Full |
 | 8 | Wrong device name in config | ✅ Full |
 
-### Hardware types covered
-Joystick/HOTAS, steering wheel, controller (Xbox/PS), mouse, pedals, button box, fight stick, TrackIR, guitar/rhythm, DDR dance mat, adaptive controller, VR controllers.
-
 ---
 
 ## THE 6 FIX CHAINS
-
-One root cause → multiple symptoms fixed simultaneously. This is how the AI brain will triage.
 
 | Chain | Root cause | What it fixes |
 |---|---|---|
@@ -217,23 +259,33 @@ One root cause → multiple symptoms fixed simultaneously. This is how the AI br
 ```
 VKB-SpinDoctor/
 ├── spin_doctor.py                     # ~1057 lines. Tabs: Fix / Conductor / Knowledge Base
-├── sfl_agent.py                       # v3 — 575 lines. ACP v1 + handover injection
+├── sfl_agent.py                       # v3 — ~920 lines. ACP v1 + handover injection + call_aafl()
+├── aafl_core.py                       # Provider routing — 13 providers, cheapest-first
+├── loop_manager.py                    # Loop engine — Plan→Work→Verify→Store. --once flag.
+├── evaluator.py                       # Result scorer 0-10. Pure logic. No APIs.
+├── researcher.py                      # DuckDuckGo search via ddgs. Top 5 results.
+├── memory_bank.py                     # SQLite knowledge store
+├── cost_guard.py                      # Cost + iteration brake
+├── model_router.py                    # Model routing helpers
+├── free_providers.py                  # Free provider list
 ├── sl_loop.py                         # Gemma 4 local SFL
-├── RUN_VKB.bat                        # Double-click launcher
+├── goal.txt                           # Current loop goal
+├── RUN_VKB.bat                        # Double-click GUI launcher
+├── GIT_BACKUP.bat                     # git add -A + commit + push
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
-├── VKB_SpinDoctor_Handover_v12.md     # Required by sfl_agent (handover injection reads this)
+├── PROJECT_HANDOVER.md                # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
-│   ├── spin_fix.py                    # Module 01 ✅
-│   ├── usb_power_saver.py             # Module 02 ✅
-│   ├── steam_input_conflict.py        # Module 03 ✅
-│   └── conductor.py                   # Module 04 ✅ 619 lines
-├── core/
-│   └── win_compat.py                  # pywin32 shim — tries pywin32, falls back gracefully
+│   ├── conductor.py                   # Module 04 ✅ 619 lines
+│   └── ed_bind_reset.py               # ED Bind Reset prevention ✅
 ├── data/
-│   └── devices.json                   # 98 devices with VID/PID lookup
-├── backups/                           # Auto-snapshots land here
-└── sfl_logs/                          # Agent session logs
+│   ├── devices.json                   # 98 devices with VID/PID lookup
+│   ├── knowledge_engine.db            # SQLite — loop attempt results
+│   └── cost_log.txt                   # CostGuard event log
+├── loop_output/                       # Loop results (timestamped .txt files)
+├── backups/                           # Auto-snapshots (vNN_<slug>/ naming)
+├── sfl_logs/                          # SFL agent session logs
+└── session_logs/                      # WCCS session logs
 ```
 
 ---
@@ -274,13 +326,6 @@ VKB-SpinDoctor/
 | Arma Reforger | Workshop (reforger.armaplatform.com/workshop/660604C2DBCF99E2) | Helicopter only |
 | Elite Dangerous | Frontier Forums (forums.frontier.co.uk/threads/618833) | USB device ID needs auto-fix |
 
-### Manual setup required
-
-| Game | Guide |
-|---|---|
-| IL-2 Sturmovik: Great Battles | forum.il2sturmovik.com/topic/79819 |
-| Microsoft Flight Simulator 2024 | forums.flightsimulator.com/t/670496 |
-
 ---
 
 ## COMPETITIVE LANDSCAPE
@@ -317,6 +362,7 @@ VKB-SpinDoctor/
 | ✅ Done | v0.3-alpha | Engine architecture, 4 modules, 98 VID/PID devices, win_compat shim |
 | ✅ Done | v0.3-alpha | Knowledge Base tab in GUI (War Thunder, ED, Star Citizen cards) |
 | ✅ Done | v0.3-alpha | Conductor module (22 problems), ACP v1, 3-tab GUI |
+| ✅ Done | v0.3-alpha | AAFL loop engine (aafl_core, loop_manager, evaluator, researcher) |
 | Next | v0.2 | Spin fix → Elite Dangerous + Star Citizen; ED Bind Reset prevention |
 | Soon | v0.3 | win_hardener module (9 problems) |
 | Soon | v0.4 | LM Studio + local AI wired in (Gemma 4 / Qwen2.5-VL) |
@@ -324,8 +370,6 @@ VKB-SpinDoctor/
 | Future | v0.6 | Keybinding profile library — detect game, auto-install community profile |
 | Future | v0.7 | AI learns preferences, builds custom profiles, warns about patch breakage |
 | Future | v1.0 | Public release — any hardware, any game. Package as .exe (no Python needed). |
-
-**Public launch targets:** r/hotas, r/Warthunder, r/EliteDangerous, r/starcitizen, VKB Discord, GitHub.
 
 ---
 
@@ -342,7 +386,7 @@ VKB-SpinDoctor/
 | Claude Code | v2.1.119 — installed, working |
 | LM Studio | v0.4.12 — models dir `D:\lm-models` |
 | Gemma 4 | Loaded, Think mode OFF |
-| Packages | mss, lmstudio, Pillow, anthropic |
+| Packages | mss, lmstudio, Pillow, anthropic, litellm, python-dotenv, langgraph, ddgs |
 | API key | Windows environment variable `ANTHROPIC_API_KEY` |
 | API model | claude-sonnet-4-6 |
 | API cost | ~$0.003/screenshot (SFL agent). Claude Code much cheaper (text only). |
@@ -361,9 +405,11 @@ VKB-SpinDoctor/
 | Gemma 4 empty replies | Think mode eating tokens — Think OFF + MAX_TOKENS = 3000 |
 | Model not found (404) | Model string must be `claude-sonnet-4-6` |
 | Credits too low (400) | Top up at console.anthropic.com/settings/billing |
-| Agent guesses wrong path | Path injection is in v3 — if broken, check handover file is present |
+| Agent guesses wrong path | Path injection is in v3 — if broken, check PROJECT_HANDOVER.md is present |
 | Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
 | Claude Code auth conflict | Detected both claude.ai token + API key — uses API key. Working fine. |
+| Cerebras model fails | Model renamed — llama3.1-70b no longer valid. Check Cerebras docs for new name. |
+| loop_manager --once stops mid-loop | Normal: LLM call count hit cap. Fixed: max_loop_iters/max_llm_calls are now separate. |
 
 ---
 
@@ -381,12 +427,16 @@ VKB-SpinDoctor/
 ## NEXT PRIORITIES
 
 | # | Task | Tool |
-\|---|---|---|
-\| 1 | Wire Conductor recommendations into GUI | Claude Code |
-\| 2 | win_hardener module (9 problems) | Claude Code |\| 3 | Star Citizen full support | Claude Code |\| 4 | LM Studio local AI wired in (Gemma 4) | Claude Code |
+|---|---|---|
+| 1 | Wire evaluator.py into loop_manager.py result scoring | Claude Code |
+| 2 | Wire researcher.py into loop planning step | Claude Code |
+| 3 | Fix Cerebras provider model name (llama3.1-70b renamed) | Claude Code |
+| 4 | win_hardener module (9 problems) | Claude Code |
+| 5 | Star Citizen full support | Claude Code |
+| 6 | Verify all 6 skills toggles ON at claude.ai/customize/skills | Manual |
 
 ---
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read project knowledge + Handover v15. ACP v1 built into sfl_agent.py (575 lines) — heartbeats, safe-op allow-list, auto-snapshot, token budget. GUI has 3 tabs, all working. Conductor module live (22 problems, 3 live conflicts found). Next: test --budget flag, then ED spin fix."
+> "Continuing VKB Spin Doctor. Read PROJECT_HANDOVER.md v16. AAFL loop engine live — loop_manager.py --once tested and passing (Gemini Flash plan + Mistral Codestral work). evaluator.py and researcher.py built. Next: wire evaluator into loop_manager scoring, fix Cerebras model name, then win_hardener module."
