@@ -149,13 +149,13 @@ PROVIDERS = [
     },
     {
         "id": "huggingface",
-        "label": "HuggingFace Llama Vision",
-        "model": "huggingface/meta-llama/Llama-3.2-11B-Vision-Instruct",
+        "label": "HuggingFace Mistral-7B",
+        "model": "huggingface/mistralai/Mistral-7B-Instruct-v0.3",
         "api_base": None,
         "api_key": None,
         "api_key_env": "HF_API_KEY",
-        "task_types": ["vision"],
-        "vision": True,
+        "task_types": ["fast", "code"],
+        "vision": False,
         "tier": 3,
     },
     {
@@ -194,7 +194,7 @@ ROUTING = {
                "openrouter"],
     "reason": ["lmstudio_reason", "groq_deepseek",    "gemini_flash","cerebras",
                "openrouter",      "claude_api"],
-    "vision": ["lmstudio_vision", "gemini_flash",     "huggingface", "claude_api"],
+    "vision": ["lmstudio_vision", "gemini_flash",     "claude_api"],
     "batch":  ["mistral_code",    "lmstudio_coder",   "gemini_flash","openrouter"],
     "embed":  ["cohere_embed",    "lmstudio_coder"],
 }

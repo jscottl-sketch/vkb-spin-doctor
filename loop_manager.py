@@ -3,6 +3,7 @@ loop_manager.py — Minimum Viable Loop Engine.
 Reads goal from goal.txt, loops plan → work → verify → store → cost check.
 Writes morning_report.md when done.
 """
+import sys
 import datetime
 from pathlib import Path
 
@@ -54,26 +55,26 @@ def _write_report(path: Path, iterations: int, best: dict | None,
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def run_loop():
+def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     goal  = load_goal()
     aafl  = AAFLCore(dry_run=False, allow_paid=False)
-    guard = CostGuard(max_cost_gbp=0.05, max_iterations=50)
+    guard = CostGuard(max_cost_gbp=0.05, max_iterations=max_llm_calls)
 
     print(f"[LOOP] Goal: {goal}")
-    print(f"[LOOP] Max iterations: {guard.max_iterations}")
+    print(f"[LOOP] Max iterations: {max_loop_iters}")
 
     iterations   = 0
     best_attempt = None
     stop_reason  = "max_iterations"
 
-    while iterations < guard.max_iterations:
+    while iterations < max_loop_iters:
         # Hard stop — create a file named STOP in the project folder
         if (HERE / "STOP").exists():
             stop_reason = "STOP file found"
             break
 
         iterations += 1
-        print(f"\n[LOOP] === Iteration {iterations}/{guard.max_iterations} ===")
+        print(f"\n[LOOP] === Iteration {iterations}/{max_loop_iters} ===")
 
         # ── Plan ──────────────────────────────────────────────────────────────
         try:
@@ -185,4 +186,8 @@ def run_loop():
 
 
 if __name__ == "__main__":
-    run_loop()
+    _once = "--once" in sys.argv
+    if _once:
+        run_loop(max_loop_iters=1, max_llm_calls=10)
+    else:
+        run_loop()

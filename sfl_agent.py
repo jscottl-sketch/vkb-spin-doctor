@@ -575,6 +575,15 @@ def take_screenshot():
         return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 
+# ── AAFL convenience wrapper ──────────────────────────────────────────────────
+
+def call_aafl(prompt: str, task_type: str = "fast", max_tokens: int = 512) -> str:
+    """Route a prompt through AAFLCore and return the response string."""
+    _aafl = AAFLCore(dry_run=False, allow_paid=False)
+    result = _aafl.run(task=prompt, task_type=task_type, max_tokens=max_tokens)
+    return result.response if result.ok else ""
+
+
 # ── Ask Claude ────────────────────────────────────────────────────────────────
 
 def ask_claude(screenshot_b64, task, memory, system_prompt, aafl):

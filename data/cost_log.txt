@@ -21,3 +21,12 @@
 [2026-05-15 10:03:05] CostGuard init  max_cost=£0.0500  max_iter=50
 [2026-05-15 10:03:08] CALL #1  cost=£0.001286  running=£0.001286  iter=1/50
 [2026-05-15 10:03:15] CALL #2  cost=£0.002523  running=£0.003809  iter=2/50
+[2026-05-17 11:09:11] CostGuard init  max_cost=£0.0500  max_iter=1
+[2026-05-17 11:09:15] CALL #1  cost=£0.001281  running=£0.001281  iter=1/1
+[2026-05-17 11:09:15] BLOCKED check_before_call: Iteration cap: 1 >= 1
+[2026-05-17 11:13:31] CostGuard init  max_cost=£0.0500  max_iter=10
+[2026-05-17 11:13:35] CALL #1  cost=£0.001281  running=£0.001281  iter=1/10
+[2026-05-17 11:13:39] CALL #2  cost=£0.001452  running=£0.002733  iter=2/10
+[2026-05-17 18:18:10] CostGuard init  max_cost=£0.0500  max_iter=10
+[2026-05-17 18:18:13] CALL #1  cost=£0.001278  running=£0.001278  iter=1/10
+[2026-05-17 18:18:19] CALL #2  cost=£0.001454  running=£0.002732  iter=2/10

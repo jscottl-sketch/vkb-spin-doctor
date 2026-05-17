@@ -1,0 +1,54 @@
+Here's the Python function `get_three_largest` based on your plan, including error handling and a docstring:
+
+```python
+def get_three_largest(numbers):
+    """
+    Returns the three largest numbers from a list of numbers.
+
+    Args:
+        numbers (list): A list of numbers (integers or floats).
+
+    Returns:
+        list: A list containing the three largest numbers in descending order.
+              If the input list has fewer than three elements, returns all elements in descending order.
+
+    Raises:
+        TypeError: If the input is not a list or contains non-numeric elements.
+    """
+    # Error handling for input type
+    if not isinstance(numbers, list):
+        raise TypeError("Input must be a list")
+
+    # Error handling for non-numeric elements
+    for num in numbers:
+        if not isinstance(num, (int, float)):
+            raise TypeError("All elements in the list must be numbers")
+
+    # Handle empty list case
+    if not numbers:
+        return []
+
+    # Sort the list in descending order and return the first three elements
+    sorted_numbers = sorted(numbers, reverse=True)
+    return sorted_numbers[:3]
+```
+
+### Explanation:
+1. **Docstring**: The function includes a detailed docstring explaining its purpose, arguments, return value, and possible exceptions.
+2. **Error Handling**:
+   - Checks if the input is a list (`TypeError` if not).
+   - Verifies all elements are numeric (`TypeError` if any element is non-numeric).
+3. **Edge Cases**:
+   - Returns an empty list if the input list is empty.
+   - Returns all elements (in descending order) if the list has fewer than three elements.
+4. **Functionality**:
+   - Sorts the list in descending order and returns the first three elements.
+
+### Example Usage:
+```python
+print(get_three_largest([1, 5, 3, 9, 2]))  # Output: [9, 5, 3]
+print(get_three_largest([10]))             # Output: [10]
+print(get_three_largest([]))               # Output: []
+```
+
+This function is robust and handles edge cases while providing clear documentation.
