@@ -1,0 +1,549 @@
+{
+  "meta": {
+    "generated": "2026-05-18T22:21:32",
+    "generator": "dashboard_builder.py"
+  },
+  "tasks": {
+    "last_updated": "2026-05-18T22:21:32",
+    "data": [
+      {
+        "id": "t031",
+        "title": "Run meta-loop dry-run (Scott reviews proposal)",
+        "column": "Up Next",
+        "notes": "Run meta_loop.bat --once. Confirm one .md appears in meta_proposals/. Review the proposal.",
+        "priority": "high",
+        "tool": "meta_loop.py",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t005",
+        "title": "Add GROQ_API_KEY to .env",
+        "column": "Up Next",
+        "notes": "Blocked: console.groq.com login broken. Google OAuth loops back to login page.",
+        "priority": "high",
+        "tool": ".env",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t004",
+        "title": "Add Cloudflare Workers AI keys to .env",
+        "column": "Up Next",
+        "notes": "Needs CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID. Get token: dash.cloudflare.com",
+        "priority": "medium",
+        "tool": ".env",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t001",
+        "title": "Star Citizen full support",
+        "column": "Up Next",
+        "notes": "v0.2 milestone. Config path: C:\\Program Files\\Roberts Space Industries\\StarCitizen",
+        "priority": "high",
+        "tool": "config module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t002",
+        "title": "Verify 6 skills toggles ON at claude.ai/customize/skills",
+        "column": "In Progress",
+        "notes": "Manual check — make sure all 6 Claude skills are enabled at claude.ai/customize/",
+        "priority": "medium",
+        "tool": "Claude AI",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t003",
+        "title": "War Thunder throttle slider",
+        "column": "Blocked",
+        "notes": "Throttle axis not responding in War Thunder. Likely PS5/Xbox controller conflict",
+        "priority": "medium",
+        "tool": "War Thunder",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t032",
+        "title": "Schedule meta-loop nightly via Task Scheduler",
+        "column": "Backlog",
+        "notes": "Use Windows Task Scheduler to run meta_loop.bat --once nightly (e.g. 3am). Set working dir.",
+        "priority": "medium",
+        "tool": "Task Scheduler",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t006",
+        "title": "LM Studio + local AI wired in (v0.3)",
+        "column": "Backlog",
+        "notes": "v0.3 milestone. Wire Gemma 4 / Qwen2.5-VL into AAFL loop. LM Studio v0.4.12 installed.",
+        "priority": "medium",
+        "tool": "LM Studio",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t007",
+        "title": "config module — 6 problems (v0.2)",
+        "column": "Backlog",
+        "notes": "Config Mediator module. Handles game config files — WT spin fix lives here. Drop into /problems/",
+        "priority": "medium",
+        "tool": "config module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t008",
+        "title": "identity module — 7 problems (v0.3)",
+        "column": "Backlog",
+        "notes": "Device Identity module. Device naming, VID/PID, config name mismatch. Drop into /problems/",
+        "priority": "low",
+        "tool": "identity module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t009",
+        "title": "physical diagnostics module — 5 problems (v0.4)",
+        "column": "Backlog",
+        "notes": "USB port, hub, power — detect only (no auto-fix). Drop into /problems/ directory",
+        "priority": "low",
+        "tool": "physical diagnostics module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t010",
+        "title": "ChromaDB vector memory (v0.4)",
+        "column": "Backlog",
+        "notes": "AI learns your setup across sessions. Replace or augment SQLite knowledge store.",
+        "priority": "medium",
+        "tool": "ChromaDB",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t011",
+        "title": "Keybinding profile library (v0.5)",
+        "column": "Backlog",
+        "notes": "Detect game, auto-install community keybind profile. SubliminalsTV SC profiles ready.",
+        "priority": "medium",
+        "tool": "Keybinding module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t012",
+        "title": "AI learns preferences + warns about patch breakage (v0.6)",
+        "column": "Backlog",
+        "notes": "AI builds custom profiles from user history. Warns when a game patch breaks existing profiles.",
+        "priority": "low",
+        "tool": "AI module",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t013",
+        "title": "Ko-fi + Itch.io links to README",
+        "column": "Backlog",
+        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero setup.",
+        "priority": "medium",
+        "tool": "README.md",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t014",
+        "title": "Get Spin Doctor public on GitHub",
+        "column": "Backlog",
+        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with v0.2.",
+        "priority": "low",
+        "tool": "GitHub",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t015",
+        "title": "Public release — package as .exe (v1.0)",
+        "column": "Backlog",
+        "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install guide.",
+        "priority": "low",
+        "tool": "PyInstaller",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t016",
+        "title": "Fix verify step — empty responses, loop scoring blind",
+        "column": "Done",
+        "notes": "Fixed 18 May. reasoning_content </think> extraction in aafl_core._call(). Defensive guard before evaluate(). BOM crash in load_goal() fixed (utf-8-sig). Gemini max_tokens=200 for tag step.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t017",
+        "title": "run_aafl.bat — one-click full launch",
+        "column": "Done",
+        "notes": "Starts LM Studio if not running, polls port 1234 every 2s (90s timeout), runs aafl_doctor + queue_runner. LM Studio path: %LOCALAPPDATA%\\Programs\\LM Studio\\LM Studio.exe",
+        "priority": "medium",
+        "tool": "Claude Code",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t018",
+        "title": "Regression test PASS (8.83/10)",
+        "column": "Done",
+        "notes": "loop_manager --once with known goal. Gemini planned, Mistral worked. BOM crash fixed as part of this.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t019",
+        "title": "queue_runner end-to-end test",
+        "column": "Done",
+        "notes": "4 goals processed. Cache hit (9.33), VKB polling rate (8.67), WT axis drift (8.67), HidHide+SC (8.07). DB rows: knowledge=10, solution_log=4.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-18",
+        "updated": "2026-05-18"
+      },
+      {
+        "id": "t020",
+        "title": "Cerebras gpt-oss-120b fix",
+        "column": "Done",
+        "notes": "llama3.1-70b → llama-3.3-70b (both deprecated) → gpt-oss-120b (current stable). Confirmed 0.54s response.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t021",
+        "title": "win_hardener module — 9 problems (W-001→W-009)",
+        "column": "Done",
+        "notes": "USB Selective Suspend, polling rate advisory, joy.cpl calibration, HID error code, registry cleaner damage, duplicate device entries, enumeration order, HidUsb driver disabled, GameInput conflict. Wired into Fix tab.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t022",
+        "title": "AAFL loop engine — first successful run",
+        "column": "Done",
+        "notes": "Proof of concept PASSED. Cost £0.0027. Gemini planned, Mistral worked. Phase B+C+D all wired.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t023",
+        "title": "Phases B+C+D — DB cache, scout, source reputation, tags",
+        "column": "Done",
+        "notes": "Phase B: search_solution, search_failures, store_solution. Cache hit confirmed. Phase C: scout(), update_source, get_top/blocked_sources. Phase D: 23 TAGS constant + infer_tags_from_keywords() fallback.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t024",
+        "title": "Bat utilities",
+        "column": "Done",
+        "notes": "set_goal.bat, aafl_doctor.bat, regression_test.bat, queue_runner.bat. All working.",
+        "priority": "medium",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t025",
+        "title": "Loop completion notification",
+        "column": "Done",
+        "notes": "winsound beep + ctypes MessageBoxW pop-up at end of overnight run. Stdlib only — no external packages.",
+        "priority": "medium",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t026",
+        "title": "Conductor module — 22 problems (4 groups)",
+        "column": "Done",
+        "notes": "Group A: companion software (G HUB, iCUE, Synapse, Armoury Crate, TARGET, VKB DevCfg). B: input mappers (DS4Windows, JoyToKey, vJoy, X360CE). C: overlays (GeForce Exp, Discord, OBS). D: launch order, HidHide. Live conflicts found on Scott's machine: iCUE, Steam overlay, GeForce Experience.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t027",
+        "title": "spin_doctor.py GUI — 3 tabs",
+        "column": "Done",
+        "notes": "~1057 lines. Tabs: Fix / Conductor / Knowledge Base. WinHardenerCard wired. ED bind reset wired. RUN_VKB.bat launcher confirmed working.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t028",
+        "title": "AAFL core — 14 providers, cheapest-first routing",
+        "column": "Done",
+        "notes": "Tier 1 local (LM Studio x4), Tier 2 free online (Cerebras, Groq, Gemini, Mistral, Cloudflare), Tier 3 fallback (OpenRouter, HuggingFace, Cohere), Tier 99 paid (Claude). reasoning_content fallback, extra_env support.",
+        "priority": "high",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t029",
+        "title": "Elite Dangerous spin fix",
+        "column": "Done",
+        "notes": "Fixed at hardware level via VKB DevConfig. No .binds edit needed. ed_bind_reset.py built to prevent binding resets.",
+        "priority": "high",
+        "tool": "Manual",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      },
+      {
+        "id": "t030",
+        "title": "data/devices.json — 98 VID/PID devices",
+        "column": "Done",
+        "notes": "Universal device lookup table. 98 devices with VID/PID. Covers VKB, Thrustmaster, Logitech, Razer, Corsair, and more.",
+        "priority": "medium",
+        "tool": "Claude Code",
+        "created": "2026-05-17",
+        "updated": "2026-05-17"
+      }
+    ],
+    "meta": {
+      "updated": "2026-05-18T21:38:51",
+      "updated_by": "mcu_optimizer",
+      "version": "1.0"
+    }
+  },
+  "activity_feed": {
+    "last_updated": "2026-05-18T22:21:32",
+    "data": [
+      {
+        "timestamp": "2026-05-18T22:01:00",
+        "type": "loop_run",
+        "title": "Add Star Citizen full support to Spin Doctor",
+        "detail": "Score: 9.17",
+        "file": "2026-05-18_22-01_add_star_citizen_full.md"
+      },
+      {
+        "timestamp": "2026-05-18T21:38:33",
+        "type": "session_log",
+        "title": "Session Log -- 2026-05-18-cc6",
+        "detail": "2026-05-18-cc6.md",
+        "file": "2026-05-18-cc6.md"
+      },
+      {
+        "timestamp": "2026-05-18T21:17:06",
+        "type": "session_log",
+        "title": "Session Log -- 2026-05-18-cc5",
+        "detail": "2026-05-18-cc5.md",
+        "file": "2026-05-18-cc5.md"
+      },
+      {
+        "timestamp": "2026-05-18T18:24:50",
+        "type": "session_log",
+        "title": "Session Log — 2026-05-18 cc4",
+        "detail": "session_2026-05-18_cc4.md",
+        "file": "session_2026-05-18_cc4.md"
+      },
+      {
+        "timestamp": "2026-05-18T17:36:06",
+        "type": "session_log",
+        "title": "Session Log — 2026-05-18-cc4",
+        "detail": "2026-05-18-cc4.md",
+        "file": "2026-05-18-cc4.md"
+      },
+      {
+        "timestamp": "2026-05-18T17:21:35",
+        "type": "session_log",
+        "title": "Session Log — 2026-05-18-cc3",
+        "detail": "2026-05-18-cc3.md",
+        "file": "2026-05-18-cc3.md"
+      },
+      {
+        "timestamp": "2026-05-18T11:58:00",
+        "type": "loop_run",
+        "title": "Confirm the AAFL loop is operational and at least one LLM provider responds",
+        "detail": "Score: 8.83",
+        "file": "2026-05-18_11-58_confirm_the_aafl_loop.md"
+      },
+      {
+        "timestamp": "2026-05-18T10:47:00",
+        "type": "loop_run",
+        "title": "Explain how HidHide can be used to prevent double-input from a PS5 controller in",
+        "detail": "Score: 8.07",
+        "file": "2026-05-18_10-47_explain_how_hidhide_can.md"
+      },
+      {
+        "timestamp": "2026-05-18T10:47:00",
+        "type": "loop_run",
+        "title": "Find the top 3 causes of joystick axis drift in War Thunder and recommend fixes",
+        "detail": "Score: 8.67",
+        "file": "2026-05-18_10-47_find_the_top_3.md"
+      },
+      {
+        "timestamp": "2026-05-18T10:45:00",
+        "type": "loop_run",
+        "title": "Research current best polling rate settings for VKB NXT EVO joystick on Windows ",
+        "detail": "Score: 8.67",
+        "file": "2026-05-18_10-45_research_current_best_polling.md"
+      },
+      {
+        "timestamp": "2026-05-18T10:45:00",
+        "type": "loop_run",
+        "title": "Fix Cerebras provider model name in aafl_core.py so it routes correctly",
+        "detail": "Score: 9.33",
+        "file": "2026-05-18_10-45_fix_cerebras_provider_model.md"
+      },
+      {
+        "timestamp": "2026-05-18T09:17:00",
+        "type": "loop_run",
+        "title": "Confirm the AAFL loop is operational and at least one LLM provider responds",
+        "detail": "Score: 8.83",
+        "file": "2026-05-18_09-17_confirm_the_aafl_loop.md"
+      },
+      {
+        "timestamp": "2026-05-18T00:00:00",
+        "type": "loop_run",
+        "title": "Fix Cerebras provider model name in aafl_core.py so it routes correctly",
+        "detail": "Score: 9.33",
+        "file": "2026-05-18_00-00_fix_cerebras_provider_model.md"
+      },
+      {
+        "timestamp": "2026-05-17T22:01:00",
+        "type": "loop_run",
+        "title": "Fix Cerebras provider model name in aafl_core.py so it routes correctly",
+        "detail": "Score: 9.33",
+        "file": "2026-05-17_22-01_fix_cerebras_provider_model.md"
+      }
+    ]
+  },
+  "aafl_runs": {
+    "last_updated": "2026-05-18T22:21:32",
+    "data": [
+      {
+        "id": 8,
+        "goal": "Add Star Citizen full support to Spin Doctor",
+        "score": 9.17,
+        "tags": "spin,star_citizen,bindings,firmware,companion_software",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "star_citizen",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T21:01:16.353019"
+      },
+      {
+        "id": 7,
+        "goal": "Explain how HidHide can be used to prevent double-input from a PS5 controller in Star Citizen",
+        "score": 8.07,
+        "tags": "driver,joystick,star_citizen",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "star_citizen",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T09:47:50.554923"
+      },
+      {
+        "id": 6,
+        "goal": "Find the top 3 causes of joystick axis drift in War Thunder and recommend fixes",
+        "score": 8.67,
+        "tags": "joystick,axis",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "war_thunder",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T09:47:27.207531"
+      },
+      {
+        "id": 5,
+        "goal": "Research current best polling rate settings for VKB NXT EVO joystick on Windows 11",
+        "score": 8.67,
+        "tags": "joystick",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "unknown",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T09:45:45.008972"
+      },
+      {
+        "id": 4,
+        "goal": "Confirm the AAFL loop is operational and at least one LLM provider responds",
+        "score": 8.83,
+        "tags": "polling_rate,firmware,driver,companion_software",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "unknown",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T08:17:04.717655"
+      },
+      {
+        "id": 3,
+        "goal": "Fix Cerebras provider model name in aafl_core.py so it routes correctly",
+        "score": 9.33,
+        "tags": "",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "unknown",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-17T20:29:46.806046"
+      },
+      {
+        "id": 2,
+        "goal": "Write a Python function that takes a list of numbers and returns the three largest. Include error ha",
+        "score": 7.93,
+        "tags": "",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "unknown",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-17T19:19:02.105390"
+      },
+      {
+        "id": 1,
+        "goal": "_test_problem",
+        "score": 8.5,
+        "tags": "",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "unknown",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-17T19:16:57.570258"
+      }
+    ]
+  },
+  "cost_tracker": {
+    "last_updated": "2026-05-18T22:21:32",
+    "data": {
+      "total_spent": 0.042951,
+      "avg_per_run": 0.00113,
+      "runs_today": 15,
+      "runs_total": 38
+    }
+  }
+}

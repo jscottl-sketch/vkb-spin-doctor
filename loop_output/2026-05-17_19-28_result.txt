@@ -1,0 +1,55 @@
+Here's a Python function that takes a list of numbers and returns the three largest, with error handling and a docstring:
+
+```python
+def get_three_largest(numbers):
+    """
+    Returns the three largest numbers from a given list of numbers.
+
+    Args:
+        numbers (list): A list of numerical values (int or float).
+
+    Returns:
+        list: A list containing the three largest numbers in descending order.
+
+    Raises:
+        ValueError: If the input list has fewer than 3 elements.
+        TypeError: If the input is not a list or contains non-numeric values.
+    """
+    # Error handling for input type
+    if not isinstance(numbers, list):
+        raise TypeError("Input must be a list")
+
+    # Error handling for empty list or list with fewer than 3 elements
+    if len(numbers) < 3:
+        raise ValueError("List must contain at least 3 elements")
+
+    # Error handling for non-numeric values
+    for num in numbers:
+        if not isinstance(num, (int, float)):
+            raise TypeError("All elements in the list must be numbers")
+
+    # Get the three largest numbers
+    sorted_numbers = sorted(numbers, reverse=True)
+    three_largest = sorted_numbers[:3]
+
+    return three_largest
+
+# Example usage:
+try:
+    numbers = [10, 5, 20, 15, 30, 25]
+    result = get_three_largest(numbers)
+    print(f"The three largest numbers are: {result}")
+except (ValueError, TypeError) as e:
+    print(f"Error: {e}")
+```
+
+### Explanation:
+1. **Docstring**: The function includes a detailed docstring explaining its purpose, arguments, return value, and possible exceptions.
+2. **Error Handling**:
+   - Checks if the input is a list (`TypeError` if not).
+   - Checks if the list has at least 3 elements (`ValueError` if not).
+   - Checks if all elements are numeric (`TypeError` if any element is non-numeric).
+3. **Functionality**: The function sorts the list in descending order and returns the first three elements.
+4. **Example Usage**: Demonstrates how to call the function with error handling.
+
+This implementation ensures robustness and clarity for users of the function.

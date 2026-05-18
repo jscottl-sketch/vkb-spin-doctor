@@ -82,8 +82,8 @@ PROVIDERS = [
     # ── Tier 2: Free online ───────────────────────────────────────────────
     {
         "id": "cerebras",
-        "label": "Cerebras Llama 3.1 70B",
-        "model": "cerebras/llama3.1-70b",
+        "label": "Cerebras GPT-OSS 120B",
+        "model": "cerebras/gpt-oss-120b",
         "api_base": None,
         "api_key": None,
         "api_key_env": "CEREBRAS_API_KEY",
@@ -159,6 +159,18 @@ PROVIDERS = [
         "tier": 3,
     },
     {
+        "id": "cloudflare",
+        "label": "Cloudflare Workers AI",
+        "model": "cloudflare/@cf/meta/llama-3.1-8b-instruct",
+        "api_base": None,
+        "api_key": None,
+        "api_key_env": "CLOUDFLARE_API_KEY",
+        "extra_env":   "CLOUDFLARE_ACCOUNT_ID",
+        "task_types": ["fast", "code"],
+        "vision": False,
+        "tier": 2,
+    },
+    {
         "id": "cohere_embed",
         "label": "Cohere Embeddings",
         "model": "cohere/embed-english-v3.0",
@@ -189,9 +201,9 @@ PROVIDERS = [
 # Routing table: task_type → provider IDs in cheapest-first order
 ROUTING = {
     "code":   ["lmstudio_coder",  "lmstudio_fast",   "cerebras",    "groq_70b",
-               "mistral_code",    "openrouter",       "claude_api"],
-    "fast":   ["lmstudio_fast",   "cerebras",         "groq_70b",    "gemini_flash",
-               "openrouter"],
+               "cloudflare",      "mistral_code",     "openrouter",  "claude_api"],
+    "fast":   ["lmstudio_fast",   "cerebras",         "groq_70b",    "cloudflare",
+               "gemini_flash",    "openrouter"],
     "reason": ["lmstudio_reason", "groq_deepseek",    "gemini_flash","cerebras",
                "openrouter",      "claude_api"],
     "vision": ["lmstudio_vision", "gemini_flash",     "claude_api"],
@@ -369,6 +381,16 @@ class AAFLCore:
 
         resp = litellm.completion(**kwargs)
         text = (resp.choices[0].message.content or "").strip()
+        if not text:
+            # Reasoning models (DeepSeek R1, etc.) put output in reasoning_content
+            # when token budget is exhausted. Extract the answer after </think> so
+            # the evaluator receives the actual answer, not the thinking chain.
+            rc = getattr(resp.choices[0].message, "reasoning_content", None) or ""
+            if "</think>" in rc:
+                after_think = rc.split("</think>", 1)[-1].strip()
+                text = after_think if after_think else rc.strip()
+            else:
+                text = rc.strip()
 
         # Cost — LiteLLM calculates this for known providers; falls back to 0
         try:
@@ -384,7 +406,13 @@ class AAFLCore:
         """True if provider is usable (local needs no key; online needs env var set)."""
         if p.get("api_key_env") is None:
             return True   # local LM Studio — no key needed
-        return bool(os.environ.get(p["api_key_env"], "").strip())
+        if not os.environ.get(p["api_key_env"], "").strip():
+            return False
+        # Some providers need a second env var (e.g. Cloudflare needs account ID)
+        extra = p.get("extra_env")
+        if extra and not os.environ.get(extra, "").strip():
+            return False
+        return True
 
     # ── Internal: logging ─────────────────────────────────────────────────────
 

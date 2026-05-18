@@ -210,6 +210,13 @@ def get_blocked_sources(max_score: float = 3.0) -> list[str]:
     return [r["domain"] for r in rows]
 
 
+def infer_tags_from_keywords(text: str) -> str:
+    """Keyword fallback: match text against TAGS list, return comma-separated matches."""
+    text_lower = text.lower()
+    matched = [tag for tag in TAGS if tag in text_lower][:5]
+    return ",".join(matched)
+
+
 # ── Original functions ────────────────────────────────────────────────────────
 
 def store(entry: dict) -> str:

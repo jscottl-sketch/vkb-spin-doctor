@@ -1,0 +1,3 @@
+[10:45:28] PASS: Fix Cerebras provider model name in aafl_core.py so it routes correctly
+[10:47:09] PASS: Research current best polling rate settings for VKB NXT EVO joystick on Windows 11
+[10:47:35] PASS: Find the top 3 causes of joystick axis drift in War Thunder and recommend fixes

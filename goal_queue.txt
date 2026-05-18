@@ -1,0 +1,11 @@
+# AAFL Goal Queue — one goal per line. Lines starting with # are skipped.
+# Run: queue_runner.bat
+#
+# ── Completed (commented out) ────────────────────────────────────────────────
+# Fix Cerebras provider model name in aafl_core.py so it routes correctly
+# Research current best polling rate settings for VKB NXT EVO joystick on Windows 11
+# Find the top 3 causes of joystick axis drift in War Thunder and recommend fixes
+# Explain how HidHide can be used to prevent double-input from a PS5 controller in Star Citizen
+#
+# ── Active goals ─────────────────────────────────────────────────────────────
+Add Star Citizen full support to Spin Doctor

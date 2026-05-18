@@ -1,0 +1,8 @@
+# meta_queue.txt — AAFL Meta-Loop Goal Queue
+# One goal per line. Lines starting with # are skipped.
+# meta_loop.py processes the next uncommented line each run.
+# Processed goals are automatically prefixed with "# DONE".
+
+# DONE Compare LangGraph 1.2.0 vs current loop_manager.py. Score on: free provider support, simplicity, async, observability, LOC delta. Recommend keep, migrate, or hybrid.
+# DONE Identify the single biggest bottleneck in loop_manager.py from last 10 loop_output reports. Propose one specific fix with file + line numbers.
+# DONE Score each provider in aafl_core.py on success rate, avg latency, cost, output quality from solution_log in knowledge_engine.db. Recommend new tier ordering.

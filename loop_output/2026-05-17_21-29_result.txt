@@ -1,0 +1,44 @@
+To fix the Cerebras provider model name in `aafl_core.py` so that it routes correctly, follow these steps:
+
+### 1. **Identify the Current Issue**
+   - Check the current implementation in `aafl_core.py` to see how the Cerebras provider model name is being referenced or used.
+   - Look for any hardcoded strings or incorrect model names that might be causing routing issues.
+
+### 2. **Update the Model Name**
+   - Replace any incorrect or outdated Cerebras model names with the correct ones.
+   - Ensure the model name matches the expected format (e.g., `cerebras-<model-name>`).
+
+### 3. **Verify Routing Logic**
+   - Ensure that the routing logic in `aafl_core.py` correctly maps the Cerebras model name to the appropriate backend or service.
+   - If there are conditional checks or mappings, update them to reflect the correct model name.
+
+### 4. **Test the Changes**
+   - Run tests or manual checks to confirm that the Cerebras model name is now routing correctly.
+   - Verify that the model is accessible and behaves as expected.
+
+### Example Code Changes (Hypothetical)
+If the issue is a hardcoded model name, you might update a line like this:
+```python
+# Before (incorrect)
+model_name = "cerebras-incorrect-model"
+
+# After (correct)
+model_name = "cerebras-correct-model"
+```
+
+If the issue is in routing logic:
+```python
+# Before (incorrect routing)
+if model_name == "cerebras-old-model":
+    route_to_service("old-service")
+
+# After (correct routing)
+if model_name == "cerebras-correct-model":
+    route_to_service("correct-service")
+```
+
+### 5. **Commit and Document Changes**
+   - Commit the changes with a clear message, e.g., "Fix Cerebras provider model name routing in aafl_core.py."
+   - Update any relevant documentation or comments in the code to reflect the changes.
+
+By following these steps, you should be able to fix the Cerebras provider model name in `aafl_core.py` so that it routes correctly.

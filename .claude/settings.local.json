@@ -18,7 +18,14 @@
       "Bash(\"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" -c \"import ast; ast.parse\\(open\\('aafl_core.py'\\).read\\(\\)\\); print\\('aafl_core.py: parse OK'\\)\")",
       "Bash(\"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" -c \"import ast; ast.parse\\(open\\('loop_manager.py'\\).read\\(\\)\\); print\\('loop_manager.py: parse OK'\\)\")",
       "Bash(\"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" loop_manager.py)",
-      "Bash(\"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" -c \"import litellm; models = [m for m in litellm.models_by_provider.get\\('cerebras', []\\)]; print\\(models\\)\")"
+      "Bash(\"C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" -c \"import litellm; models = [m for m in litellm.models_by_provider.get\\('cerebras', []\\)]; print\\(models\\)\")",
+      "WebSearch",
+      "WebFetch(domain:inference-docs.cerebras.ai)",
+      "Bash(python -c \"from pathlib import Path; Path\\('goal.txt'\\).write_text\\('Fix Cerebras provider model name in aafl_core.py so it routes correctly', encoding='utf-8'\\)\")",
+      "Bash(python loop_manager.py --once)",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"from memory_bank import infer_tags_from_keywords; result = infer_tags_from_keywords\\('Fix Cerebras provider model name in aafl_core.py'\\); print\\('Input :', 'Fix Cerebras provider model name in aafl_core.py'\\); print\\('Tags  :', repr\\(result\\)\\); print\\('PASS' if result else 'FAIL -- empty result'\\)\")"
     ]
   }
 }

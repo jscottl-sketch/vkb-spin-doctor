@@ -30,6 +30,16 @@ except Exception as _e:
     _ED_RESET_OK  = False
     _ED_RESET_ERR = f"{type(_e).__name__}: {_e}"
 
+# Module 08 — Windows Hardware Hardener.
+try:
+    from problems import win_hardener
+    _WIN_HARDENER_OK  = True
+    _WIN_HARDENER_ERR = None
+except Exception as _e:
+    win_hardener      = None
+    _WIN_HARDENER_OK  = False
+    _WIN_HARDENER_ERR = f"{type(_e).__name__}: {_e}"
+
 
 SCRIPT_DIR = Path(__file__).parent
 BACKUP_ROOT = SCRIPT_DIR / "backups"
@@ -1094,6 +1104,123 @@ class ProcessConductorTab(tk.Frame):
                  ).pack(fill="x")
 
 
+class WinHardenerCard(tk.Frame):
+    """Module 08 — Windows Hardware Diagnostics widget for the Fix tab.
+    Scans USB power settings, HID error codes, registry damage, duplicate
+    device entries, raw input driver state, and GameInput conflicts."""
+
+    def __init__(self, parent):
+        super().__init__(parent, bg=BG_GREY, padx=16, pady=10)
+        self._last_results = []
+        self._build()
+        if _WIN_HARDENER_OK:
+            self.refresh()
+        else:
+            self._render_load_error()
+
+    def _build(self):
+        bg = BG_GREY
+        tk.Label(self, text="Windows Hardware Diagnostics",
+                 font=("Segoe UI", 11, "bold"), bg=bg, fg=FG_WHITE,
+                 ).grid(row=0, column=0, sticky="w")
+        tk.Label(self,
+                 text=("USB power · HID errors · registry damage · "
+                       "duplicate entries · raw input · GameInput conflicts."),
+                 font=("Segoe UI", 8), bg=bg, fg=FG_DIM,
+                 wraplength=520, justify="left",
+                 ).grid(row=1, column=0, sticky="w", pady=(1, 6))
+
+        self.status_lbl = tk.Label(self, text="",
+                                    font=("Segoe UI", 9, "bold"),
+                                    bg=bg, fg=FG_WHITE,
+                                    wraplength=520, justify="left", anchor="w")
+        self.status_lbl.grid(row=2, column=0, sticky="ew", pady=(0, 8))
+
+        btn_row = tk.Frame(self, bg=bg)
+        btn_row.grid(row=3, column=0, sticky="w")
+
+        self.scan_btn = tk.Button(
+            btn_row, text="Scan Windows",
+            font=("Segoe UI", 10, "bold"),
+            bg=C_BLUE, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self.refresh)
+        self.scan_btn.pack(side="left", padx=(0, 8))
+
+        self.detail_btn = tk.Button(
+            btn_row, text="Show Details",
+            font=("Segoe UI", 10),
+            bg=FG_DIM, fg=FG_WHITE, padx=14, pady=5,
+            relief="flat", cursor="hand2",
+            command=self._show_details)
+        self.detail_btn.pack(side="left")
+
+    def refresh(self):
+        if not _WIN_HARDENER_OK:
+            return
+        self.status_lbl.config(text="Scanning…", fg=FG_DIM)
+        self.update_idletasks()
+        try:
+            self._last_results = win_hardener.scan_all()
+        except Exception as exc:
+            self.status_lbl.config(text=f"Scan failed: {exc}", fg=C_RED)
+            return
+        warns = [p for p, s in self._last_results if s == "warn"]
+        if warns:
+            self.status_lbl.config(
+                text=f"⚠  {len(warns)} issue(s) found — click Show Details.",
+                fg=C_RED)
+        else:
+            self.status_lbl.config(
+                text=f"✓  All {len(self._last_results)} Windows hardware checks clear.",
+                fg=C_GREEN)
+
+    def _show_details(self):
+        if not self._last_results:
+            messagebox.showinfo("No data", "Click Scan Windows first.")
+            return
+        win = tk.Toplevel(self.winfo_toplevel())
+        win.title("Windows Hardware Diagnostics — Details")
+        win.configure(bg=BG_WIN)
+        win.transient(self.winfo_toplevel())
+        win.resizable(False, False)
+
+        txt = tk.Text(win, wrap="word", font=("Segoe UI", 9),
+                      bg=BG_CARD, fg=FG_WHITE,
+                      width=78, height=26,
+                      padx=14, pady=10,
+                      relief="flat", borderwidth=0, highlightthickness=0)
+        txt.pack(padx=20, pady=(12, 0), fill="both", expand=True)
+
+        lines = []
+        for problem, status in self._last_results:
+            marker = {"ok": "[ ok ]", "warn": "[WARN]",
+                      "info": "[info]", "not_installed": "[ -- ]"}.get(status, status)
+            lines.append(f"{marker}  {problem['id']}  {problem['title']}")
+            if status in ("warn", "info"):
+                try:
+                    _, msg = problem["fix"]()
+                    lines.append(msg[:400] + ("…" if len(msg) > 400 else ""))
+                except Exception:
+                    pass
+            lines.append("")
+        txt.insert("1.0", "\n".join(lines))
+        txt.config(state="disabled")
+
+        tk.Button(win, text="Close",
+                  font=("Segoe UI", 10, "bold"),
+                  bg=C_BLUE, fg=FG_WHITE, padx=24, pady=6,
+                  relief="flat", cursor="hand2",
+                  command=win.destroy,
+                  ).pack(pady=(8, 16))
+
+    def _render_load_error(self):
+        self.status_lbl.config(
+            text=f"Module 08 failed to load: {_WIN_HARDENER_ERR}", fg=C_RED)
+        self.scan_btn.config(state="disabled", bg=C_GREY, cursor="arrow")
+        self.detail_btn.config(state="disabled", bg=C_GREY, cursor="arrow")
+
+
 class SpinDoctorApp:
     def __init__(self, root):
         self.root = root
@@ -1175,7 +1302,12 @@ class SpinDoctorApp:
                  status_fn=check_not_implemented,
                  fix_fn=lambda f: (False, "Not yet implemented."),
                  greyed=True,
-                 ).pack(fill="x", pady=(2, 0))
+                 ).pack(fill="x", pady=(2, 6))
+
+        tk.Frame(self._fix_frame, bg=C_DIV, height=1).pack(fill="x", pady=2)
+
+        # Module 08 — Windows Hardware Diagnostics
+        WinHardenerCard(self._fix_frame).pack(fill="x", pady=(2, 0))
 
         # ── Process Conductor tab content (Module 02) ──
         self._conductor_frame = ProcessConductorTab(self.root)

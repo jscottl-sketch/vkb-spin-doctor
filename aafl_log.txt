@@ -52,3 +52,80 @@
 [2026-05-17 18:18:10] START  dry_run=False  allow_paid=False
 [2026-05-17 18:18:13] OK   reason   gemini_flash         $0.00128  3.53s  'Plan how to achieve this goal step by step: Write a Python f'
 [2026-05-17 18:18:19] OK   code     mistral_code         $0.00145  5.32s  'Execute this plan to achieve the goal.\n\nGoal: Write a Python'
+[2026-05-17 19:28:00] START  dry_run=False  allow_paid=False
+[2026-05-17 19:28:03] OK   reason   gemini_flash         $0.00128  3.0s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-17 19:28:09] OK   code     mistral_code         $0.00152  5.73s  'Execute this plan to achieve the goal.\n\nGoal: Write a Python'
+[2026-05-17 20:18:36] START  dry_run=False  allow_paid=False
+[2026-05-17 20:18:43] OK   reason   gemini_flash         $0.00135  2.93s  'Plan how to achieve this goal step by step: Write a Python f'
+[2026-05-17 20:18:48] OK   code     mistral_code         $0.00178  5.68s  'Execute this plan to achieve the goal.\n\nGoal: Write a Python'
+[2026-05-17 20:19:02] ERR  fast     none                 $0.00000  13.21s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-17 20:19:14] START  dry_run=False  allow_paid=False
+[2026-05-17 21:23:35] START  dry_run=False  allow_paid=False
+[2026-05-17 21:29:21] START  dry_run=False  allow_paid=False
+[2026-05-17 21:29:25] OK   reason   gemini_flash         $0.00134  3.1s  'Plan how to achieve this goal step by step: Fix Cerebras pro'
+[2026-05-17 21:29:34] OK   code     mistral_code         $0.00137  9.29s  'Execute this plan to achieve the goal.\n\nGoal: Fix Cerebras p'
+[2026-05-17 21:29:46] ERR  fast     none                 $0.00000  11.96s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-17 22:01:13] START  dry_run=False  allow_paid=False
+[2026-05-17 22:02:43] START  dry_run=False  allow_paid=False
+[2026-05-17 22:02:44] OK   fast     gemini_flash         $0.00002  1.43s  'Say only: ok'
+[2026-05-17 22:03:42] START  dry_run=False  allow_paid=False
+[2026-05-17 22:03:44] OK   fast     openrouter           $0.00000  2.59s  'Say only: ok'
+[2026-05-17 22:05:10] START  dry_run=False  allow_paid=False
+[2026-05-17 22:05:10] OK   fast     cerebras             $0.00007  0.54s  'What is 2+2? Answer in one word.'
+[2026-05-18 00:00:22] START  dry_run=False  allow_paid=False
+[2026-05-18 09:15:35] START  dry_run=False  allow_paid=False
+[2026-05-18 09:16:51] START  dry_run=False  allow_paid=False
+[2026-05-18 09:16:57] OK   reason   gemini_flash         $0.00128  4.5s  'Plan how to achieve this goal step by step: Confirm the AAFL'
+[2026-05-18 09:17:01] OK   code     mistral_code         $0.00126  4.31s  'Execute this plan to achieve the goal.\n\nGoal: Confirm the AA'
+[2026-05-18 09:17:04] OK   fast     openrouter           $0.00000  3.32s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-18 10:45:28] START  dry_run=False  allow_paid=False
+[2026-05-18 10:45:30] START  dry_run=False  allow_paid=False
+[2026-05-18 10:45:33] OK   reason   gemini_flash         $0.00128  3.44s  'Plan how to achieve this goal step by step: Research current'
+[2026-05-18 10:45:43] OK   code     mistral_code         $0.00179  9.21s  'Execute this plan to achieve the goal.\n\nGoal: Research curre'
+[2026-05-18 10:45:45] OK   fast     gemini_flash         $0.00053  1.94s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-18 10:47:11] START  dry_run=False  allow_paid=False
+[2026-05-18 10:47:15] OK   reason   gemini_flash         $0.00128  3.79s  'Plan how to achieve this goal step by step: Find the top 3 c'
+[2026-05-18 10:47:24] OK   code     mistral_code         $0.00250  9.38s  'Execute this plan to achieve the goal.\n\nGoal: Find the top 3'
+[2026-05-18 10:47:27] OK   fast     gemini_flash         $0.00053  2.56s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-18 10:47:37] START  dry_run=False  allow_paid=False
+[2026-05-18 10:47:41] OK   reason   gemini_flash         $0.00128  3.38s  'Plan how to achieve this goal step by step: Explain how HidH'
+[2026-05-18 10:47:48] OK   code     mistral_code         $0.00190  7.3s  'Execute this plan to achieve the goal.\n\nGoal: Explain how Hi'
+[2026-05-18 10:47:50] OK   fast     gemini_flash         $0.00053  1.73s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-18 11:58:40] START  dry_run=False  allow_paid=False
+[2026-05-18 14:10:45] START  dry_run=False  allow_paid=False
+[2026-05-18 14:11:15] OK   reason   openrouter           $0.00000  23.95s  'You are analysing an AI feedback loop system called AAFL (AI'
+[2026-05-18 14:11:48] OK   reason   openrouter           $0.00000  33.18s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 14:11:56] OK   batch    mistral_code         $0.00480  7.66s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 16:56:33] START  dry_run=False  allow_paid=False
+[2026-05-18 16:56:59] OK   reason   gemini_flash         $0.00272  22.52s  'You are analysing an AI feedback loop system called AAFL (AI'
+[2026-05-18 16:57:27] OK   reason   gemini_flash         $0.00548  27.14s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 16:57:31] OK   batch    mistral_code         $0.00256  4.61s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 17:00:56] START  dry_run=False  allow_paid=False
+[2026-05-18 17:01:18] OK   reason   cerebras             $0.00096  19.29s  'You are analysing an AI feedback loop system called AAFL (AI'
+[2026-05-18 17:01:45] OK   reason   gemini_flash         $0.00590  27.13s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 17:02:02] OK   batch    mistral_code         $0.00619  16.27s  'Execute this analysis fully. Produce a complete, specific an'
+[2026-05-18 17:27:32] START  dry_run=False  allow_paid=False
+[2026-05-18 17:27:52] OK   batch    mistral_code         $0.00871  19.52s  "You are optimising a software project's Mission Control task"
+[2026-05-18 17:28:02] START  dry_run=False  allow_paid=False
+[2026-05-18 17:28:23] OK   batch    mistral_code         $0.00873  21.02s  "You are optimising a software project's Mission Control task"
+[2026-05-18 17:28:33] START  dry_run=False  allow_paid=False
+[2026-05-18 17:28:52] OK   batch    mistral_code         $0.00873  19.39s  "You are optimising a software project's Mission Control task"
+[2026-05-18 17:28:59] START  dry_run=False  allow_paid=False
+[2026-05-18 17:29:21] OK   batch    mistral_code         $0.00581  22.01s  "You are optimising a software project's Mission Control task"
+[2026-05-18 17:36:13] START  dry_run=False  allow_paid=False
+[2026-05-18 17:36:34] OK   batch    mistral_code         $0.00893  21.15s  "You are optimising a software project's Mission Control task"
+[2026-05-18 19:04:45] START  dry_run=False  allow_paid=False
+[2026-05-18 19:05:04] OK   batch    mistral_code         $0.00876  18.9s  "You are optimising a software project's Mission Control task"
+[2026-05-18 21:17:03] START  dry_run=False  allow_paid=False
+[2026-05-18 21:17:06] OK   batch    mistral_code         $0.00189  2.55s  'You are updating a project handover document after a Claude '
+[2026-05-18 21:17:08] START  dry_run=False  allow_paid=False
+[2026-05-18 21:17:27] OK   batch    mistral_code         $0.00889  19.11s  "You are optimising a software project's Mission Control task"
+[2026-05-18 21:38:29] START  dry_run=False  allow_paid=False
+[2026-05-18 21:38:33] OK   batch    mistral_code         $0.00258  4.52s  'You are updating a project handover document after a Claude '
+[2026-05-18 21:38:35] START  dry_run=False  allow_paid=False
+[2026-05-18 21:38:51] OK   batch    mistral_code         $0.00908  16.01s  "You are optimising a software project's Mission Control task"
+[2026-05-18 22:00:17] START  dry_run=False  allow_paid=False
+[2026-05-18 22:00:41] OK   reason   gemini_flash         $0.00258  23.99s  'Plan how to achieve this goal step by step: Add Star Citizen'
+[2026-05-18 22:01:15] OK   code     cerebras             $0.00084  34.06s  'Execute this plan to achieve the goal.\n\nGoal: Add Star Citiz'
+[2026-05-18 22:01:16] OK   fast     lmstudio_fast        $0.00000  0.36s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-19 00:09:27] START  dry_run=False  allow_paid=False

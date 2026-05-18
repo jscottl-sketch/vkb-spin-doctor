@@ -1,1 +1,1 @@
-Write a Python function that takes a list of numbers and returns the three largest. Include error handling and a docstring.
+Add Star Citizen full support to Spin Doctor

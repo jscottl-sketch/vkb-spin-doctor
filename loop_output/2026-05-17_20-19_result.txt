@@ -1,0 +1,68 @@
+Here's the Python function that takes a list of numbers and returns the three largest, with error handling and a docstring:
+
+```python
+def get_three_largest(numbers):
+    """
+    Returns the three largest numbers from a list of numbers.
+
+    Args:
+        numbers (list): A list of numbers (integers or floats).
+
+    Returns:
+        list: A list containing the three largest numbers in descending order.
+
+    Raises:
+        ValueError: If the input list has fewer than three elements.
+        TypeError: If the input is not a list or contains non-numeric elements.
+    """
+    # Check if input is a list
+    if not isinstance(numbers, list):
+        raise TypeError("Input must be a list")
+
+    # Check if list has at least three elements
+    if len(numbers) < 3:
+        raise ValueError("List must contain at least three numbers")
+
+    # Check if all elements are numeric
+    for num in numbers:
+        if not isinstance(num, (int, float)):
+            raise TypeError("All elements in the list must be numbers")
+
+    # Get the three largest numbers
+    sorted_numbers = sorted(numbers, reverse=True)
+    three_largest = sorted_numbers[:3]
+
+    return three_largest
+```
+
+### Explanation:
+1. **Docstring**: The function includes a detailed docstring explaining its purpose, arguments, return value, and possible exceptions.
+2. **Error Handling**:
+   - Checks if the input is a list (`TypeError` if not).
+   - Verifies the list has at least three elements (`ValueError` if not).
+   - Ensures all elements are numeric (`TypeError` if any element is non-numeric).
+3. **Logic**:
+   - Sorts the list in descending order.
+   - Returns the first three elements of the sorted list.
+
+### Example Usage:
+```python
+# Example 1: Valid input
+print(get_three_largest([1, 5, 3, 9, 2]))  # Output: [9, 5, 3]
+
+# Example 2: Error handling
+try:
+    print(get_three_largest([1, 2]))  # Raises ValueError
+except ValueError as e:
+    print(e)  # Output: "List must contain at least three numbers"
+
+try:
+    print(get_three_largest("not a list"))  # Raises TypeError
+except TypeError as e:
+    print(e)  # Output: "Input must be a list"
+
+try:
+    print(get_three_largest([1, 2, "three"]))  # Raises TypeError
+except TypeError as e:
+    print(e)  # Output: "All elements in the list must be numbers"
+```

@@ -511,7 +511,7 @@ def touches_many_files(cmd):
 
 # ── Load handover document ────────────────────────────────────────────────────
 
-HANDOVER_FILENAME = "VKB_SpinDoctor_Handover_v29.md"
+HANDOVER_FILENAME = "VKB_SpinDoctor_Handover_v38.md"
 
 def load_handover(work_folder):
     """Read the handover doc from the work folder. Return '' and warn if missing."""

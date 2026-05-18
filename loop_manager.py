@@ -9,14 +9,50 @@ import sys
 import datetime
 from pathlib import Path
 
+try:
+    import winsound
+    import ctypes
+    _NOTIFY_OK = True
+except ImportError:
+    _NOTIFY_OK = False
+
+
+def _notify_done(stop_reason: str, iterations: int, total_cost: float) -> None:
+    """Windows beep + message box notification at end of an overnight run. stdlib only."""
+    if not _NOTIFY_OK:
+        return
+    try:
+        winsound.Beep(880, 200)
+        winsound.Beep(1100, 350)
+    except Exception:
+        pass
+    try:
+        msg = (f"Stop reason: {stop_reason}\n"
+               f"Iterations: {iterations}\n"
+               f"Cost: £{total_cost:.6f}")
+        ctypes.windll.user32.MessageBoxW(None, msg, "AAFL Run Complete", 0x40)
+    except Exception:
+        pass
+
 from aafl_core import AAFLCore
 from memory_bank import (
     store, search_solution, search_failures, store_solution,
-    update_source, TAGS,
+    update_source, TAGS, infer_tags_from_keywords,
 )
 from researcher import scout
 from cost_guard import CostGuard, CostGuardError
 from evaluator import evaluate
+
+# Injected into every LLM call so models behave as agents, not chatbots.
+AGENT_SYSTEM = (
+    "You are an autonomous AI agent operating inside an automated feedback loop. "
+    "You have internet access — web search results are provided in the prompt when available. "
+    "Complete every task fully and definitively in a single response. "
+    "Never ask follow-up questions. Never ask for clarification. "
+    "Never end with phrases like 'Would you like more details?', "
+    "'Let me know if you need anything else', or any similar invitation. "
+    "Produce your complete answer and stop."
+)
 
 HERE = Path(__file__).parent
 
@@ -27,7 +63,7 @@ def load_goal() -> str:
         raise FileNotFoundError(
             "goal.txt not found — create it with your goal on the first line"
         )
-    return goal_path.read_text(encoding="utf-8").strip()
+    return goal_path.read_text(encoding="utf-8-sig").strip()
 
 
 def _detect_game(goal: str) -> str:
@@ -43,12 +79,28 @@ def _detect_game(goal: str) -> str:
     return "unknown"
 
 
-def _write_report(path: Path, iterations: int, best: dict | None,
+def _goal_slug(goal: str) -> str:
+    words = re.sub(r"[^\w\s]", "", goal).split()[:4]
+    return "_".join(w.lower() for w in words)
+
+
+def _write_report(goal: str, iterations: int, best: dict | None,
                   total_cost: float, stop_reason: str):
+    out_dir  = HERE / "loop_output"
+    out_dir.mkdir(exist_ok=True)
+    stamp    = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+    slug     = _goal_slug(goal)
+    out_path = out_dir / f"{stamp}_{slug}.md"
+    n = 2
+    while out_path.exists():
+        out_path = out_dir / f"{stamp}_{slug}_{n}.md"
+        n += 1
+
     now   = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     lines = [
         f"# Morning Report — {now}",
         "",
+        f"**Goal:** {goal}",
         f"**Stop reason:** {stop_reason}",
         f"**Iterations completed:** {iterations}",
         f"**Total cost:** £{total_cost:.6f}",
@@ -72,7 +124,10 @@ def _write_report(path: Path, iterations: int, best: dict | None,
         ]
     else:
         lines.append("_No successful attempt recorded._")
-    path.write_text("\n".join(lines), encoding="utf-8")
+
+    text = "\n".join(lines)
+    out_path.write_text(text, encoding="utf-8")
+    (HERE / "morning_report.md").write_text(text, encoding="utf-8")
 
 
 def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
@@ -88,7 +143,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     if past:
         print(f"[DB] Past solution found (score {past['ai_score']}) — using it")
         _write_report(
-            HERE / "morning_report.md",
+            goal,
             iterations=0,
             best={
                 "id":            past.get("id", "n/a"),
@@ -143,7 +198,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
 
         print("[LOOP] Planning...")
         plan_prompt = f"Plan how to achieve this goal step by step: {goal}"
-        if briefing_text:
+        if briefing_data["results"]:          # only inject when search actually returned content
             plan_prompt += f"\n\n{briefing_text}"
         if failure_note:
             plan_prompt += f"\n\n{failure_note}"
@@ -151,7 +206,8 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         plan_result = aafl.run(
             task=plan_prompt,
             task_type="reason",
-            max_tokens=512,
+            max_tokens=1024,
+            system=AGENT_SYSTEM,
         )
         guard.record_call(plan_result.cost_usd)
 
@@ -177,12 +233,15 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
 
         print("[LOOP] Working...")
         work_task = f"Execute this plan to achieve the goal.\n\nGoal: {goal}\n\nPlan:\n{plan_text}"
+        if briefing_data["results"]:          # give the work step the same web context as the plan
+            work_task += f"\n\n{briefing_text}"
         if prev_feedback:
             work_task += f"\n\nNote from previous attempt: {prev_feedback}"
         work_result = aafl.run(
             task=work_task,
             task_type="code",
             max_tokens=1024,
+            system=AGENT_SYSTEM,
         )
         guard.record_call(work_result.cost_usd)
 
@@ -191,6 +250,13 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             continue
 
         work_text = work_result.response
+
+        # Guard: evaluator must never receive empty content — verify() can pass
+        # for reasoning-model responses that contain only whitespace after
+        # stripping think tags, so check explicitly before scoring.
+        if not work_text.strip():
+            print("[LOOP] Verify: empty content after provider response — skipping")
+            continue
 
         # ── Evaluate ──────────────────────────────────────────────────────────
         scores   = evaluate(work_text, goal)
@@ -219,7 +285,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
                 f"Pick up to 5 tags that best describe this goal: {goal}\n"
                 f"Reply with ONLY the tag names separated by commas. No explanation."
             )
-            tag_result = aafl.run(task=tag_prompt, task_type="fast", max_tokens=50)
+            tag_result = aafl.run(task=tag_prompt, task_type="fast", max_tokens=200, system=AGENT_SYSTEM)
             guard.record_call(tag_result.cost_usd)
             if tag_result.ok:
                 raw_tags  = [t.strip().lower() for t in tag_result.response.split(",")]
@@ -230,6 +296,9 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             break
         except Exception:
             pass
+
+        if not tags_str:
+            tags_str = infer_tags_from_keywords(goal)
 
         game = _detect_game(goal)
 
@@ -305,15 +374,15 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     else:
         stop_reason = "max_iterations"
 
-    total_cost  = guard.running_cost
-    report_path = HERE / "morning_report.md"
-    _write_report(report_path, iterations, best_attempt, total_cost, stop_reason)
+    total_cost = guard.running_cost
+    _write_report(goal, iterations, best_attempt, total_cost, stop_reason)
 
     print(f"\n[LOOP] Done.")
     print(f"[LOOP] Stop reason : {stop_reason}")
     print(f"[LOOP] Iterations  : {iterations}")
     print(f"[LOOP] Total cost  : £{total_cost:.6f}")
-    print(f"[LOOP] Report      : {report_path}")
+    print(f"[LOOP] Report      : {HERE / 'morning_report.md'}")
+    _notify_done(stop_reason, iterations, total_cost)
 
 
 if __name__ == "__main__":
