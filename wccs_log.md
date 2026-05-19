@@ -19,3 +19,4 @@
 | 11 | 18 May 2026 | v35 → v36 | WCCS protocol updated (mcu_optimizer moved to step 6, sfl_agent update to step 7). MCC (Mission Control Center) vision added. New ACCA codes: WRC + MCC. Files created: dashboard_builder.py, mission_control.html upgraded to Central Command. Files modified: mcu_optimizer.py wired as WCCS step 6. ALP entries: 2 (entries 14-15). | WRC = Write-Run-Check, MCC = Mission Control Center |
 | 12 | 2026-05-18 | v36 -> v37 | ﻿WCCS automation system built — 4 files created this session.  1. wccs_runner.py | None |
 | 13 | 2026-05-18 | v37 -> v38 | SESSION: 18 May 2026 — Chat session 6  KEY DECISIONS: - WCCS automation system b | None |
+| 14 | 2026-05-19 | v38 -> v39 | Project split plan (5 projects). task_router in handover. Future Modules added. 7 old handovers deleted. DSP rule in WHO IS SCOTT. /wccs command created. 8 providers to sign up listed. | #16 — project split reduces context burn per message |

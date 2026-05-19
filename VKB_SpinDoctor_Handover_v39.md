@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v38 (MASTER)
+# VKB Spin Doctor — Project Handover v39 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** Central Command (MCC) designed — dashboard_builder.py + upgraded mission_control.html (4 tabs). WCCS protocol updated: mcu_optimizer now step 6. New ACCA codes WRC + MCC.
-**Last updated:** 2026-05-18 (WCCS automation)
-**Consolidates:** v37
+**Status:** Project split plan designed (5 Claude Projects). task_router.py confirmed. Future Modules table added. 7 old handovers deleted. /wccs slash command created. xAI Grok signup deferred to tomorrow.
+**Last updated:** 2026-05-19
+**Consolidates:** v38
 
 ---
 
@@ -637,11 +637,34 @@ Desktop (C:\Users\jscot\Desktop\):
 
 ## NEXT PRIORITIES
 
-1. Add DSP rule to handover + wccs-generator skill (2 CLAC blocks ready)
-2. Scott decides MCC layout: Option A or B, dark or light theme
-3. Build MCC redesign in CLAC
-4. Delete old handovers v27-v34 from folder
-5. Swap v36 for v37 in Project Files
+1. Sign up xAI Grok (phone tomorrow) — add key to .env as GROK_API_KEY
+2. Upload v39 to Project Files (replace v38)
+3. Execute the 5-project split (AAFL Engine / VKB Spin Doctor / Mission Control / Promo+Business / ACCA Database)
+4. Build MCC redesign (Option A sidebar HUD or Option B single scroll — decision pending)
+5. Star Citizen full support via AAFL
+
+### 5-Project Split Plan
+| Project | What goes in it |
+|---|---|
+| AAFL Engine | aafl_core.py, loop_manager.py, evaluator.py, researcher.py, memory_bank.py, meta_loop.py |
+| VKB Spin Doctor | spin_doctor.py, problems/, sfl_agent.py, game configs, keybinding library |
+| Mission Control | dashboard_builder.py, mcu_optimizer.py, mission_control.html, wccs_runner.py, mcc_server.py |
+| Promo + Business | README, Ko-fi/Itch.io links, monetisation notes, roadmap |
+| ACCA Database | ALP_Database.md, ACCA codes, v39 handover pinned |
+
+Pin in each project: ALP_Database.md + latest handover (v39). MCC still reads same local files regardless of which project chat is open.
+
+### 8 Providers Still to Sign Up
+| Provider | URL |
+|---|---|
+| xAI Grok | x.ai/api |
+| NVIDIA NIM | build.nvidia.com |
+| SambaNova | cloud.sambanova.ai |
+| GitHub Models | github.com/marketplace/models |
+| Ollama | ollama.com |
+| Together AI | together.ai |
+| Fireworks AI | fireworks.ai |
+| DeepSeek | platform.deepseek.com |
 
 ---
 
@@ -673,7 +696,7 @@ Desktop (C:\Users\jscot\Desktop\):
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v38.md. Central Command (MCC) designed — dashboard_builder.py + upgraded mission_control.html with 4 tabs. mcu_optimizer.py wired as WCCS step 6. New ACCA codes WRC + MCC. Next: build MCC phase 1 (dashboard_builder.py + Central Command HTML), then re-run meta_loop goals 2+3, then GROQ/Cloudflare keys, then Star Citizen support."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v39.md. Project split plan designed (5 Claude Projects). task_router.py confirmed + in handover. Future Modules table added (10 niche AI tools). Old handovers v27-v34 deleted. /wccs slash command created. xAI Grok signup tomorrow via phone. Next: execute 5-project split, build MCC redesign, Star Citizen AAFL support."
 
 ---
 
@@ -802,3 +825,17 @@ Desktop (C:\Users\jscot\Desktop\):
 3. Build MCC redesign in CLAC
 4. Delete old handovers v27-v34 from folder
 5. Swap v36 for v37 in Project Files
+
+---
+
+### 2026-05-19 (Claude Code session 1)
+**Key decisions:** MCC confirmed — still controls all projects after split, reads same local files regardless of which Claude Project chat is open. Full conversation detective search done — 20+ chats combed, full project history April 26 to today reconstructed. task_router.py confirmed built (88 lines) — classifies tasks AAFL/CLAC/SONNET/OPUS — added to v38 handover. 10 niche AI modules section added to v38 as Future Modules. Old handovers v27, v29-v34 deleted (7 files). Mystery files identified and kept: setup_router, full_auto_setup, health_check, quick_fix, archive_logs, task_db.json. Project split plan designed: 5 Claude Projects (AAFL Engine, VKB Spin Doctor, Mission Control, Promo+Business, ACCA Database). ALP_Database.md + v39 to be pinned in relevant projects after split. xAI Grok signup deferred to tomorrow via phone. DSP rule added to WHO IS SCOTT section. /wccs slash command created at .claude/commands/wccs.md.
+**New ACCA codes:** None
+**Bugs fixed:** None
+**Ideas discussed:** 8 providers still to sign up (xAI, NVIDIA NIM, SambaNova, GitHub Models, Ollama, Together AI, Fireworks, DeepSeek). Project split means each project chat only loads its own pinned files — reduces context burn per message.
+**Next priorities:**
+1. Sign up xAI Grok tomorrow (phone) — add key to .env
+2. Upload v39 to Project Files (replace v38)
+3. Execute the 5-project split
+4. Build MCC redesign (Option A or B — decision pending)
+5. Star Citizen full support via AAFL
