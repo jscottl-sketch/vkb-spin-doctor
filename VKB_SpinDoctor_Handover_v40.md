@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v39 (MASTER)
+# VKB Spin Doctor — Project Handover v40 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** Project split plan designed (5 Claude Projects). task_router.py confirmed. Future Modules table added. 7 old handovers deleted. /wccs slash command created. xAI Grok signup deferred to tomorrow.
+**Status:** MAJOR REFRAME: AAFL IS the project. Spin Doctor is the benchmark/test subject. Master + 5 sub-projects structure confirmed. merge_sessions.py + .bat planned (not yet built). AAFL competes with LangGraph, CrewAI, AutoGPT. Star Citizen v0.2 = first public benchmark.
 **Last updated:** 2026-05-19
-**Consolidates:** v38
+**Consolidates:** v39
 
 ---
 
@@ -113,6 +113,8 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 ---
 
 ## BIG VISION
+
+**THE AAFL IS THE PROJECT NOW.** Spin Doctor is the benchmark and test subject — the first proof AAFL works. AAFL competes with LangGraph, CrewAI, AutoGPT as a self-improving AI agent framework. Story angle: *"beginner with BI builds self-improving AI agent."* Target communities: r/LocalLLaMA, GitHub, HackerNews. Post trigger: AAFL passes Star Citizen v0.2 benchmark via autonomous run.
 
 Not a VKB-specific tool. A **universal input device assistant** — any hardware, any game, one tool.
 
@@ -301,7 +303,7 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 | Log file | Every session saves to `sfl_logs/` |
 | Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
 | Flags | `--note`, `--folder`, `--budget` flags available |
-| Handover injection | Loads VKB_SpinDoctor_Handover_v38.md into system prompt on startup |
+| Handover injection | Loads VKB_SpinDoctor_Handover_v40.md into system prompt on startup |
 | call_aafl(prompt) | Convenience wrapper — routes any prompt through AAFLCore |
 
 ### Autonomy Control Panel v1 (built into sfl_agent)
@@ -436,7 +438,7 @@ VKB-SpinDoctor/
 ├── GIT_BACKUP.bat                     # git add -A + commit + push
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
 ├── Knowledge_Engine_Schema_v1.md      # DB schema reference
-├── VKB_SpinDoctor_Handover_v38.md     # This file — read by sfl_agent on startup
+├── VKB_SpinDoctor_Handover_v40.md     # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
 │   ├── conductor.py                   # Module 04 ✅ 619 lines
@@ -637,11 +639,13 @@ Desktop (C:\Users\jscot\Desktop\):
 
 ## NEXT PRIORITIES
 
-1. Sign up xAI Grok (phone tomorrow) — add key to .env as GROK_API_KEY
-2. Upload v39 to Project Files (replace v38)
-3. Execute the 5-project split (AAFL Engine / VKB Spin Doctor / Mission Control / Promo+Business / ACCA Database)
-4. Build MCC redesign (Option A sidebar HUD or Option B single scroll — decision pending)
-5. Star Citizen full support via AAFL
+1. Sign up xAI Grok (phone) — add key to .env as GROK_API_KEY
+2. Build merge_sessions.py + .bat (CLAC — DSP not yet confirmed)
+3. Execute the 5-project split + create Master project (AAFL Engine / VKB Spin Doctor / Mission Control / Promo+Business / ACCA Database)
+4. Upload v40 to Project Files across all relevant sub-projects
+5. Star Citizen v0.2 benchmark via AAFL autonomous run (first public demo)
+6. External post when benchmark passes (r/LocalLLaMA, GitHub, HackerNews)
+7. Build MCC redesign (Option A sidebar HUD or Option B single scroll — decision pending)
 
 ### 5-Project Split Plan
 | Project | What goes in it |
@@ -696,7 +700,7 @@ Pin in each project: ALP_Database.md + latest handover (v39). MCC still reads sa
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v39.md. Project split plan designed (5 Claude Projects). task_router.py confirmed + in handover. Future Modules table added (10 niche AI tools). Old handovers v27-v34 deleted. /wccs slash command created. xAI Grok signup tomorrow via phone. Next: execute 5-project split, build MCC redesign, Star Citizen AAFL support."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v40.md. MAJOR REFRAME: AAFL IS the project. Spin Doctor is the benchmark. Master + 5 sub-projects confirmed. merge_sessions.py not yet built. AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark + post trigger. Next: build merge_sessions.py + .bat, execute 5-project split, run Star Citizen benchmark via AAFL, post when it passes."
 
 ---
 
@@ -839,3 +843,16 @@ Pin in each project: ALP_Database.md + latest handover (v39). MCC still reads sa
 3. Execute the 5-project split
 4. Build MCC redesign (Option A or B — decision pending)
 5. Star Citizen full support via AAFL
+
+---
+
+### 2026-05-19 (Chat session — Master Project strategy)
+**Key decisions:** MAJOR REFRAME: AAFL IS the project. Spin Doctor is the benchmark/test subject, not the end goal. Master + 5 sub-projects (6 total) confirmed. Master = weekly boardroom (open max 2-3x/week). Sub-projects = daily workshops (lean context, ALP-efficient). merge_sessions.py + .bat chosen (Option 2) — double-click weekly, ~1 min. CLAC block not yet given (WCCS called first). AAFL now competes with LangGraph, CrewAI, AutoGPT. Spin Doctor v0.2 (Star Citizen) = AAFL's first real public demo/benchmark. Split barely affects benchmark (runs locally via Claude Code/AAFL, not Chat). External posting plan: r/LocalLLaMA, GitHub, HackerNews when benchmark passes.
+**New ACCA codes:** None
+**Ideas discussed:** Master project as boardroom vs sub-projects as workshops. Session logs as glue between all projects. AAFL could auto-merge logs (Option 3) but Scott prefers script (Option 2). Promotional path = AI/agent dev communities not flight sim Discords. Story angle: "beginner with BI builds self-improving AI agent." Scott wants to understand what posting means in practice before committing.
+**ALP findings:** Master project open max 2-3x/week saves context vs opening daily. Daily work in lean sub-projects.
+**Next priorities:**
+1. Build merge_sessions.py + .bat (CLAC — DSP not yet confirmed)
+2. Execute 5-project split + Master
+3. Star Citizen benchmark via AAFL
+4. External post when benchmark passes

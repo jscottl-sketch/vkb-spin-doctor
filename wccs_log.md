@@ -20,3 +20,5 @@
 | 12 | 2026-05-18 | v36 -> v37 | ﻿WCCS automation system built — 4 files created this session.  1. wccs_runner.py | None |
 | 13 | 2026-05-18 | v37 -> v38 | SESSION: 18 May 2026 — Chat session 6  KEY DECISIONS: - WCCS automation system b | None |
 | 14 | 2026-05-19 | v38 -> v39 | Project split plan (5 projects). task_router in handover. Future Modules added. 7 old handovers deleted. DSP rule in WHO IS SCOTT. /wccs command created. 8 providers to sign up listed. | #16 — project split reduces context burn per message |
+| 15 | 2026-05-19 | v39 -> v40 | MAJOR REFRAME: AAFL IS the project. Spin Doctor = benchmark. Master + 5 sub-projects structure confirmed. merge_sessions.py planned. AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark. External post plan (r/LocalLLaMA, GitHub, HN). | #17 — Master project max 2-3x/week, daily in lean sub-projects |
+| 16 | 2026-05-19 | v40 -> v41 | Pre-split assessment: MCC confirmed as cross-cutting cockpit layer, 5 new MCC features planned (Stuck Inbox/Run Now/Cost Predictor/Memory Inspector/Promotion Queue), ALP consolidated to 17 entries, merge_sessions.py DSP still pending. | None |

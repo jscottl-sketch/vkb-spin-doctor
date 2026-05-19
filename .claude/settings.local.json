@@ -25,7 +25,8 @@
       "Bash(python loop_manager.py --once)",
       "Bash(pip install *)",
       "Bash(python -c ' *)",
-      "Bash(python -c \"from memory_bank import infer_tags_from_keywords; result = infer_tags_from_keywords\\('Fix Cerebras provider model name in aafl_core.py'\\); print\\('Input :', 'Fix Cerebras provider model name in aafl_core.py'\\); print\\('Tags  :', repr\\(result\\)\\); print\\('PASS' if result else 'FAIL -- empty result'\\)\")"
+      "Bash(python -c \"from memory_bank import infer_tags_from_keywords; result = infer_tags_from_keywords\\('Fix Cerebras provider model name in aafl_core.py'\\); print\\('Input :', 'Fix Cerebras provider model name in aafl_core.py'\\); print\\('Tags  :', repr\\(result\\)\\); print\\('PASS' if result else 'FAIL -- empty result'\\)\")",
+      "Bash(C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe mcu_optimizer.py)"
     ]
   }
 }
