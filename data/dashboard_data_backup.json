@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated": "2026-05-18T21:38:51",
+    "generated": "2026-05-18T22:21:32",
     "generator": "dashboard_builder.py"
   },
   "tasks": {
-    "last_updated": "2026-05-18T21:38:51",
+    "last_updated": "2026-05-18T22:21:32",
     "data": [
       {
         "id": "t031",
@@ -334,8 +334,15 @@
     }
   },
   "activity_feed": {
-    "last_updated": "2026-05-18T21:38:51",
+    "last_updated": "2026-05-18T22:21:32",
     "data": [
+      {
+        "timestamp": "2026-05-18T22:01:00",
+        "type": "loop_run",
+        "title": "Add Star Citizen full support to Spin Doctor",
+        "detail": "Score: 9.17",
+        "file": "2026-05-18_22-01_add_star_citizen_full.md"
+      },
       {
         "timestamp": "2026-05-18T21:38:33",
         "type": "session_log",
@@ -430,8 +437,20 @@
     ]
   },
   "aafl_runs": {
-    "last_updated": "2026-05-18T21:38:51",
+    "last_updated": "2026-05-18T22:21:32",
     "data": [
+      {
+        "id": 8,
+        "goal": "Add Star Citizen full support to Spin Doctor",
+        "score": 9.17,
+        "tags": "spin,star_citizen,bindings,firmware,companion_software",
+        "cost": null,
+        "passed": true,
+        "iterations": 1,
+        "game": "star_citizen",
+        "hardware": "vkb_nxt_evo",
+        "created_at": "2026-05-18T21:01:16.353019"
+      },
       {
         "id": 7,
         "goal": "Explain how HidHide can be used to prevent double-input from a PS5 controller in Star Citizen",
@@ -519,12 +538,12 @@
     ]
   },
   "cost_tracker": {
-    "last_updated": "2026-05-18T21:38:51",
+    "last_updated": "2026-05-18T22:21:32",
     "data": {
-      "total_spent": 0.039525,
-      "avg_per_run": 0.001129,
-      "runs_today": 12,
-      "runs_total": 35
+      "total_spent": 0.042951,
+      "avg_per_run": 0.00113,
+      "runs_today": 15,
+      "runs_total": 38
     }
   }
 }

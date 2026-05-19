@@ -1,0 +1,2 @@
+[12:09:58] PASS: Add Star Citizen full support to Spin Doctor
+[12:18:10] PASS: Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator NXT EVO
