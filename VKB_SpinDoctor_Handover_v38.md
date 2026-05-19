@@ -16,6 +16,7 @@
 - **Tables preferred** for structured info
 - **Number all options** — Scott replies with just a number
 - **No bullshit** — if something's hard or slow, say so upfront
+- **DSP rule** — Before giving ANY CLAC (Claude Code) block, ALWAYS ask: "DSP? (claude --dangerously-skip-permissions)" — every session, no exceptions
 
 ---
 
