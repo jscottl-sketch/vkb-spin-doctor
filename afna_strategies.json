@@ -1,0 +1,44 @@
+{
+  "strategies": [
+    {
+      "name": "ddg",
+      "description": "DuckDuckGo web search — general web results via ddgs library",
+      "provider": "duckduckgo_search",
+      "free_tier": true,
+      "upgrade_model": null,
+      "disabled": false
+    },
+    {
+      "name": "reddit",
+      "description": "Reddit PRAW API — searches hoggit/starcitizen/warthunder/EliteDangerous subreddits",
+      "provider": "praw",
+      "free_tier": true,
+      "upgrade_model": null,
+      "disabled": false
+    },
+    {
+      "name": "github",
+      "description": "GitHub Issues search — finds bug reports and fix threads (60 req/hr, no key needed)",
+      "provider": "github_api",
+      "free_tier": true,
+      "upgrade_model": null,
+      "disabled": false
+    },
+    {
+      "name": "youtube",
+      "description": "YouTube transcript search — extracts text from tutorial and fix videos",
+      "provider": "youtube_transcript_api",
+      "free_tier": true,
+      "upgrade_model": null,
+      "disabled": false
+    },
+    {
+      "name": "forum",
+      "description": "Direct HTTP crawler for gaming forums (warthunder, RSI spectrum) via BeautifulSoup",
+      "provider": "beautifulsoup4",
+      "free_tier": true,
+      "upgrade_model": null,
+      "disabled": false
+    }
+  ]
+}

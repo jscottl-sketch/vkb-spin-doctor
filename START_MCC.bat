@@ -1,5 +1,5 @@
 @echo off
-REM WCCS.bat -- Start MCC Server + Open Mission Control in Chrome
+REM START_MCC.bat -- Start MCC Server + Open Mission Control in Chrome
 REM Run this from anywhere. Starts mcc_server.py if not already running.
 
 set "PYTHON=C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe"

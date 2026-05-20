@@ -1,0 +1,77 @@
+{
+  "active_strategies": {
+    "ddg": true,
+    "reddit": true,
+    "github": true,
+    "youtube": true,
+    "forum": true
+  },
+  "goal": "different keybinds star citizen, for vkb galdiator",
+  "game_filter": "all",
+  "hardware_filter": "any",
+  "search_type": "keybinds",
+  "max_results_per_scout": 9,
+  "timeout_seconds": 30,
+  "synthesis_model": "mistral",
+  "reputation_floor": 3,
+  "date_filter": "all",
+  "presets": [
+    {
+      "name": "SC Keybinds",
+      "active_strategies": {
+        "ddg": true,
+        "reddit": true,
+        "github": true,
+        "youtube": true,
+        "forum": false
+      },
+      "goal": "Star Citizen joystick keybinds VKB NXT EVO setup guide",
+      "game_filter": "star_citizen",
+      "hardware_filter": "vkb",
+      "search_type": "keybinds",
+      "max_results_per_scout": 5,
+      "timeout_seconds": 30,
+      "synthesis_model": "mistral",
+      "reputation_floor": 3.0,
+      "date_filter": "all"
+    },
+    {
+      "name": "WT Bug Fix",
+      "active_strategies": {
+        "ddg": true,
+        "reddit": true,
+        "github": true,
+        "youtube": false,
+        "forum": true
+      },
+      "goal": "War Thunder joystick axis spinning bug fix Steam input",
+      "game_filter": "war_thunder",
+      "hardware_filter": "any",
+      "search_type": "bug_fix",
+      "max_results_per_scout": 5,
+      "timeout_seconds": 30,
+      "synthesis_model": "mistral",
+      "reputation_floor": 3.0,
+      "date_filter": "all"
+    },
+    {
+      "name": "ED Setup",
+      "active_strategies": {
+        "ddg": true,
+        "reddit": true,
+        "github": false,
+        "youtube": true,
+        "forum": false
+      },
+      "goal": "Elite Dangerous HOTAS joystick setup guide axis configuration",
+      "game_filter": "elite_dangerous",
+      "hardware_filter": "any",
+      "search_type": "setup",
+      "max_results_per_scout": 5,
+      "timeout_seconds": 30,
+      "synthesis_model": "mistral",
+      "reputation_floor": 3.0,
+      "date_filter": "all"
+    }
+  ]
+}

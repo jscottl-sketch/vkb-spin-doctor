@@ -40,6 +40,9 @@ from memory_bank import (
     update_source, TAGS, infer_tags_from_keywords,
 )
 from researcher import scout
+USE_CHIEF_SCOUT = True
+try: from chief_scout import chief_scout as _chief_scout
+except ImportError: _chief_scout = None
 from cost_guard import CostGuard, CostGuardError
 from evaluator import evaluate
 
@@ -172,7 +175,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
 
         # ── Phase C — scout ───────────────────────────────────────────────────
         try:
-            briefing_data = scout(goal)
+            briefing_data = (_chief_scout(goal) if USE_CHIEF_SCOUT and _chief_scout else scout(goal))
             n_sources     = len(briefing_data["results"])
             print(f"[SCOUT] Briefing ready — {n_sources} source(s) found")
             briefing_text = briefing_data["briefing"]

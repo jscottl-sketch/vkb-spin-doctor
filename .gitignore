@@ -24,3 +24,6 @@ session_logs/archive/
 .vscode/
 .idea/
 *.swp
+
+scout_output/
+aafl_output/

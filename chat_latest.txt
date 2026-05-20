@@ -1,47 +1,7 @@
-SESSION: 2026-05-19 01:51 — Pre-split assessment
+SESSION: 20 May 2026 — aafl_watchdog.py built, Star Citizen 8.33/10 autonomous, Scout Control mega-upgrade brainstormed, MCC tabs reorganization discussed, database-backed handover designed as permanent WCCS fix.
 
-KEY DECISIONS:
-- MCC confirmed as cross-cutting layer across ALL projects — cockpit, bidirectional, AAFL-powered
-- Next 5 MCC features: Stuck Inbox, Run Now button, Cost Predictor, Memory Inspector, Promotion Queue
-- External posting plan locked: r/LocalLLaMA primary, post when AAFL passes Star Citizen v0.2
-- Story angle confirmed: "beginner with BI builds self-improving AI agent"
-- Comparison set: LangGraph, CrewAI, AutoGPT
-- merge_sessions.py + .bat: DSP asked, not yet confirmed
-- ALP memory consolidated: 11 outdated entries removed, 4 Master Plan entries added
-- Master = weekly boardroom (2-3x/week max). Sub-projects = daily workshops.
-- AAFL opening up: stuck.md files, external RSS/GitHub learning, promotion drafting
+JOB #1 NEXT SESSION: Build database-backed handover (handover.db SQLite + migration from v45). CLAC block ready above. This fixes truncation permanently.
 
-NEW ACCA CODES: None
+ACCA: SBS = Step By Step
 
-NEXT PRIORITIES:
-1. Build merge_sessions.py + .bat (DSP pending)
-2. Execute 5-project split
-3. Star Citizen benchmark via AAFL
-4. External post when benchmark passes
----
-
-NEW ACCA CODE:
-- CAWPA = Completely Automate Whats Possible by AI
-
-WCCS RELIABILITY UPGRADE — Stage 1 (lock in v41):
-
-1. MINI-SAVE PROTOCOL: Every ~10 exchanges in Chat, Claude drops a 5-line MINI-SAVE block summarising key decisions so far. Scott does nothing — passive capture. If Chat dies mid-session, latest mini-save is recent.
-
-2. RECOVERY PATH (when WCCS fails mid-save): Open new Chat → "Search past chats from last 24 hours and regenerate the WCCS summary that was lost." Claude uses conversation_search tool to rebuild. This is exactly what was done 2026-05-19 morning to rescue the 01:51 session.
-
-3. PRE-FLIGHT ALP CHECK: Before WCCS, if Claude detects allowance is low (Scott reports % or SuperClaude triggers), skip full handover rewrite. Only do session log + chat log append. Light save.
-
-WCCS RELIABILITY UPGRADE — Stage 2 (queue for next CLAC session):
-
-4. Build aafl_wccs.py — AAFL (free provider Mistral) writes the new handover .md, not CLAC. Reads chat_latest.txt + current handover, writes new version. Zero Claude allowance burn for the write step. Eliminates the failure mode that killed last night's save.
-
-WCCS RELIABILITY UPGRADE — Stage 3 (future):
-
-5. Wire Claude in Chrome extension to auto-capture chat DOM and save to chat_latest.txt at session end. Fully CA — Scott never types WCCS again.
-
-NEXT PRIORITIES (updated):
-1. Stage 2 build — aafl_wccs.py (CLAC session, DSP confirmed required)
-2. merge_sessions.py + .bat (still pending)
-3. Execute 5-project split
-4. Star Citizen benchmark via AAFL
-5. Stage 3 — Claude in Chrome auto-capture
+NEXT: File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead), MCC Watchdog+Rewind tab, START_MCC.bat rename.

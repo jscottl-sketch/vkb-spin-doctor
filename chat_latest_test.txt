@@ -1,0 +1,4 @@
+### 2026-05-20 (CLAC session — handover split migration)
+Key decisions: Migrated v45 to split structure. Built aafl_wccs.py. Permanent WCCS fix in place.
+New ACCA codes: None this session.
+Next priorities: Test aafl_wccs.py, then Star Citizen benchmark.

@@ -1,0 +1,113 @@
+{
+  "active_provider": "mistral",
+  "fallback_providers": ["gemini", "cerebras", "openrouter"],
+  "task_type": "reason",
+  "max_iterations": 5,
+  "max_cost_usd": 0.10,
+  "timeout_seconds": 120,
+  "use_chief_scout": true,
+  "use_db_cache": true,
+  "use_meta_loop": false,
+  "current_goal": "",
+  "run_mode": "once",
+  "provider_list": [
+    {
+      "id": "lmstudio-coder",
+      "name": "LM Studio Coder 32B",
+      "model": "openai/qwen2.5-coder-32b-instruct",
+      "tier": 1,
+      "status": "working"
+    },
+    {
+      "id": "lmstudio-vl",
+      "name": "LM Studio VL 32B",
+      "model": "openai/qwen2.5-vl-32b-instruct",
+      "tier": 1,
+      "status": "working"
+    },
+    {
+      "id": "lmstudio-r1",
+      "name": "LM Studio DeepSeek R1",
+      "model": "openai/deepseek-r1-70b",
+      "tier": 1,
+      "status": "working"
+    },
+    {
+      "id": "lmstudio-phi4",
+      "name": "LM Studio Phi-4 14B",
+      "model": "openai/phi-4-14b",
+      "tier": 1,
+      "status": "working"
+    },
+    {
+      "id": "cerebras",
+      "name": "Cerebras GPT-OSS 120B",
+      "model": "cerebras/gpt-oss-120b",
+      "tier": 2,
+      "status": "working"
+    },
+    {
+      "id": "groq-llama",
+      "name": "Groq Llama 3.3 70B",
+      "model": "groq/llama-3.3-70b-versatile",
+      "tier": 2,
+      "status": "needs_key"
+    },
+    {
+      "id": "groq-r1",
+      "name": "Groq DeepSeek R1",
+      "model": "groq/deepseek-r1-distill-llama-70b",
+      "tier": 2,
+      "status": "needs_key"
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini 2.5 Flash",
+      "model": "gemini/gemini-2.5-flash",
+      "tier": 2,
+      "status": "working"
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral Codestral",
+      "model": "mistral/codestral-latest",
+      "tier": 2,
+      "status": "working"
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare Workers AI",
+      "model": "cloudflare/@cf/meta/llama-3.1-8b-instruct",
+      "tier": 2,
+      "status": "needs_key"
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter Auto",
+      "model": "openrouter/openrouter/auto",
+      "tier": 3,
+      "status": "working"
+    },
+    {
+      "id": "huggingface",
+      "name": "HuggingFace Mistral-7B",
+      "model": "huggingface/mistralai/Mistral-7B-Instruct-v0.3",
+      "tier": 3,
+      "status": "needs_key"
+    },
+    {
+      "id": "cohere",
+      "name": "Cohere Embeddings",
+      "model": "cohere/embed-english-v3.0",
+      "tier": 3,
+      "status": "needs_key"
+    },
+    {
+      "id": "claude-sonnet",
+      "name": "Claude Sonnet (PAID)",
+      "model": "claude-sonnet-4-6",
+      "tier": 99,
+      "status": "blocked"
+    }
+  ]
+}

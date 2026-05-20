@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v42 (MASTER)
+# VKB Spin Doctor — Project Handover v45 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** WCCS Reliability Upgrade designed — 3-stage plan (Mini-Save Protocol, aafl_wccs.py, Chrome extension). New ACCA code CAWPA. aafl_wccs.py queued for next CLAC session.
-**Last updated:** 2026-05-19
-**Consolidates:** v41
+**Status:** Handover split architecture designed (INDEX/STATUS/HISTORY/ACCA). aafl_wccs.py spec written. Next: CLAC session A (migrate to split) then CLAC session B (build aafl_wccs.py). v44 confirmed truncated — v43 was intact master, v45 is new master.
+**Last updated:** 2026-05-20
+**Consolidates:** v44 (truncated/corrupt — 499 lines vs v43's 1,003)
 
 ---
 
@@ -54,6 +54,7 @@
 | WRC | Write-Run-Check (mini dev cycle: write code, run it, check output) |
 | MCC | Mission Control Center (Central Command dashboard) |
 | CAWPA | Completely Automate Whats Possible by AI |
+| CAP | Copy and Paste |
 | + | Combine codes |
 | = | Define a new code |
 
@@ -103,7 +104,7 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 | AAFL autonomous runs confirmed | ✅ 4 goals processed, scores 8.07–9.33, DB cache hit working |
 | Regression test PASS (8.83/10) | ✅ Gemini planned, Mistral worked |
 | LangGraph 1.2.0 | ✅ Installed |
-| Mission Statement (9 rules) | ✅ Formalised — ALP is Rule No.1 absolute |
+| Mission Statement (14 rules) | ✅ Formalised — ALP is Rule No.1 absolute. Reconfirmed 2026-05-20. |
 | meta_loop.py — AAFL self-improving meta-loop | ✅ Built — dry-run default, --apply writes code changes |
 | meta_queue.txt — 3 starter goals | ✅ All 3 processed (# DONE) — re-add to re-run with real data injection |
 | meta_loop.bat — meta-loop launcher | ✅ Built — runs --once by default, passes extra args through |
@@ -113,11 +114,15 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 | dashboard_builder.py — MCC data builder | ✅ Built — reads DB/tasks/costs/loop_output/session_logs, writes dashboard_data.json |
 | task_router.py — task classifier | ✅ Built — classifies AAFL/CLAC/SONNET/OPUS, 88 lines |
 | mission_control.html — Central Command (MCC) | ✅ Upgraded — 4 tabs (Kanban/Activity Feed/AAFL Runs/Costs), auto-refresh 10s, mobile-responsive |
-| ALP_Database.md | ✅ 17 entries — consolidated this session (11 outdated removed, 4 Master Plan entries added) |
+| ALP_Database.md | ✅ 17 entries — consolidated in v41 session |
 | WCCS Reliability Upgrade — 3-stage plan | ✅ Designed: Mini-Save Protocol, aafl_wccs.py, Chrome extension |
-| aafl_wccs.py — AAFL-powered handover writer | ⏸ Planned — DSP confirmed required, next CLAC session |
+| handover_split_design.md | ✅ Designed — INDEX.md (~50 lines) + STATUS.md (~200) + HISTORY.md + ACCA.md. ALP saving ~73%. Download ready. |
+| aafl_wccs_spec.md | ✅ Spec written — Mistral writes STATUS.md, atomic write + read-back verify, END_OF_FILE markers, line-count sanity check, auto git commit. Download ready. |
+| NEVER-DELETE rule for handovers | ✅ Established 2026-05-20 — old handovers move to archive_dead/, never deleted from disk |
+| aafl_wccs.py — AAFL-powered handover writer | ⏸ Specced — CLAC session B (DSP required). Spec in aafl_wccs_spec.md. |
+| Handover split migration | ⏸ CLAC session A — migrate v45 to INDEX/STATUS/HISTORY/ACCA structure |
 | Throttle slider in War Thunder | ⏸ Open (likely PS5/Xbox conflict — unplug and retry) |
-| Star Citizen full support | ⏸ Next up |
+| Star Citizen full support | ⏸ Next benchmark |
 | merge_sessions.py + .bat | ⏸ Planned — DSP not yet confirmed |
 | 5 new MCC features | ⏸ Planned — Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue |
 
@@ -353,7 +358,7 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 | Log file | Every session saves to `sfl_logs/` |
 | Safe-op allow-list | Fewer Y/N prompts for obvious read-only ops |
 | Flags | `--note`, `--folder`, `--budget` flags available |
-| Handover injection | Loads VKB_SpinDoctor_Handover_v42.md into system prompt on startup |
+| Handover injection | Loads VKB_SpinDoctor_Handover_v45.md into system prompt on startup |
 | call_aafl(prompt) | Convenience wrapper — routes any prompt through AAFLCore |
 
 ### Autonomy Control Panel v1 (built into sfl_agent)
@@ -371,7 +376,7 @@ sfl_agent.py is reusable on any project — copy it to a new folder and create a
 
 aafl_core.py routes all LLM calls cheapest-first. Loop engine: loop_manager.py.
 
-### Provider Status (as of 19 May 2026)
+### Provider Status (as of 20 May 2026)
 
 | Provider | Model | Tier | Status |
 |---|---|---|---|
@@ -426,7 +431,6 @@ Loop manager now:
 1. Calls scout(goal) before planning — prints `[SCOUT] Briefing ready — N source(s) found`
 2. Injects web briefing (top 3 sources) into BOTH plan and work prompts (only when results exist)
 3. Calls update_source(domain, score) for each source after scoring
-4. Scout filters blocked domains (<= 3.0 avg) and prioritises top domains (>= 7.0 avg)
 
 ### Phase D — Tag Taxonomy (TAGS constant)
 
@@ -477,9 +481,11 @@ VKB-SpinDoctor/
 ├── afna_strategies.json               # 5 AFNA scout strategies: ddg, reddit, github, youtube, forum
 ├── chief_scout_config.json            # Scout Control config — 10 fields, 3 built-in presets
 ├── aafl_control_config.json           # AAFL Control Panel config — 14 providers, all loop settings
+├── handover_split_design.md           # ⏸ Design doc — INDEX/STATUS/HISTORY/ACCA split architecture. ALP saving ~73%.
+├── aafl_wccs_spec.md                  # ⏸ Build spec — Mistral writes STATUS.md, atomic write, END_OF_FILE markers, git commit.
 ├── scout_output/                      # Scout run output — latest.txt written by mcc_server.py
 ├── aafl_output/                       # AAFL run output — latest.txt streamed by mcc_server.py /run-aafl
-├── aafl_wccs.py                       # ⏸ Planned — AAFL-powered handover writer (free LLM, zero CLAC burn)
+├── aafl_wccs.py                       # ⏸ Planned — AAFL-powered handover writer (free LLM, zero CLAC burn). Build: CLAC session B.
 ├── HOW_TO_INTEGRATE_DIAGNOSTIC.py     # Integration guide
 ├── goal.txt                           # Current loop goal
 ├── goal_queue.txt                     # Queue of goals — one per line, # = comment
@@ -494,9 +500,10 @@ VKB-SpinDoctor/
 ├── run_aafl.bat                       # One-click full launch: LM Studio → wait port 1234 → aafl_doctor → queue_runner → dashboard_builder
 ├── RUN_VKB.bat                        # Double-click GUI launcher
 ├── GIT_BACKUP.bat                     # git add -A + commit + push
+├── ALP_Database.md                    # ALP savings — 17 entries. Grow it, never delete.
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
 ├── Knowledge_Engine_Schema_v1.md      # DB schema reference
-├── VKB_SpinDoctor_Handover_v42.md     # This file — read by sfl_agent on startup
+├── VKB_SpinDoctor_Handover_v45.md     # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
 │   ├── conductor.py                   # Module 04 ✅ 619 lines
@@ -512,7 +519,7 @@ VKB-SpinDoctor/
 ├── backups/                           # Auto-snapshots (vNN_<slug>/ naming + meta_YYYYMMDD_HHMMSS/)
 ├── sfl_logs/                          # SFL agent session logs
 ├── session_logs/                      # WCCS session logs
-└── archive_dead/                      # Archived obsolete files
+└── archive_dead/                      # Old handovers + obsolete files — NEVER deleted, only archived here
 
 Desktop (C:\Users\jscot\Desktop\):
 ├── mission_control.html               # Central Command (MCC) — 4 tabs, auto-refresh 10s, mobile-responsive
@@ -656,7 +663,7 @@ Desktop (C:\Users\jscot\Desktop\):
 | Gemma 4 empty replies | Think mode eating tokens — Think OFF + MAX_TOKENS = 3000 |
 | Model not found (404) | Model string must be `claude-sonnet-4-6` |
 | Credits too low (400) | Top up at console.anthropic.com/settings/billing |
-| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v42.md is present |
+| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v45.md is present |
 | Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
 | Claude Code auth conflict | Detected both claude.ai token + API key — uses API key. Working fine. |
 | Cerebras model fails | Use cerebras/gpt-oss-120b in aafl_core.py — llama-3.3-70b deprecated. Fixed in v33. |
@@ -679,6 +686,8 @@ Desktop (C:\Users\jscot\Desktop\):
 | mcu_optimizer drops tasks | Safety net re-adds any task the LLM drops. Check [SAFETY] lines in output. |
 | dashboard_data.json empty/missing | Run dashboard_builder.py manually. Check data/ folder for knowledge_engine.db and cost_log.txt. |
 | MCC tab shows no data | Confirm dashboard_data.json exists on the correct path. Check browser console for load errors. |
+| Handover truncated after WCCS | Check line count >= 90% of previous version. v44 failed this check (499 vs 1,003 lines). v45 is the recovery. |
+| Multiple CLAC terminals open | ALP-dangerous — parallel terminals share the same quota pool. Run one at a time. |
 
 ---
 
@@ -692,18 +701,21 @@ Desktop (C:\Users\jscot\Desktop\):
 - Don't rebuild from scratch — extend what's there
 - API credits can burn completely in one bad loop — dead-end detector in loop_manager is the safeguard. Never run long loops without cost_guard active.
 - Don't pass --apply to meta_loop without reading the proposal first
+- **NEVER delete old handover files** — always move to archive_dead/ instead. NEVER-DELETE rule established 2026-05-20.
+- Don't open multiple CLAC terminals at once — they share the ALP pool.
 
 ---
 
 ## NEXT PRIORITIES
 
-1. Build aafl_wccs.py — AAFL-powered handover writer (CLAC, DSP confirmed required)
-2. Build merge_sessions.py + .bat (DSP confirmed required)
-3. Execute 5-project split + create Master project
-4. Build 5 new MCC features: Stuck Inbox, Run Now button, Cost Predictor, Memory Inspector, Promotion Queue
-5. Star Citizen v0.2 benchmark via AAFL autonomous run (first public demo)
-6. External post when benchmark passes (r/LocalLLaMA primary)
-7. Stage 3 — Claude in Chrome auto-capture (future)
+1. CLAC session A — migrate v45 to split structure (see handover_split_design.md)
+2. CLAC session B — build aafl_wccs.py to spec (see aafl_wccs_spec.md, DSP required)
+3. Build merge_sessions.py + .bat (DSP confirmed required)
+4. Execute 5-project split + create Master project
+5. Build 5 new MCC features: Stuck Inbox, Run Now button, Cost Predictor, Memory Inspector, Promotion Queue
+6. Star Citizen v0.2 benchmark via AAFL autonomous run (first public demo)
+7. External post when benchmark passes (r/LocalLLaMA primary)
+8. Stage 3 — Claude in Chrome auto-capture (future)
 
 ### 5-Project Split Plan
 | Project | What goes in it |
@@ -712,9 +724,9 @@ Desktop (C:\Users\jscot\Desktop\):
 | VKB Spin Doctor | spin_doctor.py, problems/, sfl_agent.py, game configs, keybinding library |
 | Mission Control | dashboard_builder.py, mcu_optimizer.py, mission_control.html, wccs_runner.py, mcc_server.py |
 | Promo + Business | README, Ko-fi/Itch.io links, monetisation notes, roadmap |
-| ACCA Database | ALP_Database.md, ACCA codes, v42 handover pinned |
+| ACCA Database | ALP_Database.md, ACCA codes, v45 handover pinned |
 
-Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads same local files regardless of which project chat is open.
+Pin in each project: ALP_Database.md + latest handover (v45). MCC still reads same local files regardless of which project chat is open.
 
 ### 8 Providers Still to Sign Up
 | Provider | URL |
@@ -745,13 +757,15 @@ Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads sa
 6. Run `python mcu_optimizer.py` — reads new handover + last 3 session logs + mission_control_tasks.json, updates board with optimal task ordering, prints diff of changes
 7. Update `HANDOVER_FILENAME` in `sfl_agent.py` to point to the new version
 
+**NEVER-DELETE rule:** Old handovers are never deleted. Move to `archive_dead/` only.
+
 **Mini-Save Protocol (Chat sessions):** Every ~10 exchanges, drop a 5-line MINI-SAVE block summarising key decisions so far. Passive capture — Scott does nothing. If Chat dies mid-session, latest mini-save is recent enough to recover from.
 
 **Recovery Path (when WCCS fails mid-save):** Open new Chat → "Search past chats from last 24 hours and regenerate the WCCS summary that was lost." Claude uses conversation_search tool to rebuild.
 
 **Pre-flight ALP check:** Before WCCS, if Claude detects allowance is low, skip full handover rewrite. Only do session log + chat log append. Light save.
 
-**aafl_wccs.py (Stage 2 — planned):** Free LLM (Mistral) writes the new handover .md, not CLAC. Reads chat_latest.txt + current handover, writes new version. Zero Claude allowance burn for the write step.
+**aafl_wccs.py (Stage 2 — specced):** Free LLM (Mistral) writes the new handover .md, not CLAC. Reads chat_latest.txt + current handover, writes new version. Atomic write + read-back verify + END_OF_FILE markers + line-count sanity check + auto git commit. Zero Claude allowance burn for the write step. Build spec in aafl_wccs_spec.md. Requires DSP.
 
 **Chat log entry format:**
 ```
@@ -766,7 +780,7 @@ Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads sa
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v42.md. MAJOR REFRAME: AAFL IS the project. Spin Doctor is the benchmark. Master + 5 sub-projects confirmed. MCC is cross-cutting cockpit layer — 5 new features planned (Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue). WCCS Reliability Upgrade designed (3 stages: Mini-Save, aafl_wccs.py, Chrome extension). aafl_wccs.py not yet built (DSP required). merge_sessions.py not yet built (DSP pending). New ACCA code: CAWPA = Completely Automate Whats Possible by AI. AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark + post trigger. ALP at 17 entries. Next: build aafl_wccs.py, build merge_sessions.py + .bat, execute 5-project split, build 5 MCC features, run Star Citizen benchmark, post when it passes."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v45.md. Handover split architecture designed (handover_split_design.md). aafl_wccs.py spec written (aafl_wccs_spec.md). v44 was truncated — v45 is new master. NEVER-DELETE rule in place. AAFL Control Panel built (MCC tab 7). Chief Scout + MCC Mega-Upgrade fully specced. AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark + post trigger. ALP at 17 entries. Next: CLAC session A (migrate to split structure), CLAC session B (build aafl_wccs.py, DSP required), 5-project split, Star Citizen benchmark, post when it passes."
 
 ---
 
@@ -963,3 +977,68 @@ Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads sa
 3. Execute 5-project split + create Master project
 4. Build 5 new MCC features (Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue)
 5. Star Citizen v0.2 benchmark via AAFL autonomous run
+
+---
+
+### 2026-05-19 (Chat session — Chief Scout + MCC Mega-Upgrade)
+
+**Key decisions:**
+- Opus 4.7 confirmed real — $5/$25 per MTok via API. Batch+caching = up to 95% discount. Future nuclear version when funded.
+- AI tier strategy = car gears: free AI downhill, Sonnet medium, Opus uphill. Single config line swap when funded.
+- Chief Scout parallel agent system BUILT — 5 strategies (ddg/reddit/github/youtube/forum), ThreadPoolExecutor, Mistral synthesis. Smoke test: 8 sources, $0.00116.
+- Scout Control Panel BUILT — 5th MCC tab. Strategy toggles, presets, live results.
+- AAFL Control Panel BUILT — 6th MCC tab. Provider dropdown, fallback chain, goal queue, live output terminal.
+- Full 29-job outstanding list compiled — aafl_wccs.py = Job 1, MCC overhaul = Job 29, MCC as .exe = Job 30.
+- MCC endpoint: HTML now → Electron wrapper → standalone .exe. No rewrite needed.
+- aafl_wccs.py confirmed as Job 1 — unlocks full CA chain: chat → Mistral extracts tasks → handover → mcu_optimizer → board.
+- MCC MEGA-UPGRADE brainstormed — all 6 tabs specced with AI assignment per task, AI selector cards with strengths/weaknesses, editable goals, growing sources library, total variable control. Global: preset system, keyboard shortcuts, tutorial mode, undo on everything. Full spec in this chat.
+- Chief Scout keybind research primary use case — parallel swarm researches known keybinds, popular configs per game/hardware. Feeds Keybinding Profile Library v0.5.
+
+**New ACCA codes:** None
+
+**Ideas discussed:**
+- Hierarchical multi-agent system — Chief Scout = supervisor, AFNA warriors = workers with different strategies.
+- Source discovery mode — dedicated scout runs that only find new sources, grow library passively.
+- AI comparison mode — same goal through 2 AIs, side by side results.
+- Step-by-step AAFL mode — watch/pause each step, override AI output mid-chain.
+- Chain builder — visual drag-and-drop pipeline in MCC.
+- Provider health dashboard — live ping, speed benchmark, success rate per AI.
+- Smart AI suggester — AI reads goal, recommends which provider for each step.
+- Tutorial mode for BI-friendly onboarding.
+- Electron fastest path to .exe — existing HTML drops straight in.
+
+**Next priorities:**
+1. Build aafl_wccs.py — Job 1, DSP confirmed required
+2. Build merge_sessions.py + .bat — Job 3
+3. MCC Mega-Upgrade — one tab at a time via CLAC
+4. MCC interface overhaul — Job 29
+5. MCC to .exe packaging — Job 30
+6. Star Citizen v0.2 benchmark via AAFL autonomous run
+
+---
+
+### 2026-05-20 (Chat session — v44 truncation fix + handover redesign)
+
+**Key decisions:**
+- v44 confirmed truncated (499 lines vs v43's 1,003). Cut off mid-sentence in PROJECT FILES section. v43 was the intact master — v45 is new master.
+- NEVER-DELETE rule established: old handovers move to archive_dead/, never deleted from disk. Saved to Claude memory.
+- Handover split architecture designed: INDEX.md (~50 lines) + STATUS.md (~200) + HISTORY.md (append-only) + ACCA.md (append-only). Reduces pinned context from 1,003 to ~270 lines. ALP saving ~73%.
+- aafl_wccs.py full build spec written: free Mistral writes STATUS.md, atomic write with read-back verify, END_OF_FILE markers, line-count sanity check, auto git commit. Zero Claude burn per save.
+- Design docs downloaded: handover_split_design.md + aafl_wccs_spec.md — ready for next CLAC session.
+- Multiple CLAC terminals confirmed possible but ALP-dangerous (shared pool). Run one at a time.
+- Mission statement reconfirmed with all 14 rules in project instructions.
+
+**New ACCA codes:** CAP = Copy and Paste
+
+**Ideas discussed:**
+- Truncation defence: END_OF_FILE markers, line-count >= 90% check, atomic .tmp write + rename
+- Build order: split v43 first, THEN build aafl_wccs.py against new structure
+- Parallel CLAC = parallel ALP burn. Safe parallel = CLAC + AAFL (free) simultaneously.
+
+**ALP status:** ~90% remaining at session end
+
+**Next priorities:**
+1. CLAC session A — migrate v45 to split structure (handover_split_design.md)
+2. CLAC session B — build aafl_wccs.py to spec (aafl_wccs_spec.md, DSP required)
+3. Execute 5-project split + create Master project
+4. Star Citizen v0.2 benchmark via AAFL autonomous run
