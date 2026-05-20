@@ -39,4 +39,7 @@
 
 Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), NRM (no-repeat), EM (evidence)
 
+
+| NEXT | File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead), MCC Watchdog+Rewind tab, START_MCC.bat rename. | 2026-05-20 |
+
 <!-- END_OF_FILE -->

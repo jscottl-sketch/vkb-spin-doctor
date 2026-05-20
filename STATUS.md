@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+**Last updated:** 2026-05-20 | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -61,6 +61,8 @@
 | ALP_Database.md | 17 entries |
 | Handover split | INDEX/STATUS/HISTORY/ACCA applied 2026-05-20 |
 | aafl_wccs.py | Built 2026-05-20. Permanent WCCS fix. |
+| aafl_watchdog.py | Built 2026-05-20. Star Citizen 8.33/10 autonomous. |
+| handover.db | Database-backed handover. Migration from v45 complete. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -72,6 +74,8 @@
 | 5-project split | AAFL Engine, VKB Spin Doctor, Mission Control, Promo, ACCA Database + Master |
 | Add GROQ_API_KEY to .env | console.groq.com → API Keys |
 | Add Cloudflare keys to .env | CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID |
+| MCC Watchdog+Rewind tab | Pending Scout Control upgrade |
+| START_MCC.bat rename | Pending file cleanup |
 
 ---
 
@@ -107,6 +111,8 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 5. Execute 5-project split + Master project
 6. Build 5 new MCC features
 7. Add GROQ + Cloudflare keys (manual — security rule)
+8. Implement MCC Watchdog+Rewind tab
+9. Rename START_MCC.bat
 
 ---
 
