@@ -72,6 +72,10 @@
 | morning_report.md | Built 2026-05-23. Forgotten but working. |
 | queue_runner.py | Built 2026-05-23. Forgotten but working. |
 | afna_strategies.json | Built 2026-05-23. Stuck Inbox strategies. |
+| stuck_inbox.py | Built 2026-05-23. 3-strike rule system. |
+| cost_predictor.py | Built 2026-05-23. ALP cost forecasting. |
+| promo_queue.py | Built 2026-05-23. Score 9.0+ auto-queues. |
+| test_full_system.py | Built 2026-05-23. 85/85 Phase 1, 29/29 Phase 3. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

@@ -346,6 +346,58 @@ WHAT TO DO AT NEXT WCCS:
 - Move model_router, setup_router, quick_fix, control_panel to ARCHIVE section
 - Add new ACCA code: FFUE = Fluid Flexible Upgradeable Editable
 
+
+---
+
+### 2026-05-23
+
+SESSION: 23 May 2026 — PHASE 2 & MCC BUILD COMPLETE
+
+WHAT GOT DONE TODAY:
+- Provider Health Check system — 3 tiers, all 29/29 tests passing
+- 10 new MCC features built: Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promo Queue, ACCA Tab, ALP Counter Tab, Keyboard Shortcuts, Undo on Everything, Sunday Auto-Merge
+- Home screen built — 7 cards + 3 empty slots, clickable nav to each tab
+- Full system test — 85/85 Phase 1, 29/29 Phase 3
+- MCC server live at localhost:8080
+- Project audit completed — 200+ files inventoried, dead files identified
+- New files created: stuck_inbox.py, cost_predictor.py, promo_queue.py, merge_sessions.py, test_full_system.py, data/devices.json
+- loop_manager.py wired to stuck_inbox — 3-strike rule sends goals to stuck inbox
+- evaluator.py wired to promo_queue — score 9.0+ auto-queues for review
+- aafl_wccs.py wired for Sunday auto-merge via merge_sessions.py
+- New mcc_server.py endpoints: /stuck-inbox, /resolve-stuck, /run-now, /memory/knowledge, /memory/solutions, /memory/sources, /promo-queue, /approve-promo, /reject-promo, /acca-codes, /alp-data, /alp-add
+- mission_control.html now has 12 tabs: Home, WCCS, Diff Viewer, Rewind, Sessions, HISTORY Search, Auto-Save Log, Provider Health, Kanban, AAFL Runs, Scout Control, Costs, AAFL Control, Memory, Promo, ACCA, ALP
+- Keyboard shortcuts: 1-9 tab jump, R refresh, C connect, Esc close, Shift+? help overlay
+- Undo toast system: 10-second undo on Resolve, Approve, Reject, Run Now, ALP Add
+
+WHAT WE LEARNED:
+- Provider reliability is CRITICAL. Gemini/Mistral/Cerebras all went dead in same run. LM Studio carried it solo. Single point of failure — need all providers GREEN before loop runs overnight.
+- Early prototype files (model_router, setup_router, quick_fix) are historical gold showing AAFL evolution. Archive, don't delete.
+- morning_report.md and queue_runner.py are still ACTIVE — forgotten but working.
+- aafl_watchdog.py and cost_guard.py are Rule No.1 safety nets — need confirmation they're wired into current system before next overnight run.
+- meta_proposals/ folder contains AAFL's own improvement ideas from May 18 — never acted on, may have value.
+- solution_log table has no provider column (uses problem/approach columns). source_reputation uses domain/avg_score not source_url/reputation_score.
+
+ACTION PLAN — NEXT PRIORITIES (IN ORDER):
+1. [URGENT] Confirm aafl_watchdog.py + cost_guard.py wired into AAFL. Test with mock overnight run.
+2. [URGENT] Read meta_proposals/ — AAFL's own improvement ideas. Implement high-value ones.
+3. Read aafl_watchdog.py, cost_guard.py, afna_strategies.json fully. Wire afna_strategies into new Stuck Inbox system.
+4. Archive dead files: model_router.py, setup_router.py (keep copy), quick_fix.py, control_panel.py to archive_dead/
+5. Test provider health check script manually — confirm all GREEN before trusting overnight runs.
+6. Groq + Cloudflare API keys — add to .env (manual, security rule).
+7. Star Citizen v0.2 benchmark via AAFL — THIS IS THE PROOF TEST.
+8. 5-project split (if AAFL passes Star Citizen).
+9. r/LocalLLaMA post (trigger = Star Citizen benchmark passes).
+
+ACCA CODES ADDED:
+FFUE = Fluid Flexible Upgradeable Editable (new today)
+
+WHAT TO DO AT NEXT WCCS:
+- Add ACTION PLAN section to STATUS.md permanently
+- Update STATUS.md CURRENT STATUS table with all 10 new features marked BUILT
+- Add aafl_watchdog.py, cost_guard.py, afna_strategies.json, morning_report.md, queue_runner.py to BUILT section
+- Move model_router, setup_router, quick_fix, control_panel to ARCHIVE section
+- Add new ACCA code: FFUE = Fluid Flexible Upgradeable Editable
+
 <!-- END_OF_FILE -->
 
 
