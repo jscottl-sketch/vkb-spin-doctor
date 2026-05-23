@@ -398,6 +398,50 @@ WHAT TO DO AT NEXT WCCS:
 - Move model_router, setup_router, quick_fix, control_panel to ARCHIVE section
 - Add new ACCA code: FFUE = Fluid Flexible Upgradeable Editable
 
+
+---
+
+### 2026-05-23
+
+SESSION: 23 May 2026 — MCC MOT + Build 1 Launch
+
+WHAT GOT DONE:
+✅ MCC UPGRADE COMPLETE — 107/108 MOT tests passing
+✅ Phase 1: mcc_full_mot.py — 8 test groups, 108 checks built
+✅ Phase 2: Self-Diagnosis tab built (MOT results, Known Issues, System Info, File Health)
+✅ Phase 3: Home page upgrade — 6 instrument gauges + 4 quick action buttons
+✅ Phase 4: Endpoint sweep — 8/8 pass
+✅ Bug fixed: HEALTH_DIR typo in mcc_server.py → HEALTH_RESULTS
+✅ Only failure: sfl_agent missing mss library (pre-existing, fix: pip install mss --break-system-packages)
+✅ Build 1 CLAC block pasted and running (10 features)
+
+BUILD 1 FEATURES IN PROGRESS:
+1. Plugin/module architecture (modules/ folder, module_registry.json, module_loader.py)
+2. Preset system (presets/ folder, 3 starter presets, preset bar in MCC)
+3. Confidence threshold + cost cap per goal (aafl_config.json)
+4. Auto-retry on failure (retry_manager.py, retry_log.json)
+5. Smart suggester (smart_suggester.py, keyword routing)
+6. Chain mode Scout→AAFL→Verify (chain_runner.py)
+7. Timed scout runs (scout_timer.py, stop flag mechanism)
+8. Source discovery mode (sources_library.json)
+9. Stuck Inbox enhancements (severity, bulk resolve, AFNA suggestions)
+10. Storage Manager Agent (storage_manager.py, storage_config.json, Storage tab in MCC)
+
+DECISIONS MADE:
+- PowerShell broken for DSP — use CMD only (Windows key + R → cmd)
+- Commands always in 3 separate lines — never combined
+- 60+ feature list cut to 12 Build 1 + 23 Build 2 (parking lot)
+- FFUE baked into every build — modular, independent blocks
+- MCC = personal cockpit, Build 2 parking lot items come after Build 1 tests pass
+- Self-Diagnosis tab = internal only, not for commercial version
+
+NEXT SESSION:
+- Check Build 1 results
+- Fix any failures
+- Paste Build 2 CLAC block (23 features)
+- Add Groq + Cloudflare API keys to .env (manual — security rule)
+- Star Citizen v0.2 benchmark when all green
+
 <!-- END_OF_FILE -->
 
 

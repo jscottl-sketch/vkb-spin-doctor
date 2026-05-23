@@ -76,6 +76,14 @@
 | cost_predictor.py | Built 2026-05-23. ALP cost forecasting. |
 | promo_queue.py | Built 2026-05-23. Score 9.0+ auto-queues. |
 | test_full_system.py | Built 2026-05-23. 85/85 Phase 1, 29/29 Phase 3. |
+| mcc_full_mot.py | Built 2026-05-23. 8 test groups, 108 checks. |
+| module_registry.json | Built 2026-05-23. Plugin architecture foundation. |
+| preset bar | Built 2026-05-23. 3 starter presets in MCC. |
+| retry_manager.py | Built 2026-05-23. Auto-retry on failure. |
+| chain_runner.py | Built 2026-05-23. Scout→AAFL→Verify chain. |
+| storage_manager.py | Built 2026-05-23. Storage tab in MCC. |
+| Self-Diagnosis tab | Built 2026-05-23. MOT results, Known Issues, System Info, File Health. |
+| Home page upgrade | Built 2026-05-23. 6 instrument gauges + 4 quick action buttons. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
