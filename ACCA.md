@@ -42,4 +42,7 @@ Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), 
 
 | NEXT | File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead), MCC Watchdog+Rewind tab, START_MCC.bat rename. | 2026-05-20 |
 
+
+| FFUE | Fluid Flexible Upgradeable Editable (new today) | 2026-05-23 |
+
 <!-- END_OF_FILE -->
