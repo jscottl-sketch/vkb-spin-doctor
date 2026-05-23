@@ -74,17 +74,42 @@
 | scout_timer.py | Timed scout with indefinite mode |
 | sources_library.json | Source discovery library |
 | storage_manager.py | Storage tab + storage_config.json |
-| MCC UI drill-downs | WCCS x5 + Provider Health + Self-Diagnosis tab. Home: 6 gauges, 4 quick-action buttons |
+| Stuck Inbox (MCC) | Severity field, bulk resolve, AFNA suggestions |
+| MCC UI drill-downs | WCCS tab: Auto-Save Log, History Search, Session Logs, Rewind+Edit, Diff Viewer. Home: Provider Health drill-down, Self-Diagnosis tab, 6 gauges, 4 quick-action buttons |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
 |---|---|
+| merge_sessions.py + .bat | Built — DSP required to run |
 | Star Citizen full support | Next benchmark — first public AAFL proof |
 | Throttle slider in WT | Likely PS5/Xbox conflict — unplug and retry |
-| Build 2 (23 parking lot features) | CLAC block pending — next session |
 | 5-project split | AAFL Engine, VKB Spin Doctor, Mission Control, Promo, ACCA Database + Master |
 | Add GROQ_API_KEY to .env | console.groq.com → API Keys |
 | Add Cloudflare keys to .env | CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID |
+| **Build 2 — Parking Lot (23 features)** | CLAC block pending — next session |
+| B2-01: Kanban task dependencies + sub-tasks | Kanban tab |
+| B2-02: Kanban templates + bulk actions + auto-archive | Kanban tab |
+| B2-03: Activity Feed — all 12 filters + AI summarise + export | Activity tab |
+| B2-04: AAFL Runs — compare mode + failure analysis + success patterns | AAFL Runs tab |
+| B2-05: AAFL Runs — tag/notes on runs | AAFL Runs tab |
+| B2-06: AAFL Control — step-by-step + pause mode | AAFL Control tab |
+| B2-07: AAFL Control — chain builder + notification settings | AAFL Control tab |
+| B2-08: AAFL Control — benchmark runner | AAFL Control tab |
+| B2-09: AAFL Control — second opinion AI | AAFL Control tab |
+| B2-10: Costs — budget caps + savings tracker + ROI tracker | Costs tab |
+| B2-11: Costs — trend graphs + currency toggle | Costs tab |
+| B2-12: Scout Control — multi-browser sources | Scout tab |
+| B2-13: Scout Control — AI comparison mode | Scout tab |
+| B2-14: Scout Control — per-strategy AI override | Scout tab |
+| B2-15: Scout Control — parallel workers slider | Scout tab |
+| B2-16: Scout Control — source health monitor + blocked sources | Scout tab |
+| B2-17: Scout Control — export briefing | Scout tab |
+| B2-18: WCCS Save tab — diff viewer + timeline + rewind | WCCS tab |
+| B2-19: Global — dark/light theme toggle | Global |
+| B2-20: Global — tutorial mode | Global |
+| B2-21: Global — keyboard shortcuts (full set) | Global |
+| B2-22: Keybinding Profile Library v0.5 | Global |
+| B2-23: Electron wrapper | Packaging |
 
 ---
 
