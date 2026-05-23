@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-23 | **Updated by:** WCCS Recovery
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -53,7 +53,7 @@
 | problems/conductor.py | 619 lines, 22 problems |
 | problems/win_hardener.py | 9 problems W-001-W-009 |
 | problems/ed_bind_reset.py | ED Bind Reset prevention |
-| mission_control.html | MCC — 7 tabs, auto-refresh 10s, mobile-responsive |
+| mission_control.html | MCC — 19+ tabs, JS audit complete, zero missing functions |
 | mcc_server.py | Bridges MCC HTML to filesystem. 10+ endpoints. |
 | data/devices.json | 98 devices with VID/PID lookup |
 | AAFL autonomous runs | 4 goals, scores 8.07-9.33, DB cache hit confirmed |
@@ -64,13 +64,24 @@
 | merge_sessions.py + .bat | Built 2026-05-23. DSP required |
 | MCC MOT 108/108 | ALL CLEAR 2026-05-23 |
 | mss library | Installed 2026-05-23 (fixes sfl_agent pre-existing error) |
+| Build 1 (10 features) | 13/13 modules, 12/12 tests PASS. Complete 2026-05-23 |
+| Plugin/module architecture | modules/, module_registry.json, module_loader.py |
+| Preset system | presets/, 3 starters, preset bar in MCC |
+| aafl_config.json | Confidence threshold + cost cap controls |
+| retry_manager.py | Auto-retry with retry_log.json |
+| smart_suggester.py | Goal suggestion engine |
+| chain_runner.py | Chain mode for sequential goals |
+| scout_timer.py | Timed scout with indefinite mode |
+| sources_library.json | Source discovery library |
+| storage_manager.py | Storage tab + storage_config.json |
+| MCC UI drill-downs | WCCS x5 + Provider Health + Self-Diagnosis tab. Home: 6 gauges, 4 quick-action buttons |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
 |---|---|
 | Star Citizen full support | Next benchmark — first public AAFL proof |
 | Throttle slider in WT | Likely PS5/Xbox conflict — unplug and retry |
-| 5 new MCC features | Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue |
+| Build 2 (23 parking lot features) | CLAC block pending — next session |
 | 5-project split | AAFL Engine, VKB Spin Doctor, Mission Control, Promo, ACCA Database + Master |
 | Add GROQ_API_KEY to .env | console.groq.com → API Keys |
 | Add Cloudflare keys to .env | CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID |
@@ -102,13 +113,12 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Build 2 CLAC block (23 parking lot features)
-2. Star Citizen v0.2 benchmark via AAFL autonomous run
-3. Post on r/LocalLLaMA when benchmark passes
-4. Add GROQ + Cloudflare keys to .env (manual — security rule)
-5. Execute 5-project split + Master project
-6. Build 5 new MCC features
-7. Test aafl_wccs.py — run: python aafl_wccs.py --dry-run
+1. Test aafl_wccs.py — run: python aafl_wccs.py --dry-run
+2. Build merge_sessions.py + .bat (DSP required)
+3. Build 2 CLAC block (23 parking lot features)
+4. Star Citizen v0.2 benchmark via AAFL autonomous run
+5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+6. Post on r/LocalLLaMA when Star Citizen benchmark passes
 
 ---
 

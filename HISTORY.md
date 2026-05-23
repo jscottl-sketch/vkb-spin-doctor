@@ -474,6 +474,17 @@ NEXT SESSION:
 3. Groq + Cloudflare keys to .env
 4. r/LocalLLaMA post when benchmark passes
 
+---
+
+SESSION 23 May 2026 — Build 1 Complete + UI Drill-downs:
+- MCC MOT 108/108 (after mss pip fix)
+- Build 1 complete: 10 features, 13/13 modules, 12 tests PASS
+- Features: plugin architecture, preset system, confidence threshold, cost cap, auto-retry, smart suggester, chain mode, timed scout, source discovery, stuck inbox enhanced, storage manager
+- WCCS drill-down x5 added to WCCS tab
+- Home Provider Health drill-down added
+- CMD confirmed only working terminal for DSP
+- Build 2 (23 parking lot features) ready next
+
 <!-- END_OF_FILE -->
 
 
