@@ -442,6 +442,38 @@ NEXT SESSION:
 - Add Groq + Cloudflare API keys to .env (manual — security rule)
 - Star Citizen v0.2 benchmark when all green
 
+
+---
+
+### 2026-05-23
+
+SESSION: 23 May 2026 — Build 1 Complete + JS Bug Fixes
+
+COMPLETED:
+✅ MCC MOT 108/108 ALL CLEAR
+✅ Build 1 — 10 features, 13/13 modules, 11 tests PASS
+✅ WCCS tab — 5 drill-down buttons built and wired
+✅ Home tab — Provider Health Show Details drill-down
+✅ JS bug fixes — all missing onclick functions added (3 rounds)
+✅ mss library installed (fixes sfl_agent pre-existing error)
+✅ MCC confirmed loading at localhost:8080
+
+BUGS FIXED THIS SESSION:
+- phToggleDetail, homeCardClick, saveSession, connectData, homeRunAafl, homeStartScout, savePreset, loadPresets, loadHomeScreen — all were missing JS definitions, all fixed
+
+DECISIONS:
+- CMD only for DSP — PowerShell broken permanently
+- Always 3 separate steps — never combined
+- QuickEdit Mode needed in CMD for paste to work (Properties → Options → QuickEdit)
+- MCC server = python mcc_server.py (short version works)
+- Build 2 (23 parking lot features) = next session
+
+NEXT SESSION:
+1. Build 2 CLAC block (23 parking lot features)
+2. Star Citizen v0.2 benchmark
+3. Groq + Cloudflare keys to .env
+4. r/LocalLLaMA post when benchmark passes
+
 <!-- END_OF_FILE -->
 
 

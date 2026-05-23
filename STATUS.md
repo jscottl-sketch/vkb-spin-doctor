@@ -53,7 +53,7 @@
 | problems/conductor.py | 619 lines, 22 problems |
 | problems/win_hardener.py | 9 problems W-001-W-009 |
 | problems/ed_bind_reset.py | ED Bind Reset prevention |
-| mission_control.html | MCC — 12 tabs, auto-refresh 10s, mobile-responsive |
+| mission_control.html | MCC — 7 tabs, auto-refresh 10s, mobile-responsive |
 | mcc_server.py | Bridges MCC HTML to filesystem. 10+ endpoints. |
 | data/devices.json | 98 devices with VID/PID lookup |
 | AAFL autonomous runs | 4 goals, scores 8.07-9.33, DB cache hit confirmed |
@@ -61,53 +61,19 @@
 | ALP_Database.md | 17 entries |
 | Handover split | INDEX/STATUS/HISTORY/ACCA applied 2026-05-20 |
 | aafl_wccs.py | Built 2026-05-20. Permanent WCCS fix. |
-| aafl_watchdog.py | Built 2026-05-23. Star Citizen 8.33/10 autonomous. |
-| cost_guard.py | Built 2026-05-23. ALP protection layer. |
-| handover.db | Database-backed handover. Migration from v45 complete. |
-| merge_sessions.py + .bat | Built 2026-05-23 |
-| MCC 17 save features | Built 2026-05-23 (Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue, ACCA Tab, ALP Counter Tab, Keyboard Shortcuts, Undo on Everything, Sunday Auto-Merge, Home Screen, Provider Health Check, Full System Test, Project Audit, 12 Tabs) |
-| JSON error fix | Built 2026-05-21 |
-| Provider reliability fix | Built 2026-05-23 |
-| merge_sessions auto-weekly | Built 2026-05-23 |
-| morning_report.md | Built 2026-05-23. Forgotten but working. |
-| queue_runner.py | Built 2026-05-23. Forgotten but working. |
-| afna_strategies.json | Built 2026-05-23. Stuck Inbox strategies. |
-| stuck_inbox.py | Built 2026-05-23. 3-strike rule system. |
-| cost_predictor.py | Built 2026-05-23. ALP cost forecasting. |
-| promo_queue.py | Built 2026-05-23. Score 9.0+ auto-queues. |
-| test_full_system.py | Built 2026-05-23. 85/85 Phase 1, 29/29 Phase 3. |
-| mcc_full_mot.py | Built 2026-05-23. 8 test groups, 108 checks. |
-| module_registry.json | Built 2026-05-23. Plugin architecture foundation. |
-| preset bar | Built 2026-05-23. 3 starter presets in MCC. |
-| retry_manager.py | Built 2026-05-23. Auto-retry on failure. |
-| chain_runner.py | Built 2026-05-23. Scout→AAFL→Verify chain. |
-| storage_manager.py | Built 2026-05-23. Storage tab in MCC. |
-| Self-Diagnosis tab | Built 2026-05-23. MOT results, Known Issues, System Info, File Health. |
-| Home page upgrade | Built 2026-05-23. 6 instrument gauges + 4 quick action buttons. |
+| merge_sessions.py + .bat | Built 2026-05-23. DSP required |
+| MCC MOT 108/108 | ALL CLEAR 2026-05-23 |
+| mss library | Installed 2026-05-23 (fixes sfl_agent pre-existing error) |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
 |---|---|
 | Star Citizen full support | Next benchmark — first public AAFL proof |
 | Throttle slider in WT | Likely PS5/Xbox conflict — unplug and retry |
+| 5 new MCC features | Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue |
 | 5-project split | AAFL Engine, VKB Spin Doctor, Mission Control, Promo, ACCA Database + Master |
 | Add GROQ_API_KEY to .env | console.groq.com → API Keys |
 | Add Cloudflare keys to .env | CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID |
-| MCC Watchdog+Rewind tab | Pending Scout Control upgrade |
-| START_MCC.bat rename | Pending file cleanup |
-| ACCA tab | Built for MCC |
-| ASKC definition | Pending clarification |
-| ALP Counter Tab RIBS idea | Built for MCC |
-| Scout timed runs | Planned |
-| 1TB storage | Planned |
-
-## CURRENT STATUS — ARCHIVE
-| Component | Notes |
-|---|---|
-| model_router.py | Archived 2026-05-23. Historical gold. |
-| setup_router.py | Archived 2026-05-23. Historical gold. |
-| quick_fix.py | Archived 2026-05-23. Historical gold. |
-| control_panel.py | Archived 2026-05-23. Historical gold. |
 
 ---
 
@@ -136,16 +102,13 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Confirm aafl_watchdog.py + cost_guard.py wired into AAFL
-2. Read meta_proposals/ — AAFL's own improvement ideas
-3. Wire afna_strategies into Stuck Inbox system
-4. Archive dead files: model_router, setup_router, quick_fix, control_panel
-5. Test provider health check script manually
-6. Add GROQ + Cloudflare API keys to .env
-7. Star Citizen v0.2 benchmark via AAFL
-8. 5-project split (if AAFL passes Star Citizen)
-9. r/LocalLLaMA post (trigger = Star Citizen benchmark passes)
-10. Define ASKC
+1. Build 2 CLAC block (23 parking lot features)
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Post on r/LocalLLaMA when benchmark passes
+4. Add GROQ + Cloudflare keys to .env (manual — security rule)
+5. Execute 5-project split + Master project
+6. Build 5 new MCC features
+7. Test aafl_wccs.py — run: python aafl_wccs.py --dry-run
 
 ---
 
