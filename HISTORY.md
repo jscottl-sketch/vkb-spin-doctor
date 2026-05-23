@@ -280,6 +280,13 @@ NEXT: File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead
 
 Session 21 May 2026 - aafl_wccs fixed, merge_sessions built, MCC 7 save features built, JSON error fixed, ACCA tab planned, ASKC defined, ALP Counter Tab RIBS idea, Scout timed runs and 1TB storage planned
 
+
+---
+
+### 2026-05-23
+
+Test session 23 May 2026 - provider reliability fix priority, MCC features reminded, merge_sessions auto-weekly planned
+
 <!-- END_OF_FILE -->
 
 

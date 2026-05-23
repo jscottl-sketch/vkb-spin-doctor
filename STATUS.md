@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-21 | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -66,6 +66,8 @@
 | merge_sessions.py + .bat | Built 2026-05-21 |
 | MCC 7 save features | Built 2026-05-21 (Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue) |
 | JSON error fix | Built 2026-05-21 |
+| Provider reliability fix | Built 2026-05-23 |
+| merge_sessions auto-weekly | Built 2026-05-23 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
