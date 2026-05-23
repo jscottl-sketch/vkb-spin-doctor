@@ -485,6 +485,20 @@ SESSION 23 May 2026 — Build 1 Complete + UI Drill-downs:
 - CMD confirmed only working terminal for DSP
 - Build 2 (23 parking lot features) ready next
 
+
+---
+
+### 2026-05-24
+
+SESSION 4 — 24 May 2026
+- WCCS recovery: STATUS.md was stale (Build 1 not recorded), fixed
+- STATUS.md patched 138→162 lines, Build 1 in BUILT, 23 Build 2 features in PENDING
+- HISTORY.md verified (23 May entry already at line 479)
+- Git commit be794c5
+- aafl_wccs.py --dry-run kicked off (result pending)
+- Confirmed: aafl_wccs.py (free Mistral) replaces CLAC WCCS permanently
+- ALP lesson: always verify WCCS actually saved before closing session
+
 <!-- END_OF_FILE -->
 
 

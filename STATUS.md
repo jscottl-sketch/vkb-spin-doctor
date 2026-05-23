@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-23 | **Updated by:** WCCS Recovery
+**Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -60,7 +60,7 @@
 | Regression test | PASS 8.83/10 |
 | ALP_Database.md | 17 entries |
 | Handover split | INDEX/STATUS/HISTORY/ACCA applied 2026-05-20 |
-| aafl_wccs.py | Built 2026-05-20. Permanent WCCS fix. |
+| aafl_wccs.py | Built 2026-05-20. Permanent WCCS fix (free Mistral). |
 | merge_sessions.py + .bat | Built 2026-05-23. DSP required |
 | MCC MOT 108/108 | ALL CLEAR 2026-05-23 |
 | mss library | Installed 2026-05-23 (fixes sfl_agent pre-existing error) |
@@ -144,19 +144,5 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 4. Star Citizen v0.2 benchmark via AAFL autonomous run
 5. Add GROQ + Cloudflare keys to .env (manual — security rule)
 6. Post on r/LocalLLaMA when Star Citizen benchmark passes
-
----
-
-## WHAT NOT TO DO
-- Don't rebuild anything marked built — find the existing file
-- Don't add multiple games at once — one game, full test, then next
-- Don't commit to GitHub without Scott's explicit decision
-- Don't auto-flash firmware — warn and guide only
-- Don't rebuild from scratch — extend what exists
-- Don't run long loops without cost_guard active
-- Don't pass --apply to meta_loop without reading proposal first
-- NEVER delete old handover files — move to archive_dead/ instead
-- Don't open multiple CLAC terminals at once — shared ALP pool
-- Don't use external packages unless absolutely necessary
 
 <!-- END_OF_FILE -->
