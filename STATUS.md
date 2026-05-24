@@ -122,8 +122,6 @@
 | B2-22: Keybinding Profile Library v0.5 | Global |
 | B2-23: Electron wrapper | Packaging |
 | GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. Manual setup. |
-| Claude in Chrome auto-upload | Future: auto-push chat to MCC on session end. Not yet built. |
-| LiteLLM full integration | Replace direct provider calls in aafl_core.py with LiteLLM router. See aafl_core.py:201. |
 | Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
 
 ---
