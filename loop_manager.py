@@ -44,7 +44,17 @@ USE_CHIEF_SCOUT = True
 try: from chief_scout import chief_scout as _chief_scout
 except ImportError: _chief_scout = None
 from cost_guard import CostGuard, CostGuardError
+try:
+    from aafl_watchdog import run_cycle as _watchdog_run_cycle
+    _WATCHDOG_OK = True
+except ImportError:
+    _watchdog_run_cycle = None
+    _WATCHDOG_OK = False
 from evaluator import evaluate
+try:
+    from stuck_inbox import add_stuck_item as _add_stuck
+except ImportError:
+    _add_stuck = None
 
 # Injected into every LLM call so models behave as agents, not chatbots.
 AGENT_SYSTEM = (
@@ -136,10 +146,21 @@ def _write_report(goal: str, iterations: int, best: dict | None,
 def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     goal  = load_goal()
     aafl  = AAFLCore(dry_run=False, allow_paid=False)
-    guard = CostGuard(max_cost_gbp=0.05, max_iterations=max_llm_calls)
+
+    # Feature 3 — read cost cap from aafl_config.json
+    _cost_cap_usd = 0.05
+    try:
+        from aafl_config_reader import get_cost_cap_usd
+        _cost_cap_usd = get_cost_cap_usd()
+    except Exception:
+        pass
+    _cost_cap_gbp = _cost_cap_usd * 0.79   # approximate conversion
+
+    guard = CostGuard(max_cost_gbp=_cost_cap_gbp, max_iterations=max_llm_calls)
 
     print(f"[LOOP] Goal: {goal}")
     print(f"[LOOP] Max iterations: {max_loop_iters}")
+    print(f"[LOOP] Cost cap: £{_cost_cap_gbp:.4f} (${_cost_cap_usd:.4f})")
 
     # ── Phase B — check DB for past solution ──────────────────────────────────
     past = search_solution(goal)
@@ -160,10 +181,12 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         print(f"[LOOP] Done (DB cache hit).")
         return
 
-    iterations    = 0
-    best_attempt  = None
-    stop_reason   = "max_iterations"
-    prev_feedback = ""
+    iterations         = 0
+    best_attempt       = None
+    stop_reason        = "max_iterations"
+    prev_feedback      = ""
+    _consec_fails      = 0
+    _last_best_score   = -1.0
 
     while iterations < max_loop_iters:
         if (HERE / "STOP").exists():
@@ -261,6 +284,20 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             print("[LOOP] Verify: empty content after provider response — skipping")
             continue
 
+        # ── Save generated code to disk ───────────────────────────────────────
+        _code_blocks = re.findall(r"```(?:python|py)?\n(.*?)```", work_text, re.DOTALL)
+        if _code_blocks:
+            _code_dir   = HERE / "loop_output"
+            _code_dir.mkdir(exist_ok=True)
+            _code_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+            _code_slug  = _goal_slug(goal)
+            for _i, _block in enumerate(_code_blocks, 1):
+                _suffix = f"_{_i}" if len(_code_blocks) > 1 else ""
+                (_code_dir / f"{_code_stamp}_{_code_slug}{_suffix}.py").write_text(
+                    _block, encoding="utf-8"
+                )
+            print(f"[CODE] {len(_code_blocks)} code block(s) saved to loop_output/")
+
         # ── Evaluate ──────────────────────────────────────────────────────────
         scores   = evaluate(work_text, goal)
         score    = scores["overall"]
@@ -275,8 +312,25 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             weak_str      = ", ".join(weak) if weak else "overall quality"
             prev_feedback = f"Previous score was {score}/10. Weak areas: {weak_str}. Improve these."
             print(f"[LOOP] Score below 7 — weak: {weak_str}. Looping again.")
+            if score > _last_best_score:
+                _last_best_score = score
+                _consec_fails = 0
+            else:
+                _consec_fails += 1
+            if _consec_fails >= 3 and _add_stuck is not None:
+                _add_stuck(
+                    goal=goal,
+                    reason=f"No score improvement after {_consec_fails} attempts (stuck at {score}/10)",
+                    attempts=iterations,
+                    last_error=prev_feedback,
+                )
+                print(f"[STUCK] Goal added to stuck_inbox after {_consec_fails} non-improving iterations")
+                stop_reason = "stuck_inbox"
+                break
         else:
-            prev_feedback = ""
+            prev_feedback  = ""
+            _consec_fails  = 0
+            _last_best_score = score
             print(f"[LOOP] Score >= 7 — goal met.")
 
         # ── Phase D — tag inference ───────────────────────────────────────────
@@ -378,6 +432,17 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         stop_reason = "max_iterations"
 
     total_cost = guard.running_cost
+
+    # Feature 3 — log cost_cap_hit to stuck_inbox
+    if stop_reason.startswith("cost_guard") and _add_stuck is not None:
+        _add_stuck(
+            goal=goal,
+            reason="COST_CAP_HIT",
+            attempts=iterations,
+            last_error=f"Cost cap reached: £{total_cost:.5f}. Stop reason: {stop_reason}",
+        )
+        print("[STUCK] COST_CAP_HIT logged to stuck_inbox")
+
     _write_report(goal, iterations, best_attempt, total_cost, stop_reason)
 
     print(f"\n[LOOP] Done.")

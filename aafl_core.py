@@ -198,6 +198,10 @@ PROVIDERS = [
     },
 ]
 
+# TODO: Replace direct provider calls with LiteLLM routing — see https://docs.litellm.ai
+# (LiteLLM is already used for the actual API call in _call(); this marks the routing
+# table as the integration point for future unified LiteLLM router migration.)
+
 # Routing table: task_type → provider IDs in cheapest-first order
 ROUTING = {
     "code":   ["lmstudio_coder",  "lmstudio_fast",   "cerebras",    "groq_70b",
