@@ -594,7 +594,8 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
     <div class="wccs-top-row">
       <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()">💾 Save Session Now</button>
-      <button class="btn-save-lg" id="copyStatusBtn" onclick="copyStatusForClaude()" style="display:none;background:#0a1a3a;border:2px solid #4af" title="Copy STATUS.md for Claude Project Files">📋 Copy STATUS.md for Claude</button>
+      <button id="copyStatusBtn" onclick="copyStatusForClaude()" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;">📋 Copy STATUS.md for Claude</button>
+      <span id="copyStatusMsg" style="margin-left:12px; font-weight:bold;"></span>
       <div class="wccs-auto-status">
         <span>Auto-WCCS: <span id="wccs-auto-label" class="auto-badge auto-off">OFF</span></span>
         <span class="wccs-next-label">Next save: <strong id="wccs-next-save">—</strong></span>
@@ -3244,45 +3245,13 @@ function triggerStatusCopyReminder() {
 
 async function copyStatusForClaude() {
   try {
-    const r = await fetch('/api/status');
-    if (!r.ok) { showToast('Server error: ' + r.status, 'error'); return; }
-    const d = await r.json();
-    await navigator.clipboard.writeText(d.content || '');
-
-    // Stop the bouncing arrow, change text to green success
-    const arrowIcon = document.getElementById('status-copy-arrow-icon');
-    if (arrowIcon) arrowIcon.style.display = 'none';
-
-    const alertText = document.getElementById('status-copy-alert-text');
-    if (alertText) {
-      alertText.style.color = '#00cc44';
-      alertText.innerHTML = '✅ Copied! Now paste into Claude Project Files';
-    }
-
-    const alert = document.getElementById('status-copy-alert');
-    if (alert) {
-      alert.style.animation = 'none';
-      alert.style.boxShadow = 'none';
-      alert.style.border = '3px solid #00cc44';
-      alert.style.background = '#001a00';
-    }
-
-    // Remove green glow from copy button
-    const copyBtn = document.getElementById('copyStatusBtn');
-    if (copyBtn) {
-      copyBtn.classList.remove('reminder-active');
-      copyBtn.style.border = '2px solid #2a7';
-    }
-
-    showToast('Copied! Paste into Claude Project Files.', 'ok', 4000);
-
-    // Hide alert after 10 seconds
-    setTimeout(() => {
-      const a = document.getElementById('status-copy-alert');
-      if (a) a.style.display = 'none';
-    }, 10000);
+    const resp = await fetch('/api/status');
+    const data = await resp.json();
+    await navigator.clipboard.writeText(data.content);
+    document.getElementById('copyStatusMsg').innerHTML = '<span style="color:#22c55e;">✅ Copied! Now paste into Claude Project Files</span>';
+    setTimeout(() => { document.getElementById('copyStatusMsg').innerHTML = ''; }, 10000);
   } catch(e) {
-    showToast('Copy failed: ' + e.message, 'error');
+    document.getElementById('copyStatusMsg').innerHTML = '<span style="color:red;">❌ Failed - is MCC server running?</span>';
   }
 }
 
