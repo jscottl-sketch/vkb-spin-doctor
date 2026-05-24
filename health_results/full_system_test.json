@@ -1,0 +1,520 @@
+{
+  "timestamp": "2026-05-23T13:06:57.492368",
+  "total": 85,
+  "passed": 85,
+  "failed": 0,
+  "verdict": "SYSTEM HEALTHY",
+  "critical_stop": false,
+  "results": [
+    {
+      "group": "A",
+      "name": "File exists: provider_health.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: aafl_core.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: loop_manager.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: evaluator.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: researcher.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: memory_bank.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: meta_loop.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: chief_scout.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: mcu_optimizer.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: dashboard_builder.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: task_router.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: aafl_wccs.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: mission_control.html",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: mcc_server.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: spin_doctor.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "File exists: sfl_agent.py",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "health_results/ folder exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "dashboard_data/ folder exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "data/devices.json exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "INDEX.md exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "STATUS.md exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "A",
+      "name": "ALP_Database.md exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "provider_health.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "aafl_core.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "loop_manager.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "evaluator.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "researcher.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "memory_bank.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "task_router.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "B",
+      "name": "aafl_wccs.py imports without error",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "SQLite database file exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Table exists: knowledge",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Table exists: solution_log",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Table exists: source_reputation",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Table exists: provider_reputation",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: provider_name",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: total_calls",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: successful_calls",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: failed_calls",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: avg_response_time",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "provider_reputation column: last_updated",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Can write a test row and read it back",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "C",
+      "name": "Can delete the test row cleanly",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "provider_health.py can be run as a module",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "get_reputation() function exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/latest_health.json exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/latest_health.json is valid JSON",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier1_results.json exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier1_results.json is valid JSON",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier2_results.json exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier2_results.json is valid JSON",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier3_results.json exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/tier3_results.json is valid JSON",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "D",
+      "name": "health_results/cost_log.csv exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "Start mcc_server.py as subprocess on port 8080",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "GET /health-status returns 200",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "GET /health-status returns valid JSON",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "GET / returns 200",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "GET /dashboard-data/ returns response",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "E",
+      "name": "Kill subprocess cleanly",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Home tab is first tab",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Provider Health tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Kanban tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "AAFL Runs tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Scout Control tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Costs tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "WCCS tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "AAFL Control tab exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Connect Data button exists with spinner state",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Server status dot exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Home screen has 7 data cards",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Home screen has 3 empty slot cards",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "Cards are clickable (onclick/href present)",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "F",
+      "name": "dashboard_data/README.md exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "task_router classifies 'write python code' as AAFL or CLAC",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "task_router classifies 'what should I do next' as SONNET",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "evaluator.py can score a mock result without crashing",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "researcher.py research() function exists",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "memory_bank.py can store a test knowledge entry",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "G",
+      "name": "memory_bank.py retrieve works (store succeeded)",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "H",
+      "name": "INDEX.md is over 30 lines",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "H",
+      "name": "INDEX.md contains RESUME COMMAND section",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "H",
+      "name": "STATUS.md is over 50 lines",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "H",
+      "name": "STATUS.md contains NEXT PRIORITIES section",
+      "passed": true,
+      "reason": ""
+    },
+    {
+      "group": "H",
+      "name": "ALP_Database.md has at least 12 entries",
+      "passed": true,
+      "reason": ""
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "generated_at": "2026-05-24T13:51:46.667660",
+  "providers": [
+    {
+      "id": "lmstudio_coder",
+      "label": "LM Studio Coder 32B",
+      "tier": 1,
+      "status": "DEAD",
+      "response_time": 10.26,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 6,
+      "error": "litellm.BadRequestError: OpenAIException - Error code: 400 - {'error': 'Model unloaded.'}"
+    },
+    {
+      "id": "lmstudio_vision",
+      "label": "LM Studio VL 32B",
+      "tier": 1,
+      "status": "DEAD",
+      "response_time": 46.34,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 6,
+      "error": "litellm.Timeout: APITimeoutError - Request timed out. Error_str: Request timed out."
+    },
+    {
+      "id": "lmstudio_reason",
+      "label": "LM Studio DeepSeek R1",
+      "tier": 1,
+      "status": "DEAD",
+      "response_time": 0.02,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 6,
+      "error": "litellm.BadRequestError: OpenAIException - Error code: 400 - {'error': 'Model is unloaded.'}"
+    },
+    {
+      "id": "lmstudio_fast",
+      "label": "LM Studio Phi-4 14B",
+      "tier": 1,
+      "status": "DEAD",
+      "response_time": 0.01,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 6,
+      "error": "litellm.BadRequestError: OpenAIException - No models loaded. Please load a model in the developer page or use the 'lms load' command."
+    },
+    {
+      "id": "cerebras",
+      "label": "Cerebras GPT-OSS 120B",
+      "tier": 2,
+      "status": "GREEN",
+      "response_time": 0.31,
+      "quality_pass": false,
+      "score": 60,
+      "reputation_pct": 83.3,
+      "total_calls": 6,
+      "error": null
+    },
+    {
+      "id": "groq_70b",
+      "label": "Groq Llama 3.3 70B",
+      "tier": 2,
+      "status": "NO_KEY",
+      "response_time": 0.0,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 0,
+      "error": "no API key"
+    },
+    {
+      "id": "groq_deepseek",
+      "label": "Groq DeepSeek R1",
+      "tier": 2,
+      "status": "NO_KEY",
+      "response_time": 0.0,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 0,
+      "error": "no API key"
+    },
+    {
+      "id": "gemini_flash",
+      "label": "Gemini 2.5 Flash",
+      "tier": 2,
+      "status": "GREEN",
+      "response_time": 0.92,
+      "quality_pass": false,
+      "score": 60,
+      "reputation_pct": 100.0,
+      "total_calls": 6,
+      "error": null
+    },
+    {
+      "id": "mistral_code",
+      "label": "Mistral Codestral",
+      "tier": 2,
+      "status": "GREEN",
+      "response_time": 0.19,
+      "quality_pass": true,
+      "score": 100,
+      "reputation_pct": 100.0,
+      "total_calls": 6,
+      "error": null
+    },
+    {
+      "id": "openrouter",
+      "label": "OpenRouter Auto",
+      "tier": 3,
+      "status": "GREEN",
+      "response_time": 8.33,
+      "quality_pass": false,
+      "score": 60,
+      "reputation_pct": 100.0,
+      "total_calls": 6,
+      "error": null
+    },
+    {
+      "id": "huggingface",
+      "label": "HuggingFace Mistral-7B",
+      "tier": 3,
+      "status": "DEAD",
+      "response_time": 0.43,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 6,
+      "error": "litellm.BadRequestError: HuggingfaceException - {\"error\":{\"message\":\"The requested model 'mistralai/Mistral-7B-Instruct-v0.3' is not a chat model.\",\"type\":\"invalid_request_error\",\"param\":\"model\",\"code\":\"model_not_supported\"}}"
+    },
+    {
+      "id": "cloudflare",
+      "label": "Cloudflare Workers AI",
+      "tier": 2,
+      "status": "NO_KEY",
+      "response_time": 0.0,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 0,
+      "error": "no API key"
+    },
+    {
+      "id": "cohere_embed",
+      "label": "Cohere Embeddings",
+      "tier": 3,
+      "status": "SKIP",
+      "response_time": 0.0,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 0,
+      "error": "embed-only provider"
+    },
+    {
+      "id": "claude_api",
+      "label": "Claude Sonnet (PAID)",
+      "tier": 99,
+      "status": "SKIP",
+      "response_time": 0.0,
+      "quality_pass": false,
+      "score": 0,
+      "reputation_pct": 0.0,
+      "total_calls": 0,
+      "error": "paid provider blocked"
+    }
+  ]
+}

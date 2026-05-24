@@ -1,0 +1,94 @@
+{
+  "build": "Build 1",
+  "timestamp": "2026-05-23T22:01:00",
+  "score": 108,
+  "score_max": 108,
+  "pass_rate": "100.0%",
+  "verdict": "ALL CLEAR",
+  "pre_existing_fixes": [
+    "mss 10.2.0 installed (sfl_agent mss import error fixed)",
+    "Pillow 12.2.0 installed (sfl_agent PIL import error fixed)"
+  ],
+  "features": [
+    {
+      "id": 1,
+      "name": "Module Loader",
+      "test": "test_001",
+      "result": "PASS",
+      "detail": "13 modules found"
+    },
+    {
+      "id": 2,
+      "name": "Preset Manager",
+      "test": "test_002",
+      "result": "PASS",
+      "detail": "3 presets, save/load/delete OK"
+    },
+    {
+      "id": 3,
+      "name": "Confidence Threshold + Cost Cap",
+      "test": "test_003",
+      "result": "PASS",
+      "detail": "threshold=7.0 status field present"
+    },
+    {
+      "id": 4,
+      "name": "Auto-Retry Manager",
+      "test": "test_004",
+      "result": "PASS",
+      "detail": "should_retry logic OK, next_provider=cerebras"
+    },
+    {
+      "id": 5,
+      "name": "Smart Suggester",
+      "test": "test_005",
+      "result": "PASS",
+      "detail": "code->mistral_code research->gemini_flash"
+    },
+    {
+      "id": 6,
+      "name": "Chain Runner",
+      "test": "test_006",
+      "result": "PASS",
+      "detail": "get_chain_status OK, running=False"
+    },
+    {
+      "id": 7,
+      "name": "Timed Scout",
+      "test": "test_007",
+      "result": "PASS",
+      "detail": "get_status OK, stop-flag check OK"
+    },
+    {
+      "id": 8,
+      "name": "Source Discovery Mode",
+      "test": "test_008",
+      "result": "PASS",
+      "detail": "add_source + get_sources OK, 1 sources"
+    },
+    {
+      "id": 9,
+      "name": "Stuck Inbox Enhancements",
+      "test": "test_009",
+      "result": "PASS",
+      "detail": "summary+severity+bulk_resolve OK"
+    },
+    {
+      "id": 10,
+      "name": "Storage Manager",
+      "test": "test_010",
+      "result": "PASS",
+      "detail": "6 slots checked, report OK"
+    }
+  ],
+  "mot_groups": {
+    "A_file_existence": "30/30 PASS",
+    "B_python_imports": "13/13 PASS (after mss + Pillow install)",
+    "C_html_structure": "27/27 PASS",
+    "D_server_endpoints": "6/6 PASS",
+    "E_home_cards": "16/16 PASS",
+    "F_provider_health": "6/6 PASS",
+    "G_aafl_core": "5/5 PASS",
+    "H_data_integrity": "5/5 PASS"
+  }
+}

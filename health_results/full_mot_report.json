@@ -1,0 +1,659 @@
+{
+  "timestamp": "2026-05-24T09:07:36.143657",
+  "total": 108,
+  "passed": 108,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "verdict": "ALL CLEAR",
+  "failures": [],
+  "results": [
+    {
+      "group": "A",
+      "name": "File: spin_doctor.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: sfl_agent.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: aafl_core.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: loop_manager.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: evaluator.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: researcher.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: memory_bank.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: meta_loop.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: chief_scout.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: mcu_optimizer.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: dashboard_builder.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: task_router.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: aafl_wccs.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: aafl_watchdog.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: cost_guard.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: merge_sessions.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: queue_runner.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: mcc_server.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: problems/conductor.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: problems/win_hardener.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "File: problems/ed_bind_reset.py",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Doc: INDEX.md",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Doc: STATUS.md",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Doc: HISTORY.md",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Doc: ACCA.md",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Doc: ALP_Database.md",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Folder: health_results/",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Folder: dashboard_data/",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Folder: session_logs/",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "A",
+      "name": "Folder: archive_dead/",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "B",
+      "name": "import aafl_core",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import loop_manager",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import evaluator",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import researcher",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import memory_bank",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import meta_loop",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import chief_scout",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import mcu_optimizer",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import dashboard_builder",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import task_router",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import provider_health",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import spin_doctor",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "B",
+      "name": "import sfl_agent",
+      "status": "PASS",
+      "detail": "OK"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Home",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Kanban",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Activity Feed",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: AAFL Runs",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Costs",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Scout Control",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: AAFL Control",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: WCCS",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Provider Health",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Tab: ACCA",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Stuck Inbox",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Run Now button",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Cost Predictor",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Memory Inspector",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Promo Queue",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: ACCA Tab",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: ALP Counter",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Keyboard Shortcuts",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Undo system",
+      "status": "PASS",
+      "detail": "JS function found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Sunday Merge",
+      "status": "PASS",
+      "detail": "keyword found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Save Timeline",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Rewind panel",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Diff Viewer",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Session Log Browser",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: HISTORY Search",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Auto-WCCS Toggle",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: WCCS Save button",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "D",
+      "name": "GET / (HTML)",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "D",
+      "name": "GET /health-status (JSON)",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "D",
+      "name": "GET /dashboard-data/ (JSON)",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "D",
+      "name": "GET /status (JSON)",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "D",
+      "name": "GET /dashboard-data/kanban.json",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "D",
+      "name": "GET /dashboard-data/costs.json",
+      "status": "PASS",
+      "detail": "HTTP 200"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: Provider Health",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: provider_health.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: AAFL Last Run",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: aafl_runs.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: Scout Status",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: scout.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: Kanban Summary",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: kanban.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: Cost Today",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: costs.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: WCCS Last Save",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: wccs.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "Card JS ref: AAFL Control",
+      "status": "PASS",
+      "detail": "referenced"
+    },
+    {
+      "group": "E",
+      "name": "Card data file: aafl_control.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "E",
+      "name": "3 empty slot cards (JS loop)",
+      "status": "PASS",
+      "detail": "JS loop found"
+    },
+    {
+      "group": "E",
+      "name": "Cards have onclick navigation",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "F",
+      "name": "provider_health.py exists",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "F",
+      "name": "health_results/ folder",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "F",
+      "name": "latest_health.json valid JSON",
+      "status": "PASS",
+      "detail": "14 providers"
+    },
+    {
+      "group": "F",
+      "name": "tier1_results.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "F",
+      "name": "tier2_results.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "F",
+      "name": "tier3_results.json",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "F",
+      "name": "cost_log.csv",
+      "status": "PASS",
+      "detail": "exists"
+    },
+    {
+      "group": "G",
+      "name": "task_router.classify()",
+      "status": "PASS",
+      "detail": "tier=AAFL"
+    },
+    {
+      "group": "G",
+      "name": "evaluator.evaluate()",
+      "status": "PASS",
+      "detail": "score=7.0"
+    },
+    {
+      "group": "G",
+      "name": "memory_bank.store()",
+      "status": "PASS",
+      "detail": "uid=fc6a1ce8-b5e3-46"
+    },
+    {
+      "group": "G",
+      "name": "memory_bank cleanup",
+      "status": "PASS",
+      "detail": "test row removed"
+    },
+    {
+      "group": "G",
+      "name": "researcher.research() exists",
+      "status": "PASS",
+      "detail": "callable"
+    },
+    {
+      "group": "H",
+      "name": "INDEX.md has RESUME COMMAND",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "H",
+      "name": "STATUS.md has NEXT PRIORITIES",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "H",
+      "name": "STATUS.md has WHO IS SCOTT",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "H",
+      "name": "ALP_Database.md >=12 entries (found: 19)",
+      "status": "PASS",
+      "detail": "19 rows"
+    }
+  ]
+}

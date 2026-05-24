@@ -1,0 +1,86 @@
+[
+  {
+    "test": "test_000",
+    "feature": "Pre-existing bug fix: mss import",
+    "result": "PASS",
+    "detail": "mss 10.2.0 installed, import mss and import sfl_agent both succeed",
+    "timestamp": "2026-05-23T00:00:00"
+  },
+  {
+    "test": "test_001",
+    "feature": "Feature 1: Module Loader",
+    "result": "PASS",
+    "detail": "13 modules found",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_002",
+    "feature": "Feature 2: Preset Manager",
+    "result": "PASS",
+    "detail": "3 presets, save/load/delete OK",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_003",
+    "feature": "Feature 3: Confidence Threshold + Cost Cap",
+    "result": "PASS",
+    "detail": "threshold=7.0 status field present",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_004",
+    "feature": "Feature 4: Auto-Retry Manager",
+    "result": "PASS",
+    "detail": "should_retry logic OK, next_provider=cerebras",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_005",
+    "feature": "Feature 5: Smart Suggester",
+    "result": "PASS",
+    "detail": "code->mistral_code research->gemini_flash",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_006",
+    "feature": "Feature 6: Chain Runner",
+    "result": "PASS",
+    "detail": "get_chain_status OK, running=False",
+    "timestamp": "2026-05-23T18:17:22"
+  },
+  {
+    "test": "test_007",
+    "feature": "Feature 7: Timed Scout",
+    "result": "PASS",
+    "detail": "get_status OK, stop-flag check OK",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_008",
+    "feature": "Feature 8: Source Discovery Mode",
+    "result": "PASS",
+    "detail": "add_source + get_sources OK, 1 sources",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_009",
+    "feature": "Feature 9: Stuck Inbox Enhancements",
+    "result": "PASS",
+    "detail": "summary+severity+bulk_resolve OK, id=dfbbebb1",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_010",
+    "feature": "Feature 10: Storage Manager",
+    "result": "PASS",
+    "detail": "6 slots checked, report OK",
+    "timestamp": "2026-05-23T18:16:29"
+  },
+  {
+    "test": "test_011",
+    "feature": "Step B: WCCS Tab Drill-Down (5 buttons + 6 endpoints) + Step C: Provider Health Drill-Down",
+    "result": "PASS",
+    "detail": "5 pill buttons rendered OK, 6/6 endpoints 200: /wccs/save-log, /wccs/history-search, /wccs/session-logs, /wccs/versions, /wccs/restore, /wccs/diff. Provider Health Show Details added to home gauge.",
+    "timestamp": "2026-05-23T22:01:30"
+  }
+]

@@ -7,6 +7,7 @@ Writes morning_report.md when done.
 import re
 import sys
 import datetime
+import threading
 from pathlib import Path
 
 try:
@@ -450,6 +451,14 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     print(f"[LOOP] Iterations  : {iterations}")
     print(f"[LOOP] Total cost  : £{total_cost:.6f}")
     print(f"[LOOP] Report      : {HERE / 'morning_report.md'}")
+
+    if _WATCHDOG_OK and _watchdog_run_cycle is not None:
+        try:
+            print("[LOOP] Triggering post-run watchdog WCCS cycle (background)...")
+            threading.Thread(target=_watchdog_run_cycle, daemon=True, name="WatchdogPostRun").start()
+        except Exception as _we:
+            print(f"[LOOP] Watchdog trigger failed (non-fatal): {_we}")
+
     _notify_done(stop_reason, iterations, total_cost)
 
 

@@ -1,0 +1,132 @@
+{
+  "timestamp": "2026-05-23T12:18:35.982946",
+  "tier_result": "TIER 1 PASS",
+  "providers": {
+    "cerebras": {
+      "provider": "Cerebras GPT-OSS 120B",
+      "tests": {
+        "F1_alive": {
+          "result": "PASS",
+          "alive": true
+        },
+        "F2_speed": {
+          "result": "PASS",
+          "color": "GREEN",
+          "time": 1.18
+        },
+        "F3_quality": {
+          "result": "PASS",
+          "quality_pass": false,
+          "response": ""
+        },
+        "F4_ratelimit": {
+          "result": "PASS"
+        },
+        "F5_report": {
+          "result": "PASS"
+        }
+      }
+    },
+    "gemini_flash": {
+      "provider": "Gemini 2.5 Flash",
+      "tests": {
+        "F1_alive": {
+          "result": "PASS",
+          "alive": true
+        },
+        "F2_speed": {
+          "result": "PASS",
+          "color": "GREEN",
+          "time": 0.61
+        },
+        "F3_quality": {
+          "result": "PASS",
+          "quality_pass": true,
+          "response": "4"
+        },
+        "F4_ratelimit": {
+          "result": "PASS"
+        },
+        "F5_report": {
+          "result": "PASS"
+        }
+      }
+    },
+    "mistral_code": {
+      "provider": "Mistral Codestral",
+      "tests": {
+        "F1_alive": {
+          "result": "PASS",
+          "alive": true
+        },
+        "F2_speed": {
+          "result": "PASS",
+          "color": "GREEN",
+          "time": 0.25
+        },
+        "F3_quality": {
+          "result": "PASS",
+          "quality_pass": true,
+          "response": "4"
+        },
+        "F4_ratelimit": {
+          "result": "PASS"
+        },
+        "F5_report": {
+          "result": "PASS"
+        }
+      }
+    },
+    "openrouter": {
+      "provider": "OpenRouter Auto",
+      "tests": {
+        "F1_alive": {
+          "result": "PASS",
+          "alive": true
+        },
+        "F2_speed": {
+          "result": "PASS",
+          "color": "GREEN",
+          "time": 7.04
+        },
+        "F3_quality": {
+          "result": "PASS",
+          "quality_pass": false,
+          "response": ""
+        },
+        "F4_ratelimit": {
+          "result": "PASS"
+        },
+        "F5_report": {
+          "result": "PASS"
+        }
+      }
+    },
+    "huggingface": {
+      "provider": "HuggingFace Mistral-7B",
+      "tests": {
+        "F1_alive": {
+          "result": "PASS",
+          "alive": false
+        },
+        "F2_speed": {
+          "result": "PASS",
+          "color": "RED",
+          "time": 0.87
+        },
+        "F3_quality": {
+          "result": "PASS",
+          "quality_pass": false,
+          "response": ""
+        },
+        "F4_ratelimit": {
+          "result": "PASS"
+        },
+        "F5_report": {
+          "result": "PASS"
+        }
+      }
+    }
+  },
+  "provider_count": 5
+}

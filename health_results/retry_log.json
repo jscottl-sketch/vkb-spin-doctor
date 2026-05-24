@@ -1,0 +1,12 @@
+[
+  {
+    "goal": "test goal",
+    "attempt": 1,
+    "failed_provider": "mistral",
+    "next_provider": "cerebras",
+    "reason": "score below threshold",
+    "timestamp": "2026-05-23T18:16:29.511359",
+    "final_score": null,
+    "outcome": "pending"
+  }
+]
