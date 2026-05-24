@@ -350,8 +350,8 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
   to{opacity:1;transform:scale(1)}
 }
 #status-copy-alert{animation:pulseRedBanner 1.4s ease-in-out infinite,fadeInBig .4s ease}
-#btn-copy-status-claude.reminder-active{animation:pulseBorderGreen 1.2s ease-in-out infinite!important;border:2px solid #00ff00!important}
-#status-copy-arrow-icon{display:inline-block;animation:bounceArrow .65s ease-in-out infinite;font-size:52px;line-height:1;filter:drop-shadow(0 0 10px #ffff00)}
+#copyStatusBtn.reminder-active{animation:pulseBorderGreen 1.2s ease-in-out infinite!important;border:2px solid #00ff00!important}
+#status-copy-arrow-icon{display:inline-block;width:0;height:0;border-left:28px solid transparent;border-right:28px solid transparent;border-top:50px solid #ffff00;filter:drop-shadow(0 0 10px #ffff00);animation:bounceArrow .65s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -587,14 +587,14 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
     <!-- STATUS COPY REMINDER — hidden until Save PASS -->
     <div id="status-copy-alert" style="display:none;margin-bottom:12px;background:#1a0000;border:3px solid #ff0000;border-radius:10px;padding:16px 20px">
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <span id="status-copy-arrow-icon">⬇️</span>
+        <span id="status-copy-arrow-icon"></span>
         <span id="status-copy-alert-text" style="font-weight:bold;color:#ff4444;font-size:15px;line-height:1.6">⚠️ UPDATE CLAUDE PROJECT FILES NOW!<br>Click the button → Go to Claude Chat → Project Files → Delete old STATUS.md → Click + → Paste</span>
       </div>
     </div>
 
     <div class="wccs-top-row">
       <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()">💾 Save Session Now</button>
-      <button class="btn-save-lg" id="btn-copy-status-claude" onclick="copyStatusForClaude()" style="display:none;background:#0a2010;border:2px solid #2a7" title="Copy STATUS.md for Claude Project Files">📋 Copy STATUS.md for Claude</button>
+      <button class="btn-save-lg" id="copyStatusBtn" onclick="copyStatusForClaude()" style="display:none;background:#0a1a3a;border:2px solid #4af" title="Copy STATUS.md for Claude Project Files">📋 Copy STATUS.md for Claude</button>
       <div class="wccs-auto-status">
         <span>Auto-WCCS: <span id="wccs-auto-label" class="auto-badge auto-off">OFF</span></span>
         <span class="wccs-next-label">Next save: <strong id="wccs-next-save">—</strong></span>
@@ -3223,7 +3223,7 @@ async function sdLoadSysInfo() {
 
 function triggerStatusCopyReminder() {
   // Show copy button with green glow
-  const copyBtn = document.getElementById('btn-copy-status-claude');
+  const copyBtn = document.getElementById('copyStatusBtn');
   if (copyBtn) {
     copyBtn.style.display = '';
     copyBtn.classList.add('reminder-active');
@@ -3268,7 +3268,7 @@ async function copyStatusForClaude() {
     }
 
     // Remove green glow from copy button
-    const copyBtn = document.getElementById('btn-copy-status-claude');
+    const copyBtn = document.getElementById('copyStatusBtn');
     if (copyBtn) {
       copyBtn.classList.remove('reminder-active');
       copyBtn.style.border = '2px solid #2a7';
