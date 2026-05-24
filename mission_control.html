@@ -331,6 +331,27 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .ph-inst-time{color:#666;font-size:9px;flex-shrink:0}
 .ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px 'Consolas','Courier New',monospace;margin-top:4px;transition:.15s;width:100%}
 .ph-detail-btn:hover{background:#1a3a5a}
+
+/* ── STATUS-COPY REMINDER ANIMATION ── */
+@keyframes bounceArrow{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-14px)}
+}
+@keyframes pulseBorderGreen{
+  0%,100%{box-shadow:0 0 8px #00ff00,0 0 0 2px #00ff00}
+  50%{box-shadow:0 0 28px #00ff00,0 0 0 5px #00ff00,0 0 55px #00ff00}
+}
+@keyframes pulseRedBanner{
+  0%,100%{box-shadow:0 0 12px #ff0000,0 0 0 2px #ff0000}
+  50%{box-shadow:0 0 35px #ff0000,0 0 0 6px #ff0000,0 0 70px #ff0000}
+}
+@keyframes fadeInBig{
+  from{opacity:0;transform:scale(0.92)}
+  to{opacity:1;transform:scale(1)}
+}
+#status-copy-alert{animation:pulseRedBanner 1.4s ease-in-out infinite,fadeInBig .4s ease}
+#btn-copy-status-claude.reminder-active{animation:pulseBorderGreen 1.2s ease-in-out infinite!important;border:2px solid #00ff00!important}
+#status-copy-arrow-icon{display:inline-block;animation:bounceArrow .65s ease-in-out infinite;font-size:52px;line-height:1;filter:drop-shadow(0 0 10px #ffff00)}
 </style>
 </head>
 <body>
@@ -563,8 +584,17 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
       <div id="wdiff-out" style="max-height:300px;overflow-y:auto;font-size:11px;font-family:'Consolas','Courier New',monospace"></div>
     </div>
 
+    <!-- STATUS COPY REMINDER — hidden until Save PASS -->
+    <div id="status-copy-alert" style="display:none;margin-bottom:12px;background:#1a0000;border:3px solid #ff0000;border-radius:10px;padding:16px 20px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span id="status-copy-arrow-icon">⬇️</span>
+        <span id="status-copy-alert-text" style="font-weight:bold;color:#ff4444;font-size:15px;line-height:1.6">⚠️ UPDATE CLAUDE PROJECT FILES NOW!<br>Click the button → Go to Claude Chat → Project Files → Delete old STATUS.md → Click + → Paste</span>
+      </div>
+    </div>
+
     <div class="wccs-top-row">
       <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()">💾 Save Session Now</button>
+      <button class="btn-save-lg" id="btn-copy-status-claude" onclick="copyStatusForClaude()" style="display:none;background:#0a2010;border:2px solid #2a7" title="Copy STATUS.md for Claude Project Files">📋 Copy STATUS.md for Claude</button>
       <div class="wccs-auto-status">
         <span>Auto-WCCS: <span id="wccs-auto-label" class="auto-badge auto-off">OFF</span></span>
         <span class="wccs-next-label">Next save: <strong id="wccs-next-save">—</strong></span>
@@ -615,11 +645,6 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
         <div class="feature-name">Sunday Auto-Merge</div>
         <div class="feature-desc">Run merge_sessions.py now</div>
       </div>
-    </div>
-
-    <div style="margin-top:14px">
-      <button class="btn" onclick="copyStatusForClaude()" id="btn-copy-status-claude">📋 Copy STATUS.md for Claude</button>
-      <span id="copy-status-toast" style="display:none;margin-left:10px;color:#4caf50;font-size:12px;font-weight:600">Copied!</span>
     </div>
 
   </div>
@@ -1292,6 +1317,7 @@ async function saveSession() {
       if (meta) meta.textContent = '0 chars';
       await loadTimeline();
       renderWccsTab();
+      triggerStatusCopyReminder();
     } else {
       const detail = res.error || (res.stdout ? res.stdout.slice(0, 100) : 'unknown');
       toast('Save failed: ' + detail, 'error', 6000);
@@ -3195,15 +3221,66 @@ async function sdLoadSysInfo() {
   // no-op: sdLoadMot() already calls sdRenderSysInfo(data) with the same endpoint
 }
 
+function triggerStatusCopyReminder() {
+  // Show copy button with green glow
+  const copyBtn = document.getElementById('btn-copy-status-claude');
+  if (copyBtn) {
+    copyBtn.style.display = '';
+    copyBtn.classList.add('reminder-active');
+  }
+  // Show attention banner with bouncing arrow + red text
+  const alert = document.getElementById('status-copy-alert');
+  if (alert) {
+    alert.style.display = 'block';
+    const arrowIcon = document.getElementById('status-copy-arrow-icon');
+    if (arrowIcon) arrowIcon.style.display = 'inline-block';
+    const alertText = document.getElementById('status-copy-alert-text');
+    if (alertText) {
+      alertText.style.color = '#ff4444';
+      alertText.innerHTML = '⚠️ UPDATE CLAUDE PROJECT FILES NOW!<br>Click the button → Go to Claude Chat → Project Files → Delete old STATUS.md → Click + → Paste';
+    }
+  }
+}
+
 async function copyStatusForClaude() {
   try {
-    const r = await fetch(BASE + '/api/status');
+    const r = await fetch('/api/status');
     if (!r.ok) { showToast('Server error: ' + r.status, 'error'); return; }
     const d = await r.json();
     await navigator.clipboard.writeText(d.content || '');
-    const toast = document.getElementById('copy-status-toast');
-    toast.style.display = 'inline';
-    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+
+    // Stop the bouncing arrow, change text to green success
+    const arrowIcon = document.getElementById('status-copy-arrow-icon');
+    if (arrowIcon) arrowIcon.style.display = 'none';
+
+    const alertText = document.getElementById('status-copy-alert-text');
+    if (alertText) {
+      alertText.style.color = '#00cc44';
+      alertText.innerHTML = '✅ Copied! Now paste into Claude Project Files';
+    }
+
+    const alert = document.getElementById('status-copy-alert');
+    if (alert) {
+      alert.style.animation = 'none';
+      alert.style.boxShadow = 'none';
+      alert.style.border = '3px solid #00cc44';
+      alert.style.background = '#001a00';
+    }
+
+    // Remove green glow from copy button
+    const copyBtn = document.getElementById('btn-copy-status-claude');
+    if (copyBtn) {
+      copyBtn.classList.remove('reminder-active');
+      copyBtn.style.border = '2px solid #2a7';
+    }
+
+    showToast('Copied! Paste into Claude Project Files.', 'ok', 4000);
+
+    // Hide alert after 10 seconds
+    setTimeout(() => {
+      const a = document.getElementById('status-copy-alert');
+      if (a) a.style.display = 'none';
+    }, 10000);
   } catch(e) {
     showToast('Copy failed: ' + e.message, 'error');
   }
