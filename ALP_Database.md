@@ -26,3 +26,13 @@ Every session: Claude Code reads this file and adds any new savings found. Grow 
 | 17 | **Master project = weekly boardroom only, open max 2-3x/week** — Master project loads all cross-project context. Opening it daily burns tokens unnecessarily. Daily work stays in lean sub-project chats. Master reserved for big-picture strategy sessions only. Split barely affects benchmark (runs locally, not in Chat). | High — prevents context bleed from daily work bleeding into strategic sessions | 19 May 2026 |
 | 2026-05-23 | Test ALP entry from automated test |
 | 2026-05-23 | Phase 3 test ALP entry |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |
+| 2026-05-24 | test ALP from mcc_test |

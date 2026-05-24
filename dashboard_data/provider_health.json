@@ -1,0 +1,12 @@
+{
+  "tab_name": "Provider Health",
+  "tab_id": "providerhealth",
+  "icon": "🩺",
+  "status": "green",
+  "facts": [
+    "3 providers GREEN (Cerebras, Gemini, Mistral)",
+    "Best: Mistral Codestral — score 100/100",
+    "Last check: 2026-05-23 12:22"
+  ],
+  "last_updated": "2026-05-23T12:22:37"
+}

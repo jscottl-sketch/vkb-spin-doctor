@@ -9,4 +9,49 @@
 #
 # ── Active goals ─────────────────────────────────────────────────────────────
 Add Star Citizen full support to Spin Doctor
-Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator NXT EVO
+Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator NXT EVOTest goal from automated test
+Phase 3 test goal
+1+1=
+1+1=
+how to use you.
+how to use you.
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test goal from mcc_test.py
+test queued goal
+test runNow
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow
+test goal from mcc_test.py
+test queued goal
+test
+test runNow

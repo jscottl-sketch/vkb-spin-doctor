@@ -1,0 +1,14 @@
+{
+  "name": "overnight_run",
+  "created": "2026-05-23",
+  "description": "Long autonomous overnight AAFL run — high quality bar, minimal cost",
+  "state": {
+    "aafl_control": {
+      "confidence_threshold": 8.0,
+      "cost_cap_per_goal_usd": 0.01,
+      "chain_mode": true,
+      "scout_timed_hours": 8,
+      "max_retries": 3
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "tab_name": "AAFL Control",
+  "tab_id": "aafl-control",
+  "icon": "⚙️",
+  "status": "yellow",
+  "facts": [
+    "Loop: not currently running",
+    "No goal set — configure in AAFL tab",
+    "Provider routing: cheapest-first"
+  ],
+  "last_updated": null
+}

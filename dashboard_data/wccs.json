@@ -1,0 +1,12 @@
+{
+  "tab_name": "WCCS",
+  "tab_id": "wccs",
+  "icon": "💾",
+  "status": "green",
+  "facts": [
+    "Session save system active",
+    "Auto-WCCS: OFF (enable in header toggle)",
+    "Click to paste chat summary and save"
+  ],
+  "last_updated": null
+}

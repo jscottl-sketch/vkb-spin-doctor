@@ -49,17 +49,21 @@ def load_config() -> dict:
     return dict(_CONFIG_DEFAULTS)
 
 
-def chief_scout(goal: str = None) -> dict:
+def chief_scout(goal: str = None, mode: str = "goal") -> dict:
     """
     Parallel multi-strategy scout. Returns same format as researcher.scout().
-    Each strategy failure is isolated — others continue. Falls back to
-    researcher.scout() if the whole parallel system fails.
-    Config loaded from chief_scout_config.json; goal arg overrides config goal.
+    mode="goal"      — existing behaviour, uses goal text as query.
+    mode="discovery" — auto-generates query to find sources/communities. Results
+                       go to sources_library.json via source_library_manager.
     """
     from researcher import run_parallel_scouts, scout as _fallback
 
     cfg  = load_config()
     goal = goal or cfg.get("goal") or ""
+
+    if mode == "discovery":
+        return _run_discovery_mode(goal, cfg)
+
 
     # Filter strategies by active_strategies in config
     active = cfg.get("active_strategies", {})
@@ -88,6 +92,48 @@ def chief_scout(goal: str = None) -> dict:
     model = cfg.get("synthesis_model") or CHIEF_SCOUT_MODEL
     briefing = _synthesise(goal, data, model=model)
     return {"results": data["results"], "briefing": briefing}
+
+
+def _run_discovery_mode(goal: str, cfg: dict) -> dict:
+    """
+    Feature 8 — discovery mode: find source communities related to project topic.
+    Auto-generates query from recent memory_bank entries if goal is empty.
+    Results saved to sources_library.json.
+    """
+    from researcher import run_parallel_scouts, scout as _fallback
+
+    # Auto-generate discovery query
+    topic_hint = goal or "VKB joystick Star Citizen War Thunder input device"
+    query = (f"Find websites forums subreddits YouTube channels Discord servers "
+             f"related to {topic_hint}")
+
+    active      = cfg.get("active_strategies", {})
+    all_strats  = _load_strategies()
+    strategies  = [s for s in all_strats if active.get(s["name"], True)]
+
+    try:
+        data = run_parallel_scouts(
+            query, strategies,
+            max_results_per_scout=cfg.get("max_results_per_scout", 5),
+            timeout_seconds=cfg.get("timeout_seconds", 30),
+        )
+    except Exception:
+        data = _fallback(query)
+
+    # Save results to sources_library.json
+    try:
+        from source_library_manager import add_source
+        for r in data.get("results", []):
+            add_source(
+                url=r.get("url", ""),
+                domain=r.get("domain", ""),
+                description=r.get("snippet", r.get("title", ""))[:120],
+                tags=["discovery"],
+            )
+    except Exception:
+        pass
+
+    return data
 
 
 def _synthesise(goal: str, data: dict, model: str = None) -> str:

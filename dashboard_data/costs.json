@@ -1,0 +1,12 @@
+{
+  "tab_name": "Costs",
+  "tab_id": "costs",
+  "icon": "💰",
+  "status": "green",
+  "facts": [
+    "Cost logger active — health_results/cost_log.csv",
+    "Run provider_health.py to log provider call costs",
+    "Full costs tab coming soon"
+  ],
+  "last_updated": null
+}

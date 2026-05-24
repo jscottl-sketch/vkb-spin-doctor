@@ -1,0 +1,12 @@
+{
+  "tab_name": "Scout Control",
+  "tab_id": "scout",
+  "icon": "🔭",
+  "status": "yellow",
+  "facts": [
+    "No scout runs recorded yet",
+    "Use Scout tab to kick off a research run",
+    "Sources found will appear here after first run"
+  ],
+  "last_updated": null
+}

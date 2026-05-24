@@ -11,12 +11,35 @@ def evaluate(result: str, goal: str = "") -> dict:
     clarity      = _score_clarity(result)
     accuracy     = _score_accuracy(result)
     overall      = round((completeness + clarity + accuracy) / 3, 2)
-    return {
+
+    # Feature 3 — read confidence threshold from aafl_config.json
+    threshold = 7.0
+    try:
+        from aafl_config_reader import get_confidence_threshold
+        threshold = get_confidence_threshold()
+    except Exception:
+        pass
+    status = "PASS" if overall >= threshold else "RETRY"
+
+    scores = {
         "completeness": completeness,
         "clarity":      clarity,
         "accuracy":     accuracy,
         "overall":      overall,
+        "status":       status,
+        "threshold":    threshold,
     }
+    if overall >= 9.0:
+        try:
+            from promo_queue import add_to_promo
+            add_to_promo(
+                content=result[:500],
+                source=goal[:200] if goal else "unknown",
+                reason=f"Auto-promoted: score {overall}/10",
+            )
+        except Exception:
+            pass
+    return scores
 
 
 def _score_completeness(result: str, goal: str) -> float:

@@ -1,0 +1,7 @@
+PENDING NOTES FOR NEXT WCCS
+============================
+Add the following to STATUS.md (new DESIGN RULES section or under BIG VISION):
+
+DESIGN RULE: All components must support workstation mode (local) AND packaged mode (API-driven). Scout swarm, AAFL, MCC designed with both from day 1.
+
+Added: 2026-05-23

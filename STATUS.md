@@ -86,9 +86,29 @@
 | Auto git push | aafl_wccs.py pushes to remote after every commit (non-fatal on failure) |
 | DESIGN_RULES.md | FFUE + dual-mode (workstation/API) documented. All 4 components covered. |
 | LiteLLM installed | Already installed + comment at aafl_core.py:201. Full integration pending. |
-| mcc_test.py | Test session completed successfully 2026-05-24 |
-| mcc_test.py capture | Added 2026-05-24 from chat summary |
-| Test session captures | 5 sessions added from mcc_test.py |
+| mcc_test.py | Test session completed successfully 2026-05-24. 133/138 PASS |
+| mcc_test.py captures | 5 test sessions added from mcc_test.py |
+| mcu_optimizer.py | Reads handover + session logs + board, sends to Mistral, rewrites kanban JSON. WCCS step 6. |
+| wccs_runner.py | Original WCCS runner (pre-aafl_wccs). Still present. |
+| aafl_watchdog.py | Safety watchdog — built 2026-05-20. Wiring status UNCONFIRMED — must verify before overnight run. |
+| cost_guard.py | Cost cap safety net — built ~2026-05-15. Rule No.1 brake. Wiring status UNCONFIRMED. |
+| meta_loop.py + meta_loop.bat | Self-improving meta-loop. Dry-run default. 3 proposals in meta_proposals/ (never actioned). |
+| queue_runner.py + queue_runner.bat | Batch goal runner — reads goal_queue.txt, runs loop --once per goal. ACTIVE. |
+| morning_report.md | Auto-copy of latest AAFL result. Updated each AAFL run. |
+| mcc_full_mot.py | 108-check MOT test suite. MOT result: 108/108 ALL CLEAR 2026-05-23. |
+| provider_health.py | Provider health system — 3 tiers, 29 tests. |
+| source_library_manager.py | Sources library management — reads/writes sources_library.json. |
+| preset_manager.py | Build 1 Feature 2 — standalone preset utility (save/load/list/delete). ACTIVE. |
+| docs/MCC_FULL_GUIDE.md | Plain-English MCC user guide. Created 2026-05-24. |
+| afna_strategies.json | AFNA (Attack From New Angle) strategy definitions. |
+| Auto-refresh polling (MCC) | 30s pollCoreData(), manual ↻ Refresh button, Last updated label. Added 2026-05-24. |
+| AAFL Live Output panel | Live streaming AAFL output in AAFL Control tab. Phase + provider badges. Added 2026-05-24. |
+| AAFL↔Scout Bridge | Trigger scout for current goal, result feeds back to MCC. Added 2026-05-24. |
+| Workflow Builder | Provider sequence builder (add/remove steps), save/load named presets. Added 2026-05-24. |
+| Scout Strategies section | 5 individual strategy buttons (DDG/Reddit/GitHub/YouTube/Forum) + All Parallel. Added 2026-05-24. |
+| /aafl/run-goal endpoint | Fixes "Failed to fetch" — now actually launches loop_manager.py. Added 2026-05-24. |
+| /scout/strategy endpoint | Individual scout strategy launcher. Added 2026-05-24. |
+| mcc_server.py | Bridges MCC HTML to filesystem. 30+ endpoints. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -124,6 +144,17 @@
 | B2-23: Electron wrapper | Packaging |
 | GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. Manual setup. |
 | Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
+| aafl_watchdog.py + cost_guard.py wiring | URGENT — confirm both are called from loop_manager.py before next overnight run |
+| meta_proposals review | 3 AAFL self-improvement proposals in meta_proposals/ from 2026-05-18. None implemented. High value — read next. |
+| loop_output file cap | 35+ files now. Cleanup cap (50 max) planned 2026-05-20, never built. |
+| AFNA strategies → Stuck Inbox | Wire afna_strategies.json into Stuck Inbox AFNA suggestions. Planned 2026-05-23. |
+| ACCA.md cleanup | SBS missing from table. TBLM/DDM/BGM/BPM/EM in prose not table. FFUE stray at bottom. Meanings unknown: CLACH, CNP, RIBS, SESUM. |
+| Stage 3 WCCS (Chrome extension) | Auto-capture chat without manual trigger. Long-term. |
+| Ko-fi + Itch.io links | Fastest monetisation path. 30 min. In README. |
+| 5-project split | AAFL Engine / Spin Doctor / Mission Control / Promo / ACCA — after Star Citizen benchmark |
+| xAI Grok signup | console.x.ai → add GROK_API_KEY to .env manually |
+| n8n investigation | n8n self-hosted as potential AAFL foundation. Flagged May 2026. Never investigated. |
+| Dead file archive | model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41/v43 handovers → archive_dead/ 2026-05-24 |
 
 ---
 

@@ -1,14 +1,18 @@
 {
   "active_provider": "mistral",
-  "fallback_providers": ["gemini", "cerebras", "openrouter"],
+  "fallback_providers": [
+    "gemini",
+    "cerebras",
+    "openrouter"
+  ],
   "task_type": "reason",
   "max_iterations": 5,
-  "max_cost_usd": 0.10,
+  "max_cost_usd": 0.1,
   "timeout_seconds": 120,
   "use_chief_scout": true,
   "use_db_cache": true,
   "use_meta_loop": false,
-  "current_goal": "",
+  "current_goal": "1+1=",
   "run_mode": "once",
   "provider_list": [
     {
@@ -109,5 +113,6 @@
       "tier": 99,
       "status": "blocked"
     }
-  ]
+  ],
+  "test_key": "mcc_test"
 }

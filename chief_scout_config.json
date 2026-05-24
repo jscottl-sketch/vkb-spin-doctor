@@ -6,7 +6,7 @@
     "youtube": true,
     "forum": true
   },
-  "goal": "different keybinds star citizen, for vkb galdiator",
+  "goal": "test",
   "game_filter": "all",
   "hardware_filter": "any",
   "search_type": "keybinds",
@@ -73,5 +73,6 @@
       "reputation_floor": 3.0,
       "date_filter": "all"
     }
-  ]
+  ],
+  "mode": "discovery"
 }

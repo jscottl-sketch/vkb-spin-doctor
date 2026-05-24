@@ -1,11 +1,48 @@
 {
-  "timestamp": "2026-05-24T09:07:36.143657",
+  "timestamp": "2026-05-24T20:41:27.670481",
   "total": 108,
-  "passed": 108,
-  "failed": 0,
-  "pass_rate": 100.0,
-  "verdict": "ALL CLEAR",
-  "failures": [],
+  "passed": 102,
+  "failed": 6,
+  "pass_rate": 94.4,
+  "verdict": "ISSUES FOUND",
+  "failures": [
+    {
+      "group": "C",
+      "name": "Tab: Activity Feed",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Tab: Provider Health",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Rewind panel",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Diff Viewer",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: Session Log Browser",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Save Feature: HISTORY Search",
+      "status": "FAIL",
+      "detail": "MISSING"
+    }
+  ],
   "results": [
     {
       "group": "A",
@@ -280,8 +317,8 @@
     {
       "group": "C",
       "name": "Tab: Activity Feed",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
@@ -316,8 +353,8 @@
     {
       "group": "C",
       "name": "Tab: Provider Health",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
@@ -394,26 +431,26 @@
     {
       "group": "C",
       "name": "Save Feature: Rewind panel",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
       "name": "Save Feature: Diff Viewer",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
       "name": "Save Feature: Session Log Browser",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
       "name": "Save Feature: HISTORY Search",
-      "status": "PASS",
-      "detail": "found"
+      "status": "FAIL",
+      "detail": "MISSING"
     },
     {
       "group": "C",
@@ -617,7 +654,7 @@
       "group": "G",
       "name": "memory_bank.store()",
       "status": "PASS",
-      "detail": "uid=fc6a1ce8-b5e3-46"
+      "detail": "uid=7888b201-edf1-44"
     },
     {
       "group": "G",
@@ -651,9 +688,9 @@
     },
     {
       "group": "H",
-      "name": "ALP_Database.md >=12 entries (found: 19)",
+      "name": "ALP_Database.md >=12 entries (found: 29)",
       "status": "PASS",
-      "detail": "19 rows"
+      "detail": "29 rows"
     }
   ]
 }

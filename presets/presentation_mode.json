@@ -1,0 +1,10 @@
+{
+  "name": "presentation_mode",
+  "created": "2026-05-23",
+  "description": "Demo / presentation — Home tab active, all panels visible, fast refresh",
+  "state": {
+    "active_tab": "home",
+    "refresh_seconds": 5,
+    "panels_visible": "all"
+  }
+}

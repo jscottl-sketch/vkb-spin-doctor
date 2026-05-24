@@ -1,0 +1,12 @@
+{
+  "base_path": "D:/",
+  "total_allocated_gb": 1000,
+  "slots": [
+    {"name": "AAFL Loop Outputs", "folder": "aafl_storage/loop_outputs", "quota_gb": 100, "component": "aafl"},
+    {"name": "Scout Knowledge Base", "folder": "aafl_storage/scout_knowledge", "quota_gb": 300, "component": "scout"},
+    {"name": "MCC Logs and History", "folder": "aafl_storage/mcc_logs", "quota_gb": 50, "component": "mcc"},
+    {"name": "Session Logs and Handovers", "folder": "aafl_storage/session_logs", "quota_gb": 10, "component": "sessions"},
+    {"name": "LM Studio Model Cache", "folder": "D:/lm-models", "quota_gb": 500, "component": "models"},
+    {"name": "Overflow Buffer", "folder": "aafl_storage/overflow", "quota_gb": 40, "component": "overflow"}
+  ]
+}

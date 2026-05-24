@@ -1,0 +1,20 @@
+[
+  {
+    "item_id": "18448cde",
+    "content": "Great result content",
+    "source": "test_goal",
+    "reason": "score 9.5/10",
+    "status": "approved",
+    "created_at": "2026-05-23T12:56:46.560828",
+    "updated_at": "2026-05-23T12:56:46.563021"
+  },
+  {
+    "item_id": "665d8a7d",
+    "content": "Another great result",
+    "source": "another_goal",
+    "reason": "score 9.2/10",
+    "status": "rejected",
+    "created_at": "2026-05-23T12:56:46.561973",
+    "updated_at": "2026-05-23T12:56:46.564028"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "tab_name": "AAFL Runs",
+  "tab_id": "aafl-runs",
+  "icon": "🤖",
+  "status": "yellow",
+  "facts": [
+    "No completed runs recorded yet",
+    "Run loop_manager.py to start a task",
+    "Results will appear here after first run"
+  ],
+  "last_updated": null
+}

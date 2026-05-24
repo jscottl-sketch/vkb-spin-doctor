@@ -156,3 +156,252 @@
 [2026-05-20 00:00:40] OK   reason   gemini_flash         $0.00264  23.7s  'Plan how to achieve this goal step by step: Research top 5 S'
 [2026-05-20 00:01:14] OK   code     cerebras             $0.00091  34.1s  'Execute this plan to achieve the goal.\n\nGoal: Research top 5'
 [2026-05-20 00:01:15] OK   fast     lmstudio_fast        $0.00000  0.35s  "From this list: ['usb', 'steam', 'config_file', 'spin', 'bin"
+[2026-05-20 18:55:44] START  dry_run=False  allow_paid=False
+[2026-05-20 19:08:57] START  dry_run=False  allow_paid=False
+[2026-05-20 19:16:31] START  dry_run=False  allow_paid=False
+[2026-05-20 19:18:10] START  dry_run=False  allow_paid=False
+[2026-05-20 19:18:14] OK   batch    mistral_code         $0.00364  3.71s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-20 19:21:20] START  dry_run=False  allow_paid=False
+[2026-05-20 19:21:27] OK   batch    mistral_code         $0.00159  6.44s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-20 19:22:51] START  dry_run=False  allow_paid=False
+[2026-05-20 19:23:07] OK   batch    mistral_code         $0.00775  15.92s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-20 20:37:16] START  dry_run=False  allow_paid=False
+[2026-05-20 20:37:18] OK   batch    mistral_code         $0.00174  2.41s  'You are updating a project handover document after a Claude '
+[2026-05-20 20:37:20] START  dry_run=False  allow_paid=False
+[2026-05-20 20:37:38] OK   batch    mistral_code         $0.00761  18.08s  "You are optimising a software project's Mission Control task"
+[2026-05-21 00:00:08] START  dry_run=False  allow_paid=False
+[2026-05-21 00:23:58] START  dry_run=False  allow_paid=False
+[2026-05-21 00:24:16] OK   batch    mistral_code         $0.00799  18.31s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-21 00:34:25] START  dry_run=False  allow_paid=False
+[2026-05-21 00:34:28] OK   batch    mistral_code         $0.00127  2.66s  'Goal: different keybinds star citizen, for vkb galdiator\n\nSo'
+[2026-05-21 00:35:10] START  dry_run=False  allow_paid=False
+[2026-05-21 00:35:13] OK   batch    mistral_code         $0.00084  2.6s  'Goal: different keybinds star citizen, for vkb galdiator\n\nSo'
+[2026-05-21 00:39:21] START  dry_run=False  allow_paid=False
+[2026-05-21 00:39:23] OK   batch    mistral_code         $0.00119  1.63s  'Goal: different keybinds star citizen, for vkb galdiator\n\nSo'
+[2026-05-23 11:18:21] START  dry_run=False  allow_paid=False
+[2026-05-23 11:57:54] START  dry_run=False  allow_paid=False
+[2026-05-23 11:58:12] OK   batch    mistral_code         $0.00815  17.77s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-23 13:09:23] START  dry_run=False  allow_paid=False
+[2026-05-23 13:09:41] OK   batch    mistral_code         $0.00819  18.18s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-23 13:52:27] START  dry_run=False  allow_paid=False
+[2026-05-23 13:52:46] OK   batch    mistral_code         $0.01010  18.86s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-23 17:42:54] START  dry_run=False  allow_paid=False
+[2026-05-23 17:43:15] OK   batch    mistral_code         $0.01075  20.67s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-23 18:07:26] START  dry_run=False  allow_paid=False
+[2026-05-23 18:07:51] OK   batch    mistral_code         $0.01109  25.39s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-23 22:53:41] START  dry_run=False  allow_paid=False
+[2026-05-23 22:54:01] OK   batch    mistral_code         $0.00786  20.5s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 00:00:08] START  dry_run=False  allow_paid=False
+[2026-05-24 00:40:16] START  dry_run=False  allow_paid=False
+[2026-05-24 00:41:19] OK   batch    gemini_flash         $0.01088  62.7s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 08:47:35] START  dry_run=False  allow_paid=False
+[2026-05-24 08:47:57] OK   batch    mistral_code         $0.01053  22.09s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 14:08:41] START  dry_run=False  allow_paid=False
+[2026-05-24 14:09:28] OK   batch    gemini_flash         $0.01099  46.89s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 14:51:10] START  dry_run=False  allow_paid=False
+[2026-05-24 14:51:58] OK   batch    gemini_flash         $0.01095  48.21s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:23:55] START  dry_run=False  allow_paid=False
+[2026-05-24 19:23:58] OK   batch    mistral_code         $0.00126  2.36s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:23:59] START  dry_run=False  allow_paid=False
+[2026-05-24 19:24:06] START  dry_run=False  allow_paid=False
+[2026-05-24 19:24:07] START  dry_run=False  allow_paid=False
+[2026-05-24 19:24:09] OK   batch    mistral_code         $0.00129  1.72s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] f'
+[2026-05-24 19:24:30] OK   batch    mistral_code         $0.01123  24.15s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:24:31] OK   reason   gemini_flash         $0.00272  21.87s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:24:35] START  dry_run=False  allow_paid=False
+[2026-05-24 19:24:52] OK   code     cerebras             $0.00099  21.34s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:24:55] OK   batch    mistral_code         $0.01123  20.14s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:25:52] START  dry_run=False  allow_paid=False
+[2026-05-24 19:25:53] OK   batch    mistral_code         $0.00108  1.64s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:25:55] START  dry_run=False  allow_paid=False
+[2026-05-24 19:26:02] START  dry_run=False  allow_paid=False
+[2026-05-24 19:26:04] OK   batch    mistral_code         $0.00135  2.37s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:26:09] START  dry_run=False  allow_paid=False
+[2026-05-24 19:26:11] OK   reason   gemini_flash         $0.00270  6.67s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:26:12] OK   code     cerebras             $0.00098  1.28s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:26:12] OK   batch    mistral_code         $0.00105  3.4s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:27:55] START  dry_run=False  allow_paid=False
+[2026-05-24 19:27:57] OK   batch    mistral_code         $0.00131  1.75s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:27:59] START  dry_run=False  allow_paid=False
+[2026-05-24 19:28:08] START  dry_run=False  allow_paid=False
+[2026-05-24 19:28:15] START  dry_run=False  allow_paid=False
+[2026-05-24 19:28:17] OK   batch    mistral_code         $0.00136  1.89s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] f'
+[2026-05-24 19:28:23] OK   reason   gemini_flash         $0.00273  6.63s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:28:24] OK   code     cerebras             $0.00100  0.91s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:28:30] OK   batch    mistral_code         $0.00858  21.99s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:28:35] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:00] OK   batch    mistral_code         $0.00991  25.12s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:29:19] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:21] OK   batch    mistral_code         $0.00092  2.19s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:29:23] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:30] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:31] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:31] OK   batch    mistral_code         $0.00136  1.75s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] f'
+[2026-05-24 19:29:49] OK   reason   cerebras             $0.00096  17.64s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:29:51] START  dry_run=False  allow_paid=False
+[2026-05-24 19:29:53] OK   batch    mistral_code         $0.00985  21.7s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:29:54] OK   batch    mistral_code         $0.00130  3.41s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:29:56] START  dry_run=False  allow_paid=False
+[2026-05-24 19:30:00] START  dry_run=False  allow_paid=False
+[2026-05-24 19:30:04] START  dry_run=False  allow_paid=False
+[2026-05-24 19:30:05] START  dry_run=False  allow_paid=False
+[2026-05-24 19:30:05] OK   batch    mistral_code         $0.00098  1.4s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:30:07] OK   batch    mistral_code         $0.00146  2.59s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:30:20] OK   batch    mistral_code         $0.01115  19.71s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:30:24] OK   code     cerebras             $0.00128  34.77s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:30:26] OK   reason   cerebras             $0.00100  18.99s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:31:02] OK   code     cerebras             $0.00127  35.25s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:31:17] START  dry_run=False  allow_paid=False
+[2026-05-24 19:31:20] OK   batch    mistral_code         $0.00124  2.26s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:31:21] START  dry_run=False  allow_paid=False
+[2026-05-24 19:31:29] START  dry_run=False  allow_paid=False
+[2026-05-24 19:31:30] START  dry_run=False  allow_paid=False
+[2026-05-24 19:31:30] OK   batch    mistral_code         $0.00106  1.64s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:31:32] OK   batch    mistral_code         $0.00062  1.47s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:31:48] OK   reason   cerebras             $0.00094  17.62s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:32:24] OK   code     cerebras             $0.00123  35.71s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:33:27] START  dry_run=False  allow_paid=False
+[2026-05-24 19:33:29] OK   batch    mistral_code         $0.00135  2.0s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:33:30] START  dry_run=False  allow_paid=False
+[2026-05-24 19:33:38] START  dry_run=False  allow_paid=False
+[2026-05-24 19:33:40] START  dry_run=False  allow_paid=False
+[2026-05-24 19:33:40] OK   batch    mistral_code         $0.00143  1.73s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] I'
+[2026-05-24 19:33:58] OK   reason   cerebras             $0.00099  17.77s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:34:02] OK   batch    mistral_code         $0.00895  22.04s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:34:07] START  dry_run=False  allow_paid=False
+[2026-05-24 19:34:28] OK   batch    mistral_code         $0.00895  21.19s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:34:32] OK   code     cerebras             $0.00125  34.05s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:35:21] START  dry_run=False  allow_paid=False
+[2026-05-24 19:35:23] OK   batch    mistral_code         $0.00124  1.95s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:35:25] START  dry_run=False  allow_paid=False
+[2026-05-24 19:35:34] START  dry_run=False  allow_paid=False
+[2026-05-24 19:35:36] OK   batch    mistral_code         $0.00052  1.16s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:35:40] START  dry_run=False  allow_paid=False
+[2026-05-24 19:35:42] OK   batch    mistral_code         $0.00106  1.79s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:36:00] OK   reason   cerebras             $0.00089  18.03s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:36:34] OK   code     cerebras             $0.00120  34.05s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:40:20] START  dry_run=False  allow_paid=False
+[2026-05-24 19:40:22] OK   batch    mistral_code         $0.00073  1.63s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:40:23] START  dry_run=False  allow_paid=False
+[2026-05-24 19:40:29] START  dry_run=False  allow_paid=False
+[2026-05-24 19:40:31] OK   batch    mistral_code         $0.00126  2.62s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] I'
+[2026-05-24 19:40:32] START  dry_run=False  allow_paid=False
+[2026-05-24 19:40:49] OK   reason   cerebras             $0.00092  18.17s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:41:00] OK   batch    mistral_code         $0.01115  28.1s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:41:23] OK   code     cerebras             $0.00118  33.72s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:42:06] START  dry_run=False  allow_paid=False
+[2026-05-24 19:42:08] OK   batch    mistral_code         $0.00135  2.32s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:42:10] START  dry_run=False  allow_paid=False
+[2026-05-24 19:42:18] START  dry_run=False  allow_paid=False
+[2026-05-24 19:42:20] OK   batch    mistral_code         $0.00124  2.5s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:42:29] START  dry_run=False  allow_paid=False
+[2026-05-24 19:42:30] OK   batch    mistral_code         $0.00106  1.45s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:42:38] OK   reason   cerebras             $0.00100  17.94s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:43:12] OK   code     cerebras             $0.00128  33.72s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:45:42] START  dry_run=False  allow_paid=False
+[2026-05-24 19:45:44] OK   batch    mistral_code         $0.00120  1.72s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 19:45:46] START  dry_run=False  allow_paid=False
+[2026-05-24 19:45:55] START  dry_run=False  allow_paid=False
+[2026-05-24 19:45:57] START  dry_run=False  allow_paid=False
+[2026-05-24 19:45:59] OK   batch    mistral_code         $0.00129  1.95s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] f'
+[2026-05-24 19:46:15] OK   batch    mistral_code         $0.00843  20.0s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:46:21] OK   reason   gemini_flash         $0.00270  21.89s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:46:22] START  dry_run=False  allow_paid=False
+[2026-05-24 19:46:47] OK   batch    mistral_code         $0.00817  24.35s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 19:46:55] OK   code     cerebras             $0.00094  33.96s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 19:47:47] START  dry_run=False  allow_paid=False
+[2026-05-24 19:47:48] OK   batch    mistral_code         $0.00064  1.72s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 19:47:50] START  dry_run=False  allow_paid=False
+[2026-05-24 19:47:57] START  dry_run=False  allow_paid=False
+[2026-05-24 19:47:59] OK   batch    mistral_code         $0.00088  2.19s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 19:48:00] START  dry_run=False  allow_paid=False
+[2026-05-24 19:48:02] OK   batch    mistral_code         $0.00107  2.24s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 19:48:17] OK   reason   cerebras             $0.00091  18.42s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 19:48:51] OK   code     cerebras             $0.00120  33.54s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:25:06] START  dry_run=False  allow_paid=False
+[2026-05-24 20:25:07] OK   batch    mistral_code         $0.00126  1.91s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 20:25:09] START  dry_run=False  allow_paid=False
+[2026-05-24 20:25:16] START  dry_run=False  allow_paid=False
+[2026-05-24 20:25:18] OK   batch    mistral_code         $0.00139  1.93s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] f'
+[2026-05-24 20:25:18] START  dry_run=False  allow_paid=False
+[2026-05-24 20:25:35] OK   reason   cerebras             $0.00098  17.54s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:25:39] OK   batch    mistral_code         $0.01121  21.38s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:25:45] START  dry_run=False  allow_paid=False
+[2026-05-24 20:26:05] OK   batch    mistral_code         $0.01121  20.03s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:26:10] OK   code     cerebras             $0.00123  34.1s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:27:00] START  dry_run=False  allow_paid=False
+[2026-05-24 20:27:02] OK   batch    mistral_code         $0.00129  1.91s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 20:27:04] START  dry_run=False  allow_paid=False
+[2026-05-24 20:27:12] START  dry_run=False  allow_paid=False
+[2026-05-24 20:27:15] OK   batch    mistral_code         $0.00120  2.93s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 20:27:23] START  dry_run=False  allow_paid=False
+[2026-05-24 20:27:25] OK   batch    mistral_code         $0.00100  1.48s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 20:27:33] OK   reason   cerebras             $0.00100  18.0s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:28:06] OK   code     cerebras             $0.00129  33.53s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:30:39] START  dry_run=False  allow_paid=False
+[2026-05-24 20:30:40] OK   batch    mistral_code         $0.00112  1.43s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 20:30:42] START  dry_run=False  allow_paid=False
+[2026-05-24 20:30:48] START  dry_run=False  allow_paid=False
+[2026-05-24 20:30:49] OK   batch    mistral_code         $0.00120  1.37s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] ['
+[2026-05-24 20:30:50] START  dry_run=False  allow_paid=False
+[2026-05-24 20:31:07] OK   reason   cerebras             $0.00090  17.85s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:31:09] OK   batch    mistral_code         $0.01129  18.33s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:31:17] START  dry_run=False  allow_paid=False
+[2026-05-24 20:31:35] OK   batch    mistral_code         $0.01130  18.19s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:31:41] OK   code     cerebras             $0.00121  33.79s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:32:42] START  dry_run=False  allow_paid=False
+[2026-05-24 20:32:44] OK   batch    mistral_code         $0.00135  2.26s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 20:32:46] START  dry_run=False  allow_paid=False
+[2026-05-24 20:32:54] START  dry_run=False  allow_paid=False
+[2026-05-24 20:32:55] START  dry_run=False  allow_paid=False
+[2026-05-24 20:32:56] OK   batch    mistral_code         $0.00118  2.88s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 20:32:59] OK   batch    mistral_code         $0.00102  4.11s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 20:33:14] OK   reason   cerebras             $0.00091  17.65s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:33:48] OK   code     cerebras             $0.00128  33.84s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:34:19] START  dry_run=False  allow_paid=False
+[2026-05-24 20:34:22] OK   batch    mistral_code         $0.00124  2.22s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 20:34:23] START  dry_run=False  allow_paid=False
+[2026-05-24 20:34:28] START  dry_run=False  allow_paid=False
+[2026-05-24 20:34:31] OK   batch    mistral_code         $0.00130  2.62s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] ['
+[2026-05-24 20:34:31] START  dry_run=False  allow_paid=False
+[2026-05-24 20:34:49] OK   reason   cerebras             $0.00093  17.82s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:34:53] OK   batch    mistral_code         $0.01133  22.01s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:34:58] START  dry_run=False  allow_paid=False
+[2026-05-24 20:35:19] OK   batch    mistral_code         $0.00980  20.27s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:35:24] OK   code     cerebras             $0.00125  35.34s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:36:13] START  dry_run=False  allow_paid=False
+[2026-05-24 20:36:15] OK   batch    mistral_code         $0.00124  2.18s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 20:36:16] START  dry_run=False  allow_paid=False
+[2026-05-24 20:36:24] START  dry_run=False  allow_paid=False
+[2026-05-24 20:36:26] START  dry_run=False  allow_paid=False
+[2026-05-24 20:36:27] OK   batch    mistral_code         $0.00136  2.55s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 20:36:28] OK   batch    mistral_code         $0.00123  2.03s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 20:36:45] OK   reason   cerebras             $0.00094  17.95s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:37:20] OK   code     cerebras             $0.00124  35.09s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:39:49] START  dry_run=False  allow_paid=False
+[2026-05-24 20:39:51] OK   batch    mistral_code         $0.00073  1.7s  'Goal: test chain goal\n\nSources found by parallel scouts:\n1. '
+[2026-05-24 20:39:53] START  dry_run=False  allow_paid=False
+[2026-05-24 20:39:59] START  dry_run=False  allow_paid=False
+[2026-05-24 20:40:00] OK   batch    mistral_code         $0.00127  1.53s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] ['
+[2026-05-24 20:40:02] START  dry_run=False  allow_paid=False
+[2026-05-24 20:40:18] OK   reason   cerebras             $0.00092  17.58s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:40:24] OK   batch    mistral_code         $0.00983  21.48s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:40:30] START  dry_run=False  allow_paid=False
+[2026-05-24 20:40:52] OK   code     cerebras             $0.00122  33.55s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:40:54] OK   batch    mistral_code         $0.00842  24.8s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
+[2026-05-24 20:41:45] START  dry_run=False  allow_paid=False
+[2026-05-24 20:41:47] OK   batch    mistral_code         $0.00089  2.38s  'Goal: test chain\n\nSources found by parallel scouts:\n1. [gith'
+[2026-05-24 20:41:48] START  dry_run=False  allow_paid=False
+[2026-05-24 20:41:56] START  dry_run=False  allow_paid=False
+[2026-05-24 20:41:57] START  dry_run=False  allow_paid=False
+[2026-05-24 20:41:58] OK   batch    mistral_code         $0.00127  2.06s  'Goal: Research findings:\nChief Scout briefing:\n1. [github] F'
+[2026-05-24 20:41:58] OK   batch    mistral_code         $0.00049  1.13s  'Goal: test\n\nSources found by parallel scouts:\n1. [github] [R'
+[2026-05-24 20:42:16] OK   reason   cerebras             $0.00099  18.01s  'Plan how to achieve this goal step by step: Research finding'
+[2026-05-24 20:42:49] OK   code     cerebras             $0.00123  33.4s  'Execute this plan to achieve the goal.\n\nGoal: Research findi'
+[2026-05-24 20:47:01] START  dry_run=False  allow_paid=False
+[2026-05-24 20:47:04] START  dry_run=False  allow_paid=False
+[2026-05-24 20:47:06] OK   batch    mistral_code         $0.00118  2.05s  'Goal: 1+1=\n\nSources found by parallel scouts:\n1. [github] 1.'
+[2026-05-24 20:47:08] OK   reason   lmstudio_reason      $0.00000  2.65s  'Plan how to achieve this goal step by step: 1+1=\n\nChief Scou'
+[2026-05-24 20:47:09] OK   code     lmstudio_coder       $0.00000  0.84s  'Execute this plan to achieve the goal.\n\nGoal: 1+1=\n\nPlan:\nTh'
+[2026-05-24 20:47:21] START  dry_run=False  allow_paid=False
+[2026-05-24 20:47:23] OK   batch    mistral_code         $0.00116  2.02s  'Goal: 1+1=\n\nSources found by parallel scouts:\n1. [github] 1.'

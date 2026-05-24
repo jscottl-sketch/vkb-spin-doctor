@@ -64,8 +64,9 @@ CHAIN_LOG        = HEALTH_RESULTS / "chain_log.json"
 SOURCES_LIBRARY  = HERE / "sources_library.json"
 STORAGE_CFG      = HERE / "storage_config.json"
 SCOUT_TIMER_STOP = HERE / "scout_timer_stop.flag"
-WCCS_LOG_MD      = HERE / "wccs_log.md"
-SESSION_LOGS_DIR = HERE / "session_logs"
+WCCS_LOG_MD        = HERE / "wccs_log.md"
+SESSION_LOGS_DIR   = HERE / "session_logs"
+WORKFLOW_PRESETS   = HERE / "aafl_workflow_presets.json"
 
 _state_lock  = threading.Lock()
 _wccs_lock   = threading.Lock()
@@ -376,6 +377,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_api_acca_md()
             elif path == "/api/health":
                 self._handle_api_health()
+            # ── Fix: AAFL live + bridge + workflow GET ──────────────────────────
+            elif path == "/aafl/live":
+                self._handle_aafl_live()
+            elif path == "/aafl/bridge-result":
+                self._handle_aafl_bridge_result()
+            elif path == "/aafl/workflow-presets":
+                self._handle_workflow_presets_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -462,6 +470,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_wccs_restore()
             elif path == "/wccs/diff":
                 self._handle_wccs_diff()
+            # ── Fix: AAFL run-goal + scout strategy + bridge + workflow POST ────
+            elif path == "/aafl/run-goal":
+                self._handle_aafl_run_goal()
+            elif path == "/scout/strategy":
+                self._handle_scout_strategy()
+            elif path == "/aafl/scout-bridge":
+                self._handle_aafl_scout_bridge()
+            elif path == "/aafl/workflow":
+                self._handle_workflow_save()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -2341,6 +2358,225 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             "last_save": last_save,
             "providers": provider_count,
         })
+
+
+    # ── POST /aafl/run-goal ───────────────────────────────────────────────────
+
+    def _handle_aafl_run_goal(self):
+        global _aafl_running
+        body = self._read_body().strip()
+        try:
+            data = json.loads(body) if body else {}
+            goal = data.get("goal", "").strip()
+        except Exception:
+            goal = body.strip()
+        if not goal:
+            self._send_json({"ok": False, "error": "Empty goal"}, 400)
+            return
+        try:
+            GOAL_TXT.write_text(goal, encoding="utf-8")
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+            return
+        cfg = {}
+        if AAFL_CONFIG.exists():
+            try:
+                with open(AAFL_CONFIG, encoding="utf-8") as f:
+                    cfg = json.load(f)
+            except Exception:
+                pass
+        cfg["current_goal"] = goal
+        try:
+            with open(AAFL_CONFIG, "w", encoding="utf-8") as f:
+                json.dump(cfg, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+        if not _aafl_lock.acquire(blocking=False):
+            self._send_json({"ok": False, "status": "already_running", "goal": goal})
+            return
+        _aafl_running = True
+        AAFL_OUTPUT.mkdir(exist_ok=True)
+        t = threading.Thread(target=_run_aafl_bg, args=(cfg,), daemon=True)
+        t.start()
+        self._send_json({"ok": True, "status": "running", "goal": goal})
+
+    # ── GET /aafl/live ────────────────────────────────────────────────────────
+
+    def _handle_aafl_live(self):
+        lines = []
+        if AAFL_LATEST.exists():
+            try:
+                raw = AAFL_LATEST.read_text(encoding="utf-8", errors="replace")
+                lines = raw.splitlines()[-100:]
+            except Exception:
+                pass
+        phase = "idle"
+        provider = ""
+        for ln in lines:
+            if "[LOOP] Planning" in ln or "Phase: plan" in ln:
+                phase = "plan"
+            elif "[LOOP] Working" in ln or "Phase: work" in ln:
+                phase = "work"
+            elif "[LOOP] Score" in ln or "Phase: verify" in ln or "[EVAL]" in ln:
+                phase = "verify"
+            elif "[DB] Stored" in ln or "Phase: store" in ln:
+                phase = "store"
+            elif "[DONE]" in ln or "[FINISHED]" in ln:
+                phase = "done"
+            if "[AAFL] ->" in ln:
+                provider = ln.split("[AAFL] ->")[-1].strip().split()[0]
+        self._send_json({
+            "lines": lines,
+            "phase": phase,
+            "provider": provider,
+            "running": _aafl_running,
+        })
+
+    # ── POST /scout/strategy ──────────────────────────────────────────────────
+
+    def _handle_scout_strategy(self):
+        global _scout_running
+        body = self._read_body().strip()
+        try:
+            data = json.loads(body) if body else {}
+            goal = data.get("goal", "").strip()
+            strategy = data.get("strategy", "ddg").strip()
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad request"}, 400)
+            return
+        if not goal:
+            self._send_json({"ok": False, "error": "Empty goal"}, 400)
+            return
+        if not _scout_lock.acquire(blocking=False):
+            self._send_json({"ok": False, "status": "already_running"})
+            return
+        _scout_running = True
+        SCOUT_OUTPUT.mkdir(exist_ok=True)
+
+        def _bg():
+            global _scout_running
+            try:
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(f"[RUNNING] Strategy: {strategy} | Goal: {goal}\n[STARTED] {_now_iso()}\n")
+                if strategy == "all":
+                    cmd = [PYTHON, str(HERE / "chief_scout.py"), goal]
+                else:
+                    cmd = [PYTHON, str(HERE / "chief_scout.py"), goal, "--strategy", strategy]
+                res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
+                output = (res.stdout + res.stderr).strip()
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(output if output else "[DONE] No output received")
+            except subprocess.TimeoutExpired:
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write("[ERROR] Scout timed out after 120s")
+            except Exception as exc:
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(f"[ERROR] {exc}")
+            finally:
+                _scout_running = False
+                try:
+                    _scout_lock.release()
+                except RuntimeError:
+                    pass
+
+        t = threading.Thread(target=_bg, daemon=True)
+        t.start()
+        self._send_json({"ok": True, "status": "running", "strategy": strategy, "goal": goal})
+
+    # ── POST /aafl/scout-bridge ───────────────────────────────────────────────
+
+    def _handle_aafl_scout_bridge(self):
+        body = self._read_body().strip()
+        try:
+            data = json.loads(body) if body else {}
+            goal = data.get("goal", "").strip()
+        except Exception:
+            goal = ""
+        if not goal and GOAL_TXT.exists():
+            goal = GOAL_TXT.read_text(encoding="utf-8", errors="replace").strip()
+        if not goal:
+            self._send_json({"ok": False, "error": "No goal"}, 400)
+            return
+        bridge_out = AAFL_OUTPUT / "bridge_result.json"
+        AAFL_OUTPUT.mkdir(exist_ok=True)
+
+        def _bg():
+            try:
+                cmd = [PYTHON, str(HERE / "chief_scout.py"), goal]
+                res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
+                result = {"goal": goal, "output": (res.stdout + res.stderr).strip(),
+                          "timestamp": _now_iso(), "ok": res.returncode == 0}
+                with open(bridge_out, "w", encoding="utf-8") as f:
+                    json.dump(result, f, indent=2, ensure_ascii=False)
+            except Exception as exc:
+                try:
+                    with open(bridge_out, "w", encoding="utf-8") as f:
+                        json.dump({"goal": goal, "error": str(exc), "timestamp": _now_iso(), "ok": False}, f)
+                except Exception:
+                    pass
+
+        t = threading.Thread(target=_bg, daemon=True)
+        t.start()
+        self._send_json({"ok": True, "status": "running", "goal": goal})
+
+    # ── GET /aafl/bridge-result ───────────────────────────────────────────────
+
+    def _handle_aafl_bridge_result(self):
+        bridge_out = AAFL_OUTPUT / "bridge_result.json"
+        if bridge_out.exists():
+            try:
+                with open(bridge_out, encoding="utf-8") as f:
+                    data = json.load(f)
+                self._send_json(data)
+                return
+            except Exception:
+                pass
+        self._send_json({"ok": False, "error": "No bridge result yet"})
+
+    # ── GET /aafl/workflow-presets ────────────────────────────────────────────
+
+    def _handle_workflow_presets_get(self):
+        if WORKFLOW_PRESETS.exists():
+            try:
+                with open(WORKFLOW_PRESETS, encoding="utf-8") as f:
+                    data = json.load(f)
+                self._send_json({"presets": data if isinstance(data, list) else []})
+                return
+            except Exception:
+                pass
+        self._send_json({"presets": []})
+
+    # ── POST /aafl/workflow ───────────────────────────────────────────────────
+
+    def _handle_workflow_save(self):
+        body = self._read_body().strip()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        name = data.get("name", "").strip()
+        steps = data.get("steps", [])
+        if not name:
+            self._send_json({"ok": False, "error": "No name"}, 400)
+            return
+        presets = []
+        if WORKFLOW_PRESETS.exists():
+            try:
+                with open(WORKFLOW_PRESETS, encoding="utf-8") as f:
+                    presets = json.load(f)
+                if not isinstance(presets, list):
+                    presets = []
+            except Exception:
+                presets = []
+        presets = [p for p in presets if p.get("name") != name]
+        presets.append({"name": name, "steps": steps})
+        try:
+            with open(WORKFLOW_PRESETS, "w", encoding="utf-8") as f:
+                json.dump(presets, f, indent=2, ensure_ascii=False)
+            self._send_json({"ok": True, "name": name, "count": len(presets)})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
 
 
 class ThreadingServer(http.server.ThreadingHTTPServer):

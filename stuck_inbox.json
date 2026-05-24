@@ -1,0 +1,37 @@
+[
+  {
+    "item_id": "ce7b8c91",
+    "goal": "Goal A",
+    "reason": "No progress",
+    "attempts": 3,
+    "last_error": "score stuck at 4.5",
+    "status": "resolved",
+    "created_at": "2026-05-23T12:56:46.554312",
+    "resolved_at": "2026-05-23T12:56:46.557388"
+  },
+  {
+    "item_id": "045f22de",
+    "goal": "Goal B",
+    "reason": "All providers failed",
+    "attempts": 5,
+    "last_error": "provider offline",
+    "status": "resolved",
+    "created_at": "2026-05-23T12:56:46.555746",
+    "resolved_at": "2026-05-23T18:19:18"
+  },
+  {
+    "item_id": "dfbbebb1",
+    "goal": "test goal 9",
+    "reason": "test reason",
+    "attempts": 1,
+    "last_error": "no error",
+    "status": "resolved",
+    "severity": "low",
+    "suggested_strategies": [
+      "ddg"
+    ],
+    "afna_suggestion": "cerebras",
+    "created_at": "2026-05-23T18:16:29.527734",
+    "resolved_at": "2026-05-23T18:16:29.528837"
+  }
+]

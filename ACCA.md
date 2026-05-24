@@ -33,16 +33,19 @@
 | WRC | Write-Run-Check (mini dev cycle: write code, run it, check output) | pre-split |
 | MCC | Mission Control Center (Central Command dashboard) | pre-split |
 | CAWPA | Completely Automate Whats Possible by AI | pre-split |
-| CAP | Copy and Paste | pre-split |
 | + | Combine codes | pre-split |
 | = | Define a new code | pre-split |
 
-Modes: TBLM (troubleshoot), DDM (deep dive), BGM (beginner), BPM (battle plan), NRM (no-repeat), EM (evidence)
-
-
-| NEXT | File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead), MCC Watchdog+Rewind tab, START_MCC.bat rename. | 2026-05-20 |
-
-
-| FFUE | Fluid Flexible Upgradeable Editable (new today) | 2026-05-23 |
+| TBLM | Troubleshoot mode | pre-split |
+| DDM | Deep dive mode | pre-split |
+| BGM | Beginner mode | pre-split |
+| BPM | Battle plan mode | pre-split |
+| EM | Evidence mode | pre-split |
+| FFUE | Fluid Flexible Upgradeable Editable | 2026-05-23 |
+| SBS | Step By Step | 2026-05-20 |
+| CLACH | Claude Chat | 2026-05-24 |
+| CNP | Copy and Paste | 2026-05-24 |
+| RIBS | Random Inspirational BrainStorm | 2026-05-24 |
+| SESUM | Session Summary | 2026-05-24 |
 
 <!-- END_OF_FILE -->

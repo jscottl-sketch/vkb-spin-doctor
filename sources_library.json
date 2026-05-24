@@ -1,0 +1,22 @@
+[
+  {
+    "url": "https://test.example.com",
+    "domain": "test.example.com",
+    "description": "Test source",
+    "topic_tags": [
+      "test"
+    ],
+    "date_found": "2026-05-23",
+    "times_referenced": 0
+  },
+  {
+    "url": "http://example.com",
+    "domain": "example.com",
+    "description": "test",
+    "topic_tags": [
+      "test"
+    ],
+    "date_found": "2026-05-24",
+    "times_referenced": 0
+  }
+]

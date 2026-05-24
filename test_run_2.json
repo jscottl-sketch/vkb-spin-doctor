@@ -1,0 +1,837 @@
+{
+  "run": 2,
+  "timestamp": "2026-05-24T20:42:20.254665",
+  "total": 138,
+  "passed": 133,
+  "failed": 5,
+  "results": [
+    {
+      "label": "GET /status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'last_wccs': {'result': None, 'time': None, 'stdout': ''}, 'last_capture_iso': '2026-05-24T20:33:26.682887', 'mins_sinc"
+    },
+    {
+      "label": "GET /captures",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'content': 'test session from mcc_test.py[2026-05-24 19:32:35] \"test capture from mcc_test.py\"\\n[2026-05-24 19:39:27] \""
+    },
+    {
+      "label": "GET /scout-result",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'content': \"[CHIEF_SCOUT] Smoke test\\n[CHIEF_SCOUT] Goal: test\\n======================================================="
+    },
+    {
+      "label": "GET /scout-config",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'active_strategies': {'ddg': True, 'reddit': True, 'github': True, 'youtube': True, 'forum': True}, 'goal': 'test', 'ga"
+    },
+    {
+      "label": "GET /scout-presets",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'presets': [{'name': 'SC Keybinds', 'active_strategies': {'ddg': True, 'reddit': True, 'github': True, 'youtube': True,"
+    },
+    {
+      "label": "GET /aafl-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'output': '', 'running': False, 'last_run': {'id': 10, 'problem': 'Research top 5 Star Citizen joystick setup problems "
+    },
+    {
+      "label": "GET /aafl-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'goals': [{'index': 0, 'text': 'AAFL Goal Queue — one goal per line. Lines starting with # are skipped.', 'raw': '# AAF"
+    },
+    {
+      "label": "GET /aafl-config",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'active_provider': 'mistral', 'fallback_providers': ['gemini', 'cerebras', 'openrouter'], 'task_type': 'reason', 'max_i"
+    },
+    {
+      "label": "GET /aafl-providers",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'providers': [{'id': 'lmstudio-coder', 'name': 'LM Studio Coder 32B', 'model': 'openai/qwen2.5-coder-32b-instruct', 'ti"
+    },
+    {
+      "label": "GET /api/timeline",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'points': [{'filename': 'STATUS_20260520_185544.md', 'date_iso': '2026-05-20T18:55:44', 'date_display': '2026-05-20 18:"
+    },
+    {
+      "label": "GET /api/diff",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'hunks': [{'type': 'equal', 'ln_a': 1, 'ln_b': 1, 'text_a': '# STATUS — VKB Spin Doctor', 'text_b': '# STATUS — VKB Spi"
+    },
+    {
+      "label": "GET /api/session-logs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'logs': [{'filename': 'session_log_2026-05-15.md', 'line_count': 23, 'size_bytes': 981, 'preview': '# Session Log — 202"
+    },
+    {
+      "label": "GET /api/auto-wccs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'active': False, 'interval': 30, 'last_save': '2026-05-24T20:35:21', 'next_in_s': None, 'log': [{'time': '2026-05-24T20"
+    },
+    {
+      "label": "GET /health-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'generated_at': '2026-05-24T20:34:57.369183', 'providers': [{'id': 'lmstudio_coder', 'label': 'LM Studio Coder 32B', 't"
+    },
+    {
+      "label": "GET /dashboard-data/",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'files': ['aafl_control.json', 'aafl_runs.json', 'costs.json', 'kanban.json', 'known_issues.json', 'provider_health.jso"
+    },
+    {
+      "label": "GET /stuck-inbox",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'items': [], 'count': 0}"
+    },
+    {
+      "label": "GET /memory/knowledge",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'rows': [{'id': '8a6cb131-263a-4ab7-a758-64a53b0d19fb', 'title': 'Loop attempt #1', 'content_preview': '**Top\\u202f5\\u2"
+    },
+    {
+      "label": "GET /memory/solutions",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'rows': [{'id': 10, 'goal': 'Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator NXT EVO', "
+    },
+    {
+      "label": "GET /memory/sources",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'rows': [{'source_url': 'developers.cloudflare.com', 'reputation_score': 9.33, 'times_used': 1, 'last_used': '2026-05-1"
+    },
+    {
+      "label": "GET /promo-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'items': [{'item_id': '18448cde', 'content': 'Great result content', 'source': 'test_goal', 'reason': 'score 9.5/10', '"
+    },
+    {
+      "label": "GET /acca-codes",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'codes': [{'code': 'DRR', 'meaning': \"Don't require response\", 'added': 'pre-split'}, {'code': 'DWR', 'meaning': \"Don't"
+    },
+    {
+      "label": "GET /alp-data",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'entries': [{'col1': '1', 'col2': '**Sonnet not Opus** — Sonnet gives 3-5x more messages for same allowance. Use Opus o"
+    },
+    {
+      "label": "GET /self-diagnosis",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'python_version': '3.13.13', 'project_path': 'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor', 'py_file_count': 49"
+    },
+    {
+      "label": "GET /known-issues",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'items': [{'id': '90fb7a60', 'description': 'Phase 4 test', 'severity': 'low', 'date_added': '2026-05-23', 'status': 'o"
+    },
+    {
+      "label": "GET /modules",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'modules': [{'id': 'home_dials', 'name': 'Home Dials', 'description': 'Instrument panel on Home tab — gauge"
+    },
+    {
+      "label": "GET /presets",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'presets': [{'name': 'overnight_run', 'created': '2026-05-23', 'file': 'overnight_run.json'}, {'name': 'pre"
+    },
+    {
+      "label": "GET /presets/load (no name)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'name required'}"
+    },
+    {
+      "label": "GET /aafl-settings",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'settings': {'confidence_threshold': 7.0, 'cost_cap_per_goal_usd': 0.05, 'cost_cap_per_goal_gbp': 0.04, 'ma"
+    },
+    {
+      "label": "GET /retry-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'entries': [{'goal': 'test goal', 'attempt': 1, 'failed_provider': 'mistral', 'next_provider': 'cerebras', "
+    },
+    {
+      "label": "GET /chain-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'state': 'idle', 'chain_id': None, 'goal': '', 'step': '', 'running': False, 'last_goal': ''}"
+    },
+    {
+      "label": "GET /chain-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'entries': [{'chain_id': '20260524_192350', 'goal': 'test chain goal', 'provider': 'auto', 'scout_sources':"
+    },
+    {
+      "label": "GET /scout-timer/status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'running': False, 'start_time': None, 'runs_done': 0, 'results_found': 0}"
+    },
+    {
+      "label": "GET /sources-library",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'sources': [{'url': 'https://test.example.com', 'domain': 'test.example.com', 'description': 'Test source',"
+    },
+    {
+      "label": "GET /stuck-inbox/summary",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'total': 0, 'high': 0, 'medium': 0, 'low': 0}"
+    },
+    {
+      "label": "GET /storage",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'slots': {'AAFL Loop Outputs': {'name': 'AAFL Loop Outputs', 'folder': 'D:\\\\aafl_storage\\\\loop_outputs', 'u"
+    },
+    {
+      "label": "GET /storage/report",
+      "status": 0,
+      "pass": false,
+      "detail": "Connection error: timed out"
+    },
+    {
+      "label": "GET /wccs/save-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'entries': [{'version': '21', 'date': '2026-05-20', 'session': 'v42 -> v43', 'focus': 'SESSION: 20 May 2026"
+    },
+    {
+      "label": "GET /wccs/history-search?q=test",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'results': [{'source': 'HISTORY.md', 'line_n': 32, 'match': '- Fastest path to first £: Itch.io + Ko-fi link in README "
+    },
+    {
+      "label": "GET /wccs/session-logs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'logs': [], 'count': 0}"
+    },
+    {
+      "label": "GET /wccs/versions",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'versions': [{'filename': 'STATUS_20260524_203458.md', 'display': '2026-05-24 20:34:58', 'line_count': 162,"
+    },
+    {
+      "label": "GET /api/status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'content': '# STATUS — VKB Spin Doctor\\n**Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py\\n**Companion files:"
+    },
+    {
+      "label": "GET /api/history",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'content': '# HISTORY — VKB Spin Doctor\\n*Append-only chat log archive. Migrated from v45 on 2026-05-20. Never rewrite "
+    },
+    {
+      "label": "GET /api/acca",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'content': \"# ACCA — VKB Spin Doctor\\n*Append-only ACCA code archive. Migrated from v45 on 2026-05-20. Never rewrite — "
+    },
+    {
+      "label": "GET /api/health",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'status': 'ok', 'last_save': None, 'providers': 7}"
+    },
+    {
+      "label": "GET / (HTML)",
+      "status": 200,
+      "pass": true,
+      "detail": "HTML served OK (non-JSON response as expected)"
+    },
+    {
+      "label": "GET /404 unknown path",
+      "status": 404,
+      "pass": true,
+      "detail": "HTTP 404 — {'error': 'Not found'}"
+    },
+    {
+      "label": "GET /dashboard-data/kanban.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/aafl_runs.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/scout.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/costs.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/wccs.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/provider_health.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /dashboard-data/aafl_control.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — OK"
+    },
+    {
+      "label": "GET /api/backup (no param)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'Invalid filename'}"
+    },
+    {
+      "label": "GET /api/session-log (no param)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'Invalid filename'}"
+    },
+    {
+      "label": "GET /api/search (no q)",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'results': [], 'count': 0}"
+    },
+    {
+      "label": "POST /capture",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'appended': '[2026-05-24 20:38:57] \"test capture from mcc_test.py\"\\n'}"
+    },
+    {
+      "label": "POST /api/auto-wccs start",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'active': True, 'interval': 30}"
+    },
+    {
+      "label": "POST /api/auto-wccs stop",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'active': False, 'interval': 30}"
+    },
+    {
+      "label": "POST /run-now",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'goal': 'test goal from mcc_test.py', 'queued_at': '2026-05-24T20:39:04'}"
+    },
+    {
+      "label": "POST /run-now (empty goal)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'Empty goal'}"
+    },
+    {
+      "label": "POST /aafl-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True}"
+    },
+    {
+      "label": "POST /aafl-config",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True}"
+    },
+    {
+      "label": "POST /scout-config",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'config': {'active_strategies': {'ddg': True, 'reddit': True, 'github': True, 'youtube': True, 'forum': Tru"
+    },
+    {
+      "label": "POST /known-issues add",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'item': {'id': '04f4df48', 'description': 'test issue from mcc_test.py', 'severity': 'low', 'date_added': '"
+    },
+    {
+      "label": "POST /aafl-settings",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'settings': {'confidence_threshold': 7.0, 'cost_cap_per_goal_usd': 0.05, 'cost_cap_per_goal_gbp': 0.04, 'ma"
+    },
+    {
+      "label": "POST /wccs/diff (missing files)",
+      "status": 404,
+      "pass": true,
+      "detail": "HTTP 404 — expected 404"
+    },
+    {
+      "label": "POST /stop-aafl",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'status': 'stop_requested'}"
+    },
+    {
+      "label": "POST /run-merge-sessions",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'status': 'running', 'message': 'merge_sessions.py started in backg)"
+    },
+    {
+      "label": "POST /run-health-check",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'status': 'running', 'message': 'provider_health.py started in back)"
+    },
+    {
+      "label": "POST /run-mot",
+      "status": 0,
+      "pass": false,
+      "detail": "HTTP 0 ({})"
+    },
+    {
+      "label": "POST /toggle-module",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': False})"
+    },
+    {
+      "label": "POST /presets/save",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True})"
+    },
+    {
+      "label": "POST /presets/delete",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True})"
+    },
+    {
+      "label": "POST /suggest-provider",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'suggested_provider': 'lmstudio_coder', 'label': 'LM Studio Coder 3)"
+    },
+    {
+      "label": "POST /run-chain",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'status': 'running', 'goal': 'test chain goal'})"
+    },
+    {
+      "label": "POST /scout-timer/start",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'status': 'started', 'goal': 'test timer', 'hours': 0.0, 'interval_)"
+    },
+    {
+      "label": "POST /scout-timer/stop",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True, 'status': 'stop_requested'})"
+    },
+    {
+      "label": "POST /sources-library/add",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': False})"
+    },
+    {
+      "label": "POST /stuck-inbox/bulk-resolve (no ids)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'item_ids required'}"
+    },
+    {
+      "label": "POST /approve-promo (no id)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'Missing item_id'}"
+    },
+    {
+      "label": "POST /reject-promo (no id)",
+      "status": 400,
+      "pass": true,
+      "detail": "HTTP 400 — {'ok': False, 'error': 'Missing item_id'}"
+    },
+    {
+      "label": "POST /api/wccs",
+      "status": 0,
+      "pass": false,
+      "detail": "HTTP 0 ({})"
+    },
+    {
+      "label": "POST /set-aafl-goal",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 — {'ok': True, 'goal': 'test goal from mcc_test.py'}"
+    },
+    {
+      "label": "DELETE /aafl-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200 ({'ok': True})"
+    },
+    {
+      "label": "JS: connectData() → GET /status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadHomeScreen() → GET /dashboard-data/",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadHomeInstruments() → GET /health-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: runHealthCheck() → POST /run-health-check",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: homeStartScout() → POST /scout-timer/start",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: homeRunAafl() → POST /run-now",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: saveSession() → POST /api/wccs",
+      "status": 0,
+      "pass": false,
+      "detail": "HTTP 0"
+    },
+    {
+      "label": "JS: runDiff() → GET /api/diff",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadSessionLogs() → GET /api/session-logs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAutoWccs() → GET /api/auto-wccs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: toggleAutoWccs() → POST /api/auto-wccs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadProviderHealth() → GET /health-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadStuckInbox() → GET /stuck-inbox",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: runNow() → POST /run-now",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadMemory() → GET /memory/knowledge",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadPromo() → GET /promo-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAcca() → GET /acca-codes",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAlp() → GET /alp-data",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: alpAdd() → POST /alp-add",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadSelfDiagnosis() → GET /self-diagnosis",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: sdRunMot() → POST /run-mot",
+      "status": 0,
+      "pass": false,
+      "detail": "HTTP 0"
+    },
+    {
+      "label": "JS: sdAddIssue() → POST /known-issues add",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadKanban() → GET /dashboard-data/kanban.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAaflRuns() → GET /dashboard-data/aafl_runs.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadScout() → GET /dashboard-data/scout.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadCosts() → GET /dashboard-data/costs.json",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: runSundayMerge() → POST /run-merge-sessions",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: phLoadDetail() → GET /health-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: copyStatusForClaude() → GET /api/status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: copyProjectFile(status) → GET /api/status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: copyProjectFile(history) → GET /api/history",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadRetryLog() → GET /retry-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: suggestProvider() → POST /suggest-provider",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: runChain() → POST /run-chain",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadChainStatus() → GET /chain-status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadChainLog() → GET /chain-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: startScoutTimer() → POST /scout-timer/start",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: stopScoutTimer() → POST /scout-timer/stop",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadScoutTimerStatus() → GET /scout-timer/status",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadSourceLibrary() → GET /sources-library",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: runSourceDiscovery() → POST /run-scout",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadStuckSummary() → GET /stuck-inbox/summary",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadStorage() → GET /storage",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadStorageReport() → GET /storage/report",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: wccsLoadAutoSaveLog() → GET /wccs/save-log",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: wccsHistorySearch() → GET /wccs/history-search",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: wccsLoadSessions() → GET /wccs/session-logs",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: wccsLoadRewind() → GET /wccs/versions",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadModules() → GET /modules",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadPresets() → GET /presets",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAaflSettings() → GET /aafl-settings",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: loadAaflRuns() → GET /aafl-queue",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    },
+    {
+      "label": "JS: saveAaflSettings() → POST /aafl-settings",
+      "status": 200,
+      "pass": true,
+      "detail": "HTTP 200"
+    }
+  ]
+}

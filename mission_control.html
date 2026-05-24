@@ -6,11 +6,11 @@
 <title>MCC — Mission Control Center</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#ccc;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d;color:#ccc;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* HEADER */
 .header{background:#111;border-bottom:1px solid #222;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.header-title{font-size:15px;font-weight:bold;color:#fff;letter-spacing:1px}
+.header-title{font-size:17px;font-weight:bold;color:#fff;letter-spacing:1px}
 .header-spacer{flex:1}
 .auto-toggle-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa}
 .toggle-switch{position:relative;width:36px;height:20px}
@@ -24,7 +24,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
 /* TABS */
 .tab-bar{background:#161616;border-bottom:1px solid #222;display:flex;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto}
-.tab-btn{background:none;border:none;color:#888;padding:8px 14px;cursor:pointer;font:inherit;font-size:12px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
+.tab-btn{background:none;border:none;color:#888;padding:9px 16px;cursor:pointer;font:inherit;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
 .tab-btn:hover{color:#ccc;background:#1a1a1a}
 .tab-btn.active{color:#fff;border-bottom-color:#4af}
 
@@ -35,7 +35,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
 /* ── WCCS TAB ── */
 .wccs-top-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
-.btn-save-lg{background:#174;border:none;color:#fff;font:bold 14px 'Consolas','Courier New',monospace;padding:10px 24px;border-radius:6px;cursor:pointer;transition:.15s;min-width:180px}
+.btn-save-lg{background:#174;border:none;color:#fff;font:bold 14px 'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:10px 24px;border-radius:6px;cursor:pointer;transition:.15s;min-width:180px}
 .btn-save-lg:hover{background:#1a5}
 .btn-save-lg:disabled{background:#333;color:#666;cursor:not-allowed}
 .wccs-auto-status{display:flex;flex-direction:column;gap:4px}
@@ -44,7 +44,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .auto-off{background:#444;color:#aaa}
 .wccs-next-label{font-size:11px;color:#666}
 
-.wccs-section-title{font-size:11px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
+.wccs-section-title{font-size:12px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
 
 /* chat textarea */
 .wccs-chat-wrap{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
@@ -61,8 +61,8 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .feature-card{background:#111;border:1px solid #222;border-radius:6px;padding:12px 16px;cursor:pointer;min-width:140px;transition:.15s;flex:1 1 140px}
 .feature-card:hover{border-color:#4af;background:#141414}
 .feature-icon{font-size:20px;margin-bottom:4px}
-.feature-name{font-size:12px;font-weight:bold;color:#eee;margin-bottom:2px}
-.feature-desc{font-size:11px;color:#777}
+.feature-name{font-size:13px;font-weight:bold;color:#eee;margin-bottom:2px}
+.feature-desc{font-size:12px;color:#777}
 
 /* ── DIFF TAB ── */
 .diff-controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -113,7 +113,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .autolog-settings{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 
 /* SHARED COMPONENTS */
-.btn{background:#1a2a1a;border:1px solid #2a4;color:#ccc;padding:5px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px;transition:.15s}
+.btn{background:#1a2a1a;border:1px solid #2a4;color:#ccc;padding:6px 14px;border-radius:4px;cursor:pointer;font:inherit;font-size:13px;transition:.15s}
 .btn:hover{background:#1e3a1e;color:#fff}
 .btn-danger{background:#2a1a1a;border-color:#a43}
 .btn-danger:hover{background:#3a1a1a;color:#fff}
@@ -151,6 +151,11 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 ::-webkit-scrollbar-track{background:#0a0a0a}
 ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
 
+/* CUSTOM TOOLTIPS — replace browser grey boxes */
+[data-tip]{position:relative}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:12px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:5px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:5000;max-width:260px;white-space:normal;text-align:center;line-height:1.4}
+[data-tip]:hover::after{opacity:1}
+
 /* ── SELF-DIAGNOSIS TAB ── */
 .sd-section{margin-bottom:24px}
 .sd-mot-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:10px;flex-wrap:wrap}
@@ -186,12 +191,12 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .home-instruments{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
 .inst-card{background:#111;border:1px solid #1c1c1c;border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:130px;flex:1 1 130px;cursor:pointer;transition:.15s}
 .inst-card:hover{border-color:#4af;background:#141414;transform:translateY(-1px)}
-.inst-label{font-size:10px;color:#888;text-align:center;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
-.inst-sublabel{font-size:10px;color:#555;text-align:center}
+.inst-label{font-size:11px;color:#888;text-align:center;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.inst-sublabel{font-size:11px;color:#555;text-align:center}
 .gauge-track{fill:none;stroke:#1a1a1a;stroke-width:12}
 .gauge-fill{fill:none;stroke-width:12;transition:stroke-dasharray .6s ease,stroke .4s}
-.gauge-text{fill:#eee;font-size:15px;font-weight:bold;font-family:'Consolas','Courier New',monospace}
-.gauge-sub{fill:#555;font-size:9px;font-family:'Consolas','Courier New',monospace}
+.gauge-text{fill:#eee;font-size:15px;font-weight:bold;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif}
+.gauge-sub{fill:#555;font-size:9px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif}
 .tl-wrap{display:flex;flex-direction:column;gap:7px;align-items:center;padding:4px 0}
 .tl-row{display:flex;align-items:center;gap:7px}
 .tl-circle{width:18px;height:18px;border-radius:50%;background:#222;border:1px solid #333;transition:background .4s,box-shadow .4s;flex-shrink:0}
@@ -218,6 +223,9 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .btn-connect.connected{background:#0a2010;border-color:#2a7;color:#6f6}
 .btn-connect.failed{background:#200a0a;border-color:#a33;color:#f88}
 @keyframes spin{to{transform:rotate(360deg)}}
+.refresh-wrap{display:flex;align-items:center;gap:6px;font-size:11px;color:#555;margin-left:10px}
+.btn-refresh{background:none;border:1px solid #2a2a2a;color:#666;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:12px;line-height:1.6;transition:.15s}
+.btn-refresh:hover{border-color:#4af;color:#4af}
 .btn-spinner{display:inline-block;width:9px;height:9px;border:1px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
 
 /* ── HOME SCREEN ── */
@@ -229,14 +237,14 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .home-card.slot:hover{border-color:#2a2a2a;background:#0c0c0c;transform:none}
 .home-card-hdr{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .home-card-icon{font-size:18px;line-height:1.2}
-.home-card-title{font-size:13px;font-weight:bold;color:#eee;flex:1}
+.home-card-title{font-size:14px;font-weight:bold;color:#eee;flex:1}
 .hc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .hc-dot.green{background:#2a7}
 .hc-dot.yellow{background:#aa5}
 .hc-dot.red{background:#a33}
 .hc-dot.grey,.hc-dot.gray{background:#444}
 .home-facts{display:flex;flex-direction:column;gap:3px;flex:1}
-.home-fact{font-size:11px;color:#888;line-height:1.4}
+.home-fact{font-size:12px;color:#888;line-height:1.4}
 .home-fact-none{font-size:11px;color:#444;font-style:italic}
 .home-ts{font-size:10px;color:#3a3a3a;margin-top:auto;padding-top:4px}
 .home-slot-text{font-size:11px;color:#333;font-style:italic;margin-top:auto}
@@ -247,7 +255,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .ph-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
 .ph-card{background:#111;border:1px solid #222;border-radius:6px;padding:12px 16px;min-width:220px;flex:1 1 220px;transition:.15s}
 .ph-card:hover{border-color:#333}
-.ph-name{font-size:13px;font-weight:bold;color:#eee;margin-bottom:6px}
+.ph-name{font-size:14px;font-weight:bold;color:#eee;margin-bottom:6px}
 .ph-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;margin-bottom:6px}
 .ph-badge.GREEN{background:#174;color:#8f8}
 .ph-badge.YELLOW{background:#332;color:#fc8}
@@ -266,10 +274,10 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .ph-summary-item .label{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px}
 
 /* ── NEW TABS ── */
-.section-title{font-size:11px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
-.data-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
-.data-table th{background:#161616;color:#aaa;padding:6px 10px;text-align:left;font-weight:normal;font-size:11px;border-bottom:1px solid #222}
-.data-table td{padding:5px 10px;border-bottom:1px solid #111;color:#ccc;vertical-align:top;max-width:300px;word-break:break-word}
+.section-title{font-size:12px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px}
+.data-table th{background:#161616;color:#aaa;padding:7px 12px;text-align:left;font-weight:600;font-size:12px;border-bottom:1px solid #222}
+.data-table td{padding:6px 12px;border-bottom:1px solid #111;color:#ccc;vertical-align:top;max-width:300px;word-break:break-word}
 .data-table tr:hover td{background:#141414}
 .search-box{background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit;width:100%;max-width:400px;margin-bottom:10px}
 .search-box:focus{outline:none;border-color:#4af}
@@ -315,7 +323,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
 /* ── WCCS DRILL-DOWN (Build 1 Step B) ── */
 .wccs-drill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1a1a1a}
-.wccs-pill{background:#1a2a3a;border:1px solid #4af;color:#4af;padding:5px 16px;border-radius:20px;cursor:pointer;font:12px 'Consolas','Courier New',monospace;transition:.15s;white-space:nowrap}
+.wccs-pill{background:#1a2a3a;border:1px solid #4af;color:#4af;padding:5px 16px;border-radius:20px;cursor:pointer;font:13px 'Segoe UI','Helvetica Neue',Arial,sans-serif;transition:.15s;white-space:nowrap}
 .wccs-pill:hover{background:#1a3a5a;color:#6cf}
 .wccs-pill.active{background:#0d2540;border-color:#6cf;color:#fff}
 .wccs-panel{background:#0d0d0d;border:1px solid #1a2a3a;border-radius:6px;padding:12px;margin-bottom:12px;display:none}
@@ -329,7 +337,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 .ph-inst-name{color:#ccc;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ph-inst-badge{padding:1px 5px;border-radius:3px;font-size:9px;font-weight:bold;flex-shrink:0}
 .ph-inst-time{color:#666;font-size:9px;flex-shrink:0}
-.ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px 'Consolas','Courier New',monospace;margin-top:4px;transition:.15s;width:100%}
+.ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:12px 'Segoe UI','Helvetica Neue',Arial,sans-serif;margin-top:4px;transition:.15s;width:100%}
 .ph-detail-btn:hover{background:#1a3a5a}
 
 /* ── STATUS-COPY REMINDER ANIMATION ── */
@@ -375,6 +383,10 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
       <span>min</span>
     </div>
   </div>
+  <div class="refresh-wrap">
+    <span id="last-updated-lbl">not synced</span>
+    <button class="btn-refresh" onclick="manualRefresh()" data-tip="Refresh status, history, ACCA & health now">↻ Refresh</button>
+  </div>
 </div>
 
 <!-- PRESET BAR (Feature 2) -->
@@ -390,12 +402,6 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="home">🏠 Home</button>
   <button class="tab-btn" data-tab="wccs">💾 WCCS</button>
-  <button class="tab-btn" data-tab="diff">Diff Viewer</button>
-  <button class="tab-btn" data-tab="rewind">Rewind + Edit</button>
-  <button class="tab-btn" data-tab="sessions">Session Logs</button>
-  <button class="tab-btn" data-tab="search">HISTORY Search</button>
-  <button class="tab-btn" data-tab="autolog">Auto-Save Log</button>
-  <button class="tab-btn" data-tab="providerhealth">Provider Health</button>
   <button class="tab-btn" data-tab="kanban">📋 Kanban</button>
   <button class="tab-btn" data-tab="aafl-runs">🔄 AAFL Runs</button>
   <button class="tab-btn" data-tab="scout">🔭 Scout</button>
@@ -403,7 +409,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
   <button class="tab-btn" data-tab="aafl-control">⚙️ AAFL Control</button>
   <button class="tab-btn" data-tab="memory">🧠 Memory</button>
   <button class="tab-btn" data-tab="promo">⭐ Promo</button>
-  <button class="tab-btn" data-tab="acca">⚡ ACCA</button>
+  <button class="tab-btn" data-tab="acca">⚡ Instructions &amp; Codes</button>
   <button class="tab-btn" data-tab="alp">🛡️ ALP</button>
   <button class="tab-btn" data-tab="storage">💽 Storage</button>
   <button class="tab-btn" data-tab="self-diagnosis">🔧 Self-Diagnosis</button>
@@ -427,7 +433,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
       <!-- GAUGE 1: Provider Health -->
       <div class="inst-card" id="ph-inst-card" title="Provider Health — click to open tab" style="cursor:default">
-        <svg viewBox="0 0 120 120" width="96" height="96" style="cursor:pointer" onclick="homeCardClick('providerhealth')">
+        <svg viewBox="0 0 120 120" width="96" height="96" style="cursor:pointer" onclick="phToggleDetail()">
           <circle class="gauge-track" cx="60" cy="60" r="48"
             stroke-dasharray="226.2 75.4" transform="rotate(-225 60 60)"/>
           <circle class="gauge-fill" cx="60" cy="60" r="48" id="ph-arc"
@@ -435,7 +441,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
           <text class="gauge-text" x="60" y="58" text-anchor="middle" id="ph-val">—</text>
           <text class="gauge-sub"  x="60" y="72" text-anchor="middle" id="ph-sub">providers</text>
         </svg>
-        <div class="inst-label" style="cursor:pointer" onclick="homeCardClick('providerhealth')">Provider Health</div>
+        <div class="inst-label" style="cursor:pointer" onclick="phToggleDetail()">Provider Health</div>
         <!-- Build 1 Step C: Show Details drill-down -->
         <button class="ph-detail-btn" id="ph-detail-btn" onclick="event.stopPropagation();phToggleDetail()">Show Details</button>
         <div class="ph-inst-detail" id="ph-inst-detail">
@@ -616,27 +622,27 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 
     <div class="wccs-section-title">Features</div>
     <div class="feature-cards">
-      <div class="feature-card" onclick="goToTab('diff')">
+      <div class="feature-card" onclick="wccsDrill('diff')">
         <div class="feature-icon">📊</div>
         <div class="feature-name">Diff Viewer</div>
         <div class="feature-desc">Compare any two STATUS backups</div>
       </div>
-      <div class="feature-card" onclick="goToTab('rewind')">
+      <div class="feature-card" onclick="wccsDrill('rewind')">
         <div class="feature-icon">⏪</div>
         <div class="feature-name">Rewind + Edit</div>
         <div class="feature-desc">Edit and restore old backups</div>
       </div>
-      <div class="feature-card" onclick="goToTab('sessions')">
+      <div class="feature-card" onclick="wccsDrill('sessions')">
         <div class="feature-icon">📋</div>
         <div class="feature-name">Session Logs</div>
         <div class="feature-desc">Browse archived session files</div>
       </div>
-      <div class="feature-card" onclick="goToTab('search')">
+      <div class="feature-card" onclick="wccsDrill('search')">
         <div class="feature-icon">🔍</div>
         <div class="feature-name">HISTORY Search</div>
         <div class="feature-desc">Search HISTORY.md and ACCA.md</div>
       </div>
-      <div class="feature-card" onclick="goToTab('autolog')">
+      <div class="feature-card" onclick="wccsDrill('autosave')">
         <div class="feature-icon">🕐</div>
         <div class="feature-name">Auto-Save Log</div>
         <div class="feature-desc">Last 5 auto-save results</div>
@@ -652,91 +658,17 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
 </div>
 
 <!-- ── DIFF TAB ── -->
-<div class="tab-pane" id="tab-diff">
-  <div class="pane-scroll">
-    <div class="diff-controls">
-      <span style="color:#888;font-size:12px">A:</span>
-      <select id="diff-sel-a"></select>
-      <span style="color:#888;font-size:12px">B:</span>
-      <select id="diff-sel-b"></select>
-      <button class="btn" onclick="runDiff()">Compare</button>
-    </div>
-    <div id="diff-output"><div class="empty-msg">Select two versions above and click Compare.</div></div>
-  </div>
-</div>
+<!-- Diff Viewer: access via WCCS tab → Diff Viewer pill -->
 
-<!-- ── REWIND TAB ── -->
-<div class="tab-pane" id="tab-rewind">
-  <div style="padding:12px;flex:1;display:flex;flex-direction:column;overflow:hidden;gap:8px">
-    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-      <span style="color:#888;font-size:12px">Select a backup to preview and optionally edit before restoring.</span>
-      <span style="margin-left:auto" class="rewind-meta" id="rewind-meta"></span>
-    </div>
-    <div class="split-layout" style="flex:1">
-      <div class="split-left" id="rewind-list"></div>
-      <div class="split-right">
-        <textarea class="rewind-edit" id="rewind-edit" placeholder="Select a backup from the left panel…"></textarea>
-        <div class="restore-row">
-          <button class="btn btn-danger" onclick="restoreRewind()">Restore Selected</button>
-          <span style="font-size:11px;color:#666">Current STATUS.md is backed up automatically before restore.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Rewind + Edit: access via WCCS tab → Rewind + Edit pill -->
 
-<!-- ── SESSIONS TAB ── -->
-<div class="tab-pane" id="tab-sessions">
-  <div style="padding:12px;flex:1;display:flex;flex-direction:column;overflow:hidden">
-    <div class="sessions-layout" style="flex:1">
-      <div class="session-list" id="session-list"><div class="loading">Loading…</div></div>
-      <div class="session-view" id="session-view">Select a session log from the left panel.</div>
-    </div>
-  </div>
-</div>
+<!-- Session Logs: access via WCCS tab → Session Logs pill -->
 
-<!-- ── SEARCH TAB ── -->
-<div class="tab-pane" id="tab-search">
-  <div class="pane-scroll">
-    <div class="search-controls">
-      <input type="text" id="search-input" placeholder="Search HISTORY.md, ACCA.md, session logs…" oninput="onSearchInput()">
-      <input type="text" id="search-section" placeholder="Filter by section (optional)" style="max-width:200px" oninput="onSearchInput()">
-    </div>
-    <div id="search-results"></div>
-  </div>
-</div>
+<!-- History Search: access via WCCS tab → History Search pill -->
 
-<!-- ── AUTO-LOG TAB ── -->
-<div class="tab-pane" id="tab-autolog">
-  <div class="pane-scroll">
-    <div class="autolog-settings">
-      <span>Auto-WCCS:</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="auto-toggle2" onchange="toggleAutoWccs(this.checked)">
-        <span class="toggle-slider"></span>
-      </label>
-      <span id="auto-badge2" class="auto-badge auto-off">OFF</span>
-      <span style="color:#666;margin-left:8px">Interval:</span>
-      <input type="number" id="auto-interval2" value="30" min="15" max="60" style="width:50px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;text-align:center">
-      <span style="color:#666">min</span>
-      <button class="btn" style="margin-left:4px" onclick="applyAutoInterval()">Apply</button>
-    </div>
-    <div class="wccs-section-title">Last 5 Auto-Saves</div>
-    <div id="autolog-list"></div>
-  </div>
-</div>
+<!-- Auto-Save Log: access via WCCS tab → Auto-Save Log pill -->
 
-<!-- ── PROVIDER HEALTH TAB ── -->
-<div class="tab-pane" id="tab-providerhealth">
-  <div class="pane-scroll">
-    <div class="ph-refresh-row">
-      <button class="btn" onclick="loadProviderHealth()">Refresh Now</button>
-      <span class="ph-last-run" id="ph-last-run">Never loaded — click Refresh or run: python provider_health.py</span>
-    </div>
-    <div id="ph-summary" class="ph-summary"></div>
-    <div id="ph-grid" class="ph-grid"><div class="loading">Loading provider health…</div></div>
-  </div>
-</div>
+<!-- Provider Health: access via Home tab → Provider Health gauge → Show Details -->
 
 <!-- ── KANBAN TAB ── -->
 <div class="tab-pane" id="tab-kanban">
@@ -772,6 +704,21 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
       <span class="home-last-refresh" id="scout-ts"></span>
     </div>
     <div id="scout-content"><div class="loading">Loading Scout…</div></div>
+
+    <!-- Scout Strategies -->
+    <div class="section-title" style="margin-top:16px">Scout Strategies</div>
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px;margin-bottom:6px">
+      <input type="text" id="scout-strategy-goal" placeholder="Goal for scout…" style="flex:1;min-width:200px">
+    </div>
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px">
+      <button class="btn" onclick="runScoutStrategy('ddg')" style="font-size:12px">DDG Search</button>
+      <button class="btn" onclick="runScoutStrategy('reddit')" style="font-size:12px">Reddit</button>
+      <button class="btn" onclick="runScoutStrategy('github')" style="font-size:12px">GitHub</button>
+      <button class="btn" onclick="runScoutStrategy('youtube')" style="font-size:12px">YouTube</button>
+      <button class="btn" onclick="runScoutStrategy('forum')" style="font-size:12px">Forum</button>
+      <button class="btn" onclick="runScoutStrategy('all')" style="font-size:12px;background:#1a2a3a;color:#4af">All Parallel</button>
+    </div>
+    <div id="scout-strategy-status" style="font-size:11px;color:#888;margin-top:4px"></div>
 
     <!-- Timed Scout (Feature 7) -->
     <div class="section-title" style="margin-top:16px">Timed Scout</div>
@@ -829,7 +776,7 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
         <option value="cohere">Cohere</option>
         <option value="huggingface">HuggingFace</option>
       </select>
-      <button class="btn" id="btn-run-now" onclick="runNow()">▶ Run Now</button>
+      <button class="btn" id="btn-run-now" onclick="runGoalNow()">▶ Run Now</button>
     </div>
     <div class="cost-preview" id="cost-preview"></div>
     <div id="run-now-status"></div>
@@ -866,6 +813,60 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
       <button class="btn" onclick="saveAaflSettings()">Save</button>
       <span id="aafl-settings-msg" style="color:#4af;font-size:12px"></span>
     </div>
+
+    <!-- AAFL Live Output -->
+    <div class="section-title" style="margin-top:12px">AAFL Live Output
+      <span id="aafl-phase-badge" style="margin-left:8px;font-size:11px;background:#1a3a1a;color:#6f6;border-radius:10px;padding:1px 8px;vertical-align:middle"></span>
+      <span id="aafl-provider-badge" style="margin-left:6px;font-size:11px;color:#4af"></span>
+    </div>
+    <div class="aafl-ctrl-row" style="gap:6px;margin-bottom:6px">
+      <button class="btn" onclick="refreshAaflOutput()" style="font-size:11px;padding:3px 10px">Refresh</button>
+      <button class="btn" onclick="clearAaflChat()" style="font-size:11px;padding:3px 10px">Clear</button>
+      <span id="aafl-running-badge" style="font-size:11px;color:#fa0;display:none">● Running</span>
+    </div>
+    <div id="aafl-live-out" style="background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:8px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:11px;color:#9b9;white-space:pre-wrap"><span style="color:#555">No output yet — click Run Now to start.</span></div>
+
+    <!-- AAFL Scout Bridge -->
+    <div class="section-title" style="margin-top:12px">AAFL ↔ Scout Bridge
+      <span id="bridge-status-pill" style="margin-left:8px;font-size:11px;background:#222;color:#888;border-radius:10px;padding:1px 8px;vertical-align:middle">idle</span>
+    </div>
+    <div class="aafl-ctrl-row" style="gap:6px;flex-wrap:wrap">
+      <button class="btn" onclick="triggerScoutBridge()" style="font-size:12px">Run Scout for Current Goal</button>
+      <button class="btn" onclick="loadBridgeResult()" style="font-size:12px">Show Result</button>
+    </div>
+    <div id="bridge-result-out" style="background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:8px;max-height:120px;overflow-y:auto;font-size:11px;color:#9b9;margin-top:6px;display:none;white-space:pre-wrap"></div>
+
+    <!-- Workflow Builder -->
+    <div class="section-title" style="margin-top:12px">Workflow Builder</div>
+    <div class="aafl-ctrl-row" style="gap:6px;flex-wrap:wrap;align-items:center">
+      <select id="wf-step-provider" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px">
+        <option value="auto">Auto</option>
+        <option value="mistral">Mistral</option>
+        <option value="cerebras">Cerebras</option>
+        <option value="gemini">Gemini</option>
+        <option value="groq">Groq</option>
+        <option value="openrouter">OpenRouter</option>
+      </select>
+      <select id="wf-step-task" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px">
+        <option value="plan">Plan</option>
+        <option value="work">Work</option>
+        <option value="verify">Verify</option>
+        <option value="store">Store</option>
+      </select>
+      <button class="btn" onclick="addWorkflowStep()" style="font-size:12px">+ Add Step</button>
+      <button class="btn" onclick="removeWorkflowStep()" style="font-size:12px">- Remove Last</button>
+    </div>
+    <div id="wf-steps-list" style="margin-top:6px;min-height:28px;font-size:11px;color:#888;padding:4px 0"></div>
+    <div class="aafl-ctrl-row" style="gap:6px;flex-wrap:wrap;margin-top:6px">
+      <input type="text" id="wf-preset-name" placeholder="Preset name…" style="flex:1;min-width:120px;max-width:200px">
+      <button class="btn" onclick="saveWorkflow()" style="font-size:12px">Save Preset</button>
+      <select id="wf-preset-select" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" onchange="loadWorkflowPreset(this.value)">
+        <option value="">Load preset…</option>
+      </select>
+      <button class="btn" onclick="runWorkflow()" style="font-size:12px;background:#1a3a1a;color:#6f6">▶ Run Workflow</button>
+      <button class="btn" onclick="stopWorkflow()" style="font-size:12px;background:#3a1a1a;color:#f88">■ Stop</button>
+    </div>
+    <div id="wf-status" style="font-size:11px;color:#888;margin-top:4px"></div>
 
     <!-- Stuck Inbox -->
     <div class="section-title" style="margin-top:12px">Stuck Inbox <span id="stuck-count-badge" style="background:#a33;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;vertical-align:middle;display:none"></span></div>
@@ -928,9 +929,181 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
   </div>
 </div>
 
-<!-- ── ACCA TAB ── -->
+<!-- ── ACCA / INSTRUCTIONS TAB ── -->
 <div class="tab-pane" id="tab-acca">
   <div class="pane-scroll">
+
+    <!-- ══ MCC INSTRUCTIONS ══════════════════════════════════════════ -->
+    <div class="wccs-section-title" style="margin-top:0">MCC Instructions</div>
+    <div style="font-size:12px;color:#777;margin-bottom:10px">Plain-English guide to every tab and button. Click a section to expand it.</div>
+
+    <style>
+      .mcc-inst{border:1px solid #1e1e1e;border-radius:6px;margin-bottom:6px;overflow:hidden}
+      .mcc-inst summary{padding:9px 14px;cursor:pointer;font-size:13px;font-weight:bold;color:#ccc;background:#111;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
+      .mcc-inst summary::-webkit-details-marker{display:none}
+      .mcc-inst summary::before{content:"▶";font-size:10px;color:#555;transition:.15s;flex-shrink:0}
+      .mcc-inst[open] summary::before{content:"▼";color:#4af}
+      .mcc-inst[open] summary{color:#fff;background:#141424}
+      .mcc-inst-body{padding:10px 14px 14px;background:#0d0d0d;font-size:12px;color:#aaa;line-height:1.7}
+      .mcc-inst-body b{color:#ddd}
+      .mcc-inst-body .mcc-row{display:flex;gap:10px;margin-bottom:4px;border-bottom:1px solid #111;padding-bottom:4px}
+      .mcc-inst-body .mcc-btn-name{color:#fc8;font-weight:bold;min-width:200px;flex-shrink:0}
+      .mcc-inst-body .mcc-ep{color:#555;font-size:10px}
+    </style>
+
+    <!-- Home -->
+    <details class="mcc-inst">
+      <summary>🏠 Home Tab</summary>
+      <div class="mcc-inst-body">
+        <b>What it is:</b> The overview screen. Shows all system areas in cards. Refreshes every 30 seconds automatically.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">🏥 Run Health Check</span><span>Runs provider_health.py in background. Takes ~30s. Refreshes the health gauge after.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">🔭 Start Scout</span><span>Starts a recurring web-research run for the default VKB goal. Runs every 30 min.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">🔄 Run AAFL Goal</span><span>Prompts you to type a goal, then queues it in goal_queue.txt for the AI to process.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">💾 Save WCCS</span><span>Same as Save Session Now on the WCCS tab. Saves STATUS.md right now.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Provider Health gauge</span><span>Circle shows % of green AI providers. Click Show Details to see each one.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AAFL Score gauge</span><span>Last AI run score out of 10. Green=good, red=needs attention.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Costs chart</span><span>Response-time bars for active providers. Fastest provider = shortest bar.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Scout Activity sparkline</span><span>7-day line showing scout activity. Flat = not running.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">ALP Savings bar</span><span>How many savings you have logged vs a target of 30.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">System Status lights</span><span>Green=OK, yellow=uncertain, red=problem. MCC Server / AAFL Engine / Scout.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Refresh Cards</span><span>Force-reload all home cards from server.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md</span><span>Copies full STATUS.md text to your clipboard.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy HISTORY.md</span><span>Copies full HISTORY.md text to your clipboard.</span></div>
+      </div>
+    </details>
+
+    <!-- WCCS -->
+    <details class="mcc-inst">
+      <summary>💾 WCCS Tab (Save Session)</summary>
+      <div class="mcc-inst-body">
+        <b>What it is:</b> The main save button lives here. Every save backs up STATUS.md and logs what happened.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">💾 Save Session Now</span><span>The big button. Runs aafl_wccs.py which updates STATUS.md + HISTORY.md. After saving, a flashing reminder tells you to copy and upload STATUS.md to Claude Project Files.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md for Claude</span><span>Copies STATUS.md to clipboard. Do this after every save, then paste into Claude.ai Project Files.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Chat Summary textarea</span><span>Paste your Claude chat notes here before clicking Save. Optional but records context.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Auto-WCCS toggle (header)</span><span>Saves automatically every N minutes in the background. Set the interval with the number input next to it.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Auto-Save Log pill</span><span>Shows the last 20 saves from wccs_log.md. Date, version, focus, ALP.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">History Search pill</span><span>Type anything to search HISTORY.md and ACCA.md. Results highlight your search term.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Session Logs pill</span><span>Browse archived session log files. Click one to read its contents.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Rewind + Edit pill</span><span>Pick an old STATUS.md backup from the dropdown, edit its text, then click Restore to make it the live STATUS.md again. Current STATUS.md is backed up first.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Diff Viewer pill</span><span>Pick two backup versions A and B, click Compare. Shows added (green), removed (red), changed (amber) lines.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Sunday Auto-Merge card</span><span>Runs merge_sessions.py which combines old session logs.</span></div>
+      </div>
+    </details>
+
+    <!-- Kanban / AAFL Runs / Scout / Costs -->
+    <details class="mcc-inst">
+      <summary>📋 Kanban · 🔄 AAFL Runs · 🔭 Scout · 💰 Costs</summary>
+      <div class="mcc-inst-body">
+        <b>Kanban</b> — Project board from dashboard_data/kanban.json. Refresh to reload.<br><br>
+        <b>AAFL Runs</b> — History of completed AI goal runs. Refresh to reload. The Retry Log section loads the last 20 retries.<br><br>
+        <b>Scout</b> — Web research runner.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">Timed Scout: Start</span><span>Set a goal + interval + hours limit, click Start. Scout runs repeatedly in background.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Timed Scout: Stop</span><span>Writes a stop flag file. Scout finishes its current run then stops.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Source Library: Load</span><span>Shows saved URLs. Filter by topic.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Source Library: Discover</span><span>Runs scout in discovery mode to find new relevant URLs.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">+ Add Source</span><span>Manually add a URL + description to the library.</span></div>
+        <br><b>Costs</b> — Cost data from dashboard_data/costs.json. Refresh to reload.
+      </div>
+    </details>
+
+    <!-- AAFL Control -->
+    <details class="mcc-inst">
+      <summary>⚙️ AAFL Control Tab</summary>
+      <div class="mcc-inst-body">
+        <b>What it is:</b> Run AI goals, set engine settings, manage stuck/failed goals.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Goal input</span><span>Type the goal for the AI to work on.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Provider dropdown</span><span>Choose which AI provider to use, or Auto to pick the best free one.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">▶ Run Now</span><span>Adds goal to goal_queue.txt. The AAFL engine picks it up next run.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Cost preview</span><span>Appears when you type a goal. Shows estimated tokens, cost, and time for the chosen provider.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Suggest Provider</span><span>Analyses your goal text and suggests the best provider. Also auto-selects it in the dropdown.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Run Chain</span><span>Runs chain_runner.py which processes goals in sequence through multiple providers.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Confidence Threshold</span><span>Score (0–10) the AI must beat to accept a result. Below this = retry.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Cost Cap (USD)</span><span>Max spend per goal before stopping. Free providers ignore this.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Max Retries</span><span>How many times to retry a failing goal before moving to Stuck Inbox.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Stuck Inbox</span><span>Goals that failed too many times. High/Med/Low severity pills shown. Resolve individually or click Bulk Resolve All.</span></div>
+      </div>
+    </details>
+
+    <!-- Memory / Promo -->
+    <details class="mcc-inst">
+      <summary>🧠 Memory · ⭐ Promo</summary>
+      <div class="mcc-inst-body">
+        <b>Memory</b> — Read-only view of the knowledge database.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">Knowledge Bank</span><span>Facts and pages the AI has learnt. Searchable.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Solution Log</span><span>Past AI solutions with scores and which provider gave them. Searchable.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Source Reputation</span><span>URLs used as sources, with trust scores based on how reliable they were.</span></div>
+        <br>
+        <b>Promo</b> — High-scoring results (≥9.0) auto-queue here for you to approve or reject.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">✓ Approve</span><span>Marks the result approved. Can Undo within 10 seconds.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">✗ Reject</span><span>Marks the result rejected. Can Undo within 10 seconds.</span></div>
+      </div>
+    </details>
+
+    <!-- ALP / Storage / Self-Diagnosis -->
+    <details class="mcc-inst">
+      <summary>🛡️ ALP · 💽 Storage · 🔧 Self-Diagnosis</summary>
+      <div class="mcc-inst-body">
+        <b>ALP (Accrued Learning Points)</b> — Tracks money and time savings from this project.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">Entry input</span><span>Describe the saving or lesson learned (e.g. "Saved 2hrs: used WCCS instead of manual copy").</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">+ Add Entry</span><span>Appends the saving as a new row in ALP_Database.md with today's date.</span></div>
+        <br>
+        <b>Storage</b> — Monitors disk quota slots from storage_config.json.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">Progress bars</span><span>Green = under 70%, amber = 70–90%, red = over 90% of quota used.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Weekly Report</span><span>Shows total allocated, total used, and any warning messages.</span></div>
+        <br>
+        <b>Self-Diagnosis</b> — Internal health cockpit.<br>
+        <div class="mcc-row"><span class="mcc-btn-name">🔍 Run Full MOT</span><span>Runs mcc_full_mot.py. Takes ~30 seconds. Shows pass rate and which tests failed.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Module Manager</span><span>Enable/disable project modules with checkboxes.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Known Issues + Add</span><span>Log bugs or problems. Set severity. Mark fixed when done. Delete when closed.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">System Info cards</span><span>Python version, project path, file count, lines of code, disk usage, last git commit. Auto-loaded on tab open.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">File Health table</span><span>All .py files. Click column headers to sort. Import ✓/✗ shows which files import successfully.</span></div>
+      </div>
+    </details>
+
+    <!-- Global controls -->
+    <details class="mcc-inst">
+      <summary>⌨ Global Controls (work on every tab)</summary>
+      <div class="mcc-inst-body">
+        <div class="mcc-row"><span class="mcc-btn-name">Keys 1–9</span><span>Jump to that tab number.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">R key</span><span>Refresh the current tab's data.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">C key</span><span>Connect Data (same as the Connect Data button).</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Esc key</span><span>Close any open dialog or overlay.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Shift+?</span><span>Show the keyboard shortcut overlay.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Preset bar</span><span>Save your current tab as a named preset. Click a preset button to jump back to it.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Undo toast</span><span>After adding an ALP entry or approving/rejecting a promo item, a 10-second undo button appears in the bottom-right corner.</span></div>
+      </div>
+    </details>
+
+    <!-- How Updates Work -->
+    <details class="mcc-inst" style="border-color:#2a3a2a">
+      <summary style="background:#0d1a0d">📡 How Updates Work (Data Flow)</summary>
+      <div class="mcc-inst-body">
+        <b>Saving a session:</b><br>
+        1. Paste chat notes into WCCS tab textarea<br>
+        2. Click Save Session Now<br>
+        3. Server writes your notes to chat_latest.txt<br>
+        4. Server runs aafl_wccs.py → updates STATUS.md + HISTORY.md<br>
+        5. Server copies STATUS.md → archive_dead/STATUS_timestamp.md<br>
+        6. MCC shows PASS + flashing reminder banner<br>
+        7. Click "Copy STATUS.md for Claude" button<br>
+        8. Go to Claude.ai → Project Files → delete old STATUS.md → click + → paste new one<br><br>
+
+        <b>Auto-WCCS:</b><br>
+        Toggle ON in the header → server fires every N minutes automatically → same save process, no action needed from you.<br><br>
+
+        <b>What auto-populates:</b><br>
+        • Server status dot (every 10s) · Home cards and instruments (every 30s) · Auto-WCCS countdown (1s tick) · ACCA codes (from ACCA.md file) · ALP count · MOT score (after you run it)<br><br>
+
+        <b>What needs manual action:</b><br>
+        • Pasting chat summary before save · Clicking Save Session Now · Clicking Copy STATUS.md after save · Uploading STATUS.md to Claude Project Files · Adding new ACCA codes to ACCA.md directly · Adding ALP entries · Running Full MOT<br><br>
+
+        <b>ACCA codes:</b><br>
+        Codes are read from ACCA.md as a pipe-table. To add a new code, edit ACCA.md directly and add a row: | CODE | meaning | date |. They appear here on next Refresh.
+      </div>
+    </details>
+
+    <!-- ══ ACCA CODES ════════════════════════════════════════════════ -->
+    <div class="wccs-section-title" style="margin-top:20px">ACCA Shorthand Codes</div>
     <div class="home-ctrl">
       <button class="btn" onclick="loadAcca()">Refresh</button>
       <span id="acca-count-label" class="home-last-refresh"></span>
@@ -1094,6 +1267,7 @@ const S = {
   autoWccs: { active: false, interval: 30, last_save: null, next_in_s: null, log: [] },
   countdown: null,
 };
+let _lastPollAt = null;
 
 function esc(s) {
   return String(s ?? '')
@@ -1272,7 +1446,7 @@ function renderWccsTab() {
   }
   list.innerHTML = recent.map((pt, i) => {
     const idx = S.timeline.length - 1 - i;
-    return '<div class="wccs-recent-entry" onclick="selectPoint(' + idx + '); goToTab(\'diff\')">' +
+    return '<div class="wccs-recent-entry" onclick="selectPoint(' + idx + '); wccsDrill(\'diff\')">' +
       '<span class="log-dot ' + (pt.pass ? 'ok' : 'fail') + '"></span>' +
       '<span class="log-time">' + esc(pt.date_display) + '</span>' +
       '<span class="log-trigger" style="flex:1">' + pt.line_count + ' lines</span>' +
@@ -1927,6 +2101,209 @@ async function runNow() {
     if (status) status.innerHTML = '<div style="color:#f88;font-size:12px;padding:6px 0">Error: ' + esc(e.message) + '</div>';
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '▶ Run Now'; }
+  }
+}
+
+// ── runGoalNow: sets goal + actually launches AAFL ──────────────────────────
+async function runGoalNow() {
+  const goal   = document.getElementById('run-now-goal')?.value.trim() || '';
+  const btn    = document.getElementById('btn-run-now');
+  const status = document.getElementById('run-now-status');
+  if (!goal) { toast('Enter a goal first', 'error'); return; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Launching…'; }
+  try {
+    const res = await apiFetch('/aafl/run-goal', {
+      method: 'POST',
+      body: JSON.stringify({ goal }),
+    });
+    if (res.ok) {
+      if (status) status.innerHTML = '<div style="color:#6f6;font-size:12px;padding:6px 0">AAFL running: ' + esc(res.goal || goal) + '</div>';
+      document.getElementById('run-now-goal').value = '';
+      document.getElementById('cost-preview').style.display = 'none';
+      setTimeout(refreshAaflOutput, 2000);
+    } else {
+      if (status) status.innerHTML = '<div style="color:#f88;font-size:12px;padding:6px 0">Error: ' + esc(res.error || res.status || 'unknown') + '</div>';
+    }
+  } catch(e) {
+    if (status) status.innerHTML = '<div style="color:#f88;font-size:12px;padding:6px 0">Error: ' + esc(e.message) + '</div>';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '▶ Run Now'; }
+  }
+}
+
+// ── AAFL Live Output ─────────────────────────────────────────────────────────
+async function refreshAaflOutput() {
+  const out = document.getElementById('aafl-live-out');
+  const phaseBadge = document.getElementById('aafl-phase-badge');
+  const provBadge = document.getElementById('aafl-provider-badge');
+  const runBadge = document.getElementById('aafl-running-badge');
+  if (!out) return;
+  try {
+    const data = await apiFetch('/aafl/live');
+    const lines = data.lines || [];
+    out.textContent = lines.length ? lines.join('\n') : 'No output yet.';
+    out.scrollTop = out.scrollHeight;
+    if (phaseBadge) phaseBadge.textContent = data.phase || 'idle';
+    if (provBadge) provBadge.textContent = data.provider ? '→ ' + data.provider : '';
+    if (runBadge) runBadge.style.display = data.running ? 'inline' : 'none';
+  } catch(e) {
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+function clearAaflChat() {
+  const out = document.getElementById('aafl-live-out');
+  if (out) out.innerHTML = '<span style="color:#555">Cleared.</span>';
+}
+
+// ── AAFL ↔ Scout Bridge ───────────────────────────────────────────────────────
+async function triggerScoutBridge() {
+  const pill = document.getElementById('bridge-status-pill');
+  const goal = document.getElementById('run-now-goal')?.value.trim()
+             || document.getElementById('scout-strategy-goal')?.value.trim()
+             || '';
+  if (pill) { pill.textContent = 'running…'; pill.style.background = '#1a3a1a'; pill.style.color = '#6f6'; }
+  try {
+    const res = await apiFetch('/aafl/scout-bridge', {
+      method: 'POST',
+      body: JSON.stringify({ goal }),
+    });
+    if (pill) {
+      pill.textContent = res.ok ? 'running' : ('error: ' + (res.error || 'unknown'));
+      pill.style.background = res.ok ? '#1a3a1a' : '#3a1a1a';
+      pill.style.color = res.ok ? '#6f6' : '#f88';
+    }
+    if (res.ok) setTimeout(loadBridgeResult, 5000);
+  } catch(e) {
+    if (pill) { pill.textContent = 'error'; pill.style.background = '#3a1a1a'; pill.style.color = '#f88'; }
+  }
+}
+
+async function loadBridgeResult() {
+  const out = document.getElementById('bridge-result-out');
+  const pill = document.getElementById('bridge-status-pill');
+  if (!out) return;
+  try {
+    const data = await apiFetch('/aafl/bridge-result');
+    if (data.ok || data.output) {
+      out.style.display = 'block';
+      out.textContent = (data.output || data.error || '').slice(0, 2000);
+      if (pill) { pill.textContent = 'done'; pill.style.background = '#1a2a3a'; pill.style.color = '#4af'; }
+    } else {
+      out.style.display = 'block';
+      out.textContent = data.error || 'No result yet.';
+    }
+  } catch(e) {
+    if (out) { out.style.display = 'block'; out.textContent = 'Error: ' + e.message; }
+  }
+}
+
+// ── Workflow Builder ──────────────────────────────────────────────────────────
+let _wfSteps = [];
+
+function addWorkflowStep() {
+  const provider = document.getElementById('wf-step-provider')?.value || 'auto';
+  const task = document.getElementById('wf-step-task')?.value || 'work';
+  _wfSteps.push({ provider, task });
+  _renderWfSteps();
+}
+
+function removeWorkflowStep() {
+  _wfSteps.pop();
+  _renderWfSteps();
+}
+
+function _renderWfSteps() {
+  const el = document.getElementById('wf-steps-list');
+  if (!el) return;
+  if (!_wfSteps.length) { el.textContent = 'No steps yet.'; return; }
+  el.innerHTML = _wfSteps.map((s, i) =>
+    '<span style="display:inline-block;background:#1a2a3a;border-radius:4px;padding:2px 8px;margin:2px;font-size:11px;color:#4af">' +
+    (i+1) + '. ' + esc(s.provider) + ' / ' + esc(s.task) + '</span>'
+  ).join('');
+}
+
+async function saveWorkflow() {
+  const name = document.getElementById('wf-preset-name')?.value.trim() || '';
+  if (!name) { toast('Enter a preset name', 'error'); return; }
+  if (!_wfSteps.length) { toast('Add at least one step', 'error'); return; }
+  try {
+    const res = await apiFetch('/aafl/workflow', {
+      method: 'POST',
+      body: JSON.stringify({ name, steps: _wfSteps }),
+    });
+    if (res.ok) { toast('Preset saved: ' + name); loadWorkflows(); }
+    else toast('Save failed: ' + (res.error || 'unknown'), 'error');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+async function loadWorkflows() {
+  const sel = document.getElementById('wf-preset-select');
+  if (!sel) return;
+  try {
+    const data = await apiFetch('/aafl/workflow-presets');
+    const presets = data.presets || [];
+    sel.innerHTML = '<option value="">Load preset…</option>' +
+      presets.map(p => '<option value="' + esc(p.name) + '">' + esc(p.name) + '</option>').join('');
+  } catch(e) { /* silent */ }
+}
+
+function loadWorkflowPreset(name) {
+  if (!name) return;
+  const sel = document.getElementById('wf-preset-select');
+  const presets = [];
+  // fetch fresh
+  apiFetch('/aafl/workflow-presets').then(data => {
+    const found = (data.presets || []).find(p => p.name === name);
+    if (found) { _wfSteps = found.steps || []; _renderWfSteps(); toast('Loaded: ' + name); }
+    else toast('Preset not found', 'error');
+  }).catch(() => {});
+}
+
+async function runWorkflow() {
+  const status = document.getElementById('wf-status');
+  if (!_wfSteps.length) { toast('No workflow steps defined', 'error'); return; }
+  const goal = document.getElementById('run-now-goal')?.value.trim() || '';
+  if (!goal) { toast('Enter a goal in Run Now first', 'error'); return; }
+  if (status) status.textContent = 'Starting workflow (' + _wfSteps.length + ' steps)…';
+  try {
+    const res = await apiFetch('/aafl/run-goal', {
+      method: 'POST',
+      body: JSON.stringify({ goal, workflow: _wfSteps }),
+    });
+    if (status) status.textContent = res.ok ? 'Workflow running.' : ('Error: ' + (res.error || 'unknown'));
+    if (res.ok) setTimeout(refreshAaflOutput, 2000);
+  } catch(e) {
+    if (status) status.textContent = 'Error: ' + e.message;
+  }
+}
+
+function stopWorkflow() {
+  apiFetch('/stop-aafl', { method: 'POST', body: '{}' })
+    .then(r => { const st = document.getElementById('wf-status'); if (st) st.textContent = r.ok ? 'Stop signal sent.' : 'Stop failed.'; })
+    .catch(e => { const st = document.getElementById('wf-status'); if (st) st.textContent = 'Error: ' + e.message; });
+}
+
+// ── Scout Strategy Buttons ────────────────────────────────────────────────────
+async function runScoutStrategy(strategy) {
+  const goalEl = document.getElementById('scout-strategy-goal');
+  const status = document.getElementById('scout-strategy-status');
+  const goal = goalEl?.value.trim() || '';
+  if (!goal) { toast('Enter a goal for the scout', 'error'); return; }
+  if (status) status.textContent = 'Running ' + strategy + '…';
+  try {
+    const res = await apiFetch('/scout/strategy', {
+      method: 'POST',
+      body: JSON.stringify({ goal, strategy }),
+    });
+    if (res.ok) {
+      if (status) status.textContent = strategy + ' scout running. Results appear in Scout tab.';
+      setTimeout(loadScout, 3000);
+    } else {
+      if (status) status.textContent = 'Error: ' + (res.error || res.status || 'unknown');
+    }
+  } catch(e) {
+    if (status) status.textContent = 'Error: ' + e.message;
   }
 }
 
@@ -2600,14 +2977,47 @@ setInterval(() => {
 }, 30000);
 
 // 60s — WCCS, auto-log, provider health
-setInterval(async () => {
-  await loadAutoWccs();
-  await loadTimeline();
-  renderWccsTab();
-  renderAutoLog();
-  const phPane = document.getElementById('tab-providerhealth');
-  if (phPane && phPane.classList.contains('active')) loadProviderHealth();
-}, 60000);
+// ── AUTO-REFRESH POLL (30s) ───────────────────────────────────────────────────
+
+async function pollCoreData() {
+  try {
+    await Promise.all([
+      apiFetch('/api/status').then(d => { if (d.content) window._cachedStatus = d.content; }),
+      apiFetch('/api/history').then(d => { if (d.content) window._cachedHistory = d.content; }),
+      apiFetch('/api/acca').then(d => { if (d.content) window._cachedAcca = d.content; }),
+      apiFetch('/api/health').then(() => checkServerAlive()),
+      loadAutoWccs(),
+      loadTimeline(),
+    ]);
+    renderWccsTab();
+    renderAutoLog();
+    const acca = document.getElementById('tab-acca');
+    if (acca && acca.classList.contains('active')) loadAcca();
+    const ph = document.getElementById('tab-providerhealth');
+    if (ph && ph.classList.contains('active')) loadProviderHealth();
+    const home = document.getElementById('tab-home');
+    if (home && home.classList.contains('active')) loadHomeInstruments();
+    _lastPollAt = Date.now();
+  } catch(e) {}
+}
+
+function manualRefresh() {
+  pollCoreData();
+  toast('Refreshing data…', 'ok', 1500);
+}
+
+function updateLastUpdatedLabel() {
+  const el = document.getElementById('last-updated-lbl');
+  if (!el) return;
+  if (!_lastPollAt) { el.textContent = 'not synced'; return; }
+  const secs = Math.round((Date.now() - _lastPollAt) / 1000);
+  if (secs < 5) el.textContent = 'updated just now';
+  else if (secs < 60) el.textContent = 'updated ' + secs + 's ago';
+  else el.textContent = 'updated ' + Math.floor(secs / 60) + 'm ago';
+}
+
+setInterval(pollCoreData, 30000);
+setInterval(updateLastUpdatedLabel, 1000);
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 
@@ -2620,7 +3030,16 @@ async function init() {
   loadHomeInstruments();
 }
 
-document.addEventListener('DOMContentLoaded', () => { init(); loadPresets(); });
+document.addEventListener('DOMContentLoaded', () => {
+  // Convert title attrs to custom tooltips
+  document.querySelectorAll('[title]').forEach(el => {
+    el.setAttribute('data-tip', el.getAttribute('title'));
+    el.removeAttribute('title');
+  });
+  init().then(() => { _lastPollAt = Date.now(); });
+  loadPresets();
+  loadWorkflows();
+});
 
 // ══════════════════════════════════════════════════════════════════
 // FEATURE 1 — Module Manager

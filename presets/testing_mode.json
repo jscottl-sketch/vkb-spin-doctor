@@ -1,0 +1,14 @@
+{
+  "name": "testing_mode",
+  "created": "2026-05-23",
+  "description": "Quick testing — relaxed quality bar, higher cost cap, step-by-step off",
+  "state": {
+    "aafl_control": {
+      "confidence_threshold": 6.0,
+      "cost_cap_per_goal_usd": 0.10,
+      "chain_mode": false,
+      "scout_timed_hours": 0,
+      "max_retries": 1
+    }
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "modules": [
+    {
+      "id": "home_dials",
+      "name": "Home Dials",
+      "description": "Instrument panel on Home tab — gauge dials, sparklines, traffic lights",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "home",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "self_diagnosis",
+      "name": "Self-Diagnosis",
+      "description": "MOT score, system info, file health, known issues tracker",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "self-diagnosis",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": true
+    },
+    {
+      "id": "provider_health",
+      "name": "Provider Health",
+      "description": "Alive / speed / quality checks for all LLM providers",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "providerhealth",
+      "html_file": "mission_control.html",
+      "endpoint_file": "provider_health.py",
+      "personal_only": false
+    },
+    {
+      "id": "stuck_inbox",
+      "name": "Stuck Inbox",
+      "description": "Tracks goals that loop with no progress — severity, AFNA suggestions",
+      "version": "1.1",
+      "enabled": true,
+      "tab_target": "aafl-control",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "run_now",
+      "name": "Run Now",
+      "description": "One-click AAFL goal trigger from MCC — no terminal needed",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "aafl-control",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "cost_predictor",
+      "name": "Cost Predictor",
+      "description": "Estimates cost before running — based on past run averages",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "aafl-control",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "memory_inspector",
+      "name": "Memory Inspector",
+      "description": "Browse and delete entries in knowledge_engine.db",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "memory",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "promo_queue",
+      "name": "Promo Queue",
+      "description": "AAFL writes draft posts — Scott approves before publishing",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "promo",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": true
+    },
+    {
+      "id": "acca_tab",
+      "name": "ACCA Codes",
+      "description": "Browse all ACCA shorthand codes from ACCA.md",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "acca",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": true
+    },
+    {
+      "id": "alp_counter",
+      "name": "ALP Counter",
+      "description": "Log and browse Allowance Preservation lessons",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "alp",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": true
+    },
+    {
+      "id": "keyboard_shortcuts",
+      "name": "Keyboard Shortcuts",
+      "description": "Shift+? overlay showing all MCC keyboard shortcuts",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "all",
+      "html_file": "mission_control.html",
+      "endpoint_file": null,
+      "personal_only": false
+    },
+    {
+      "id": "undo_system",
+      "name": "Undo System",
+      "description": "Revert dashboard_data.json from backup — one-click rollback",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "wccs",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": false
+    },
+    {
+      "id": "sunday_merge",
+      "name": "Sunday Merge",
+      "description": "Weekly session log merge via merge_sessions.py",
+      "version": "1.0",
+      "enabled": true,
+      "tab_target": "wccs",
+      "html_file": "mission_control.html",
+      "endpoint_file": "mcc_server.py",
+      "personal_only": true
+    }
+  ]
+}

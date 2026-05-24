@@ -1,0 +1,362 @@
+[
+  {
+    "chain_id": "20260524_192350",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 62.1,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:24:52.865663",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_192548",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 23.9,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:26:12.902342",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_192752",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 32.6,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:28:25.213229",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_192915",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 68.9,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:30:24.786139",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_192947",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 75.6,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:31:02.569117",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_193114",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 70.3,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:32:24.634345",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_193324",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 68.4,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:34:32.549593",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_193518",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 76.0,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:36:34.410164",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_194016",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 67.6,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:41:23.896977",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_194202",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 70.1,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:43:12.807691",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_194539",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 76.0,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:46:55.567838",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_194743",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 67.6,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T19:48:51.587325",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_202502",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 67.7,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:26:10.306947",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_202657",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 69.8,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:28:06.924664",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_203034",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 66.7,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:31:41.348088",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_203239",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 69.7,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:33:48.777329",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_203415",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 69.2,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:35:24.904937",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_203610",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 70.4,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:37:20.454719",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_203946",
+    "goal": "test chain goal",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 65.5,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:40:52.373311",
+    "loop_ok": false
+  },
+  {
+    "chain_id": "20260524_204141",
+    "goal": "test chain",
+    "provider": "auto",
+    "scout_sources": 10,
+    "final_score": 8.0,
+    "retried": false,
+    "total_time_s": 68.6,
+    "total_cost_usd": 0.0,
+    "steps": [
+      "scout",
+      "enrich",
+      "aafl",
+      "evaluate"
+    ],
+    "timestamp": "2026-05-24T20:42:49.817988",
+    "loop_ok": false
+  }
+]

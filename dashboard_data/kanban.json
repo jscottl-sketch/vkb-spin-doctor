@@ -1,0 +1,12 @@
+{
+  "tab_name": "Kanban",
+  "tab_id": "kanban",
+  "icon": "📋",
+  "status": "yellow",
+  "facts": [
+    "No tasks tracked yet",
+    "Kanban board tab coming soon",
+    "Will show: in progress / done / blocked"
+  ],
+  "last_updated": null
+}
