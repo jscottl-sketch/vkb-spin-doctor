@@ -88,6 +88,7 @@
 | LiteLLM installed | Already installed + comment at aafl_core.py:201. Full integration pending. |
 | mcc_test.py | Test session completed successfully 2026-05-24 |
 | mcc_test.py capture | Added 2026-05-24 from chat summary |
+| Test session captures | 5 sessions added from mcc_test.py |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
