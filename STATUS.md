@@ -54,7 +54,7 @@
 | problems/win_hardener.py | 9 problems W-001-W-009 |
 | problems/ed_bind_reset.py | ED Bind Reset prevention |
 | mission_control.html | MCC — 19+ tabs, JS audit complete, zero missing functions |
-| mcc_server.py | Bridges MCC HTML to filesystem. 10+ endpoints. |
+| mcc_server.py | Bridges MCC HTML to filesystem. 30+ endpoints. |
 | data/devices.json | 98 devices with VID/PID lookup |
 | AAFL autonomous runs | 4 goals, scores 8.07-9.33, DB cache hit confirmed |
 | Regression test | PASS 8.83/10 |
@@ -109,6 +109,11 @@
 | /aafl/run-goal endpoint | Fixes "Failed to fetch" — now actually launches loop_manager.py. Added 2026-05-24. |
 | /scout/strategy endpoint | Individual scout strategy launcher. Added 2026-05-24. |
 | mcc_server.py | Bridges MCC HTML to filesystem. 30+ endpoints. |
+| docs/PROJECT_AUDIT.md | Created 2026-05-24. Lists 22 missing items. |
+| ACCA.md cleanup | 5 codes added (CLACH/CNP/RIBS/SESUM/SBS), 5 mode codes reformatted, CAP duplicate confirmed clean. |
+| FFUE correction | FFUE corrected to Fluid Flexible Upgradeable Editable. |
+| aafl_wccs.py attempt | All providers failed, manual session log cc2 committed. |
+| Coder 32B loaded | Ready for retry. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -148,7 +153,6 @@
 | meta_proposals review | 3 AAFL self-improvement proposals in meta_proposals/ from 2026-05-18. None implemented. High value — read next. |
 | loop_output file cap | 35+ files now. Cleanup cap (50 max) planned 2026-05-20, never built. |
 | AFNA strategies → Stuck Inbox | Wire afna_strategies.json into Stuck Inbox AFNA suggestions. Planned 2026-05-23. |
-| ACCA.md cleanup | SBS missing from table. TBLM/DDM/BGM/BPM/EM in prose not table. FFUE stray at bottom. Meanings unknown: CLACH, CNP, RIBS, SESUM. |
 | Stage 3 WCCS (Chrome extension) | Auto-capture chat without manual trigger. Long-term. |
 | Ko-fi + Itch.io links | Fastest monetisation path. 30 min. In README. |
 | 5-project split | AAFL Engine / Spin Doctor / Mission Control / Promo / ACCA — after Star Citizen benchmark |

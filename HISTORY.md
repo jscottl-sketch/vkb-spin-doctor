@@ -692,6 +692,14 @@ test session from mcc_test.py[2026-05-24 19:32:35] "test capture from mcc_test.p
 [2026-05-24 20:33:26] "test capture from mcc_test.py"
 [2026-05-24 20:38:57] "test capture from mcc_test.py"
 
+
+---
+
+### 2026-05-24
+
+SESUM (Session Summary) — 24 May 2026:
+MCC test suite built (mcc_test.py, 138 tests, 133/138 PASS, dual-run comparison). Auto-refresh polling added (30s, "updated Xs ago" label, manual refresh button). AAFL Control fixed — Run Now works, Live Output panel with phase/provider badges, Workflow Builder with presets, AAFL↔Scout Bridge. Scout tab wired — 6 strategy buttons linked to chief_scout.py. ACCA tab renamed to "Instructions & Codes" with collapsible MCC guide. Full project audit — docs/PROJECT_AUDIT.md created, STATUS.md updated with 22 missing items. 10 dead files archived. ACCA.md cleaned — 5 codes added (CLACH/CNP/RIBS/SESUM/SBS), 5 mode codes reformatted, CAP duplicate confirmed clean. FFUE corrected to Fluid Flexible Upgradeable Editable. aafl_wccs.py attempted — all providers failed, manual session log cc2 committed. Coder 32B loaded for retry.
+
 <!-- END_OF_FILE -->
 
 
