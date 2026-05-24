@@ -76,6 +76,8 @@
 | storage_manager.py | Storage tab + storage_config.json |
 | Stuck Inbox (MCC) | Severity field, bulk resolve, AFNA suggestions |
 | MCC UI drill-downs | WCCS tab: Auto-Save Log, History Search, Session Logs, Rewind+Edit, Diff Viewer. Home: Provider Health drill-down, Self-Diagnosis tab, 6 gauges, 4 quick-action buttons |
+| SAVE_NOW.bat | One-click save, auto-creates chat_latest.txt if missing |
+| Auto-Sunday merge | Wired into aafl_wccs.py, runs merge_sessions on Sundays |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -110,6 +112,9 @@
 | B2-21: Global — keyboard shortcuts (full set) | Global |
 | B2-22: Keybinding Profile Library v0.5 | Global |
 | B2-23: Electron wrapper | Packaging |
+| FFUE design rule | All components must support workstation mode (local) AND packaged mode (API). Discussed 23 May. |
+| GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. |
+| Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
 
 ---
 

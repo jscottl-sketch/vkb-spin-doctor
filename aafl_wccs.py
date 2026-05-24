@@ -95,10 +95,11 @@ Rules:
 8. No ACCA codes (goes to ACCA.md)
 9. Keep under 250 lines
 
+Return the COMPLETE document. Do NOT summarize or shorten. Every section must appear in full.
 Return ONLY the new STATUS.md content. No explanation. No code fences."""
     print("[AAFL] Calling free Mistral to rewrite STATUS.md...")
-    result = core.call(prompt, task_type="batch")
-    new = result.content if hasattr(result, "content") else str(result)
+    result = core.run(prompt, task_type="batch", max_tokens=4000)
+    new = result.response if result.ok else ""
     new = re.sub(r"^```\w*\n", "", new); new = re.sub(r"\n```$", "", new)
     if EOF_MARKER not in new: new = new.rstrip() + f"\n\n{EOF_MARKER}\n"
     return new
@@ -109,9 +110,16 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     chat_path = Path(args.chat)
-    if not chat_path.exists() or not chat_path.read_text(encoding="utf-8").strip():
-        print(f"[FATAL] {chat_path} missing or empty. Paste your chat summary there first.")
-        sys.exit(1)
+    if not chat_path.exists():
+        today_str = dt.date.today().isoformat()
+        chat_path.write_text(f"{today_str}\nNo chat summary provided — light save mode\n", encoding="utf-8")
+        print("[PRE-FLIGHT] chat_latest.txt missing — created minimal version")
+    elif not chat_path.read_text(encoding="utf-8").strip():
+        today_str = dt.date.today().isoformat()
+        chat_path.write_text(f"{today_str}\nNo chat summary provided — light save mode\n", encoding="utf-8")
+        print("[PRE-FLIGHT] chat_latest.txt was empty — created minimal version")
+    else:
+        print("[PRE-FLIGHT] chat_latest.txt found")
     chat_text = read_text(chat_path)
     current_status = read_text(STATUS)
     if not current_status:
@@ -152,12 +160,37 @@ def main():
     if not args.dry_run:
         try:
             msg = f"WCCS auto-save {today} (aafl_wccs.py)"
-            subprocess.run(["git","add","STATUS.md","HISTORY.md","ACCA.md"], cwd=ROOT, check=False)
+            subprocess.run(["git","add","STATUS.md","HISTORY.md","ACCA.md"], cwd=ROOT, check=False, capture_output=True)
             subprocess.run(["git","commit","-m",msg], cwd=ROOT, check=False, capture_output=True)
             print(f"[OK] Git committed")
         except Exception as e:
             print(f"[WARN] Git commit failed (non-fatal): {e}")
+    if not args.dry_run:
+        _sunday_merge()
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''}")
+
+
+def _sunday_merge():
+    import datetime as _dt
+    if _dt.date.today().weekday() != 6:  # 6 = Sunday
+        print("[SKIP MERGE] Not Sunday")
+        return
+    print("[AUTO-MERGE] Sunday detected — running weekly merge")
+    merge_script = ROOT / "merge_sessions.py"
+    if not merge_script.exists():
+        print("[AUTO-MERGE] merge_sessions.py not found — skipping. Build it separately.")
+        return
+    try:
+        result = subprocess.run(
+            [sys.executable, str(merge_script)],
+            capture_output=True, text=True, timeout=60, cwd=str(ROOT),
+        )
+        out = (result.stdout + result.stderr).strip()
+        if out:
+            print(out)
+        print(f"[AUTO-MERGE] Done (exit code {result.returncode})")
+    except Exception as e:
+        print(f"[AUTO-MERGE] Error: {e}")
 
 if __name__ == "__main__":
     main()

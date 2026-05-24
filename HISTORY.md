@@ -499,6 +499,17 @@ SESSION 4 — 24 May 2026
 - Confirmed: aafl_wccs.py (free Mistral) replaces CLAC WCCS permanently
 - ALP lesson: always verify WCCS actually saved before closing session
 
+---
+
+## Session 24 May 2026 — Save System Audit + Fix
+- Audited all 7 sessions since 20 May split
+- Found 7 items discussed but never saved (FFUE rule, auto-Sunday merge, mini-save protocol, recovery path, pre-flight ALP, tools to explore, WCCS skill outdated)
+- Wired auto-Sunday merge into aafl_wccs.py
+- Added pre-flight ALP check (auto-creates chat_latest.txt if missing)
+- Created SAVE_NOW.bat (one-click bulletproof save)
+- Updated STATUS.md with missing items
+- DSP confirmed as always-yes — never ask again
+
 <!-- END_OF_FILE -->
 
 
@@ -1437,3 +1448,39 @@ None this session.
 2. Fix HuggingFace model name (still broken)
 3. Install LangGraph on Python 3.14
 4. Build Memory Bank (SQLite)
+
+
+---
+<!-- merged from session_logs/2026-05-20-cc1.md on 2026-05-24 00:41 -->
+
+# Session Log -- 2026-05-20-cc1
+
+**Handover:** v42 -> v43
+**Focus:** WCCS automation run
+
+## Chat Summary (from chat_latest.txt)
+
+SESSION: 20 May 2026 — aafl_watchdog.py built, Star Citizen 8.33/10 autonomous, Scout Control mega-upgrade brainstormed, MCC tabs reorganization discussed, database-backed handover designed as permanent WCCS fix.
+
+JOB #1 NEXT SESSION: Build database-backed handover (handover.db SQLite + migration from v45). CLAC block ready above. This fixes truncation permanently.
+
+ACCA: SBS = Step By Step
+
+NEXT: File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead), MCC Watchdog+Rewind tab, START_MCC.bat rename.
+
+## Generated Chat Log Entry
+
+### 2026-05-20 (Claude Code session 1)
+**Key decisions:** Built aafl_watchdog.py and designed database-backed handover as permanent WCCS fix.
+**New ACCA codes:** None
+**Ideas discussed:** Scout Control mega-upgrade brainstormed, MCC tabs reorganization discussed.
+**Bugs fixed:** None
+**Next priorities:** 1. Build database-backed handover (handover.db SQLite + migration from v45). 2. File cleanup caps (loop_output 50 max). 3. Provider keys (Gemini/Mistral dead). 4. MCC Watchdog+Rewind tab. 5. START_MCC.bat rename.
+
+## Files written (WCCS)
+- VKB_SpinDoctor_Handover_v43.md
+- wccs_log.md (row appended)
+- 2026-05-20-cc1.md (this file)
+- sfl_agent.py HANDOVER_FILENAME updated to v43
+- mcu_optimizer.py run
+- dashboard_builder.py run
