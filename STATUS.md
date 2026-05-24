@@ -78,11 +78,13 @@
 | MCC UI drill-downs | WCCS tab: Auto-Save Log, History Search, Session Logs, Rewind+Edit, Diff Viewer. Home: Provider Health drill-down, Self-Diagnosis tab, 6 gauges, 4 quick-action buttons |
 | SAVE_NOW.bat | One-click save, auto-creates chat_latest.txt if missing |
 | Auto-Sunday merge | Wired into aafl_wccs.py, runs merge_sessions on Sundays |
+| Pre-flight ALP check | Added to aafl_wccs.py |
+| WCCS skill v2 | Uploaded 2026-05-24 |
+| Action plan skill | Uploaded 2026-05-24 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
 |---|---|
-| merge_sessions.py + .bat | Built — DSP required to run |
 | Star Citizen full support | Next benchmark — first public AAFL proof |
 | Throttle slider in WT | Likely PS5/Xbox conflict — unplug and retry |
 | 5-project split | AAFL Engine, VKB Spin Doctor, Mission Control, Promo, ACCA Database + Master |
@@ -112,7 +114,6 @@
 | B2-21: Global — keyboard shortcuts (full set) | Global |
 | B2-22: Keybinding Profile Library v0.5 | Global |
 | B2-23: Electron wrapper | Packaging |
-| FFUE design rule | All components must support workstation mode (local) AND packaged mode (API). Discussed 23 May. |
 | GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. |
 | Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
 
@@ -144,10 +145,10 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 
 ## NEXT PRIORITIES
 1. Test aafl_wccs.py — run: python aafl_wccs.py --dry-run
-2. Build merge_sessions.py + .bat (DSP required)
-3. Build 2 CLAC block (23 parking lot features)
-4. Star Citizen v0.2 benchmark via AAFL autonomous run
-5. Add GROQ + Cloudflare keys to .env (manual — security rule)
-6. Post on r/LocalLLaMA when Star Citizen benchmark passes
+2. Build 2 CLAC block (23 parking lot features)
+3. Star Citizen v0.2 benchmark via AAFL autonomous run
+4. Add GROQ + Cloudflare keys to .env (manual — security rule)
+5. Post on r/LocalLLaMA when Star Citizen benchmark passes
+6. Implement FFUE design rule (workstation/packaged mode support)
 
 <!-- END_OF_FILE -->
