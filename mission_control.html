@@ -617,6 +617,11 @@ body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#cc
       </div>
     </div>
 
+    <div style="margin-top:14px">
+      <button class="btn" onclick="copyStatusForClaude()" id="btn-copy-status-claude">📋 Copy STATUS.md for Claude</button>
+      <span id="copy-status-toast" style="display:none;margin-left:10px;color:#4caf50;font-size:12px;font-weight:600">Copied!</span>
+    </div>
+
   </div>
 </div>
 
@@ -3188,6 +3193,20 @@ async function copyProjectFile(which) {
 // this stub prevents the Promise.all from throwing.
 async function sdLoadSysInfo() {
   // no-op: sdLoadMot() already calls sdRenderSysInfo(data) with the same endpoint
+}
+
+async function copyStatusForClaude() {
+  try {
+    const r = await fetch(BASE + '/api/status');
+    if (!r.ok) { showToast('Server error: ' + r.status, 'error'); return; }
+    const d = await r.json();
+    await navigator.clipboard.writeText(d.content || '');
+    const toast = document.getElementById('copy-status-toast');
+    toast.style.display = 'inline';
+    setTimeout(() => { toast.style.display = 'none'; }, 2000);
+  } catch(e) {
+    showToast('Copy failed: ' + e.message, 'error');
+  }
 }
 
 </script>
