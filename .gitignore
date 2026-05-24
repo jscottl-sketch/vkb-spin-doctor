@@ -27,3 +27,7 @@ session_logs/archive/
 
 scout_output/
 aafl_output/
+
+# Electron
+electron/node_modules/
+electron/dist/

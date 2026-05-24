@@ -340,6 +340,70 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:12px 'Segoe UI','Helvetica Neue',Arial,sans-serif;margin-top:4px;transition:.15s;width:100%}
 .ph-detail-btn:hover{background:#1a3a5a}
 
+/* ── B2-19: DARK/LIGHT THEME ── */
+body.theme-light{background:#f0f0f0;color:#222}
+body.theme-light .header{background:#e8e8e8;border-color:#ccc}
+body.theme-light .tab-bar{background:#ddd;border-color:#ccc}
+body.theme-light .tab-btn{color:#555}
+body.theme-light .tab-btn.active{color:#000;border-bottom-color:#226}
+body.theme-light .tab-pane{background:#f0f0f0}
+body.theme-light .home-card,body.theme-light .ph-card,body.theme-light .feature-card{background:#fff;border-color:#ccc}
+body.theme-light .btn{background:#dde;border-color:#aab;color:#222}
+body.theme-light .pane-scroll{background:#f0f0f0}
+body.theme-light input,body.theme-light select,body.theme-light textarea{background:#fff;color:#222;border-color:#ccc}
+body.theme-light .data-table th{background:#e0e0e0;color:#555}
+body.theme-light .data-table td{color:#333}
+.theme-toggle-btn{background:none;border:1px solid #333;color:#aaa;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:12px;white-space:nowrap;transition:.15s}
+.theme-toggle-btn:hover{border-color:#4af;color:#4af}
+/* ── B2-20: TUTORIAL MODE ── */
+.tutorial-tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a2040;border:1px solid #4af;color:#8cf;font-size:11px;padding:5px 9px;border-radius:5px;white-space:nowrap;z-index:5500;pointer-events:none;line-height:1.4}
+body.tutorial-on [data-tutorial]:hover .tutorial-tip{display:block}
+body.tutorial-on [data-tutorial]{position:relative}
+/* ── B2-21: COMMAND PALETTE ── */
+.cmdpal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-start;justify-content:center;z-index:4000;padding-top:80px}
+.cmdpal-overlay.visible{display:flex}
+.cmdpal-box{background:#1a1a1a;border:1px solid #444;border-radius:8px;width:500px;max-width:95vw;overflow:hidden}
+.cmdpal-input{width:100%;background:#111;border:none;border-bottom:1px solid #333;color:#eee;font:14px 'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:12px 16px;outline:none}
+.cmdpal-list{max-height:320px;overflow-y:auto}
+.cmdpal-item{padding:9px 16px;cursor:pointer;font-size:13px;color:#ccc;display:flex;align-items:center;gap:10px}
+.cmdpal-item:hover,.cmdpal-item.selected{background:#1a2a3a;color:#fff}
+.cmdpal-item .cmd-key{font-size:10px;color:#555;margin-left:auto;background:#222;border-radius:3px;padding:1px 5px}
+/* ── B2-22: KEYBINDING PROFILES ── */
+.kbp-card{background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:10px 14px;margin-bottom:8px}
+.kbp-name{font-size:13px;font-weight:bold;color:#eee;margin-bottom:4px}
+.kbp-meta{font-size:11px;color:#666;margin-bottom:6px}
+.kbp-stars{font-size:14px;color:#aa5;cursor:pointer;margin-bottom:6px;display:inline-block}
+.kbp-btns{display:flex;gap:6px}
+/* ── B2 Kanban ── */
+.kanban-board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.kanban-col{min-width:220px;flex:1;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:8px}
+.kanban-col-title{font-size:12px;font-weight:bold;color:#aaa;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;padding:4px 2px;display:flex;align-items:center;gap:6px}
+.kanban-card{background:#111;border:1px solid #222;border-radius:5px;padding:8px 10px;margin-bottom:6px;cursor:pointer;transition:.15s;position:relative}
+.kanban-card:hover{border-color:#4af}
+.kanban-card.selected{border-color:#fa0;background:#1a1800}
+.kanban-card-title{font-size:12px;color:#ddd;font-weight:bold;margin-bottom:4px}
+.kanban-card-meta{font-size:10px;color:#666}
+.kanban-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.kanban-tag{font-size:9px;background:#1a2a3a;color:#4af;border-radius:8px;padding:1px 6px}
+.kanban-subtask{display:flex;align-items:center;gap:5px;font-size:10px;color:#888;margin-top:2px}
+.kanban-dep-badge{font-size:9px;background:#2a1a1a;color:#f88;border-radius:3px;padding:1px 5px}
+.kanban-bulk-bar{background:#111;border:1px solid #222;border-radius:6px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;display:none}
+.kanban-bulk-bar.visible{display:flex}
+/* ── B2 Activity Feed ── */
+.act-filter-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.act-filter-btn{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;padding:3px 10px;border-radius:12px;cursor:pointer;font-size:11px;transition:.15s}
+.act-filter-btn:hover{border-color:#4af;color:#ccc}
+.act-filter-btn.active{background:#1a2a3a;border-color:#4af;color:#fff}
+.act-entry{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #111;font-size:11px}
+.act-icon{font-size:14px;flex-shrink:0}
+.act-time{color:#555;white-space:nowrap;width:100px;flex-shrink:0}
+.act-msg{color:#ccc;flex:1}
+.act-cat{font-size:9px;background:#222;border-radius:8px;padding:1px 5px;color:#666;flex-shrink:0}
+/* ── B2 Cost graphs ── */
+.cost-graph-wrap{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:12px;margin-bottom:12px}
+.cost-svg-label{font-size:9px;fill:#555;font-family:'Segoe UI',Arial,sans-serif}
+.cost-bar-rect{fill:#4af;transition:fill .2s}
+.cost-bar-rect:hover{fill:#6cf}
 /* ── STATUS-COPY REMINDER ANIMATION ── */
 @keyframes bounceArrow{
   0%,100%{transform:translateY(0)}
@@ -383,6 +447,10 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
       <span>min</span>
     </div>
   </div>
+  <!-- B2-19: Theme toggle -->
+  <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="b2ToggleTheme()" data-tip="Toggle dark/light theme">🌙 Dark</button>
+  <!-- B2-20: Tutorial toggle -->
+  <button id="tutorial-toggle-btn" class="theme-toggle-btn" onclick="b2ToggleTutorial()" data-tip="Toggle tutorial tooltips">📖 Tutorial</button>
   <div class="refresh-wrap">
     <span id="last-updated-lbl">not synced</span>
     <button class="btn-refresh" onclick="manualRefresh()" data-tip="Refresh status, history, ACCA & health now">↻ Refresh</button>
@@ -413,6 +481,9 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
   <button class="tab-btn" data-tab="alp">🛡️ ALP</button>
   <button class="tab-btn" data-tab="storage">💽 Storage</button>
   <button class="tab-btn" data-tab="self-diagnosis">🔧 Self-Diagnosis</button>
+  <button class="tab-btn" data-tab="autolog">📊 Activity</button>
+  <button class="tab-btn" data-tab="providerhealth">🏥 Provider Health</button>
+  <button class="tab-btn" data-tab="keybind-profiles">🎮 KB Profiles</button>
   <span id="kb-icon" title="Keyboard shortcuts (Shift+?)" style="margin-left:auto;padding:6px 10px;cursor:pointer;color:#555;font-size:14px;user-select:none" onclick="showKbHelp()">⌨</span>
 </div>
 
@@ -543,6 +614,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     <div class="wccs-panel" id="wpanel-autosave"></div>
 
     <!-- Panel 2: History Search -->
+    <span id="tab-search" hidden></span>
     <div class="wccs-panel" id="wpanel-search">
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <input type="text" id="wccs-srch-input" placeholder="Search HISTORY.md and ACCA.md…"
@@ -554,6 +626,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     </div>
 
     <!-- Panel 3: Session Logs -->
+    <span id="tab-sessions" hidden></span>
     <div class="wccs-panel" id="wpanel-sessions">
       <div style="display:flex;gap:12px;height:280px">
         <div id="wsess-list" style="width:200px;flex-shrink:0;overflow-y:auto;border-right:1px solid #1a1a1a;padding-right:8px"></div>
@@ -562,6 +635,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     </div>
 
     <!-- Panel 4: Rewind + Edit -->
+    <span id="tab-rewind" hidden></span>
     <div class="wccs-panel" id="wpanel-rewind">
       <select id="wrewind-sel" onchange="wrewindLoad()"
         style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;margin-bottom:8px;width:100%">
@@ -578,6 +652,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     </div>
 
     <!-- Panel 5: Diff Viewer -->
+    <span id="tab-diff" hidden></span>
     <div class="wccs-panel" id="wpanel-diff">
       <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
         <span style="color:#888;font-size:11px">A:</span>
@@ -589,6 +664,18 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
       <div id="wdiff-summary" style="font-size:11px;color:#888;margin-bottom:6px"></div>
       <div id="wdiff-out" style="max-height:300px;overflow-y:auto;font-size:11px;font-family:'Consolas','Courier New',monospace"></div>
     </div>
+
+    <!-- B2-18 START: WCCS Timeline + Diff + Rewind enhancement -->
+    <div class="section-title" style="margin-top:4px">B2-18: Save Timeline
+      <button class="btn" onclick="b2LoadTimeline()" style="font-size:11px;padding:2px 8px;margin-left:8px">Refresh</button>
+    </div>
+    <div id="b2-timeline-wrap" style="overflow-x:auto;margin-bottom:10px;padding:8px 0;min-height:60px">
+      <div id="b2-timeline-dots" style="display:flex;align-items:center;gap:0;position:relative;min-width:100%;height:48px">
+        <div style="color:#555;font-size:11px">Load timeline to see save history</div>
+      </div>
+    </div>
+    <div id="b2-timeline-preview" style="background:#0d0d0d;border:1px solid #1a2a3a;border-radius:4px;padding:8px;font-size:11px;color:#ccc;max-height:120px;overflow-y:auto;display:none;white-space:pre-wrap;margin-bottom:8px"></div>
+    <!-- B2-18 END -->
 
     <!-- STATUS COPY REMINDER — hidden until Save PASS -->
     <div id="status-copy-alert" style="display:none;margin-bottom:12px;background:#1a0000;border:3px solid #ff0000;border-radius:10px;padding:16px 20px">
@@ -673,23 +760,81 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 <!-- ── KANBAN TAB ── -->
 <div class="tab-pane" id="tab-kanban">
   <div class="pane-scroll">
-    <div class="home-ctrl">
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
       <button class="btn" onclick="loadKanban()">Refresh</button>
+      <!-- B2-02: Templates -->
+      <button class="btn" onclick="b2KanbanTemplate('bug')" style="font-size:11px">🐛 Bug Template</button>
+      <button class="btn" onclick="b2KanbanTemplate('feature')" style="font-size:11px">✨ Feature Template</button>
+      <button class="btn" onclick="b2KanbanTemplate('research')" style="font-size:11px">🔬 Research Template</button>
+      <!-- B2-02: Bulk actions -->
+      <button class="btn" id="btn-bulk-toggle" onclick="b2ToggleBulkMode()" style="font-size:11px">☑ Bulk Mode</button>
+      <!-- B2-02: Archive viewer -->
+      <button class="btn" onclick="b2ShowArchive()" style="font-size:11px">📦 Archive</button>
       <span class="home-last-refresh" id="kanban-ts"></span>
     </div>
-    <div id="kanban-content"><div class="loading">Loading Kanban…</div></div>
+    <!-- B2-02: Bulk action bar -->
+    <div class="kanban-bulk-bar" id="kanban-bulk-bar">
+      <span style="font-size:12px;color:#888" id="kanban-sel-count">0 selected</span>
+      <button class="btn" onclick="b2BulkMove('done')" style="font-size:11px">→ Done</button>
+      <button class="btn" onclick="b2BulkTag()" style="font-size:11px">🏷 Tag</button>
+      <button class="btn btn-danger" onclick="b2BulkDelete()" style="font-size:11px">🗑 Delete</button>
+    </div>
+    <!-- B2-01: Add card form -->
+    <div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
+      <input type="text" id="kanban-new-title" placeholder="New card title…" style="flex:1;min-width:180px;background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit">
+      <select id="kanban-new-col" style="background:#111;border:1px solid #333;color:#ccc;padding:5px 8px;border-radius:4px;font:inherit">
+        <option value="todo">To Do</option><option value="doing">Doing</option><option value="done">Done</option>
+      </select>
+      <button class="btn" onclick="b2KanbanAdd()" style="font-size:12px">+ Add Card</button>
+    </div>
+    <div id="kanban-board" class="kanban-board"></div>
+    <!-- B2-02: Archive panel -->
+    <div id="kanban-archive-panel" style="display:none;margin-top:12px">
+      <div class="section-title">Archive (auto-archived after 7 days in Done)</div>
+      <div id="kanban-archive-list" style="max-height:200px;overflow-y:auto"></div>
+    </div>
+    <div id="kanban-content" style="display:none"><div class="loading">Loading Kanban…</div></div>
   </div>
 </div>
 
 <!-- ── AAFL RUNS TAB ── -->
 <div class="tab-pane" id="tab-aafl-runs">
   <div class="pane-scroll">
-    <div class="home-ctrl">
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
       <button class="btn" onclick="loadAaflRuns()">Refresh</button>
+      <!-- B2-04: Compare mode -->
+      <button class="btn" id="btn-compare-mode" onclick="b2ToggleCompare()" style="font-size:11px">⚖ Compare Runs</button>
+      <!-- B2-04: Analysis -->
+      <button class="btn" onclick="b2ShowFailureAnalysis()" style="font-size:11px">📉 Failure Analysis</button>
+      <button class="btn" onclick="b2ShowSuccessPatterns()" style="font-size:11px">🏆 Success Patterns</button>
       <span class="home-last-refresh" id="aafl-runs-ts"></span>
     </div>
+    <!-- B2-05: Tag/notes filter -->
+    <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="runs-tag-filter" placeholder="Filter by tag…" style="width:140px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterRunsByTag(this.value)">
+      <span style="font-size:11px;color:#666">Tags:</span>
+      <div id="runs-tag-cloud" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+    </div>
+    <!-- B2-04: Compare panel -->
+    <div id="b2-compare-panel" style="display:none;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:10px;margin-bottom:10px">
+      <div style="font-size:12px;color:#888;margin-bottom:6px">Select 2 runs to compare:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <select id="cmp-run-a" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;flex:1;max-width:220px"><option value="">Run A…</option></select>
+        <select id="cmp-run-b" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;flex:1;max-width:220px"><option value="">Run B…</option></select>
+        <button class="btn" onclick="b2CompareRuns()" style="font-size:12px">Compare</button>
+      </div>
+      <div id="b2-compare-result" style="margin-top:8px;font-size:11px;color:#ccc"></div>
+    </div>
+    <!-- B2-04: Analysis panels -->
+    <div id="b2-failure-panel" style="display:none;background:#150808;border:1px solid #3a1a1a;border-radius:6px;padding:10px;margin-bottom:10px">
+      <div class="section-title" style="margin:0 0 6px">Failure Analysis</div>
+      <div id="b2-failure-content" style="font-size:11px;color:#ccc"></div>
+    </div>
+    <div id="b2-success-panel" style="display:none;background:#081508;border:1px solid #1a3a1a;border-radius:6px;padding:10px;margin-bottom:10px">
+      <div class="section-title" style="margin:0 0 6px">Success Patterns</div>
+      <div id="b2-success-content" style="font-size:11px;color:#ccc"></div>
+    </div>
     <div id="aafl-runs-content"><div class="loading">Loading AAFL Runs…</div></div>
-
     <!-- Retry Log (Feature 4) -->
     <div class="section-title" style="margin-top:16px">Retry Log <button class="btn" onclick="loadRetryLog()" style="font-size:11px;padding:2px 8px;margin-left:8px">Load</button></div>
     <div id="retry-log-out" style="max-height:200px;overflow-y:auto;font-size:11px;color:#888;margin-top:6px"><span style="color:#555">Click Load to view retry history</span></div>
@@ -699,8 +844,10 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 <!-- ── SCOUT CONTROL TAB ── -->
 <div class="tab-pane" id="tab-scout">
   <div class="pane-scroll">
-    <div class="home-ctrl">
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
       <button class="btn" onclick="loadScout()">Refresh</button>
+      <!-- B2-17: Export Briefing -->
+      <button class="btn" onclick="b2ExportBriefing()" style="font-size:11px">📄 Export Briefing</button>
       <span class="home-last-refresh" id="scout-ts"></span>
     </div>
     <div id="scout-content"><div class="loading">Loading Scout…</div></div>
@@ -709,6 +856,14 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     <div class="section-title" style="margin-top:16px">Scout Strategies</div>
     <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px;margin-bottom:6px">
       <input type="text" id="scout-strategy-goal" placeholder="Goal for scout…" style="flex:1;min-width:200px">
+    </div>
+    <!-- B2-12: Multi-browser sources -->
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px;margin-bottom:4px;align-items:center">
+      <span style="font-size:11px;color:#888">Source:</span>
+      <select id="b2-scout-source" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit">
+        <option value="ddg">DuckDuckGo</option><option value="google">Google</option>
+        <option value="bing">Bing</option><option value="brave">Brave</option>
+      </select>
     </div>
     <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px">
       <button class="btn" onclick="runScoutStrategy('ddg')" style="font-size:12px">DDG Search</button>
@@ -719,6 +874,50 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
       <button class="btn" onclick="runScoutStrategy('all')" style="font-size:12px;background:#1a2a3a;color:#4af">All Parallel</button>
     </div>
     <div id="scout-strategy-status" style="font-size:11px;color:#888;margin-top:4px"></div>
+    <!-- B2-12: Multi-source result columns -->
+    <div id="b2-multi-source-results" style="display:none;display:flex;gap:10px;margin-top:10px;overflow-x:auto"></div>
+
+    <!-- B2-13: AI Comparison Mode -->
+    <div class="section-title" style="margin-top:14px">B2-13: AI Comparison Mode</div>
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:6px;align-items:center">
+      <select id="b2-cmp-prov-a" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit">
+        <option value="mistral">Mistral</option><option value="gemini">Gemini</option><option value="cerebras">Cerebras</option><option value="openrouter">OpenRouter</option>
+      </select>
+      <span style="color:#666">vs</span>
+      <select id="b2-cmp-prov-b" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit">
+        <option value="gemini">Gemini</option><option value="mistral">Mistral</option><option value="cerebras">Cerebras</option><option value="openrouter">OpenRouter</option>
+      </select>
+      <button class="btn" onclick="b2RunScoutComparison()" style="font-size:12px">Run Comparison</button>
+    </div>
+    <div id="b2-scout-comparison-out" style="display:flex;gap:10px;margin-top:8px;min-height:60px"></div>
+
+    <!-- B2-14: Per-Strategy AI Override -->
+    <div class="section-title" style="margin-top:14px">B2-14: Per-Strategy AI Override</div>
+    <div id="b2-strategy-overrides" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:8px"></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn" onclick="b2SaveStrategyOverrides()" style="font-size:11px">Save Overrides</button>
+      <button class="btn" onclick="b2ResetStrategyOverrides()" style="font-size:11px">Reset to Defaults</button>
+      <span id="b2-strategy-msg" style="font-size:11px;color:#4af"></span>
+    </div>
+
+    <!-- B2-15: Parallel Workers Slider -->
+    <div class="section-title" style="margin-top:14px">B2-15: Parallel Workers</div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <input type="range" id="b2-workers-slider" min="1" max="5" value="2" style="width:160px" oninput="b2UpdateWorkers(this.value)">
+      <span id="b2-workers-label" style="font-size:13px;color:#eee;font-weight:bold">2 workers</span>
+      <span id="b2-workers-warn" style="font-size:11px;color:#fa0;display:none">⚠ May hit rate limits</span>
+    </div>
+
+    <!-- B2-16: Source Health Monitor -->
+    <div class="section-title" style="margin-top:14px">B2-16: Source Health Monitor</div>
+    <div id="b2-source-health-grid" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px"></div>
+    <div class="section-title" style="margin-top:8px">Blocked Sources</div>
+    <div id="b2-blocked-sources" style="font-size:11px;color:#888;margin-bottom:6px">None blocked</div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <input type="text" id="b2-block-url" placeholder="Source URL to block…" style="flex:1;max-width:300px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px">
+      <button class="btn" onclick="b2BlockSource()" style="font-size:11px">Block</button>
+      <button class="btn" onclick="b2LoadSourceHealth()" style="font-size:11px">Refresh Health</button>
+    </div>
 
     <!-- Timed Scout (Feature 7) -->
     <div class="section-title" style="margin-top:16px">Timed Scout</div>
@@ -752,9 +951,72 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 <!-- ── COSTS TAB ── -->
 <div class="tab-pane" id="tab-costs">
   <div class="pane-scroll">
-    <div class="home-ctrl">
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
       <button class="btn" onclick="loadCosts()">Refresh</button>
+      <!-- B2-11: Currency toggle -->
+      <button class="btn" id="currency-toggle-btn" onclick="b2ToggleCurrency()" style="font-size:11px">£ GBP</button>
       <span class="home-last-refresh" id="costs-ts"></span>
+    </div>
+    <!-- B2-10: Budget caps warning -->
+    <div id="b2-budget-warning" style="display:none;background:#2a0a0a;border:1px solid #a33;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#f88"></div>
+    <!-- B2-10: Budget caps settings -->
+    <div class="section-title">B2-10: Budget Caps</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:10px;max-width:600px">
+      <div>
+        <label style="font-size:11px;color:#888">Daily Cap</label>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span id="b2-cap-currency-d" style="font-size:12px;color:#ccc">£</span>
+          <input type="number" id="b2-daily-cap" step="0.01" min="0" value="0.50" style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:4px 6px;border-radius:4px;font:inherit;font-size:12px">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:11px;color:#888">Weekly Cap</label>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span id="b2-cap-currency-w" style="font-size:12px;color:#ccc">£</span>
+          <input type="number" id="b2-weekly-cap" step="0.10" min="0" value="2.00" style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:4px 6px;border-radius:4px;font:inherit;font-size:12px">
+        </div>
+      </div>
+      <div>
+        <label style="font-size:11px;color:#888">Monthly Cap</label>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span id="b2-cap-currency-m" style="font-size:12px;color:#ccc">£</span>
+          <input type="number" id="b2-monthly-cap" step="0.50" min="0" value="5.00" style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:4px 6px;border-radius:4px;font:inherit;font-size:12px">
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <button class="btn" onclick="b2SaveBudgetCaps()" style="font-size:11px">Save Caps</button>
+      <button class="btn" onclick="b2LoadBudgetCaps()" style="font-size:11px">Load</button>
+      <span id="b2-caps-msg" style="font-size:11px;color:#4af"></span>
+    </div>
+    <!-- B2-10: Savings + ROI -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:500px;margin-bottom:12px">
+      <div style="background:#0a150a;border:1px solid #1a3a1a;border-radius:6px;padding:10px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">Savings Tracker (manual hours saved)</div>
+        <div id="b2-savings-val" style="font-size:22px;font-weight:bold;color:#6f6">0 hrs</div>
+        <div style="display:flex;gap:4px;margin-top:6px">
+          <input type="number" id="b2-savings-add" step="0.5" min="0" placeholder="hrs saved" style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:11px">
+          <button class="btn" onclick="b2AddSavings()" style="font-size:11px;padding:3px 8px">Add</button>
+        </div>
+      </div>
+      <div style="background:#0a100a;border:1px solid #1a2a1a;border-radius:6px;padding:10px">
+        <div style="font-size:11px;color:#888;margin-bottom:4px">ROI Tracker</div>
+        <div id="b2-roi-val" style="font-size:18px;font-weight:bold;color:#4af">—</div>
+        <div style="font-size:10px;color:#666;margin-top:4px" id="b2-roi-detail"></div>
+      </div>
+    </div>
+    <!-- B2-11: Trend graphs -->
+    <div class="section-title">B2-11: Cost Trends (30 days)</div>
+    <div class="cost-graph-wrap">
+      <svg id="b2-cost-line-svg" width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <text x="10" y="60" class="cost-svg-label">No data</text>
+      </svg>
+    </div>
+    <div class="section-title">Cost by Provider</div>
+    <div class="cost-graph-wrap">
+      <svg id="b2-cost-bar-svg" width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <text x="10" y="60" class="cost-svg-label">No data</text>
+      </svg>
     </div>
     <div id="costs-content"><div class="loading">Loading Costs…</div></div>
   </div>
@@ -867,6 +1129,65 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
       <button class="btn" onclick="stopWorkflow()" style="font-size:12px;background:#3a1a1a;color:#f88">■ Stop</button>
     </div>
     <div id="wf-status" style="font-size:11px;color:#888;margin-top:4px"></div>
+
+    <!-- B2-06: Step-by-Step + Pause Mode -->
+    <div class="section-title" style="margin-top:16px"><!-- B2-06 START -->B2-06: Step-by-Step / Pause Mode</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+      <label class="auto-toggle-wrap">
+        <span>Step Mode</span>
+        <label class="toggle-switch"><input type="checkbox" id="b2-step-mode-toggle"><span class="toggle-slider"></span></label>
+      </label>
+      <button class="btn" id="btn-step-next" onclick="b2StepNext()" style="font-size:12px;display:none">▶ Next Phase</button>
+      <button class="btn" id="btn-pause-aafl" onclick="b2PauseAafl()" style="font-size:12px;background:#1a2a1a;color:#6f6">⏸ Pause</button>
+      <button class="btn" id="btn-resume-aafl" onclick="b2ResumeAafl()" style="font-size:12px;display:none">▶ Resume</button>
+    </div>
+    <div id="b2-phase-dots" style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+      <span id="pd-plan" style="padding:2px 8px;border-radius:10px;font-size:10px;background:#222;color:#555">Plan</span>
+      <span id="pd-work" style="padding:2px 8px;border-radius:10px;font-size:10px;background:#222;color:#555">Work</span>
+      <span id="pd-verify" style="padding:2px 8px;border-radius:10px;font-size:10px;background:#222;color:#555">Verify</span>
+      <span id="pd-store" style="padding:2px 8px;border-radius:10px;font-size:10px;background:#222;color:#555">Store</span>
+    </div><!-- B2-06 END -->
+
+    <!-- B2-07: Chain Builder + Notification Settings -->
+    <div class="section-title" style="margin-top:12px"><!-- B2-07 START -->B2-07: Chain Builder</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center">
+      <input type="text" id="b2-chain-add-goal" placeholder="Add goal to chain…" style="flex:1;min-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+      <button class="btn" onclick="b2ChainAddGoal()" style="font-size:11px">+ Add</button>
+      <button class="btn" onclick="b2ChainClear()" style="font-size:11px">Clear</button>
+    </div>
+    <div id="b2-chain-list" style="min-height:32px;font-size:11px;color:#888;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;padding:6px;margin-bottom:6px">Empty chain — add goals above</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;height:6px;overflow:hidden;margin-bottom:6px"><div id="b2-chain-progress" style="height:100%;background:#2a7;width:0%;transition:.4s"></div></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
+      <input type="text" id="b2-chain-preset-name" placeholder="Chain preset name…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px">
+      <button class="btn" onclick="b2SaveChain()" style="font-size:11px">Save Chain</button>
+      <button class="btn" onclick="b2RunChainBuilder()" style="font-size:12px;background:#1a3a1a;color:#6f6">▶ Run Chain</button>
+    </div>
+    <div class="section-title" style="margin-top:8px">Notification Settings</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#aaa;align-items:center">
+      <label><input type="checkbox" id="b2-notif-complete"> On complete</label>
+      <label><input type="checkbox" id="b2-notif-error"> On error</label>
+      <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="b2-notif-score"> Score ≥
+        <input type="number" id="b2-notif-score-val" value="8" min="0" max="10" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;font-size:11px">
+      </label>
+      <button class="btn" onclick="b2RequestNotifPermission()" style="font-size:11px">Enable Notifications</button>
+    </div><!-- B2-07 END -->
+
+    <!-- B2-08: Benchmark Runner -->
+    <div class="section-title" style="margin-top:16px"><!-- B2-08 START -->B2-08: Benchmark Runner</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <input type="text" id="b2-bench-goal" placeholder="Benchmark goal (runs 3× across providers)…" style="flex:1;min-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit">
+      <button class="btn" id="btn-run-benchmark" onclick="b2RunBenchmark()" style="font-size:12px;background:#1a2a3a;color:#4af">🏁 Run Benchmark</button>
+    </div>
+    <div id="b2-benchmark-status" style="font-size:11px;color:#888;margin-bottom:6px"></div>
+    <div id="b2-benchmark-results" style="overflow-x:auto"></div><!-- B2-08 END -->
+
+    <!-- B2-09: Second Opinion AI -->
+    <div class="section-title" style="margin-top:16px"><!-- B2-09 START -->B2-09: Second Opinion AI</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px">
+      <button class="btn" onclick="b2GetSecondOpinion()" style="font-size:12px;background:#1a1a2a;color:#aaf">🤔 Get Second Opinion</button>
+      <span style="font-size:11px;color:#666">(sends last result to a different provider)</span>
+    </div>
+    <div id="b2-second-opinion-out" style="background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:8px;max-height:120px;overflow-y:auto;font-size:11px;color:#ccc;display:none;white-space:pre-wrap"></div><!-- B2-09 END -->
 
     <!-- Stuck Inbox -->
     <div class="section-title" style="margin-top:12px">Stuck Inbox <span id="stuck-count-badge" style="background:#a33;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;vertical-align:middle;display:none"></span></div>
@@ -1230,7 +1551,79 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
   </div>
 </div>
 
-<!-- KB HELP OVERLAY -->
+<!-- ── ACTIVITY TAB ── B2-03 -->
+<div class="tab-pane" id="tab-providerhealth">
+  <div class="pane-scroll">
+    <div class="section-title">Provider Health</div>
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadProviderHealth()">Run Health Check</button>
+    </div>
+    <div id="ph-tab-content" style="margin-top:12px">
+      <div class="loading">Click Run Health Check to scan all providers…</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane" id="tab-autolog">
+  <div class="pane-scroll">
+    <!-- B2-03 START -->
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
+      <button class="btn" onclick="b2LoadActivity()">Refresh</button>
+      <button class="btn" onclick="b2AiSummariseActivity()" id="btn-ai-summarise" style="font-size:11px;background:#1a1a2a;color:#aaf">🤖 AI Summarise</button>
+      <button class="btn" onclick="b2ExportActivity()" style="font-size:11px">📄 Export .txt</button>
+      <span class="home-last-refresh" id="activity-ts"></span>
+    </div>
+    <div class="act-filter-bar" id="b2-act-filters">
+      <button class="act-filter-btn active" data-filter="all" onclick="b2ActFilter(this,'all')">All</button>
+      <button class="act-filter-btn" data-filter="kanban" onclick="b2ActFilter(this,'kanban')">Kanban</button>
+      <button class="act-filter-btn" data-filter="aafl" onclick="b2ActFilter(this,'aafl')">AAFL</button>
+      <button class="act-filter-btn" data-filter="scout" onclick="b2ActFilter(this,'scout')">Scout</button>
+      <button class="act-filter-btn" data-filter="wccs" onclick="b2ActFilter(this,'wccs')">WCCS</button>
+      <button class="act-filter-btn" data-filter="costs" onclick="b2ActFilter(this,'costs')">Costs</button>
+      <button class="act-filter-btn" data-filter="errors" onclick="b2ActFilter(this,'errors')">Errors</button>
+      <button class="act-filter-btn" data-filter="manual" onclick="b2ActFilter(this,'manual')">Manual</button>
+      <button class="act-filter-btn" data-filter="auto" onclick="b2ActFilter(this,'auto')">Auto</button>
+      <button class="act-filter-btn" data-filter="today" onclick="b2ActFilter(this,'today')">Today</button>
+      <button class="act-filter-btn" data-filter="week" onclick="b2ActFilter(this,'week')">This Week</button>
+      <button class="act-filter-btn" data-filter="month" onclick="b2ActFilter(this,'month')">This Month</button>
+    </div>
+    <div id="b2-ai-summary-out" style="background:#0a0a1a;border:1px solid #2a2a4a;border-radius:6px;padding:8px;font-size:12px;color:#aaf;margin-bottom:8px;display:none"></div>
+    <div id="b2-activity-list" style="max-height:calc(100vh - 260px);overflow-y:auto">
+      <div class="loading">Loading activity…</div>
+    </div><!-- B2-03 END -->
+  </div>
+</div>
+
+<!-- ── KEYBINDING PROFILES TAB ── B2-22 -->
+<div class="tab-pane" id="tab-keybind-profiles">
+  <div class="pane-scroll">
+    <!-- B2-22 START -->
+    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
+      <button class="btn" onclick="b2LoadKbProfiles()">Refresh</button>
+      <button class="btn" onclick="b2ExportKbProfile()" style="font-size:11px">📤 Export Profile</button>
+      <button class="btn" onclick="document.getElementById('b2-kbp-import-file').click()" style="font-size:11px">📥 Import Profile</button>
+      <input type="file" id="b2-kbp-import-file" accept=".json" style="display:none" onchange="b2ImportKbProfile(this)">
+    </div>
+    <!-- Filter bar -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+      <input type="text" id="b2-kbp-filter-game" placeholder="Filter by game…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfiles()">
+      <input type="text" id="b2-kbp-filter-device" placeholder="Filter by device…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfiles()">
+    </div>
+    <!-- New profile form -->
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:12px">
+      <div class="section-title" style="margin-top:0">New Profile</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="b2-kbp-name" placeholder="Profile name…" style="flex:1;min-width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+        <input type="text" id="b2-kbp-game" placeholder="Game…" style="width:120px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+        <input type="text" id="b2-kbp-device" placeholder="Device (e.g. VKB)…" style="width:130px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+        <button class="btn" onclick="b2SaveKbProfile()" style="font-size:12px">Save Profile</button>
+      </div>
+    </div>
+    <div id="b2-kbp-list"><div class="loading">Loading profiles…</div></div><!-- B2-22 END -->
+  </div>
+</div>
+
+<!-- KB HELP OVERLAY (B2-21 extended) -->
 <div class="kb-overlay" id="kb-overlay" onclick="if(event.target===this)closeKbHelp()">
   <div class="kb-box">
     <h3>Keyboard Shortcuts</h3>
@@ -1239,9 +1632,22 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
     <div class="kb-row"><span class="kb-key">C</span><span class="kb-desc">Connect Data</span></div>
     <div class="kb-row"><span class="kb-key">Esc</span><span class="kb-desc">Close overlay / dialog</span></div>
     <div class="kb-row"><span class="kb-key">Shift+?</span><span class="kb-desc">Show this help</span></div>
+    <div class="kb-row"><span class="kb-key">Ctrl+1…9</span><span class="kb-desc">Switch to tab 1–9</span></div>
+    <div class="kb-row"><span class="kb-key">Ctrl+S</span><span class="kb-desc">Trigger WCCS save</span></div>
+    <div class="kb-row"><span class="kb-key">Ctrl+R</span><span class="kb-desc">Refresh data</span></div>
+    <div class="kb-row"><span class="kb-key">Ctrl+K</span><span class="kb-desc">Open command palette</span></div>
+    <div class="kb-row"><span class="kb-key">Ctrl+/</span><span class="kb-desc">Show this shortcut sheet</span></div>
     <div style="margin-top:16px">
       <button class="btn" onclick="closeKbHelp()">Close</button>
     </div>
+  </div>
+</div>
+
+<!-- B2-21: COMMAND PALETTE -->
+<div class="cmdpal-overlay" id="cmdpal-overlay" onclick="if(event.target===this)b2CloseCmdPal()">
+  <div class="cmdpal-box">
+    <input type="text" class="cmdpal-input" id="cmdpal-input" placeholder="Type a command…" oninput="b2CmdPalFilter()" onkeydown="b2CmdPalKey(event)" autocomplete="off">
+    <div class="cmdpal-list" id="cmdpal-list"></div>
   </div>
 </div>
 
@@ -3673,6 +4079,1188 @@ async function copyStatusForClaude() {
     document.getElementById('copyStatusMsg').innerHTML = '<span style="color:red;">❌ Failed - is MCC server running?</span>';
   }
 }
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD 2 — ALL 23 FEATURES
+// ══════════════════════════════════════════════════════════════════
+
+// ── B2-01 + B2-02: KANBAN (dependencies, sub-tasks, templates, bulk, archive) ──
+
+let _b2KanbanData = {todo:[],doing:[],done:[],archive:[]};
+let _b2BulkMode = false;
+let _b2SelectedCards = new Set();
+
+function loadKanban() {
+  apiFetch('/b2/kanban').then(d => {
+    _b2KanbanData = d.board || {todo:[],doing:[],done:[],archive:[]};
+    b2RenderKanban();
+  }).catch(() => {
+    const el = document.getElementById('kanban-board');
+    if (el) el.innerHTML = '<div class="empty-msg">No kanban data — start adding cards above.</div>';
+  });
+  document.getElementById('kanban-ts').textContent = 'Refreshed ' + new Date().toLocaleTimeString();
+}
+
+function b2RenderKanban() {
+  const board = document.getElementById('kanban-board');
+  if (!board) return;
+  const cols = [{id:'todo',label:'To Do 📋'},{id:'doing',label:'Doing ⚡'},{id:'done',label:'Done ✓'}];
+  board.innerHTML = cols.map(col => {
+    const cards = (_b2KanbanData[col.id] || []);
+    return `<div class="kanban-col">
+      <div class="kanban-col-title">${esc(col.label)} <span style="background:#222;border-radius:8px;padding:0 6px;font-size:10px">${cards.length}</span></div>
+      ${cards.map(c => b2RenderCard(c, col.id)).join('')}
+    </div>`;
+  }).join('');
+}
+
+function b2RenderCard(card, col) {
+  const id = esc(card.id || '');
+  const tags = (card.tags||[]).map(t=>`<span class="kanban-tag">${esc(t)}</span>`).join('');
+  const deps = card.blocks_ids && card.blocks_ids.length ? `<span class="kanban-dep-badge">blocks ${card.blocks_ids.length}</span>` : '';
+  const blockedBy = card.blocked_by && card.blocked_by.length ? `<span class="kanban-dep-badge" style="background:#1a2a0a;color:#8f8">needs ${card.blocked_by.length}</span>` : '';
+  const subtasks = (card.subtasks||[]).map(s=>`<div class="kanban-subtask"><input type="checkbox" ${s.done?'checked':''} onchange="b2ToggleSubtask('${id}','${esc(s.id||'')}',this.checked)"><span style="${s.done?'text-decoration:line-through;opacity:.5':''}">${esc(s.text)}</span></div>`).join('');
+  const bulkCb = _b2BulkMode ? `<input type="checkbox" class="kanban-card-cb" data-id="${id}" style="position:absolute;top:6px;right:6px" onchange="b2CardSelect('${id}',this.checked)">` : '';
+  const cantDone = col==='doing' && card.blocked_by && card.blocked_by.length ? 'opacity:.6;pointer-events:none;' : '';
+  return `<div class="kanban-card${_b2SelectedCards.has(card.id)?' selected':''}" id="kc-${id}" style="${cantDone}">
+    ${bulkCb}
+    <div class="kanban-card-title">${esc(card.title||'Untitled')}</div>
+    <div class="kanban-card-meta">${esc(card.col||col)} | ${esc((card.created||'').slice(0,10))}</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${tags}${deps}${blockedBy}</div>
+    ${subtasks ? `<div style="margin-top:4px">${subtasks}</div>` : ''}
+    ${card.notes ? `<div style="font-size:10px;color:#666;margin-top:3px;font-style:italic">${esc(card.notes)}</div>` : ''}
+    <div style="margin-top:6px;display:flex;gap:4px;font-size:10px">
+      ${col!=='done'?`<button class="btn" onclick="b2MoveCard('${id}','done')" style="padding:1px 6px;font-size:10px">→Done</button>`:''}
+      ${col==='todo'?`<button class="btn" onclick="b2MoveCard('${id}','doing')" style="padding:1px 6px;font-size:10px">→Doing</button>`:''}
+      <button class="btn btn-danger" onclick="b2DeleteCard('${id}')" style="padding:1px 6px;font-size:10px">✕</button>
+      <button class="btn" onclick="b2AddSubtask('${id}')" style="padding:1px 6px;font-size:10px">+task</button>
+    </div>
+  </div>`;
+}
+
+async function b2KanbanAdd() {
+  const title = document.getElementById('kanban-new-title')?.value.trim();
+  const col = document.getElementById('kanban-new-col')?.value || 'todo';
+  if (!title) { toast('Enter a card title','error'); return; }
+  const card = {id:'c'+Date.now(), title, col, created:new Date().toISOString(), tags:[], subtasks:[], blocked_by:[], blocks_ids:[]};
+  _b2KanbanData[col] = [...(_b2KanbanData[col]||[]), card];
+  document.getElementById('kanban-new-title').value = '';
+  b2RenderKanban();
+  b2ActLog('kanban','Added card: '+title.slice(0,40));
+  await b2SaveKanban();
+}
+
+async function b2MoveCard(id, toCol) {
+  const fromCols = Object.keys(_b2KanbanData);
+  for (const col of fromCols) {
+    const idx = (_b2KanbanData[col]||[]).findIndex(c=>c.id===id);
+    if (idx >= 0) {
+      const card = _b2KanbanData[col][idx];
+      if (toCol==='done' && card.blocked_by && card.blocked_by.length) { toast('Cannot move — has unresolved dependencies','error'); return; }
+      _b2KanbanData[col].splice(idx,1);
+      if (toCol==='done') card.done_at = new Date().toISOString();
+      (_b2KanbanData[toCol] = _b2KanbanData[toCol]||[]).push(card);
+      break;
+    }
+  }
+  b2RenderKanban();
+  b2ActLog('kanban','Moved card '+id+' → '+toCol);
+  await b2SaveKanban();
+}
+
+async function b2DeleteCard(id) {
+  for (const col of Object.keys(_b2KanbanData)) {
+    const idx = (_b2KanbanData[col]||[]).findIndex(c=>c.id===id);
+    if (idx>=0) { _b2KanbanData[col].splice(idx,1); break; }
+  }
+  b2RenderKanban();
+  await b2SaveKanban();
+}
+
+async function b2ToggleSubtask(cardId, stId, done) {
+  for (const col of Object.keys(_b2KanbanData)) {
+    const card = (_b2KanbanData[col]||[]).find(c=>c.id===cardId);
+    if (card) {
+      const st = (card.subtasks||[]).find(s=>s.id===stId);
+      if (st) st.done = done;
+      break;
+    }
+  }
+  await b2SaveKanban();
+}
+
+function b2AddSubtask(cardId) {
+  const text = prompt('Subtask text:');
+  if (!text) return;
+  for (const col of Object.keys(_b2KanbanData)) {
+    const card = (_b2KanbanData[col]||[]).find(c=>c.id===cardId);
+    if (card) { (card.subtasks=card.subtasks||[]).push({id:'st'+Date.now(),text,done:false}); break; }
+  }
+  b2RenderKanban();
+  b2SaveKanban();
+}
+
+async function b2SaveKanban() {
+  try { await apiFetch('/b2/kanban', {method:'POST', body:JSON.stringify({board:_b2KanbanData})}); }
+  catch(e) { /* silent - UI still updated */ }
+}
+
+function b2ToggleBulkMode() {
+  _b2BulkMode = !_b2BulkMode;
+  _b2SelectedCards.clear();
+  document.getElementById('kanban-bulk-bar')?.classList.toggle('visible', _b2BulkMode);
+  document.getElementById('btn-bulk-toggle').textContent = _b2BulkMode ? '✕ Exit Bulk' : '☑ Bulk Mode';
+  b2RenderKanban();
+}
+
+function b2CardSelect(id, checked) {
+  checked ? _b2SelectedCards.add(id) : _b2SelectedCards.delete(id);
+  const el = document.getElementById('kanban-sel-count');
+  if (el) el.textContent = _b2SelectedCards.size + ' selected';
+}
+
+async function b2BulkMove(toCol) {
+  for (const id of _b2SelectedCards) await b2MoveCard(id, toCol);
+  _b2SelectedCards.clear();
+}
+
+async function b2BulkDelete() {
+  if (!_b2SelectedCards.size) { toast('Nothing selected','error'); return; }
+  if (!confirm('Delete '+_b2SelectedCards.size+' cards?')) return;
+  for (const id of [..._b2SelectedCards]) await b2DeleteCard(id);
+  _b2SelectedCards.clear();
+}
+
+function b2BulkTag() {
+  const tag = prompt('Tag name to apply:');
+  if (!tag) return;
+  for (const id of _b2SelectedCards) {
+    for (const col of Object.keys(_b2KanbanData)) {
+      const card = (_b2KanbanData[col]||[]).find(c=>c.id===id);
+      if (card) { (card.tags=card.tags||[]).push(tag); break; }
+    }
+  }
+  b2RenderKanban();
+  b2SaveKanban();
+}
+
+function b2KanbanTemplate(type) {
+  const tpls = {
+    bug:      {title:'Bug: [describe]', tags:['bug'], subtasks:[{id:'st1',text:'Reproduce',done:false},{id:'st2',text:'Identify root cause',done:false},{id:'st3',text:'Fix + test',done:false}]},
+    feature:  {title:'Feature: [describe]', tags:['feature'], subtasks:[{id:'st1',text:'Design',done:false},{id:'st2',text:'Implement',done:false},{id:'st3',text:'Test',done:false}]},
+    research: {title:'Research: [topic]', tags:['research'], subtasks:[{id:'st1',text:'Gather sources',done:false},{id:'st2',text:'Summarise findings',done:false}]},
+  };
+  const tpl = tpls[type];
+  if (!tpl) return;
+  const card = {id:'c'+Date.now(), ...tpl, col:'todo', created:new Date().toISOString(), blocked_by:[], blocks_ids:[]};
+  (_b2KanbanData.todo = _b2KanbanData.todo||[]).push(card);
+  b2RenderKanban();
+  b2SaveKanban();
+  toast('Template added: '+type);
+}
+
+function b2ShowArchive() {
+  const panel = document.getElementById('kanban-archive-panel');
+  if (!panel) return;
+  panel.style.display = panel.style.display === 'none' ? '' : 'none';
+  const list = document.getElementById('kanban-archive-list');
+  const arc = _b2KanbanData.archive || [];
+  list.innerHTML = arc.length ? arc.map(c=>`<div class="kanban-card" style="opacity:.7"><div class="kanban-card-title">${esc(c.title)}</div><div class="kanban-card-meta">Done ${esc((c.done_at||'').slice(0,10))}</div></div>`).join('') : '<div class="empty-msg">No archived cards</div>';
+}
+
+// Auto-archive done cards older than 7 days
+function b2AutoArchive() {
+  const cutoff = Date.now() - 7*24*3600*1000;
+  const done = _b2KanbanData.done || [];
+  const keep = [], arch = [];
+  for (const c of done) {
+    const ts = c.done_at ? new Date(c.done_at).getTime() : 0;
+    (ts && ts < cutoff ? arch : keep).push(c);
+  }
+  if (arch.length) {
+    _b2KanbanData.done = keep;
+    _b2KanbanData.archive = [...(_b2KanbanData.archive||[]), ...arch];
+    b2SaveKanban();
+    toast('Auto-archived '+arch.length+' cards');
+  }
+}
+
+// ── B2-03: ACTIVITY FEED ──────────────────────────────────────────
+
+let _b2ActivityLog = [];
+let _b2ActivityFilter = 'all';
+
+function b2ActLog(cat, msg, trigger='manual') {
+  const entry = {ts:new Date().toISOString(), cat, msg, trigger};
+  _b2ActivityLog.unshift(entry);
+  if (_b2ActivityLog.length > 500) _b2ActivityLog.length = 500;
+  try { apiFetch('/b2/activity', {method:'POST', body:JSON.stringify(entry)}); } catch(e){}
+}
+
+async function b2LoadActivity() {
+  const el = document.getElementById('b2-activity-list');
+  try {
+    const d = await apiFetch('/b2/activity');
+    _b2ActivityLog = d.entries || [];
+    b2RenderActivity();
+    document.getElementById('activity-ts').textContent = 'Refreshed '+new Date().toLocaleTimeString();
+  } catch(e) {
+    if (el) el.innerHTML = '<div class="empty-msg">No activity data — actions will be logged here.</div>';
+  }
+}
+
+function b2RenderActivity() {
+  const el = document.getElementById('b2-activity-list');
+  if (!el) return;
+  const now = Date.now();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const week = new Date(today); week.setDate(week.getDate()-7);
+  const month = new Date(today); month.setMonth(month.getMonth()-1);
+  const icons = {kanban:'📋',aafl:'🔄',scout:'🔭',wccs:'💾',costs:'💰',errors:'🔴',manual:'👤',auto:'🤖',system:'⚙️'};
+  const filtered = _b2ActivityLog.filter(e => {
+    if (_b2ActivityFilter==='all') return true;
+    if (_b2ActivityFilter==='today') return new Date(e.ts) >= today;
+    if (_b2ActivityFilter==='week') return new Date(e.ts) >= week;
+    if (_b2ActivityFilter==='month') return new Date(e.ts) >= month;
+    if (_b2ActivityFilter==='manual') return e.trigger==='manual';
+    if (_b2ActivityFilter==='auto') return e.trigger==='auto';
+    return e.cat === _b2ActivityFilter;
+  });
+  if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No activity for this filter.</div>'; return; }
+  el.innerHTML = filtered.map(e=>`
+    <div class="act-entry">
+      <span class="act-icon">${icons[e.cat]||'📌'}</span>
+      <span class="act-time">${esc((e.ts||'').slice(0,16).replace('T',' '))}</span>
+      <span class="act-msg">${esc(e.msg)}</span>
+      <span class="act-cat">${esc(e.cat)}</span>
+    </div>`).join('');
+}
+
+function b2ActFilter(btn, filter) {
+  _b2ActivityFilter = filter;
+  document.querySelectorAll('#b2-act-filters .act-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  b2RenderActivity();
+}
+
+async function b2AiSummariseActivity() {
+  const el = document.getElementById('b2-ai-summary-out');
+  const btn = document.getElementById('btn-ai-summarise');
+  if (!el) return;
+  el.style.display='block';
+  el.textContent = '🤖 Summarising last 50 entries…';
+  if (btn) btn.disabled = true;
+  try {
+    const d = await apiFetch('/b2/activity/summarise', {method:'POST', body:JSON.stringify({entries:_b2ActivityLog.slice(0,50)})});
+    el.textContent = d.summary || 'No summary returned.';
+  } catch(e) { el.textContent = 'Error: '+e.message; }
+  finally { if (btn) btn.disabled = false; }
+}
+
+function b2ExportActivity() {
+  const lines = _b2ActivityLog.map(e=>`[${e.ts}] [${e.cat}] [${e.trigger}] ${e.msg}`).join('\n');
+  const blob = new Blob([lines], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'activity_export_'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ── B2-04: AAFL RUNS — Compare + Failure Analysis + Success Patterns ──
+
+let _b2CompareMode = false;
+let _b2RunsData = [];
+
+function b2ToggleCompare() {
+  _b2CompareMode = !_b2CompareMode;
+  document.getElementById('b2-compare-panel').style.display = _b2CompareMode ? '' : 'none';
+  document.getElementById('btn-compare-mode').textContent = _b2CompareMode ? '✕ Close Compare' : '⚖ Compare Runs';
+  if (_b2CompareMode) b2PopulateRunSelects();
+}
+
+async function b2PopulateRunSelects() {
+  try {
+    const d = await apiFetch('/b2/aafl-runs');
+    _b2RunsData = d.runs || [];
+    const opts = '<option value="">Select…</option>' + _b2RunsData.map((r,i)=>`<option value="${i}">${esc((r.timestamp||r.created_at||'').slice(0,16))} — ${esc((r.goal||r.problem||'').slice(0,40))} (${r.score||'?'})</option>`).join('');
+    document.getElementById('cmp-run-a').innerHTML = opts;
+    document.getElementById('cmp-run-b').innerHTML = opts;
+  } catch(e) {}
+}
+
+function b2CompareRuns() {
+  const a = parseInt(document.getElementById('cmp-run-a').value);
+  const b = parseInt(document.getElementById('cmp-run-b').value);
+  const out = document.getElementById('b2-compare-result');
+  if (isNaN(a)||isNaN(b)) { toast('Select both runs','error'); return; }
+  const ra = _b2RunsData[a], rb = _b2RunsData[b];
+  if (!ra||!rb) { toast('Runs not found','error'); return; }
+  const fmt = r => `Score: ${r.score||'?'} | Provider: ${r.provider||'?'} | ${(r.timestamp||r.created_at||'').slice(0,16)}`;
+  out.innerHTML = `<table style="font-size:11px;width:100%;border-collapse:collapse">
+    <tr><th style="color:#888;text-align:left;padding:3px 8px">Field</th><th style="color:#4af;padding:3px 8px">Run A</th><th style="color:#6f6;padding:3px 8px">Run B</th></tr>
+    <tr><td style="padding:3px 8px;color:#888">Goal</td><td style="padding:3px 8px">${esc((ra.goal||ra.problem||'').slice(0,60))}</td><td style="padding:3px 8px">${esc((rb.goal||rb.problem||'').slice(0,60))}</td></tr>
+    <tr><td style="padding:3px 8px;color:#888">Score</td><td style="padding:3px 8px;color:${(ra.score||0)>=(rb.score||0)?'#6f6':'#ccc'}">${ra.score||'?'}</td><td style="padding:3px 8px;color:${(rb.score||0)>(ra.score||0)?'#6f6':'#ccc'}">${rb.score||'?'}</td></tr>
+    <tr><td style="padding:3px 8px;color:#888">Provider</td><td style="padding:3px 8px">${esc(ra.provider||'?')}</td><td style="padding:3px 8px">${esc(rb.provider||'?')}</td></tr>
+    <tr><td style="padding:3px 8px;color:#888">Time</td><td style="padding:3px 8px">${esc((ra.timestamp||ra.created_at||'').slice(0,16))}</td><td style="padding:3px 8px">${esc((rb.timestamp||rb.created_at||'').slice(0,16))}</td></tr>
+  </table>`;
+}
+
+async function b2ShowFailureAnalysis() {
+  const panel = document.getElementById('b2-failure-panel');
+  const content = document.getElementById('b2-failure-content');
+  panel.style.display = panel.style.display==='none' ? '' : 'none';
+  if (panel.style.display==='none') return;
+  content.innerHTML = 'Analysing…';
+  try {
+    const d = await apiFetch('/b2/aafl-runs');
+    const runs = d.runs || [];
+    const failed = runs.filter(r => (r.score||0) < 5 || r.error);
+    const byError = {};
+    for (const r of failed) {
+      const key = (r.error||'Low score').slice(0,40);
+      byError[key] = (byError[key]||0)+1;
+    }
+    if (!failed.length) { content.innerHTML = '<div style="color:#6f6">No failed runs — all scores ≥5</div>'; return; }
+    content.innerHTML = `<div style="margin-bottom:6px">Total failures: ${failed.length} / ${runs.length}</div>` +
+      Object.entries(byError).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="flex:1;font-size:11px;color:#f88">${esc(k)}</div>
+          <div style="background:#a33;border-radius:3px;height:6px;width:${Math.round(v/failed.length*100)}%;max-width:150px"></div>
+          <div style="font-size:10px;color:#888">${v}×</div>
+        </div>`).join('');
+  } catch(e) { content.innerHTML = 'Error: '+e.message; }
+}
+
+async function b2ShowSuccessPatterns() {
+  const panel = document.getElementById('b2-success-panel');
+  const content = document.getElementById('b2-success-content');
+  panel.style.display = panel.style.display==='none' ? '' : 'none';
+  if (panel.style.display==='none') return;
+  content.innerHTML = 'Analysing…';
+  try {
+    const d = await apiFetch('/b2/aafl-runs');
+    const runs = d.runs || [];
+    const good = runs.filter(r => (r.score||0) >= 8);
+    if (!good.length) { content.innerHTML = '<div style="color:#888">No high-scoring runs yet (need score ≥8)</div>'; return; }
+    const byProv = {};
+    for (const r of good) { (byProv[r.provider||'unknown'] = byProv[r.provider||'unknown']||[]).push(r.score||0); }
+    const sorted = Object.entries(byProv).map(([p,scores])=>({p,avg:scores.reduce((a,b)=>a+b,0)/scores.length,count:scores.length})).sort((a,b)=>b.avg-a.avg);
+    content.innerHTML = `<div style="margin-bottom:6px">High-scoring runs: ${good.length}</div>` +
+      sorted.map(s=>`<div style="margin-bottom:4px;font-size:11px"><span style="color:#4af;min-width:100px;display:inline-block">${esc(s.p)}</span> avg ${s.avg.toFixed(1)} (${s.count} runs)</div>`).join('');
+  } catch(e) { content.innerHTML = 'Error: '+e.message; }
+}
+
+// ── B2-05: AAFL RUNS — Tags/Notes ─────────────────────────────────
+
+function b2FilterRunsByTag(tag) {
+  // Simple client-side tag filter overlay on existing run rows
+  const lower = tag.toLowerCase();
+  document.querySelectorAll('#aafl-runs-content [data-tags]').forEach(el => {
+    const tags = el.getAttribute('data-tags').toLowerCase();
+    el.style.display = (!lower || tags.includes(lower)) ? '' : 'none';
+  });
+}
+
+function loadAaflRuns() {
+  apiFetch('/b2/aafl-runs').then(d => {
+    _b2RunsData = d.runs || [];
+    const el = document.getElementById('aafl-runs-content');
+    if (!el) return;
+    if (!_b2RunsData.length) { el.innerHTML = '<div class="empty-msg">No AAFL runs in database yet.</div>'; return; }
+    el.innerHTML = '<table class="data-table"><thead><tr><th>Goal</th><th>Score</th><th>Provider</th><th>Time</th><th>Tags</th><th>Notes</th></tr></thead><tbody>' +
+      _b2RunsData.map((r,i)=>{
+        const tags = (r.tags||[]).join(', ');
+        return `<tr data-tags="${esc(tags)}" data-idx="${i}">
+          <td>${esc((r.goal||r.problem||'').slice(0,60))}</td>
+          <td style="color:${(r.score||0)>=8?'#6f6':(r.score||0)>=6?'#fc8':'#f88'}">${r.score||'?'}</td>
+          <td>${esc(r.provider||'—')}</td>
+          <td style="white-space:nowrap">${esc((r.timestamp||r.created_at||'').slice(0,16))}</td>
+          <td><span style="font-size:10px;color:#4af">${esc(tags)||'—'}</span>
+            <button class="btn" onclick="b2EditRunTags(${i})" style="font-size:9px;padding:1px 4px;margin-left:4px">+tag</button>
+          </td>
+          <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis">${esc((r.notes||'').slice(0,40))||'—'}
+            <button class="btn" onclick="b2EditRunNotes(${i})" style="font-size:9px;padding:1px 4px;margin-left:4px">✎</button>
+          </td>
+        </tr>`;
+      }).join('') + '</tbody></table>';
+    b2RenderTagCloud();
+    document.getElementById('aafl-runs-ts').textContent = 'Refreshed '+new Date().toLocaleTimeString();
+  }).catch(() => {
+    // Fallback to dashboard data
+    _loadDashCard('aafl_runs.json','aafl-runs-content','aafl-runs-ts');
+  });
+}
+
+async function b2EditRunTags(idx) {
+  const run = _b2RunsData[idx];
+  if (!run) return;
+  const tags = prompt('Tags (comma-separated):', (run.tags||[]).join(', '));
+  if (tags === null) return;
+  run.tags = tags.split(',').map(t=>t.trim()).filter(Boolean);
+  await apiFetch('/b2/run-tag', {method:'POST', body:JSON.stringify({run_id: run.id||idx, tags:run.tags})});
+  loadAaflRuns();
+}
+
+async function b2EditRunNotes(idx) {
+  const run = _b2RunsData[idx];
+  if (!run) return;
+  const notes = prompt('Notes:', run.notes||'');
+  if (notes === null) return;
+  run.notes = notes;
+  await apiFetch('/b2/run-notes', {method:'POST', body:JSON.stringify({run_id: run.id||idx, notes})});
+  loadAaflRuns();
+}
+
+function b2RenderTagCloud() {
+  const el = document.getElementById('runs-tag-cloud');
+  if (!el) return;
+  const tags = {};
+  for (const r of _b2RunsData) for (const t of (r.tags||[])) tags[t]=(tags[t]||0)+1;
+  el.innerHTML = Object.entries(tags).map(([t,n])=>`<span onclick="document.getElementById('runs-tag-filter').value='${esc(t)}';b2FilterRunsByTag('${esc(t)}')" style="cursor:pointer;font-size:10px;background:#1a2a3a;color:#4af;border-radius:8px;padding:1px 7px">${esc(t)} (${n})</span>`).join('');
+}
+
+// ── B2-06: AAFL Step-by-Step + Pause ─────────────────────────────
+
+let _b2StepMode = false;
+let _b2Paused = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('b2-step-mode-toggle');
+  if (toggle) toggle.addEventListener('change', function() {
+    _b2StepMode = this.checked;
+    const btn = document.getElementById('btn-step-next');
+    if (btn) btn.style.display = _b2StepMode ? '' : 'none';
+    apiFetch('/b2/step-mode', {method:'POST', body:JSON.stringify({enabled:_b2StepMode})}).catch(()=>{});
+  });
+});
+
+async function b2StepNext() {
+  const d = await apiFetch('/b2/step-next', {method:'POST', body:'{}'}).catch(()=>({ok:false}));
+  if (d.phase) b2UpdatePhaseDots(d.phase);
+  toast(d.ok ? 'Next phase: '+(d.phase||'?') : 'Step failed', d.ok?'ok':'error');
+}
+
+async function b2PauseAafl() {
+  _b2Paused = true;
+  await apiFetch('/b2/pause-aafl', {method:'POST', body:'{}'}).catch(()=>{});
+  document.getElementById('btn-pause-aafl').style.display = 'none';
+  document.getElementById('btn-resume-aafl').style.display = '';
+  toast('AAFL paused');
+}
+
+async function b2ResumeAafl() {
+  _b2Paused = false;
+  await apiFetch('/b2/resume-aafl', {method:'POST', body:'{}'}).catch(()=>{});
+  document.getElementById('btn-pause-aafl').style.display = '';
+  document.getElementById('btn-resume-aafl').style.display = 'none';
+  toast('AAFL resumed');
+}
+
+function b2UpdatePhaseDots(phase) {
+  const order = ['plan','work','verify','store'];
+  order.forEach(p => {
+    const el = document.getElementById('pd-'+p);
+    if (!el) return;
+    if (p === phase) { el.style.background='#2a7'; el.style.color='#fff'; }
+    else if (order.indexOf(p) < order.indexOf(phase)) { el.style.background='#174'; el.style.color='#8f8'; }
+    else { el.style.background='#222'; el.style.color='#555'; }
+  });
+}
+
+// Poll phase dots when AAFL running
+setInterval(() => {
+  apiFetch('/aafl/live').then(d => {
+    if (d.running && d.phase && d.phase !== 'idle') b2UpdatePhaseDots(d.phase);
+  }).catch(()=>{});
+}, 5000);
+
+// ── B2-07: Chain Builder + Notifications ─────────────────────────
+
+let _b2ChainGoals = [];
+
+function b2ChainAddGoal() {
+  const input = document.getElementById('b2-chain-add-goal');
+  const g = input?.value.trim();
+  if (!g) { toast('Enter a goal','error'); return; }
+  _b2ChainGoals.push(g);
+  input.value = '';
+  b2RenderChainList();
+}
+
+function b2ChainClear() { _b2ChainGoals = []; b2RenderChainList(); }
+
+function b2RenderChainList() {
+  const el = document.getElementById('b2-chain-list');
+  if (!el) return;
+  if (!_b2ChainGoals.length) { el.textContent = 'Empty chain — add goals above'; return; }
+  el.innerHTML = _b2ChainGoals.map((g,i)=>`<div style="padding:3px 0;display:flex;align-items:center;gap:6px"><span style="color:#555;min-width:16px">${i+1}.</span><span style="color:#ccc;flex:1">${esc(g)}</span><button onclick="b2ChainRemove(${i})" style="background:none;border:none;color:#a33;cursor:pointer;font-size:12px">✕</button></div>`).join('');
+}
+
+function b2ChainRemove(i) { _b2ChainGoals.splice(i,1); b2RenderChainList(); }
+
+async function b2SaveChain() {
+  const name = document.getElementById('b2-chain-preset-name')?.value.trim();
+  if (!name || !_b2ChainGoals.length) { toast('Enter name + add goals','error'); return; }
+  await apiFetch('/b2/chain-save', {method:'POST', body:JSON.stringify({name, goals:_b2ChainGoals})});
+  toast('Chain saved: '+name);
+}
+
+async function b2RunChainBuilder() {
+  if (!_b2ChainGoals.length) { toast('Chain is empty','error'); return; }
+  const d = await apiFetch('/b2/chain-run', {method:'POST', body:JSON.stringify({goals:_b2ChainGoals})}).catch(e=>({ok:false,error:e.message}));
+  if (d.ok) { toast('Chain started ('+_b2ChainGoals.length+' goals)'); b2ActLog('aafl','Chain started: '+_b2ChainGoals.length+' goals','manual'); }
+  else toast('Chain error: '+(d.error||'unknown'),'error');
+}
+
+function b2RequestNotifPermission() {
+  if (!('Notification' in window)) { toast('Browser notifications not supported','error'); return; }
+  Notification.requestPermission().then(p => toast(p==='granted' ? 'Notifications enabled!' : 'Permission denied','ok'));
+}
+
+function b2SendNotif(title, body) {
+  if (Notification.permission === 'granted') new Notification(title, {body, icon:'/favicon.ico'});
+}
+
+// ── B2-08: BENCHMARK RUNNER ───────────────────────────────────────
+
+async function b2RunBenchmark() {
+  const goal = document.getElementById('b2-bench-goal')?.value.trim();
+  if (!goal) { toast('Enter a goal for benchmark','error'); return; }
+  const btn = document.getElementById('btn-run-benchmark');
+  const status = document.getElementById('b2-benchmark-status');
+  if (btn) { btn.disabled=true; btn.textContent='⏳ Running…'; }
+  if (status) status.textContent = 'Running 3× benchmark across providers…';
+  try {
+    const d = await apiFetch('/b2/benchmark', {method:'POST', body:JSON.stringify({goal})});
+    if (status) status.textContent = d.ok ? 'Complete!' : ('Error: '+(d.error||'unknown'));
+    b2RenderBenchmarkResults(d.results||[]);
+    b2ActLog('aafl','Benchmark: '+goal.slice(0,40),'manual');
+  } catch(e) {
+    if (status) status.textContent = 'Error: '+e.message;
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='🏁 Run Benchmark'; }
+  }
+}
+
+function b2RenderBenchmarkResults(results) {
+  const el = document.getElementById('b2-benchmark-results');
+  if (!el || !results.length) { if (el) el.innerHTML = '<div class="empty-msg">No results yet</div>'; return; }
+  el.innerHTML = '<table class="data-table"><thead><tr><th>Provider</th><th>Score</th><th>Duration</th><th>Cost (est.)</th></tr></thead><tbody>' +
+    results.map(r=>`<tr>
+      <td>${esc(r.provider||'?')}</td>
+      <td style="color:${(r.score||0)>=8?'#6f6':'#fc8'}">${r.score||'?'}</td>
+      <td>${r.duration_s ? r.duration_s.toFixed(1)+'s' : '—'}</td>
+      <td>$${(r.cost_usd||0).toFixed(4)}</td>
+    </tr>`).join('') + '</tbody></table>';
+}
+
+// ── B2-09: SECOND OPINION AI ──────────────────────────────────────
+
+async function b2GetSecondOpinion() {
+  const out = document.getElementById('b2-second-opinion-out');
+  if (!out) return;
+  out.style.display='block';
+  out.textContent='Fetching second opinion…';
+  try {
+    const d = await apiFetch('/b2/second-opinion', {method:'POST', body:'{}'});
+    if (d.ok) {
+      out.textContent = `Provider: ${d.provider||'?'}\n\nOpinion: ${d.opinion||'(empty)'}\n\nAgreement: ${d.agreement||'?'}`;
+    } else {
+      out.textContent = 'Error: '+(d.error||'unknown');
+    }
+  } catch(e) { out.textContent='Error: '+e.message; }
+}
+
+// ── B2-10: COSTS — Budget Caps + Savings + ROI ─────────────────────
+
+let _b2Currency = 'GBP';
+let _b2Savings = 0;
+let _b2Spent = 0;
+const _b2FxRates = {GBP:1, USD:1.27, EUR:1.17};
+
+function b2ToggleCurrency() {
+  const order = ['GBP','USD','EUR'];
+  const symbols = {GBP:'£',USD:'$',EUR:'€'};
+  _b2Currency = order[(order.indexOf(_b2Currency)+1)%3];
+  const btn = document.getElementById('currency-toggle-btn');
+  if (btn) btn.textContent = symbols[_b2Currency]+' '+_b2Currency;
+  ['b2-cap-currency-d','b2-cap-currency-w','b2-cap-currency-m'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = symbols[_b2Currency];
+  });
+  b2UpdateRoi();
+}
+
+async function b2SaveBudgetCaps() {
+  const caps = {
+    daily:   parseFloat(document.getElementById('b2-daily-cap')?.value)||0.5,
+    weekly:  parseFloat(document.getElementById('b2-weekly-cap')?.value)||2,
+    monthly: parseFloat(document.getElementById('b2-monthly-cap')?.value)||5,
+    currency: _b2Currency,
+    savings_hrs: _b2Savings,
+  };
+  const msg = document.getElementById('b2-caps-msg');
+  try {
+    await apiFetch('/b2/budget-caps', {method:'POST', body:JSON.stringify(caps)});
+    if (msg) { msg.textContent='Saved'; setTimeout(()=>{msg.textContent='';},2000); }
+    toast('Budget caps saved');
+  } catch(e) { toast('Save failed: '+e.message,'error'); }
+}
+
+async function b2LoadBudgetCaps() {
+  try {
+    const d = await apiFetch('/b2/budget-caps');
+    if (d.daily) document.getElementById('b2-daily-cap').value = d.daily;
+    if (d.weekly) document.getElementById('b2-weekly-cap').value = d.weekly;
+    if (d.monthly) document.getElementById('b2-monthly-cap').value = d.monthly;
+    if (d.savings_hrs) { _b2Savings = d.savings_hrs; b2UpdateSavings(); }
+    b2CheckBudgetWarning(d);
+  } catch(e) {}
+}
+
+function b2CheckBudgetWarning(caps) {
+  const warn = document.getElementById('b2-budget-warning');
+  if (!warn) return;
+  // Stub: would compare real spend vs caps
+  if (_b2Spent > (caps.daily||0.5)*0.8) {
+    warn.style.display='';
+    warn.textContent = `⚠ Approaching daily budget cap (${_b2Spent.toFixed(4)} / ${caps.daily||0.5} ${_b2Currency})`;
+  } else {
+    warn.style.display='none';
+  }
+}
+
+function b2AddSavings() {
+  const val = parseFloat(document.getElementById('b2-savings-add')?.value)||0;
+  if (!val) { toast('Enter hours','error'); return; }
+  _b2Savings += val;
+  document.getElementById('b2-savings-add').value = '';
+  b2UpdateSavings();
+  b2ActLog('costs', 'Logged '+val+' hrs savings');
+}
+
+function b2UpdateSavings() {
+  const el = document.getElementById('b2-savings-val');
+  if (el) el.textContent = _b2Savings.toFixed(1)+' hrs';
+  b2UpdateRoi();
+}
+
+function b2UpdateRoi() {
+  const el = document.getElementById('b2-roi-val');
+  const det = document.getElementById('b2-roi-detail');
+  const rate = _b2FxRates[_b2Currency]||1;
+  const hourlyVal = 25 * rate;
+  const valueGen = _b2Savings * hourlyVal;
+  const costConv = _b2Spent * rate;
+  const roi = costConv > 0 ? ((valueGen - costConv) / costConv * 100).toFixed(0) : 0;
+  const syms = {GBP:'£',USD:'$',EUR:'€'};
+  const sym = syms[_b2Currency]||'£';
+  if (el) el.textContent = roi > 0 ? '+'+roi+'% ROI' : (costConv === 0 ? 'No spend yet' : roi+'%');
+  if (det) det.textContent = `Value generated: ${sym}${valueGen.toFixed(2)} vs cost: ${sym}${costConv.toFixed(4)}`;
+}
+
+// ── B2-11: COST TREND GRAPHS ──────────────────────────────────────
+
+function loadCosts() {
+  apiFetch('/b2/costs').then(d => {
+    const el = document.getElementById('costs-content');
+    if (el) el.innerHTML = '';
+    b2DrawCostLine(d.daily_costs||[]);
+    b2DrawCostBars(d.by_provider||{});
+    _b2Spent = d.total_spent || 0;
+    b2UpdateRoi();
+    document.getElementById('costs-ts').textContent = 'Refreshed '+new Date().toLocaleTimeString();
+  }).catch(() => {
+    _loadDashCard('costs.json','costs-content','costs-ts');
+  });
+}
+
+function b2DrawCostLine(dailyCosts) {
+  const svg = document.getElementById('b2-cost-line-svg');
+  if (!svg || !dailyCosts.length) return;
+  const W=600, H=100, pad=20;
+  const vals = dailyCosts.slice(-30).map(d=>d.amount||0);
+  const max = Math.max(...vals, 0.001);
+  const pts = vals.map((v,i)=>{
+    const x = pad + i/(Math.max(vals.length-1,1))*(W-2*pad);
+    const y = H - pad - (v/max)*(H-2*pad);
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="#4af" stroke-width="2"/>` +
+    vals.map((v,i)=>{
+      const x = pad + i/(Math.max(vals.length-1,1))*(W-2*pad);
+      const y = H - pad - (v/max)*(H-2*pad);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#4af"/>`;
+    }).join('') +
+    `<text x="10" y="115" class="cost-svg-label">Last ${vals.length} days</text>`;
+}
+
+function b2DrawCostBars(byProv) {
+  const svg = document.getElementById('b2-cost-bar-svg');
+  if (!svg) return;
+  const entries = Object.entries(byProv).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (!entries.length) { svg.innerHTML = '<text x="10" y="60" class="cost-svg-label">No cost-by-provider data</text>'; return; }
+  const W=600, H=100, pad=20;
+  const maxV = Math.max(...entries.map(e=>e[1]),0.001);
+  const bw = Math.floor((W-2*pad)/entries.length)-4;
+  svg.innerHTML = entries.map(([p,v],i)=>{
+    const x = pad + i*((W-2*pad)/entries.length);
+    const h = Math.round((v/maxV)*(H-2*pad));
+    const y = H-pad-h;
+    return `<rect class="cost-bar-rect" x="${x}" y="${y}" width="${bw}" height="${h}"/>
+      <text x="${x+bw/2}" y="${H-2}" text-anchor="middle" class="cost-svg-label">${esc(p.slice(0,8))}</text>`;
+  }).join('');
+}
+
+// ── B2-12: MULTI-BROWSER SOURCES ─────────────────────────────────
+
+// Source column display after running
+apiFetch = apiFetch; // already defined above
+
+// ── B2-13: AI Comparison Mode (Scout) ─────────────────────────────
+
+async function b2RunScoutComparison() {
+  const goal = document.getElementById('scout-strategy-goal')?.value.trim();
+  const provA = document.getElementById('b2-cmp-prov-a')?.value;
+  const provB = document.getElementById('b2-cmp-prov-b')?.value;
+  if (!goal) { toast('Enter a goal first','error'); return; }
+  const out = document.getElementById('b2-scout-comparison-out');
+  if (out) out.innerHTML = '<div class="loading" style="font-size:11px">Comparing…</div>';
+  try {
+    const d = await apiFetch('/b2/scout-compare', {method:'POST', body:JSON.stringify({goal, provider_a:provA, provider_b:provB})});
+    if (!out) return;
+    out.innerHTML = `
+      <div style="flex:1;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:4px;padding:8px;min-width:0">
+        <div style="font-size:10px;color:#4af;margin-bottom:4px">${esc(provA)}</div>
+        <div style="font-size:11px;color:#ccc;white-space:pre-wrap;max-height:120px;overflow-y:auto">${esc(d.result_a||'Running…')}</div>
+      </div>
+      <div style="flex:1;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:4px;padding:8px;min-width:0">
+        <div style="font-size:10px;color:#6f6;margin-bottom:4px">${esc(provB)}</div>
+        <div style="font-size:11px;color:#ccc;white-space:pre-wrap;max-height:120px;overflow-y:auto">${esc(d.result_b||'Running…')}</div>
+      </div>`;
+    if (d.agreement !== undefined) {
+      out.innerHTML += `<div style="width:100%;font-size:11px;color:${d.agreement?'#6f6':'#f88'};padding-top:4px">Agreement: ${d.agreement?'✓ Agree':'✗ Disagree'} | Confidence: ${d.confidence_pct||'?'}%</div>`;
+    }
+  } catch(e) { if (out) out.innerHTML = '<div style="color:#f88;font-size:11px">Error: '+esc(e.message)+'</div>'; }
+}
+
+// ── B2-14: PER-STRATEGY AI OVERRIDE ──────────────────────────────
+
+const _b2StrategyDefaults = {ddg:'mistral',reddit:'gemini',github:'cerebras',youtube:'mistral',forum:'gemini'};
+let _b2StrategyOverrides = {..._b2StrategyDefaults};
+
+function b2InitStrategyOverrides() {
+  const el = document.getElementById('b2-strategy-overrides');
+  if (!el) return;
+  el.innerHTML = Object.entries(_b2StrategyOverrides).map(([strat,prov])=>`
+    <div style="display:flex;align-items:center;gap:6px;background:#111;border:1px solid #222;border-radius:4px;padding:6px 8px">
+      <span style="font-size:11px;color:#ccc;min-width:60px">${esc(strat)}</span>
+      <select id="b2-so-${strat}" style="flex:1;background:#0d0d0d;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:11px inherit">
+        ${['auto','mistral','gemini','cerebras','groq','openrouter'].map(p=>`<option value="${p}" ${p===prov?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+async function b2SaveStrategyOverrides() {
+  for (const strat of Object.keys(_b2StrategyOverrides)) {
+    const sel = document.getElementById('b2-so-'+strat);
+    if (sel) _b2StrategyOverrides[strat] = sel.value;
+  }
+  const msg = document.getElementById('b2-strategy-msg');
+  try {
+    await apiFetch('/b2/strategy-overrides', {method:'POST', body:JSON.stringify(_b2StrategyOverrides)});
+    if (msg) { msg.textContent='Saved'; setTimeout(()=>{msg.textContent='';},2000); }
+    toast('Strategy overrides saved');
+  } catch(e) { toast('Save failed: '+e.message,'error'); }
+}
+
+async function b2ResetStrategyOverrides() {
+  _b2StrategyOverrides = {..._b2StrategyDefaults};
+  b2InitStrategyOverrides();
+  await apiFetch('/b2/strategy-overrides', {method:'POST', body:JSON.stringify(_b2StrategyOverrides)}).catch(()=>{});
+  toast('Reset to defaults');
+}
+
+// ── B2-15: PARALLEL WORKERS SLIDER ───────────────────────────────
+
+function b2UpdateWorkers(val) {
+  const n = parseInt(val);
+  const lbl = document.getElementById('b2-workers-label');
+  const warn = document.getElementById('b2-workers-warn');
+  if (lbl) lbl.textContent = n+' worker'+(n!==1?'s':'');
+  if (warn) warn.style.display = n>=4 ? '' : 'none';
+  apiFetch('/b2/workers', {method:'POST', body:JSON.stringify({workers:n})}).catch(()=>{});
+}
+
+// ── B2-16: SOURCE HEALTH MONITOR ─────────────────────────────────
+
+let _b2BlockedSources = [];
+
+async function b2LoadSourceHealth() {
+  const grid = document.getElementById('b2-source-health-grid');
+  if (!grid) return;
+  try {
+    const d = await apiFetch('/b2/source-health');
+    const sources = d.sources || [];
+    grid.innerHTML = sources.map(s=>{
+      const c = s.status==='green'?'#2a7':s.status==='amber'?'#a80':'#a33';
+      return `<div style="background:#111;border:1px solid ${c};border-radius:4px;padding:5px 8px;font-size:11px">
+        <span style="color:${c}">●</span> ${esc(s.name)} <span style="color:#555;font-size:10px">(${s.ok_rate||0}%)</span>
+        ${_b2BlockedSources.includes(s.name)?'<span style="font-size:9px;color:#a33;margin-left:4px">BLOCKED</span>':''}
+      </div>`;
+    }).join('') || '<div class="empty-msg">No source health data yet</div>';
+    b2RenderBlockedSources();
+  } catch(e) { grid.innerHTML = '<div style="font-size:11px;color:#666">Load source health after running scouts</div>'; }
+}
+
+function b2BlockSource() {
+  const url = document.getElementById('b2-block-url')?.value.trim();
+  if (!url) { toast('Enter a URL to block','error'); return; }
+  if (!_b2BlockedSources.includes(url)) _b2BlockedSources.push(url);
+  document.getElementById('b2-block-url').value = '';
+  apiFetch('/b2/block-source', {method:'POST', body:JSON.stringify({source:url})}).catch(()=>{});
+  b2RenderBlockedSources();
+  toast('Blocked: '+url.slice(0,40));
+}
+
+function b2RenderBlockedSources() {
+  const el = document.getElementById('b2-blocked-sources');
+  if (!el) return;
+  el.innerHTML = _b2BlockedSources.length
+    ? _b2BlockedSources.map(s=>`<span style="display:inline-flex;align-items:center;gap:4px;margin:2px;font-size:10px;background:#2a1a1a;border:1px solid #a33;border-radius:8px;padding:1px 7px;color:#f88">${esc(s)}<span onclick="b2UnblockSource('${esc(s)}')" style="cursor:pointer;color:#fa0;margin-left:4px">✕</span></span>`).join('')
+    : 'None blocked';
+}
+
+function b2UnblockSource(url) {
+  _b2BlockedSources = _b2BlockedSources.filter(s=>s!==url);
+  apiFetch('/b2/unblock-source', {method:'POST', body:JSON.stringify({source:url})}).catch(()=>{});
+  b2RenderBlockedSources();
+}
+
+// ── B2-17: EXPORT BRIEFING ────────────────────────────────────────
+
+async function b2ExportBriefing() {
+  try {
+    const d = await apiFetch('/b2/export-briefing', {method:'POST', body:'{}'});
+    if (d.ok) {
+      toast('Briefing exported: '+d.filename);
+      b2ActLog('scout','Briefing exported: '+d.filename);
+    } else {
+      toast('Export failed: '+(d.error||'unknown'),'error');
+    }
+  } catch(e) { toast('Error: '+e.message,'error'); }
+}
+
+// ── B2-18: WCCS TIMELINE ─────────────────────────────────────────
+
+async function b2LoadTimeline() {
+  const wrap = document.getElementById('b2-timeline-dots');
+  if (!wrap) return;
+  try {
+    const d = await apiFetch('/api/timeline');
+    const pts = d.points || [];
+    if (!pts.length) { wrap.innerHTML = '<div style="color:#555;font-size:11px">No save history yet</div>'; return; }
+    const recent = pts.slice(-30);
+    wrap.innerHTML = '<div style="position:relative;display:flex;align-items:center;gap:0;height:48px;padding:0 16px">' +
+      '<div style="position:absolute;top:50%;left:16px;right:16px;height:2px;background:#1a1a1a;transform:translateY(-50%);z-index:0"></div>' +
+      recent.map((pt,i)=>{
+        const color = pt.pass ? '#2a7' : '#a33';
+        return `<div onclick="b2TimelineClick('${esc(pt.filename)}')" title="${esc(pt.date_display)}" style="position:relative;z-index:1;width:${100/recent.length}%;display:flex;justify-content:center;cursor:pointer">
+          <div style="width:10px;height:10px;border-radius:50%;background:${color};border:2px solid ${color};box-shadow:0 0 4px ${color};transition:.2s" onmouseover="this.style.transform='scale(1.6)'" onmouseout="this.style.transform=''"></div>
+        </div>`;
+      }).join('') + '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:9px;color:#555;padding:0 16px;margin-top:2px"><span>'+esc(recent[0]?.date_display?.slice(0,10)||'')+'</span><span>'+esc(recent[recent.length-1]?.date_display?.slice(0,10)||'')+'</span></div>';
+  } catch(e) { wrap.innerHTML = '<div style="color:#a33;font-size:11px">Timeline error: '+esc(e.message)+'</div>'; }
+}
+
+async function b2TimelineClick(filename) {
+  const preview = document.getElementById('b2-timeline-preview');
+  if (!preview) return;
+  preview.style.display='block';
+  preview.textContent='Loading…';
+  try {
+    const d = await apiFetch('/api/backup?f='+encodeURIComponent(filename));
+    preview.textContent = `=== ${filename} (${d.line_count} lines) ===\n\n`+d.content.slice(0,2000)+(d.content.length>2000?'\n…[truncated]':'');
+  } catch(e) { preview.textContent = 'Error: '+e.message; }
+}
+
+// ── B2-19: DARK/LIGHT THEME ──────────────────────────────────────
+
+function b2ToggleTheme() {
+  const light = document.body.classList.toggle('theme-light');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = light ? '☀ Light' : '🌙 Dark';
+  const prefs = {theme: light?'light':'dark'};
+  apiFetch('/b2/prefs', {method:'POST', body:JSON.stringify(prefs)}).catch(()=>{});
+}
+
+async function b2LoadTheme() {
+  try {
+    const d = await apiFetch('/b2/prefs');
+    if (d.theme === 'light') {
+      document.body.classList.add('theme-light');
+      const btn = document.getElementById('theme-toggle-btn');
+      if (btn) btn.textContent = '☀ Light';
+    }
+    if (d.tutorial) b2EnableTutorial();
+  } catch(e) {}
+}
+
+// ── B2-20: TUTORIAL MODE ─────────────────────────────────────────
+
+function b2EnableTutorial() {
+  document.body.classList.add('tutorial-on');
+  const btn = document.getElementById('tutorial-toggle-btn');
+  if (btn) btn.textContent='📖 Tutorial ON';
+}
+
+function b2ToggleTutorial() {
+  const on = document.body.classList.toggle('tutorial-on');
+  const btn = document.getElementById('tutorial-toggle-btn');
+  if (btn) btn.textContent = on ? '📖 Tutorial ON' : '📖 Tutorial';
+  apiFetch('/b2/prefs', {method:'POST', body:JSON.stringify({tutorial:on})}).catch(()=>{});
+  if (on) toast('Tutorial mode ON — hover any button for help');
+  else toast('Tutorial mode OFF');
+}
+
+// Check first run
+apiFetch('/b2/prefs').then(d => {
+  if (!d || d._first_run) b2EnableTutorial();
+}).catch(()=>{ b2EnableTutorial(); });
+
+// ── B2-21: KEYBOARD SHORTCUTS (FULL SET) ─────────────────────────
+
+const _b2CmdPalActions = [
+  {label:'Switch to Home',             key:'Ctrl+1',  action:()=>goToTab('home')},
+  {label:'Switch to WCCS',             key:'Ctrl+2',  action:()=>goToTab('wccs')},
+  {label:'Switch to Kanban',           key:'Ctrl+3',  action:()=>goToTab('kanban')},
+  {label:'Switch to AAFL Runs',        key:'Ctrl+4',  action:()=>goToTab('aafl-runs')},
+  {label:'Switch to Scout',            key:'Ctrl+5',  action:()=>goToTab('scout')},
+  {label:'Switch to Costs',            key:'Ctrl+6',  action:()=>goToTab('costs')},
+  {label:'Switch to AAFL Control',     key:'Ctrl+7',  action:()=>goToTab('aafl-control')},
+  {label:'Switch to Memory',           key:'Ctrl+8',  action:()=>goToTab('memory')},
+  {label:'Switch to Self-Diagnosis',   key:'Ctrl+9',  action:()=>goToTab('self-diagnosis')},
+  {label:'Save WCCS now',              key:'Ctrl+S',  action:()=>saveSession()},
+  {label:'Refresh data',               key:'Ctrl+R',  action:()=>manualRefresh()},
+  {label:'Show shortcut help',         key:'Ctrl+/',  action:()=>showKbHelp()},
+  {label:'Run Full MOT',               key:'',        action:()=>sdRunMot()},
+  {label:'Run Health Check',           key:'',        action:()=>runHealthCheck()},
+  {label:'Start Scout',                key:'',        action:()=>homeStartScout()},
+  {label:'Toggle Dark/Light theme',    key:'',        action:()=>b2ToggleTheme()},
+  {label:'Toggle Tutorial mode',       key:'',        action:()=>b2ToggleTutorial()},
+  {label:'Export Activity Log',        key:'',        action:()=>b2ExportActivity()},
+  {label:'Export Scout Briefing',      key:'',        action:()=>b2ExportBriefing()},
+  {label:'Run Benchmark',              key:'',        action:()=>goToTab('aafl-control')},
+];
+
+let _b2CmdPalIdx = 0;
+let _b2CmdPalFiltered = [..._b2CmdPalActions];
+
+function b2OpenCmdPal() {
+  const ov = document.getElementById('cmdpal-overlay');
+  if (!ov) return;
+  ov.classList.add('visible');
+  const inp = document.getElementById('cmdpal-input');
+  if (inp) { inp.value=''; inp.focus(); }
+  _b2CmdPalFiltered = [..._b2CmdPalActions];
+  _b2CmdPalIdx = 0;
+  b2RenderCmdPal();
+}
+
+function b2CloseCmdPal() {
+  document.getElementById('cmdpal-overlay')?.classList.remove('visible');
+}
+
+function b2CmdPalFilter() {
+  const q = document.getElementById('cmdpal-input')?.value.toLowerCase()||'';
+  _b2CmdPalFiltered = _b2CmdPalActions.filter(a=>a.label.toLowerCase().includes(q));
+  _b2CmdPalIdx = 0;
+  b2RenderCmdPal();
+}
+
+function b2RenderCmdPal() {
+  const list = document.getElementById('cmdpal-list');
+  if (!list) return;
+  list.innerHTML = _b2CmdPalFiltered.map((a,i)=>`
+    <div class="cmdpal-item${i===_b2CmdPalIdx?' selected':''}" onclick="b2ExecCmdPal(${i})">
+      <span style="flex:1">${esc(a.label)}</span>
+      ${a.key?`<span class="cmd-key">${esc(a.key)}</span>`:''}
+    </div>`).join('');
+}
+
+function b2CmdPalKey(e) {
+  if (e.key==='ArrowDown') { _b2CmdPalIdx=Math.min(_b2CmdPalIdx+1,_b2CmdPalFiltered.length-1); b2RenderCmdPal(); e.preventDefault(); }
+  else if (e.key==='ArrowUp') { _b2CmdPalIdx=Math.max(_b2CmdPalIdx-1,0); b2RenderCmdPal(); e.preventDefault(); }
+  else if (e.key==='Enter') { b2ExecCmdPal(_b2CmdPalIdx); }
+  else if (e.key==='Escape') { b2CloseCmdPal(); }
+}
+
+function b2ExecCmdPal(idx) {
+  const act = _b2CmdPalFiltered[idx];
+  if (act) { b2CloseCmdPal(); act.action(); }
+}
+
+// Extend the existing keydown handler for B2-21 Ctrl shortcuts
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey) {
+    if (e.key==='s'||e.key==='S') { e.preventDefault(); saveSession(); return; }
+    if (e.key==='r'||e.key==='R') { e.preventDefault(); manualRefresh(); return; }
+    if (e.key==='k'||e.key==='K') { e.preventDefault(); b2OpenCmdPal(); return; }
+    if (e.key==='/') { e.preventDefault(); showKbHelp(); return; }
+    const n = parseInt(e.key);
+    if (n >= 1 && n <= 9) {
+      e.preventDefault();
+      const tabs = document.querySelectorAll('.tab-btn');
+      if (tabs[n-1]) tabs[n-1].click();
+      return;
+    }
+  }
+});
+
+// ── B2-22: KEYBINDING PROFILE LIBRARY ────────────────────────────
+
+let _b2KbProfiles = [];
+
+async function b2LoadKbProfiles() {
+  const el = document.getElementById('b2-kbp-list');
+  try {
+    const d = await apiFetch('/b2/keybind-profiles');
+    _b2KbProfiles = d.profiles || [];
+    b2FilterKbProfiles();
+  } catch(e) {
+    if (el) el.innerHTML = '<div class="empty-msg">No keybinding profiles yet. Create one above or import a .json file.</div>';
+  }
+}
+
+function b2FilterKbProfiles() {
+  const gf = document.getElementById('b2-kbp-filter-game')?.value.toLowerCase()||'';
+  const df = document.getElementById('b2-kbp-filter-device')?.value.toLowerCase()||'';
+  const filtered = _b2KbProfiles.filter(p =>
+    (!gf || (p.game||'').toLowerCase().includes(gf)) &&
+    (!df || (p.device||'').toLowerCase().includes(df))
+  );
+  b2RenderKbProfiles(filtered);
+}
+
+function b2RenderKbProfiles(profiles) {
+  const el = document.getElementById('b2-kbp-list');
+  if (!el) return;
+  if (!profiles.length) { el.innerHTML = '<div class="empty-msg">No profiles match filters.</div>'; return; }
+  el.innerHTML = profiles.map(p=>`
+    <div class="kbp-card" id="kbp-${esc(p.id||p.name)}">
+      <div class="kbp-name">${esc(p.name||'Unnamed Profile')}</div>
+      <div class="kbp-meta">Game: ${esc(p.game||'—')} | Device: ${esc(p.device||'—')} | ${esc((p.created||'').slice(0,10))}</div>
+      <div class="kbp-stars">${b2Stars(p.rating||0)}</div>
+      <div style="font-size:10px;color:#666;margin-bottom:6px">${Object.keys(p.bindings||{}).length} bindings</div>
+      <div class="kbp-btns">
+        <button class="btn" onclick="b2RateProfile('${esc(p.id||p.name)}')" style="font-size:11px">⭐ Rate</button>
+        <button class="btn" onclick="b2ExportSpecificProfile('${esc(p.id||p.name)}')" style="font-size:11px">📤 Export</button>
+        <button class="btn btn-danger" onclick="b2DeleteProfile('${esc(p.id||p.name)}')" style="font-size:11px">✕ Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function b2Stars(n) {
+  return '★'.repeat(Math.round(n)) + '☆'.repeat(5-Math.round(n));
+}
+
+async function b2SaveKbProfile() {
+  const name = document.getElementById('b2-kbp-name')?.value.trim();
+  const game = document.getElementById('b2-kbp-game')?.value.trim();
+  const device = document.getElementById('b2-kbp-device')?.value.trim();
+  if (!name) { toast('Enter a profile name','error'); return; }
+  const profile = {id:'kbp'+Date.now(), name, game, device, created:new Date().toISOString(), rating:0, bindings:{}};
+  try {
+    await apiFetch('/b2/keybind-profiles', {method:'POST', body:JSON.stringify(profile)});
+    document.getElementById('b2-kbp-name').value='';
+    document.getElementById('b2-kbp-game').value='';
+    document.getElementById('b2-kbp-device').value='';
+    toast('Profile saved: '+name);
+    b2LoadKbProfiles();
+  } catch(e) { toast('Save failed: '+e.message,'error'); }
+}
+
+async function b2RateProfile(id) {
+  const stars = prompt('Rate 1-5 stars:', '5');
+  if (!stars) return;
+  const n = Math.min(5, Math.max(1, parseInt(stars)||1));
+  await apiFetch('/b2/keybind-profiles/rate', {method:'POST', body:JSON.stringify({id, rating:n})}).catch(()=>{});
+  b2LoadKbProfiles();
+  toast('Rated '+n+' stars');
+}
+
+async function b2DeleteProfile(id) {
+  if (!confirm('Delete this profile?')) return;
+  await apiFetch('/b2/keybind-profiles/delete', {method:'POST', body:JSON.stringify({id})}).catch(()=>{});
+  b2LoadKbProfiles();
+  toast('Profile deleted');
+}
+
+function b2ExportKbProfile() {
+  if (!_b2KbProfiles.length) { toast('No profiles to export','error'); return; }
+  const blob = new Blob([JSON.stringify(_b2KbProfiles, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='keybind_profiles_export.json'; a.click(); URL.revokeObjectURL(a.href);
+  toast('Exported '+_b2KbProfiles.length+' profiles');
+}
+
+function b2ExportSpecificProfile(id) {
+  const p = _b2KbProfiles.find(x=>(x.id||x.name)===id);
+  if (!p) return;
+  const blob = new Blob([JSON.stringify(p, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=(p.name||id).replace(/\s+/g,'_')+'.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function b2ImportKbProfile(fileInput) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const profiles = Array.isArray(data) ? data : [data];
+    for (const p of profiles) {
+      await apiFetch('/b2/keybind-profiles', {method:'POST', body:JSON.stringify(p)});
+    }
+    toast('Imported '+profiles.length+' profile(s)');
+    b2LoadKbProfiles();
+  } catch(e) { toast('Import failed: '+e.message,'error'); }
+  fileInput.value='';
+}
+
+// ── B2 INIT (called at startup) ───────────────────────────────────
+
+async function b2Init() {
+  await b2LoadTheme();
+  await b2LoadBudgetCaps().catch(()=>{});
+  b2InitStrategyOverrides();
+  b2AutoArchive();
+  b2LoadTimeline().catch(()=>{});
+}
+
+// Wire up tab switches for new B2 tabs
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      if (tab==='activity') b2LoadActivity();
+      if (tab==='keybind-profiles') b2LoadKbProfiles();
+      if (tab==='kanban') loadKanban();
+      if (tab==='aafl-runs') loadAaflRuns();
+      if (tab==='costs') loadCosts();
+    });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  b2Init().catch(()=>{});
+});
+
+// Log common actions to activity feed
+const _origSaveSession = saveSession;
+window.saveSession = async function() {
+  b2ActLog('wccs', 'WCCS save triggered', 'manual');
+  return _origSaveSession.apply(this, arguments);
+};
 
 </script>
 </body>

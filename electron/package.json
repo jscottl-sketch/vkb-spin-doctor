@@ -1,0 +1,21 @@
+{
+  "name": "vkb-spin-doctor-mcc",
+  "version": "1.0.0",
+  "description": "VKB Spin Doctor — Mission Control Centre",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.spindoctor.mcc",
+    "productName": "VKB Spin Doctor MCC",
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}

@@ -68,6 +68,20 @@ WCCS_LOG_MD        = HERE / "wccs_log.md"
 SESSION_LOGS_DIR   = HERE / "session_logs"
 WORKFLOW_PRESETS   = HERE / "aafl_workflow_presets.json"
 
+# ── B2 paths ──────────────────────────────────────────────────────────────────
+KANBAN_JSON       = HERE / "kanban_board.json"
+ACTIVITY_LOG      = HERE / "activity_log.json"
+MCC_PREFS         = HERE / "mcc_prefs.json"
+BUDGET_CAPS       = HERE / "budget_caps.json"
+BENCHMARK_RESULTS = HERE / "benchmark_results.json"
+KEYBIND_PROFILES  = HERE / "keybind_profiles"
+SCOUT_BRIEFINGS   = HERE / "scout_briefings"
+SCOUT_CFG_EXTRA   = HERE / "scout_config.json"
+B2_CHAIN_FILE     = HERE / "b2_chain.json"
+B2_STEP_FILE      = HERE / "b2_step_state.json"
+B2_BLOCKED        = HERE / "b2_blocked_sources.json"
+COST_LOG          = HERE / "data" / "cost_log.txt"
+
 _state_lock  = threading.Lock()
 _wccs_lock   = threading.Lock()
 _scout_lock  = threading.Lock()
@@ -384,6 +398,23 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_aafl_bridge_result()
             elif path == "/aafl/workflow-presets":
                 self._handle_workflow_presets_get()
+            # ── B2 GET endpoints ───────────────────────────────────────────────
+            elif path == "/b2/kanban":
+                self._handle_b2_kanban_get()
+            elif path == "/b2/activity":
+                self._handle_b2_activity_get()
+            elif path == "/b2/aafl-runs":
+                self._handle_b2_aafl_runs()
+            elif path == "/b2/prefs":
+                self._handle_b2_prefs_get()
+            elif path == "/b2/budget-caps":
+                self._handle_b2_budget_caps_get()
+            elif path == "/b2/costs":
+                self._handle_b2_costs_get()
+            elif path == "/b2/keybind-profiles":
+                self._handle_b2_kbp_get()
+            elif path == "/b2/source-health":
+                self._handle_b2_source_health()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -479,6 +510,55 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_aafl_scout_bridge()
             elif path == "/aafl/workflow":
                 self._handle_workflow_save()
+            # ── B2 POST endpoints ──────────────────────────────────────────────
+            elif path == "/b2/kanban":
+                self._handle_b2_kanban_post()
+            elif path == "/b2/activity":
+                self._handle_b2_activity_post()
+            elif path == "/b2/activity/summarise":
+                self._handle_b2_activity_summarise()
+            elif path == "/b2/run-tag":
+                self._handle_b2_run_tag()
+            elif path == "/b2/run-notes":
+                self._handle_b2_run_notes()
+            elif path == "/b2/prefs":
+                self._handle_b2_prefs_post()
+            elif path == "/b2/budget-caps":
+                self._handle_b2_budget_caps_post()
+            elif path == "/b2/benchmark":
+                self._handle_b2_benchmark()
+            elif path == "/b2/second-opinion":
+                self._handle_b2_second_opinion()
+            elif path == "/b2/step-mode":
+                self._handle_b2_step_mode()
+            elif path == "/b2/step-next":
+                self._handle_b2_step_next()
+            elif path == "/b2/pause-aafl":
+                self._handle_b2_pause_aafl()
+            elif path == "/b2/resume-aafl":
+                self._handle_b2_resume_aafl()
+            elif path == "/b2/chain-save":
+                self._handle_b2_chain_save()
+            elif path == "/b2/chain-run":
+                self._handle_b2_chain_run()
+            elif path == "/b2/keybind-profiles":
+                self._handle_b2_kbp_post()
+            elif path == "/b2/keybind-profiles/rate":
+                self._handle_b2_kbp_rate()
+            elif path == "/b2/keybind-profiles/delete":
+                self._handle_b2_kbp_delete()
+            elif path == "/b2/strategy-overrides":
+                self._handle_b2_strategy_overrides()
+            elif path == "/b2/workers":
+                self._handle_b2_workers()
+            elif path == "/b2/block-source":
+                self._handle_b2_block_source()
+            elif path == "/b2/unblock-source":
+                self._handle_b2_unblock_source()
+            elif path == "/b2/export-briefing":
+                self._handle_b2_export_briefing()
+            elif path == "/b2/scout-compare":
+                self._handle_b2_scout_compare()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -2577,6 +2657,624 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"ok": True, "name": name, "count": len(presets)})
         except Exception as exc:
             self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # B2 HANDLERS
+    # ═══════════════════════════════════════════════════════════════════════════
+
+    def _b2_load_json(self, path, default):
+        try:
+            if path.exists():
+                with open(path, encoding="utf-8") as f:
+                    return json.load(f)
+        except Exception:
+            pass
+        return default
+
+    def _b2_save_json(self, path, data):
+        tmp = path.with_suffix(".tmp")
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        tmp.replace(path)
+
+    # ── B2-01/02: Kanban ──────────────────────────────────────────────────────
+
+    def _handle_b2_kanban_get(self):
+        board = self._b2_load_json(KANBAN_JSON, {"todo": [], "doing": [], "done": []})
+        self._send_json(board)
+
+    def _handle_b2_kanban_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        action = data.get("action", "")
+        board  = self._b2_load_json(KANBAN_JSON, {"todo": [], "doing": [], "done": []})
+        if action == "add":
+            col  = data.get("col", "todo")
+            card = {
+                "id":      data.get("id", _now_iso()),
+                "title":   data.get("title", "New Card"),
+                "tags":    data.get("tags", []),
+                "deps":    data.get("deps", []),
+                "created": _now_iso(),
+            }
+            board.setdefault(col, []).append(card)
+        elif action == "move":
+            card_id = data.get("id")
+            to_col  = data.get("col", "todo")
+            for col in ("todo", "doing", "done"):
+                for c in board.get(col, []):
+                    if c.get("id") == card_id:
+                        board[col].remove(c)
+                        board.setdefault(to_col, []).append(c)
+                        break
+        elif action == "delete":
+            card_id = data.get("id")
+            for col in ("todo", "doing", "done"):
+                board[col] = [c for c in board.get(col, []) if c.get("id") != card_id]
+        elif action == "save":
+            for k in ("todo", "doing", "done"):
+                if k in data:
+                    board[k] = data[k]
+        self._b2_save_json(KANBAN_JSON, board)
+        self._send_json({"ok": True, "board": board})
+
+    # ── B2-03: Activity ───────────────────────────────────────────────────────
+
+    def _handle_b2_activity_get(self):
+        log = self._b2_load_json(ACTIVITY_LOG, [])
+        qs  = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        cat = qs.get("cat", [None])[0]
+        if cat and cat != "all":
+            log = [e for e in log if e.get("cat") == cat]
+        self._send_json({"entries": log[-200:]})
+
+    def _handle_b2_activity_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        entry = {
+            "ts":      _now_iso(),
+            "cat":     data.get("cat", "general"),
+            "msg":     data.get("msg", ""),
+            "trigger": data.get("trigger", "manual"),
+        }
+        log = self._b2_load_json(ACTIVITY_LOG, [])
+        log.append(entry)
+        if len(log) > 1000:
+            log = log[-1000:]
+        self._b2_save_json(ACTIVITY_LOG, log)
+        self._send_json({"ok": True})
+
+    def _handle_b2_activity_summarise(self):
+        log = self._b2_load_json(ACTIVITY_LOG, [])
+        if not log:
+            self._send_json({"summary": "No activity to summarise."})
+            return
+        recent = log[-50:]
+        text   = "\n".join(
+            f"[{e.get('ts','')}] [{e.get('cat','')}] {e.get('msg','')}" for e in recent
+        )
+        prompt = f"Summarise this MCC activity log in 3-5 bullet points:\n{text}"
+        try:
+            sys.path.insert(0, str(HERE))
+            import importlib
+            core    = importlib.import_module("aafl_core")
+            summary = core.call_llm(
+                prompt=prompt, provider="mistral",
+                model="codestral-latest", max_tokens=400,
+            )
+        except Exception as exc:
+            summary = f"AI summarise unavailable: {exc}"
+        self._send_json({"summary": summary})
+
+    # ── B2-04/05: AAFL Runs ───────────────────────────────────────────────────
+
+    def _handle_b2_aafl_runs(self):
+        import sqlite3
+        rows = []
+        try:
+            if DB_PATH.exists():
+                conn = sqlite3.connect(str(DB_PATH))
+                cur  = conn.cursor()
+                # add optional columns if missing
+                for col in ("tags", "notes"):
+                    try:
+                        conn.execute(f"ALTER TABLE solution_log ADD COLUMN {col} TEXT")
+                        conn.commit()
+                    except Exception:
+                        pass
+                cur.execute(
+                    "SELECT id, goal, provider, score, timestamp, result, tags, notes "
+                    "FROM solution_log ORDER BY timestamp DESC LIMIT 100"
+                )
+                cols = [d[0] for d in cur.description]
+                for row in cur.fetchall():
+                    rows.append(dict(zip(cols, row)))
+                conn.close()
+        except Exception as exc:
+            rows = [{"error": str(exc)}]
+        self._send_json({"runs": rows})
+
+    def _handle_b2_run_tag(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        import sqlite3
+        try:
+            conn = sqlite3.connect(str(DB_PATH))
+            try:
+                conn.execute("ALTER TABLE solution_log ADD COLUMN tags TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            conn.execute("UPDATE solution_log SET tags=? WHERE id=?", (data.get("tags", ""), data.get("id")))
+            conn.commit()
+            conn.close()
+            self._send_json({"ok": True})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    def _handle_b2_run_notes(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        import sqlite3
+        try:
+            conn = sqlite3.connect(str(DB_PATH))
+            try:
+                conn.execute("ALTER TABLE solution_log ADD COLUMN notes TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            conn.execute("UPDATE solution_log SET notes=? WHERE id=?", (data.get("notes", ""), data.get("id")))
+            conn.commit()
+            conn.close()
+            self._send_json({"ok": True})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── B2 Prefs ──────────────────────────────────────────────────────────────
+
+    def _handle_b2_prefs_get(self):
+        prefs = self._b2_load_json(MCC_PREFS, {"theme": "dark", "tutorial": False, "first_run": True})
+        self._send_json(prefs)
+
+    def _handle_b2_prefs_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        prefs = self._b2_load_json(MCC_PREFS, {"theme": "dark", "tutorial": False, "first_run": True})
+        prefs.update(data)
+        self._b2_save_json(MCC_PREFS, prefs)
+        self._send_json({"ok": True})
+
+    # ── B2-10/11: Budget Caps + Costs ─────────────────────────────────────────
+
+    def _handle_b2_budget_caps_get(self):
+        caps = self._b2_load_json(BUDGET_CAPS, {"daily": 0.50, "weekly": 2.00, "monthly": 8.00, "roi_value": 10.00})
+        self._send_json(caps)
+
+    def _handle_b2_budget_caps_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        caps = self._b2_load_json(BUDGET_CAPS, {})
+        caps.update(data)
+        self._b2_save_json(BUDGET_CAPS, caps)
+        self._send_json({"ok": True})
+
+    def _handle_b2_costs_get(self):
+        import re
+        daily: dict   = {}
+        by_prov: dict = {}
+        total         = 0.0
+        pattern       = re.compile(
+            r"\[(\d{4}-\d{2}-\d{2})[^\]]*\] CALL #\d+\s+cost=£([\d.]+)\s+running=£[\d.]+(?:\s+iter=\S+)?(?:\s+provider=(\S+))?"
+        )
+        try:
+            if COST_LOG.exists():
+                with open(COST_LOG, encoding="utf-8") as f:
+                    for line in f:
+                        m = pattern.search(line)
+                        if m:
+                            day          = m.group(1)
+                            cost         = float(m.group(2))
+                            prov         = m.group(3) or "unknown"
+                            daily[day]   = daily.get(day, 0.0) + cost
+                            by_prov[prov] = by_prov.get(prov, 0.0) + cost
+                            total        += cost
+        except Exception as exc:
+            self._send_json({"error": str(exc), "daily": {}, "by_provider": {}, "total": 0.0})
+            return
+        self._send_json({"daily": daily, "by_provider": by_prov, "total": round(total, 6)})
+
+    # ── B2-08: Benchmark ──────────────────────────────────────────────────────
+
+    def _handle_b2_benchmark(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        goal      = data.get("goal", "benchmark test").strip()
+        providers = data.get("providers", ["mistral", "cerebras", "openrouter"])
+        runs      = int(data.get("runs", 3))
+        py        = str(FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable))
+
+        def _bg():
+            results = []
+            for prov in providers:
+                for i in range(runs):
+                    try:
+                        env = dict(os.environ)
+                        env["AAFL_GOAL"] = goal
+                        res = subprocess.run(
+                            [py, str(HERE / "loop_manager.py"), "--once", f"--provider={prov}"],
+                            capture_output=True, text=True, timeout=180, cwd=str(HERE), env=env,
+                        )
+                        results.append({"provider": prov, "run": i + 1, "ok": res.returncode == 0,
+                                        "output": (res.stdout + res.stderr)[-500:]})
+                    except Exception as exc:
+                        results.append({"provider": prov, "run": i + 1, "ok": False, "output": str(exc)})
+            self._b2_save_json(BENCHMARK_RESULTS, {"goal": goal, "ts": _now_iso(), "results": results})
+
+        threading.Thread(target=_bg, daemon=True).start()
+        self._send_json({"ok": True, "status": "running", "goal": goal})
+
+    # ── B2-09: Second Opinion ─────────────────────────────────────────────────
+
+    def _handle_b2_second_opinion(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        goal     = data.get("goal", "").strip()
+        provider = data.get("provider", "mistral").strip()
+        if not goal:
+            try:
+                if GOAL_TXT.exists():
+                    goal = GOAL_TXT.read_text(encoding="utf-8").strip()
+            except Exception:
+                pass
+        if not goal:
+            self._send_json({"ok": False, "error": "No goal"}, 400)
+            return
+        py = str(FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable))
+
+        def _bg():
+            env = dict(os.environ)
+            env["AAFL_GOAL"] = goal
+            try:
+                res = subprocess.run(
+                    [py, str(HERE / "loop_manager.py"), "--once", f"--provider={provider}"],
+                    capture_output=True, text=True, timeout=180, cwd=str(HERE), env=env,
+                )
+                out = (res.stdout + res.stderr).strip()
+            except Exception as exc:
+                out = f"[ERROR] {exc}"
+            AAFL_OUTPUT.mkdir(exist_ok=True)
+            (AAFL_OUTPUT / "second_opinion.txt").write_text(
+                f"[SECOND OPINION] Provider: {provider}\nGoal: {goal}\n\n{out}", encoding="utf-8"
+            )
+
+        threading.Thread(target=_bg, daemon=True).start()
+        self._send_json({"ok": True, "status": "running", "provider": provider})
+
+    # ── B2-06: Step / Pause ───────────────────────────────────────────────────
+
+    def _handle_b2_step_mode(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            data = {}
+        state = self._b2_load_json(B2_STEP_FILE, {"step_mode": False, "current_phase": "plan"})
+        state["step_mode"] = bool(data.get("enabled", False))
+        self._b2_save_json(B2_STEP_FILE, state)
+        self._send_json({"ok": True, "step_mode": state["step_mode"]})
+
+    def _handle_b2_step_next(self):
+        phases = ["plan", "work", "verify", "store"]
+        state  = self._b2_load_json(B2_STEP_FILE, {"step_mode": True, "current_phase": "plan"})
+        cur    = state.get("current_phase", "plan")
+        idx    = phases.index(cur) if cur in phases else -1
+        nxt    = phases[min(idx + 1, len(phases) - 1)]
+        state["current_phase"] = nxt
+        self._b2_save_json(B2_STEP_FILE, state)
+        self._send_json({"ok": True, "phase": nxt})
+
+    def _handle_b2_pause_aafl(self):
+        (HERE / "aafl_pause.flag").write_text("paused", encoding="utf-8")
+        self._send_json({"ok": True, "status": "paused"})
+
+    def _handle_b2_resume_aafl(self):
+        flag = HERE / "aafl_pause.flag"
+        try:
+            if flag.exists():
+                flag.unlink()
+        except Exception:
+            pass
+        self._send_json({"ok": True, "status": "resumed"})
+
+    # ── B2-07: Chain Builder ──────────────────────────────────────────────────
+
+    def _handle_b2_chain_save(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        self._b2_save_json(B2_CHAIN_FILE, data)
+        self._send_json({"ok": True})
+
+    def _handle_b2_chain_run(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        chain = data.get("chain", [])
+        if not chain:
+            chain_data = self._b2_load_json(B2_CHAIN_FILE, {"chain": []})
+            chain      = chain_data.get("chain", [])
+        if not chain:
+            self._send_json({"ok": False, "error": "Empty chain"}, 400)
+            return
+        py = str(FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable))
+
+        def _bg():
+            results = []
+            for item in chain:
+                goal     = item.get("goal", "").strip()
+                provider = item.get("provider", "")
+                if not goal:
+                    continue
+                try:
+                    env = dict(os.environ)
+                    env["AAFL_GOAL"] = goal
+                    cmd = [py, str(HERE / "loop_manager.py"), "--once"]
+                    if provider:
+                        cmd.append(f"--provider={provider}")
+                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=str(HERE), env=env)
+                    results.append({"goal": goal, "provider": provider, "ok": res.returncode == 0,
+                                    "output": (res.stdout + res.stderr)[-300:]})
+                except Exception as exc:
+                    results.append({"goal": goal, "provider": provider, "ok": False, "output": str(exc)})
+            self._b2_save_json(HERE / "b2_chain_results.json", {"ts": _now_iso(), "results": results})
+
+        threading.Thread(target=_bg, daemon=True).start()
+        self._send_json({"ok": True, "status": "running", "count": len(chain)})
+
+    # ── B2-22: Keybinding Profiles ────────────────────────────────────────────
+
+    def _handle_b2_kbp_get(self):
+        KEYBIND_PROFILES.mkdir(exist_ok=True)
+        profiles = []
+        for fp in sorted(KEYBIND_PROFILES.glob("*.json")):
+            try:
+                with open(fp, encoding="utf-8") as f:
+                    p = json.load(f)
+                p.setdefault("filename", fp.name)
+                profiles.append(p)
+            except Exception:
+                pass
+        self._send_json({"profiles": profiles})
+
+    def _handle_b2_kbp_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        name = data.get("name", "").strip()
+        if not name:
+            self._send_json({"ok": False, "error": "No name"}, 400)
+            return
+        KEYBIND_PROFILES.mkdir(exist_ok=True)
+        safe = "".join(c for c in name if c.isalnum() or c in " -_").strip().replace(" ", "_")
+        fp   = KEYBIND_PROFILES / f"{safe}.json"
+        data.setdefault("created", _now_iso())
+        data.setdefault("stars", 0)
+        self._b2_save_json(fp, data)
+        self._send_json({"ok": True, "filename": fp.name})
+
+    def _handle_b2_kbp_rate(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        fp = KEYBIND_PROFILES / data.get("filename", "")
+        if not fp.exists():
+            self._send_json({"ok": False, "error": "Not found"}, 404)
+            return
+        try:
+            with open(fp, encoding="utf-8") as f:
+                p = json.load(f)
+            p["stars"] = max(0, min(5, int(data.get("stars", 0))))
+            self._b2_save_json(fp, p)
+            self._send_json({"ok": True})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    def _handle_b2_kbp_delete(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        fp = KEYBIND_PROFILES / data.get("filename", "")
+        if not fp.exists():
+            self._send_json({"ok": False, "error": "Not found"}, 404)
+            return
+        try:
+            fp.unlink()
+            self._send_json({"ok": True})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── B2-14/15: Strategy Overrides + Workers ────────────────────────────────
+
+    def _handle_b2_strategy_overrides(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        cfg = self._b2_load_json(SCOUT_CFG_EXTRA, {})
+        cfg["strategy_overrides"] = data.get("overrides", {})
+        self._b2_save_json(SCOUT_CFG_EXTRA, cfg)
+        self._send_json({"ok": True})
+
+    def _handle_b2_workers(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        cfg = self._b2_load_json(SCOUT_CFG_EXTRA, {})
+        cfg["parallel_workers"] = max(1, min(10, int(data.get("workers", 3))))
+        self._b2_save_json(SCOUT_CFG_EXTRA, cfg)
+        self._send_json({"ok": True, "workers": cfg["parallel_workers"]})
+
+    # ── B2-16: Source Health + Block/Unblock ──────────────────────────────────
+
+    def _handle_b2_source_health(self):
+        blocked = self._b2_load_json(B2_BLOCKED, [])
+        health  = []
+        try:
+            lib     = self._b2_load_json(SOURCES_LIBRARY, {})
+            sources = lib.get("sources", lib) if isinstance(lib, dict) else []
+            if isinstance(sources, dict):
+                sources = list(sources.values())
+            for s in (sources if isinstance(sources, list) else []):
+                name = s.get("name", s.get("url", "?"))
+                health.append({
+                    "source":       name,
+                    "status":       "blocked" if name in blocked else "ok",
+                    "queries":      s.get("query_count", 0),
+                    "success_rate": s.get("success_rate", 1.0),
+                })
+        except Exception:
+            pass
+        self._send_json({"health": health, "blocked": blocked})
+
+    def _handle_b2_block_source(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        source  = data.get("source", "").strip()
+        blocked = self._b2_load_json(B2_BLOCKED, [])
+        if source and source not in blocked:
+            blocked.append(source)
+            self._b2_save_json(B2_BLOCKED, blocked)
+        self._send_json({"ok": True, "blocked": blocked})
+
+    def _handle_b2_unblock_source(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        source  = data.get("source", "").strip()
+        blocked = self._b2_load_json(B2_BLOCKED, [])
+        blocked = [b for b in blocked if b != source]
+        self._b2_save_json(B2_BLOCKED, blocked)
+        self._send_json({"ok": True, "blocked": blocked})
+
+    # ── B2-17: Export Briefing ────────────────────────────────────────────────
+
+    def _handle_b2_export_briefing(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        goal  = data.get("goal", "briefing").strip() or "briefing"
+        lines = [f"# Scout Briefing — {goal}", f"Generated: {_now_iso()}", ""]
+        try:
+            if SCOUT_LATEST.exists():
+                lines += ["## Scout Result", SCOUT_LATEST.read_text(encoding="utf-8")]
+        except Exception:
+            pass
+        SCOUT_BRIEFINGS.mkdir(exist_ok=True)
+        safe = "".join(c for c in goal if c.isalnum() or c in " -_")[:40].strip().replace(" ", "_")
+        ts   = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        out  = SCOUT_BRIEFINGS / f"briefing_{ts}_{safe}.md"
+        out.write_text("\n".join(lines), encoding="utf-8")
+        self._send_json({"ok": True, "file": str(out), "name": out.name})
+
+    # ── B2-13: Scout Compare ──────────────────────────────────────────────────
+
+    def _handle_b2_scout_compare(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        goal      = data.get("goal", "").strip()
+        providers = data.get("providers", ["mistral", "gemini"])
+        py        = str(FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable))
+
+        def _bg():
+            results = {}
+            for prov in providers:
+                env = dict(os.environ)
+                if goal:
+                    env["AAFL_GOAL"] = goal
+                try:
+                    res = subprocess.run(
+                        [py, str(HERE / "loop_manager.py"), "--once", f"--provider={prov}"],
+                        capture_output=True, text=True, timeout=180, cwd=str(HERE), env=env,
+                    )
+                    results[prov] = {"ok": res.returncode == 0,
+                                     "output": (res.stdout + res.stderr)[-800:]}
+                except Exception as exc:
+                    results[prov] = {"ok": False, "output": str(exc)}
+            AAFL_OUTPUT.mkdir(exist_ok=True)
+            self._b2_save_json(
+                AAFL_OUTPUT / "scout_compare.json",
+                {"goal": goal, "ts": _now_iso(), "results": results},
+            )
+
+        threading.Thread(target=_bg, daemon=True).start()
+        self._send_json({"ok": True, "status": "running", "providers": providers})
 
 
 class ThreadingServer(http.server.ThreadingHTTPServer):
