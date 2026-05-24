@@ -165,6 +165,14 @@ def main():
             print(f"[OK] Git committed")
         except Exception as e:
             print(f"[WARN] Git commit failed (non-fatal): {e}")
+        try:
+            push_res = subprocess.run(["git", "push"], cwd=ROOT, capture_output=True, text=True)
+            if push_res.returncode == 0:
+                print("[GIT PUSH] Pushed to remote")
+            else:
+                print(f"[GIT PUSH] Failed — run manually. Error: {push_res.stderr.strip()}")
+        except Exception as e:
+            print(f"[GIT PUSH] Failed — run manually. Error: {e}")
     if not args.dry_run:
         _sunday_merge()
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''}")

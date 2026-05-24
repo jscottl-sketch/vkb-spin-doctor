@@ -372,6 +372,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_api_status_md()
             elif path == "/api/history":
                 self._handle_api_history_md()
+            elif path == "/api/acca":
+                self._handle_api_acca_md()
             elif path == "/api/health":
                 self._handle_api_health()
             else:
@@ -2294,6 +2296,18 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._send_json({"error": str(exc)}, 500)
                 return
         self._send_json({"content": content, "file": str(HISTORY_FILE), "exists": HISTORY_FILE.exists()})
+
+    # ── MCP: GET /api/acca ───────────────────────────────────────────────────────
+
+    def _handle_api_acca_md(self):
+        content = ""
+        if ACCA_FILE.exists():
+            try:
+                content = ACCA_FILE.read_text(encoding="utf-8", errors="replace")
+            except Exception as exc:
+                self._send_json({"error": str(exc)}, 500)
+                return
+        self._send_json({"content": content, "file": str(ACCA_FILE), "exists": ACCA_FILE.exists()})
 
     # ── MCP: GET /api/health ──────────────────────────────────────────────────────
 

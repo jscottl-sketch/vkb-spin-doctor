@@ -81,6 +81,11 @@
 | Pre-flight ALP check | Added to aafl_wccs.py |
 | WCCS skill v2 | Uploaded 2026-05-24 |
 | Action plan skill | Uploaded 2026-05-24 |
+| MCC copy buttons | Home tab — Copy STATUS.md + Copy HISTORY.md with green toast |
+| MCP endpoints | /api/status, /api/history, /api/acca, /api/health all live in mcc_server.py |
+| Auto git push | aafl_wccs.py pushes to remote after every commit (non-fatal on failure) |
+| DESIGN_RULES.md | FFUE + dual-mode (workstation/API) documented. All 4 components covered. |
+| LiteLLM installed | Already installed + comment at aafl_core.py:201. Full integration pending. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -114,7 +119,9 @@
 | B2-21: Global — keyboard shortcuts (full set) | Global |
 | B2-22: Keybinding Profile Library v0.5 | Global |
 | B2-23: Electron wrapper | Packaging |
-| GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. |
+| GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. Manual setup. |
+| Claude in Chrome auto-upload | Future: auto-push chat to MCC on session end. Not yet built. |
+| LiteLLM full integration | Replace direct provider calls in aafl_core.py with LiteLLM router. See aafl_core.py:201. |
 | Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
 
 ---
@@ -149,6 +156,6 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 3. Star Citizen v0.2 benchmark via AAFL autonomous run
 4. Add GROQ + Cloudflare keys to .env (manual — security rule)
 5. Post on r/LocalLLaMA when Star Citizen benchmark passes
-6. Implement FFUE design rule (workstation/packaged mode support)
+6. LiteLLM full integration — replace direct provider calls with LiteLLM router
 
 <!-- END_OF_FILE -->

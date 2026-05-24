@@ -1,48 +1,52 @@
-# FFUE Design Rules
-
-## FFUE = Fluid, Flexible, Upgradeable, Editable
-
-All components in this system must follow the FFUE principle.
+# DESIGN RULES — VKB Spin Doctor / AAFL Platform
+**Created:** 2026-05-24
 
 ---
 
-## Rule: Dual-Mode Architecture
+## FFUE — Fluid, Flexible, Upgradeable, Editable
 
-**All components must support:**
+Every component in this platform must be:
 
-1. **Workstation mode** — local filesystem: reads/writes files directly on disk
-2. **Packaged mode** — API-driven: reads/writes via HTTP API endpoints
-
----
-
-## Components in Scope
-
-| Component     | Workstation Data Layer         | Packaged Data Layer              |
-|---------------|-------------------------------|----------------------------------|
-| Scout         | Files in `scout_output/`      | GET/POST `/api/scout`            |
-| AAFL          | `goal.txt`, `loop_output/`    | GET/POST `/api/aafl`             |
-| MCC           | `STATUS.md`, `HISTORY.md`     | GET `/api/status`, `/api/history`|
-| Spin Doctor   | Game binding files on disk    | GET/POST `/api/bindings`         |
+| Property | Meaning |
+|---|---|
+| **Fluid** | Works without friction — no manual setup steps required per session |
+| **Flexible** | No hard-coded paths or single-mode assumptions |
+| **Upgradeable** | Any module can be swapped, improved, or extended without breaking others |
+| **Editable** | All config, prompts, and routing are in files — never baked into code |
 
 ---
 
-## What This Enables
+## DUAL MODE — Workstation + Packaged
 
-- **Develop locally** using workstation mode — full filesystem access, no server needed
-- **Deploy commercially** using packaged mode — Claude Chat or external clients call API endpoints
-- **No refactoring required** — same code, same logic, different data layer
-- **Same code path** for Scout, AAFL, MCC, Spin Doctor regardless of environment
+All components must support two operating modes:
 
----
+| Mode | Description | When Used |
+|---|---|---|
+| **Workstation** | Runs locally, reads from filesystem, writes directly to project files | Development, daily use on Scott's machine |
+| **Packaged / API** | Runs as a service, reads from API, returns structured JSON | Future: multi-project, cloud, or shared installs |
 
-## How to Apply
-
-When adding a new feature:
-- Write it to read/write via a function parameter (path OR endpoint URL)
-- Workstation default: function reads/writes the local file directly
-- Packaged default: function calls the MCC server endpoint instead
-- Never hardcode filesystem paths inside business logic — pass them in or resolve via config
+**Rule:** The same Python file must handle both modes. Use a config flag or environment variable to switch. Never write two separate versions of the same component.
 
 ---
 
-*FFUE rule documented 2026-05-24 — applies to all new and refactored components*
+## COMPONENTS THIS APPLIES TO
+
+| Component | Workstation Layer | Packaged Layer |
+|---|---|---|
+| Scout (chief_scout.py) | Reads filesystem, writes scout_output/ | API: POST /run-scout → GET /scout-result |
+| AAFL (loop_manager.py) | Reads goal.txt, writes knowledge_engine.db | API: POST /run-aafl → GET /aafl-status |
+| MCC (mission_control.html + mcc_server.py) | Serves local HTML, reads local files | API: All /api/* endpoints expose same data |
+| Spin Doctor (spin_doctor.py) | Reads local game config files | API: Future — POST /fix → GET /fix-status |
+
+---
+
+## ADDITIONAL RULES
+
+1. **ALP First** — Never write code that costs money without a CostGuard check.
+2. **Append-only logs** — HISTORY.md and ACCA.md are never overwritten, only appended.
+3. **Atomic writes** — STATUS.md is always written via atomic_write() with EOF marker check.
+4. **LiteLLM routing** — All provider calls go through LiteLLM. Direct SDK calls are tech debt.
+5. **Free-first** — Routing order: LM Studio local → free online (Mistral/Gemini/Cerebras) → paid fallback.
+6. **One step at a time** — No stacked changes. One PR = one logical unit.
+
+<!-- END_OF_FILE -->

@@ -1,0 +1,3195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MCC — Mission Control Center</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Consolas','Courier New',monospace;background:#0d0d0d;color:#ccc;font-size:13px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* HEADER */
+.header{background:#111;border-bottom:1px solid #222;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.header-title{font-size:15px;font-weight:bold;color:#fff;letter-spacing:1px}
+.header-spacer{flex:1}
+.auto-toggle-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa}
+.toggle-switch{position:relative;width:36px;height:20px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#333;border-radius:10px;cursor:pointer;transition:.2s}
+.toggle-switch input:checked+.toggle-slider{background:#2a7}
+.toggle-slider:before{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(16px)}
+.auto-interval-wrap{display:flex;align-items:center;gap:4px}
+.auto-interval-wrap input{width:44px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;text-align:center}
+
+/* TABS */
+.tab-bar{background:#161616;border-bottom:1px solid #222;display:flex;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto}
+.tab-btn{background:none;border:none;color:#888;padding:8px 14px;cursor:pointer;font:inherit;font-size:12px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
+.tab-btn:hover{color:#ccc;background:#1a1a1a}
+.tab-btn.active{color:#fff;border-bottom-color:#4af}
+
+/* TAB PANES */
+.tab-pane{display:none;flex:1;overflow:hidden}
+.tab-pane.active{display:flex;flex-direction:column}
+.pane-scroll{flex:1;overflow-y:auto;padding:16px}
+
+/* ── WCCS TAB ── */
+.wccs-top-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.btn-save-lg{background:#174;border:none;color:#fff;font:bold 14px 'Consolas','Courier New',monospace;padding:10px 24px;border-radius:6px;cursor:pointer;transition:.15s;min-width:180px}
+.btn-save-lg:hover{background:#1a5}
+.btn-save-lg:disabled{background:#333;color:#666;cursor:not-allowed}
+.wccs-auto-status{display:flex;flex-direction:column;gap:4px}
+.auto-badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;display:inline-block}
+.auto-on{background:#1a4;color:#fff}
+.auto-off{background:#444;color:#aaa}
+.wccs-next-label{font-size:11px;color:#666}
+
+.wccs-section-title{font-size:11px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
+
+/* chat textarea */
+.wccs-chat-wrap{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.wccs-chat-textarea{width:100%;height:120px;background:#0a0a0a;border:1px solid #333;color:#ddd;font:13px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:vertical;line-height:1.5}
+.wccs-chat-textarea:focus{outline:none;border-color:#4af}
+.wccs-chat-meta{font-size:11px;color:#555;text-align:right}
+
+/* recent saves */
+.wccs-recent-entry{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:4px;cursor:pointer;transition:.1s}
+.wccs-recent-entry:hover{background:#1a1a1a}
+
+/* feature cards */
+.feature-cards{display:flex;flex-wrap:wrap;gap:10px}
+.feature-card{background:#111;border:1px solid #222;border-radius:6px;padding:12px 16px;cursor:pointer;min-width:140px;transition:.15s;flex:1 1 140px}
+.feature-card:hover{border-color:#4af;background:#141414}
+.feature-icon{font-size:20px;margin-bottom:4px}
+.feature-name{font-size:12px;font-weight:bold;color:#eee;margin-bottom:2px}
+.feature-desc{font-size:11px;color:#777}
+
+/* ── DIFF TAB ── */
+.diff-controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.diff-controls select{background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;max-width:240px}
+.diff-table{width:100%;border-collapse:collapse;font-size:12px}
+.diff-table td{padding:1px 8px;white-space:pre-wrap;word-break:break-all;vertical-align:top}
+.diff-ln{width:40px;color:#555;user-select:none;text-align:right}
+.diff-text{font-family:'Consolas','Courier New',monospace}
+.diff-add{background:#0a2212}
+.diff-del{background:#220a0a}
+.diff-chg{background:#161210}
+.diff-summary{font-size:12px;color:#aaa;margin-bottom:8px;padding:6px 10px;background:#111;border-radius:4px}
+
+/* ── REWIND TAB ── */
+.split-layout{display:flex;gap:12px;flex:1;overflow:hidden}
+.split-left{width:240px;flex-shrink:0;overflow-y:auto;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px}
+.split-right{flex:1;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.rewind-entry{padding:8px 12px;cursor:pointer;border-bottom:1px solid #111;display:flex;align-items:center;gap:8px;font-size:12px;transition:.1s}
+.rewind-entry:hover{background:#141414}
+.rewind-entry.selected{background:#152030}
+.rewind-meta{font-size:11px;color:#666}
+.rewind-edit{flex:1;background:#0a0a0a;border:1px solid #222;color:#ccc;font:12px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:none;min-height:0}
+.rewind-edit:focus{outline:none;border-color:#4af}
+.restore-row{display:flex;gap:8px;align-items:center}
+
+/* ── SESSIONS TAB ── */
+.sessions-layout{display:flex;gap:12px;flex:1;overflow:hidden}
+.session-list{width:240px;flex-shrink:0;overflow-y:auto}
+.session-entry{padding:8px 10px;cursor:pointer;border-bottom:1px solid #111;transition:.1s}
+.session-entry:hover{background:#141414}
+.session-name{color:#ddd;font-size:12px;word-break:break-all}
+.session-meta{color:#666;font-size:11px;margin-top:2px}
+.session-preview{color:#555;font-size:11px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.session-view{flex:1;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:10px;overflow-y:auto;font-size:12px;white-space:pre-wrap;word-break:break-word}
+
+/* ── SEARCH TAB ── */
+.search-controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.search-controls input{flex:1;min-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit}
+.search-controls input:focus{outline:none;border-color:#4af}
+.search-result{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:10px;margin-bottom:8px}
+.search-source{font-size:11px;color:#888;margin-bottom:4px}
+.search-match{color:#eee;font-weight:bold;margin-bottom:2px}
+.search-ctx{color:#777;font-size:11px}
+.search-count{font-size:11px;color:#888;margin-bottom:8px}
+
+/* ── AUTO-LOG TAB ── */
+.log-entry{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid #111}
+.autolog-settings{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
+/* SHARED COMPONENTS */
+.btn{background:#1a2a1a;border:1px solid #2a4;color:#ccc;padding:5px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px;transition:.15s}
+.btn:hover{background:#1e3a1e;color:#fff}
+.btn-danger{background:#2a1a1a;border-color:#a43}
+.btn-danger:hover{background:#3a1a1a;color:#fff}
+
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.log-dot.ok{background:#2a7}
+.log-dot.fail{background:#a33}
+.log-time{font-size:11px;color:#888;white-space:nowrap}
+.log-trigger{font-size:11px;color:#aaa}
+.log-status{font-size:11px;font-weight:bold}
+.log-status.ok{color:#2a7}
+.log-status.fail{color:#a33}
+
+.empty-msg{color:#666;font-size:12px;padding:12px;text-align:center}
+.loading{color:#888;padding:12px;text-align:center}
+.error-msg{color:#a55;padding:12px}
+
+/* CONFIRM DIALOG */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:.2s}
+.confirm-overlay.visible{opacity:1;pointer-events:auto}
+.confirm-box{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:24px;max-width:380px;width:90%}
+.confirm-msg{color:#ddd;margin-bottom:20px;line-height:1.5}
+.confirm-btns{display:flex;gap:10px;justify-content:flex-end}
+.confirm-btns .btn{min-width:72px;text-align:center}
+
+/* TOAST */
+#toast-container{position:fixed;bottom:16px;right:16px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+.toast{background:#222;border-left:3px solid #888;padding:8px 14px;border-radius:4px;font-size:12px;animation:fadein .2s;max-width:320px}
+.toast.ok{border-color:#2a7;color:#8f8}
+.toast.error{border-color:#a33;color:#f88}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#0a0a0a}
+::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
+
+/* ── SELF-DIAGNOSIS TAB ── */
+.sd-section{margin-bottom:24px}
+.sd-mot-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.sd-bar-wrap{height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden;margin-bottom:10px}
+.sd-bar-fill{height:100%;background:#2a7;border-radius:5px;transition:width .5s}
+.sd-mot-score{font-size:28px;font-weight:bold;color:#eee;line-height:1}
+.sd-mot-sub{font-size:12px;color:#888;margin-top:4px}
+.sd-fail-item{padding:6px 10px;background:#1a0a0a;border:1px solid #3a1a1a;border-radius:4px;margin-bottom:5px;font-size:12px;color:#f88}
+.sd-fail-group{font-size:10px;color:#a33;font-weight:bold;margin-right:8px;text-transform:uppercase}
+.sd-issue-add{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.sd-issue-add input{flex:1;min-width:160px;background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit}
+.sd-issue-add input:focus{outline:none;border-color:#4af}
+.sd-issue-add select{background:#111;border:1px solid #333;color:#ccc;padding:5px 8px;border-radius:4px;font:inherit}
+.sd-issue-item{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:10px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:12px}
+.sd-issue-body{flex:1}
+.sd-issue-desc{font-size:12px;color:#ddd;margin-bottom:4px}
+.sd-issue-meta{font-size:11px;color:#666}
+.sd-sev-high{color:#f88;background:#2a0a0a;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:bold;display:inline-block;margin-right:6px}
+.sd-sev-medium{color:#fc8;background:#2a2000;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:bold;display:inline-block;margin-right:6px}
+.sd-sev-low{color:#8af;background:#0a1a2a;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:bold;display:inline-block;margin-right:6px}
+.sd-status-fixed{color:#6f6;font-size:10px;font-weight:bold}
+.sd-status-open{color:#f88;font-size:10px;font-weight:bold}
+.sd-sysinfo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:12px}
+.sd-sysinfo-card{background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:12px}
+.sd-sysinfo-label{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.sd-sysinfo-value{font-size:12px;color:#eee;font-weight:bold;word-break:break-all;line-height:1.4}
+.sd-import-ok{color:#2a7;font-weight:bold;font-size:11px}
+.sd-import-fail{color:#a33;font-weight:bold;font-size:11px}
+
+/* ── HOME INSTRUMENTS (PHASE 3) ── */
+.home-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0 4px}
+.home-act-btn{min-width:132px;text-align:center;font-size:12px;flex:1 1 132px}
+.home-instruments{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.inst-card{background:#111;border:1px solid #1c1c1c;border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:130px;flex:1 1 130px;cursor:pointer;transition:.15s}
+.inst-card:hover{border-color:#4af;background:#141414;transform:translateY(-1px)}
+.inst-label{font-size:10px;color:#888;text-align:center;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.inst-sublabel{font-size:10px;color:#555;text-align:center}
+.gauge-track{fill:none;stroke:#1a1a1a;stroke-width:12}
+.gauge-fill{fill:none;stroke-width:12;transition:stroke-dasharray .6s ease,stroke .4s}
+.gauge-text{fill:#eee;font-size:15px;font-weight:bold;font-family:'Consolas','Courier New',monospace}
+.gauge-sub{fill:#555;font-size:9px;font-family:'Consolas','Courier New',monospace}
+.tl-wrap{display:flex;flex-direction:column;gap:7px;align-items:center;padding:4px 0}
+.tl-row{display:flex;align-items:center;gap:7px}
+.tl-circle{width:18px;height:18px;border-radius:50%;background:#222;border:1px solid #333;transition:background .4s,box-shadow .4s;flex-shrink:0}
+.tl-circle.green{background:#2a7;box-shadow:0 0 7px #2a7}
+.tl-circle.yellow{background:#aa5;box-shadow:0 0 7px #aa5}
+.tl-circle.red{background:#a33;box-shadow:0 0 7px #a33}
+.tl-dot-label{font-size:9px;color:#555}
+.burn-bar-wrap{width:100%;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden}
+.burn-bar-fill{height:100%;border-radius:4px;transition:width .5s,background .4s}
+.cost-bar-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;width:100%}
+.cost-bar-label{font-size:9px;color:#888;width:54px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cost-bar-track{flex:1;height:7px;background:#1a1a1a;border-radius:3px;overflow:hidden}
+.cost-bar-fill{height:100%;background:#4af;border-radius:3px;transition:width .5s}
+
+/* ── CONNECT BUTTON + SERVER DOT ── */
+.server-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:background .4s;margin-right:2px}
+.server-dot.live{background:#2a7}
+.server-dot.dead{background:#a33}
+.server-dot.unknown{background:#555}
+.btn-connect{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px;transition:.15s;white-space:nowrap}
+.btn-connect:hover:not(:disabled){background:#1a3a5a;color:#6cf}
+.btn-connect:disabled{cursor:not-allowed;opacity:.7}
+.btn-connect.connecting{background:#1a1a3a;border-color:#66a;color:#aaf}
+.btn-connect.connected{background:#0a2010;border-color:#2a7;color:#6f6}
+.btn-connect.failed{background:#200a0a;border-color:#a33;color:#f88}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-spinner{display:inline-block;width:9px;height:9px;border:1px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px}
+
+/* ── HOME SCREEN ── */
+.home-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:620px){.home-grid{grid-template-columns:1fr}}
+.home-card{background:#111;border:1px solid #222;border-radius:8px;padding:14px 16px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:6px;min-height:116px}
+.home-card:hover{border-color:#4af;background:#141414;transform:translateY(-1px)}
+.home-card.slot{background:#0c0c0c;border:1px dashed #252525;cursor:default;opacity:.6}
+.home-card.slot:hover{border-color:#2a2a2a;background:#0c0c0c;transform:none}
+.home-card-hdr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.home-card-icon{font-size:18px;line-height:1.2}
+.home-card-title{font-size:13px;font-weight:bold;color:#eee;flex:1}
+.hc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hc-dot.green{background:#2a7}
+.hc-dot.yellow{background:#aa5}
+.hc-dot.red{background:#a33}
+.hc-dot.grey,.hc-dot.gray{background:#444}
+.home-facts{display:flex;flex-direction:column;gap:3px;flex:1}
+.home-fact{font-size:11px;color:#888;line-height:1.4}
+.home-fact-none{font-size:11px;color:#444;font-style:italic}
+.home-ts{font-size:10px;color:#3a3a3a;margin-top:auto;padding-top:4px}
+.home-slot-text{font-size:11px;color:#333;font-style:italic;margin-top:auto}
+.home-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.home-last-refresh{font-size:11px;color:#444}
+
+/* ── PROVIDER HEALTH TAB ── */
+.ph-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.ph-card{background:#111;border:1px solid #222;border-radius:6px;padding:12px 16px;min-width:220px;flex:1 1 220px;transition:.15s}
+.ph-card:hover{border-color:#333}
+.ph-name{font-size:13px;font-weight:bold;color:#eee;margin-bottom:6px}
+.ph-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;margin-bottom:6px}
+.ph-badge.GREEN{background:#174;color:#8f8}
+.ph-badge.YELLOW{background:#332;color:#fc8}
+.ph-badge.RED{background:#311;color:#f88}
+.ph-badge.COOLING{background:#133;color:#8df}
+.ph-badge.DEAD{background:#222;color:#666}
+.ph-badge.NO_KEY{background:#222;color:#666}
+.ph-badge.SKIP{background:#1a1a1a;color:#555}
+.ph-row{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-top:3px}
+.ph-row span:last-child{color:#bbb}
+.ph-refresh-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ph-last-run{font-size:11px;color:#666}
+.ph-summary{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;font-size:12px}
+.ph-summary-item{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:6px 12px}
+.ph-summary-item .count{font-size:18px;font-weight:bold;color:#eee}
+.ph-summary-item .label{font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px}
+
+/* ── NEW TABS ── */
+.section-title{font-size:11px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
+.data-table th{background:#161616;color:#aaa;padding:6px 10px;text-align:left;font-weight:normal;font-size:11px;border-bottom:1px solid #222}
+.data-table td{padding:5px 10px;border-bottom:1px solid #111;color:#ccc;vertical-align:top;max-width:300px;word-break:break-word}
+.data-table tr:hover td{background:#141414}
+.search-box{background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit;width:100%;max-width:400px;margin-bottom:10px}
+.search-box:focus{outline:none;border-color:#4af}
+.aafl-ctrl-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}
+.aafl-ctrl-row input,.aafl-ctrl-row select{background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit;flex:1;min-width:180px}
+.aafl-ctrl-row input:focus,.aafl-ctrl-row select:focus{outline:none;border-color:#4af}
+.cost-preview{background:#0a1a0a;border:1px solid #1a3a1a;border-radius:4px;padding:8px 12px;font-size:11px;color:#8f8;margin-bottom:10px;display:none}
+.stuck-item{background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.stuck-item-body{flex:1}
+.stuck-goal{font-size:12px;color:#ddd;margin-bottom:4px;font-weight:bold}
+.stuck-meta{font-size:11px;color:#666}
+.promo-card{background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:12px 16px;margin-bottom:10px}
+.promo-content{font-size:12px;color:#ccc;margin-bottom:8px;white-space:pre-wrap;max-height:80px;overflow:hidden}
+.promo-meta{font-size:11px;color:#666;margin-bottom:8px}
+.promo-btns{display:flex;gap:8px}
+.btn-approve{background:#0a2010;border:1px solid #2a7;color:#6f6;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px}
+.btn-approve:hover{background:#0d3018;color:#9f9}
+.btn-reject{background:#200a0a;border:1px solid #a33;color:#f66;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px}
+.btn-reject:hover{background:#300a0a;color:#f88}
+.badge-pending{background:#332;color:#fc8;padding:2px 6px;border-radius:3px;font-size:10px}
+.badge-approved{background:#142;color:#6f6;padding:2px 6px;border-radius:3px;font-size:10px}
+.badge-rejected{background:#311;color:#f66;padding:2px 6px;border-radius:3px;font-size:10px}
+.alp-add-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.alp-add-row input{flex:1;background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit}
+.alp-add-row input:focus{outline:none;border-color:#4af}
+.tab-summary{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:10px 14px;font-size:12px;color:#aaa;margin-bottom:12px;display:flex;gap:20px;flex-wrap:wrap}
+.tab-summary span{color:#eee}
+
+/* ── KB OVERLAY ── */
+.kb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:3000;display:none}
+.kb-overlay.visible{display:flex}
+.kb-box{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:24px;max-width:420px;width:90%}
+.kb-box h3{color:#eee;margin-bottom:16px;font-size:14px}
+.kb-row{display:flex;gap:12px;margin-bottom:8px;font-size:12px}
+.kb-key{background:#222;border:1px solid #444;border-radius:3px;padding:2px 8px;color:#ccc;min-width:60px;text-align:center;flex-shrink:0}
+.kb-desc{color:#888;flex:1}
+
+/* ── UNDO TOAST ── */
+.undo-toast{background:#1a2030;border-left:3px solid #4af;padding:8px 14px;border-radius:4px;font-size:12px;display:flex;align-items:center;gap:10px;max-width:360px}
+.undo-btn{background:#1a3a6a;border:1px solid #4af;color:#4af;padding:2px 8px;border-radius:3px;cursor:pointer;font:inherit;font-size:11px}
+.undo-btn:hover{background:#1f4a8a}
+.undo-count{color:#666;font-size:10px}
+
+/* ── WCCS DRILL-DOWN (Build 1 Step B) ── */
+.wccs-drill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #1a1a1a}
+.wccs-pill{background:#1a2a3a;border:1px solid #4af;color:#4af;padding:5px 16px;border-radius:20px;cursor:pointer;font:12px 'Consolas','Courier New',monospace;transition:.15s;white-space:nowrap}
+.wccs-pill:hover{background:#1a3a5a;color:#6cf}
+.wccs-pill.active{background:#0d2540;border-color:#6cf;color:#fff}
+.wccs-panel{background:#0d0d0d;border:1px solid #1a2a3a;border-radius:6px;padding:12px;margin-bottom:12px;display:none}
+.wccs-panel.open{display:block}
+
+/* ── HOME PROVIDER HEALTH DETAIL (Build 1 Step C) ── */
+.ph-inst-detail{background:#0a0a0a;border:1px solid #1a2a3a;border-radius:4px;margin-top:6px;padding:6px;display:none;min-width:200px}
+.ph-inst-detail.open{display:block}
+.ph-inst-row{display:flex;justify-content:space-between;font-size:10px;padding:2px 4px;border-bottom:1px solid #111;gap:8px}
+.ph-inst-row:last-child{border-bottom:none}
+.ph-inst-name{color:#ccc;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-inst-badge{padding:1px 5px;border-radius:3px;font-size:9px;font-weight:bold;flex-shrink:0}
+.ph-inst-time{color:#666;font-size:9px;flex-shrink:0}
+.ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px 'Consolas','Courier New',monospace;margin-top:4px;transition:.15s;width:100%}
+.ph-detail-btn:hover{background:#1a3a5a}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">MCC</div>
+  <span id="server-dot" class="server-dot unknown" title="Server status"></span>
+  <button id="btn-connect" class="btn-connect" onclick="connectData()">Connect Data</button>
+  <div class="header-spacer"></div>
+  <div class="auto-toggle-wrap">
+    <span>Auto-WCCS</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="auto-toggle" onchange="toggleAutoWccs(this.checked)">
+      <span class="toggle-slider"></span>
+    </label>
+    <span id="auto-badge-hdr" class="auto-badge auto-off">OFF</span>
+    <div class="auto-interval-wrap">
+      <span>every</span>
+      <input type="number" id="auto-interval" value="30" min="15" max="60">
+      <span>min</span>
+    </div>
+  </div>
+</div>
+
+<!-- PRESET BAR (Feature 2) -->
+<div id="preset-bar" style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:#111;border-bottom:1px solid #222;flex-wrap:wrap">
+  <span style="color:#666;font-size:11px;white-space:nowrap">Presets:</span>
+  <div id="preset-buttons" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  <input type="text" id="preset-save-name" placeholder="New preset name…" style="width:150px;font-size:11px;padding:3px 6px;background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px">
+  <button class="btn" onclick="savePreset()" style="font-size:11px;padding:3px 8px">Save</button>
+  <button class="btn" onclick="loadPresets()" style="font-size:11px;padding:3px 8px">Refresh</button>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="home">🏠 Home</button>
+  <button class="tab-btn" data-tab="wccs">💾 WCCS</button>
+  <button class="tab-btn" data-tab="diff">Diff Viewer</button>
+  <button class="tab-btn" data-tab="rewind">Rewind + Edit</button>
+  <button class="tab-btn" data-tab="sessions">Session Logs</button>
+  <button class="tab-btn" data-tab="search">HISTORY Search</button>
+  <button class="tab-btn" data-tab="autolog">Auto-Save Log</button>
+  <button class="tab-btn" data-tab="providerhealth">Provider Health</button>
+  <button class="tab-btn" data-tab="kanban">📋 Kanban</button>
+  <button class="tab-btn" data-tab="aafl-runs">🔄 AAFL Runs</button>
+  <button class="tab-btn" data-tab="scout">🔭 Scout</button>
+  <button class="tab-btn" data-tab="costs">💰 Costs</button>
+  <button class="tab-btn" data-tab="aafl-control">⚙️ AAFL Control</button>
+  <button class="tab-btn" data-tab="memory">🧠 Memory</button>
+  <button class="tab-btn" data-tab="promo">⭐ Promo</button>
+  <button class="tab-btn" data-tab="acca">⚡ ACCA</button>
+  <button class="tab-btn" data-tab="alp">🛡️ ALP</button>
+  <button class="tab-btn" data-tab="storage">💽 Storage</button>
+  <button class="tab-btn" data-tab="self-diagnosis">🔧 Self-Diagnosis</button>
+  <span id="kb-icon" title="Keyboard shortcuts (Shift+?)" style="margin-left:auto;padding:6px 10px;cursor:pointer;color:#555;font-size:14px;user-select:none" onclick="showKbHelp()">⌨</span>
+</div>
+
+<!-- ── HOME TAB ── -->
+<div class="tab-pane active" id="tab-home">
+  <div class="pane-scroll">
+
+    <!-- PHASE 3: Quick Action Buttons -->
+    <div class="home-actions">
+      <button class="btn home-act-btn" onclick="runHealthCheck()">🏥 Run Health Check</button>
+      <button class="btn home-act-btn" onclick="homeStartScout()">🔭 Start Scout</button>
+      <button class="btn home-act-btn" onclick="homeRunAafl()">🔄 Run AAFL Goal</button>
+      <button class="btn home-act-btn" onclick="saveSession()">💾 Save WCCS</button>
+    </div>
+
+    <!-- PHASE 3: Instrument Row -->
+    <div class="home-instruments" id="home-instruments">
+
+      <!-- GAUGE 1: Provider Health -->
+      <div class="inst-card" id="ph-inst-card" title="Provider Health — click to open tab" style="cursor:default">
+        <svg viewBox="0 0 120 120" width="96" height="96" style="cursor:pointer" onclick="homeCardClick('providerhealth')">
+          <circle class="gauge-track" cx="60" cy="60" r="48"
+            stroke-dasharray="226.2 75.4" transform="rotate(-225 60 60)"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="48" id="ph-arc"
+            stroke="#444" stroke-dasharray="0 301.6" transform="rotate(-225 60 60)"/>
+          <text class="gauge-text" x="60" y="58" text-anchor="middle" id="ph-val">—</text>
+          <text class="gauge-sub"  x="60" y="72" text-anchor="middle" id="ph-sub">providers</text>
+        </svg>
+        <div class="inst-label" style="cursor:pointer" onclick="homeCardClick('providerhealth')">Provider Health</div>
+        <!-- Build 1 Step C: Show Details drill-down -->
+        <button class="ph-detail-btn" id="ph-detail-btn" onclick="event.stopPropagation();phToggleDetail()">Show Details</button>
+        <div class="ph-inst-detail" id="ph-inst-detail">
+          <div id="ph-inst-rows"><div style="color:#555;font-size:10px;text-align:center;padding:4px">Loading…</div></div>
+          <div style="font-size:9px;color:#444;margin-top:4px;text-align:right" id="ph-inst-ts"></div>
+        </div>
+      </div>
+
+      <!-- GAUGE 2: AAFL Score -->
+      <div class="inst-card" onclick="homeCardClick('aafl-runs')" title="Last AAFL score — click to open tab">
+        <svg viewBox="0 0 120 120" width="96" height="96">
+          <circle class="gauge-track" cx="60" cy="60" r="48"
+            stroke-dasharray="226.2 75.4" transform="rotate(-225 60 60)"/>
+          <circle class="gauge-fill" cx="60" cy="60" r="48" id="aafl-arc"
+            stroke="#444" stroke-dasharray="0 301.6" transform="rotate(-225 60 60)"/>
+          <text class="gauge-text" x="60" y="58" text-anchor="middle" id="aafl-val">—</text>
+          <text class="gauge-sub"  x="60" y="72" text-anchor="middle" id="aafl-sub">/10</text>
+        </svg>
+        <div class="inst-label">AAFL Score</div>
+      </div>
+
+      <!-- CHART 3: Cost breakdown -->
+      <div class="inst-card" onclick="homeCardClick('costs')" title="Cost by provider — click to open tab" style="justify-content:flex-start;padding-top:16px">
+        <div class="inst-label" style="margin-bottom:8px">Costs (7d)</div>
+        <div id="cost-bars-inner" style="width:100%">
+          <div class="inst-sublabel">Loading…</div>
+        </div>
+      </div>
+
+      <!-- CHART 4: Scout sparkline -->
+      <div class="inst-card" onclick="homeCardClick('scout')" title="Scout activity — click to open tab">
+        <svg id="sparkline-svg" viewBox="0 0 120 40" width="120" height="40" style="display:block">
+          <polyline id="sparkline-line" fill="none" stroke="#4af" stroke-width="2" points="60,20"/>
+        </svg>
+        <div class="inst-label">Scout Activity (7d)</div>
+        <div class="inst-sublabel" id="scout-spark-sub">—</div>
+      </div>
+
+      <!-- BAR 5: ALP burn rate -->
+      <div class="inst-card" onclick="homeCardClick('alp')" title="ALP entries saved — click to open tab">
+        <div style="font-size:22px;font-weight:bold;color:#eee" id="alp-count-inst">—</div>
+        <div class="burn-bar-wrap" style="width:100%;margin:6px 0">
+          <div class="burn-bar-fill" id="alp-burn-fill" style="width:0%;background:#2a7"></div>
+        </div>
+        <div class="inst-label">ALP Savings</div>
+        <div class="inst-sublabel" id="alp-burn-label">entries logged</div>
+      </div>
+
+      <!-- LIGHT 6: System health traffic light -->
+      <div class="inst-card" onclick="homeCardClick('self-diagnosis')" title="System status — click for Self-Diagnosis">
+        <div class="tl-wrap">
+          <div class="tl-row">
+            <div class="tl-circle" id="tl-mcc" title="MCC Server"></div>
+            <div class="tl-dot-label">MCC Server</div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-circle" id="tl-aafl" title="AAFL Engine"></div>
+            <div class="tl-dot-label">AAFL Engine</div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-circle" id="tl-scout" title="Scout"></div>
+            <div class="tl-dot-label">Scout</div>
+          </div>
+        </div>
+        <div class="inst-label">System Status</div>
+      </div>
+
+    </div><!-- end home-instruments -->
+
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadHomeScreen()">Refresh Cards</button>
+      <span class="home-last-refresh" id="home-last-refresh">Loading...</span>
+    </div>
+    <div id="home-grid" class="home-grid"><div class="loading">Loading home screen...</div></div>
+
+    <!-- PROJECT FILES — copy STATUS.md / HISTORY.md to clipboard -->
+    <div class="wccs-section-title" style="margin-top:18px">Project Files</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+      <button class="btn" onclick="copyProjectFile('status')" title="Copy STATUS.md contents to clipboard">📋 Copy STATUS.md</button>
+      <button class="btn" onclick="copyProjectFile('history')" title="Copy HISTORY.md contents to clipboard">📋 Copy HISTORY.md</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── WCCS TAB ── -->
+<div class="tab-pane" id="tab-wccs">
+  <div class="pane-scroll">
+
+    <!-- Build 1 Step B: 5 drill-down pill buttons -->
+    <div class="wccs-drill-row">
+      <button class="wccs-pill" id="pill-autosave" onclick="wccsDrill('autosave')">Auto-Save Log</button>
+      <button class="wccs-pill" id="pill-search"   onclick="wccsDrill('search')">History Search</button>
+      <button class="wccs-pill" id="pill-sessions" onclick="wccsDrill('sessions')">Session Logs</button>
+      <button class="wccs-pill" id="pill-rewind"   onclick="wccsDrill('rewind')">Rewind + Edit</button>
+      <button class="wccs-pill" id="pill-diff"     onclick="wccsDrill('diff')">Diff Viewer</button>
+    </div>
+
+    <!-- Panel 1: Auto-Save Log -->
+    <div class="wccs-panel" id="wpanel-autosave"></div>
+
+    <!-- Panel 2: History Search -->
+    <div class="wccs-panel" id="wpanel-search">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" id="wccs-srch-input" placeholder="Search HISTORY.md and ACCA.md…"
+          style="flex:1;background:#111;border:1px solid #333;color:#ccc;padding:5px 10px;border-radius:4px;font:inherit"
+          oninput="wccsHistorySearch()">
+      </div>
+      <div id="wccs-srch-count" style="font-size:11px;color:#666;margin-bottom:6px"></div>
+      <div id="wccs-srch-results" style="max-height:300px;overflow-y:auto"></div>
+    </div>
+
+    <!-- Panel 3: Session Logs -->
+    <div class="wccs-panel" id="wpanel-sessions">
+      <div style="display:flex;gap:12px;height:280px">
+        <div id="wsess-list" style="width:200px;flex-shrink:0;overflow-y:auto;border-right:1px solid #1a1a1a;padding-right:8px"></div>
+        <div id="wsess-view" style="flex:1;overflow-y:auto;font-size:11px;white-space:pre-wrap;word-break:break-word;color:#ccc">Select a session from the left.</div>
+      </div>
+    </div>
+
+    <!-- Panel 4: Rewind + Edit -->
+    <div class="wccs-panel" id="wpanel-rewind">
+      <select id="wrewind-sel" onchange="wrewindLoad()"
+        style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;margin-bottom:8px;width:100%">
+        <option value="">— select version —</option>
+      </select>
+      <textarea id="wrewind-edit"
+        style="width:100%;height:200px;background:#0a0a0a;border:1px solid #222;color:#ccc;font:11px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:vertical"
+        placeholder="Select a version above…"></textarea>
+      <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-danger" onclick="wrewindRestore()">Restore to STATUS.md</button>
+        <span style="font-size:11px;color:#666">Current STATUS.md is backed up first.</span>
+        <span id="wrewind-msg" style="font-size:11px;color:#4af;margin-left:auto"></span>
+      </div>
+    </div>
+
+    <!-- Panel 5: Diff Viewer -->
+    <div class="wccs-panel" id="wpanel-diff">
+      <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center">
+        <span style="color:#888;font-size:11px">A:</span>
+        <select id="wdiff-a" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;flex:1;max-width:260px"></select>
+        <span style="color:#888;font-size:11px">B:</span>
+        <select id="wdiff-b" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;flex:1;max-width:260px"></select>
+        <button class="btn" onclick="wccsRunDiff()">Compare</button>
+      </div>
+      <div id="wdiff-summary" style="font-size:11px;color:#888;margin-bottom:6px"></div>
+      <div id="wdiff-out" style="max-height:300px;overflow-y:auto;font-size:11px;font-family:'Consolas','Courier New',monospace"></div>
+    </div>
+
+    <div class="wccs-top-row">
+      <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()">💾 Save Session Now</button>
+      <div class="wccs-auto-status">
+        <span>Auto-WCCS: <span id="wccs-auto-label" class="auto-badge auto-off">OFF</span></span>
+        <span class="wccs-next-label">Next save: <strong id="wccs-next-save">—</strong></span>
+      </div>
+    </div>
+
+    <div class="wccs-section-title">Chat Summary — Paste Your Session Here</div>
+    <div class="wccs-chat-wrap">
+      <textarea id="wccs-chat-input" class="wccs-chat-textarea"
+        placeholder="Paste your Claude chat summary here before saving… (Ctrl+V works here)"
+        spellcheck="false"
+        oninput="document.getElementById('wccs-chat-meta').textContent=this.value.length+' chars'"></textarea>
+      <div class="wccs-chat-meta" id="wccs-chat-meta">0 chars</div>
+    </div>
+
+    <div class="wccs-section-title">Recent Saves</div>
+    <div id="wccs-recent-list"></div>
+
+    <div class="wccs-section-title">Features</div>
+    <div class="feature-cards">
+      <div class="feature-card" onclick="goToTab('diff')">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Diff Viewer</div>
+        <div class="feature-desc">Compare any two STATUS backups</div>
+      </div>
+      <div class="feature-card" onclick="goToTab('rewind')">
+        <div class="feature-icon">⏪</div>
+        <div class="feature-name">Rewind + Edit</div>
+        <div class="feature-desc">Edit and restore old backups</div>
+      </div>
+      <div class="feature-card" onclick="goToTab('sessions')">
+        <div class="feature-icon">📋</div>
+        <div class="feature-name">Session Logs</div>
+        <div class="feature-desc">Browse archived session files</div>
+      </div>
+      <div class="feature-card" onclick="goToTab('search')">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-name">HISTORY Search</div>
+        <div class="feature-desc">Search HISTORY.md and ACCA.md</div>
+      </div>
+      <div class="feature-card" onclick="goToTab('autolog')">
+        <div class="feature-icon">🕐</div>
+        <div class="feature-name">Auto-Save Log</div>
+        <div class="feature-desc">Last 5 auto-save results</div>
+      </div>
+      <div class="feature-card" onclick="runSundayMerge()" id="sunday-merge-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-name">Sunday Auto-Merge</div>
+        <div class="feature-desc">Run merge_sessions.py now</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── DIFF TAB ── -->
+<div class="tab-pane" id="tab-diff">
+  <div class="pane-scroll">
+    <div class="diff-controls">
+      <span style="color:#888;font-size:12px">A:</span>
+      <select id="diff-sel-a"></select>
+      <span style="color:#888;font-size:12px">B:</span>
+      <select id="diff-sel-b"></select>
+      <button class="btn" onclick="runDiff()">Compare</button>
+    </div>
+    <div id="diff-output"><div class="empty-msg">Select two versions above and click Compare.</div></div>
+  </div>
+</div>
+
+<!-- ── REWIND TAB ── -->
+<div class="tab-pane" id="tab-rewind">
+  <div style="padding:12px;flex:1;display:flex;flex-direction:column;overflow:hidden;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+      <span style="color:#888;font-size:12px">Select a backup to preview and optionally edit before restoring.</span>
+      <span style="margin-left:auto" class="rewind-meta" id="rewind-meta"></span>
+    </div>
+    <div class="split-layout" style="flex:1">
+      <div class="split-left" id="rewind-list"></div>
+      <div class="split-right">
+        <textarea class="rewind-edit" id="rewind-edit" placeholder="Select a backup from the left panel…"></textarea>
+        <div class="restore-row">
+          <button class="btn btn-danger" onclick="restoreRewind()">Restore Selected</button>
+          <span style="font-size:11px;color:#666">Current STATUS.md is backed up automatically before restore.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SESSIONS TAB ── -->
+<div class="tab-pane" id="tab-sessions">
+  <div style="padding:12px;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="sessions-layout" style="flex:1">
+      <div class="session-list" id="session-list"><div class="loading">Loading…</div></div>
+      <div class="session-view" id="session-view">Select a session log from the left panel.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SEARCH TAB ── -->
+<div class="tab-pane" id="tab-search">
+  <div class="pane-scroll">
+    <div class="search-controls">
+      <input type="text" id="search-input" placeholder="Search HISTORY.md, ACCA.md, session logs…" oninput="onSearchInput()">
+      <input type="text" id="search-section" placeholder="Filter by section (optional)" style="max-width:200px" oninput="onSearchInput()">
+    </div>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- ── AUTO-LOG TAB ── -->
+<div class="tab-pane" id="tab-autolog">
+  <div class="pane-scroll">
+    <div class="autolog-settings">
+      <span>Auto-WCCS:</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="auto-toggle2" onchange="toggleAutoWccs(this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+      <span id="auto-badge2" class="auto-badge auto-off">OFF</span>
+      <span style="color:#666;margin-left:8px">Interval:</span>
+      <input type="number" id="auto-interval2" value="30" min="15" max="60" style="width:50px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;text-align:center">
+      <span style="color:#666">min</span>
+      <button class="btn" style="margin-left:4px" onclick="applyAutoInterval()">Apply</button>
+    </div>
+    <div class="wccs-section-title">Last 5 Auto-Saves</div>
+    <div id="autolog-list"></div>
+  </div>
+</div>
+
+<!-- ── PROVIDER HEALTH TAB ── -->
+<div class="tab-pane" id="tab-providerhealth">
+  <div class="pane-scroll">
+    <div class="ph-refresh-row">
+      <button class="btn" onclick="loadProviderHealth()">Refresh Now</button>
+      <span class="ph-last-run" id="ph-last-run">Never loaded — click Refresh or run: python provider_health.py</span>
+    </div>
+    <div id="ph-summary" class="ph-summary"></div>
+    <div id="ph-grid" class="ph-grid"><div class="loading">Loading provider health…</div></div>
+  </div>
+</div>
+
+<!-- ── KANBAN TAB ── -->
+<div class="tab-pane" id="tab-kanban">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadKanban()">Refresh</button>
+      <span class="home-last-refresh" id="kanban-ts"></span>
+    </div>
+    <div id="kanban-content"><div class="loading">Loading Kanban…</div></div>
+  </div>
+</div>
+
+<!-- ── AAFL RUNS TAB ── -->
+<div class="tab-pane" id="tab-aafl-runs">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadAaflRuns()">Refresh</button>
+      <span class="home-last-refresh" id="aafl-runs-ts"></span>
+    </div>
+    <div id="aafl-runs-content"><div class="loading">Loading AAFL Runs…</div></div>
+
+    <!-- Retry Log (Feature 4) -->
+    <div class="section-title" style="margin-top:16px">Retry Log <button class="btn" onclick="loadRetryLog()" style="font-size:11px;padding:2px 8px;margin-left:8px">Load</button></div>
+    <div id="retry-log-out" style="max-height:200px;overflow-y:auto;font-size:11px;color:#888;margin-top:6px"><span style="color:#555">Click Load to view retry history</span></div>
+  </div>
+</div>
+
+<!-- ── SCOUT CONTROL TAB ── -->
+<div class="tab-pane" id="tab-scout">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadScout()">Refresh</button>
+      <span class="home-last-refresh" id="scout-ts"></span>
+    </div>
+    <div id="scout-content"><div class="loading">Loading Scout…</div></div>
+
+    <!-- Timed Scout (Feature 7) -->
+    <div class="section-title" style="margin-top:16px">Timed Scout</div>
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:8px">
+      <input type="text" id="scout-timer-goal" placeholder="Scout goal…" style="flex:1;min-width:180px">
+      <input type="number" id="scout-timer-hours" placeholder="Hours (0=indefinite)" step="0.5" min="0" style="width:130px">
+      <input type="number" id="scout-timer-interval" placeholder="Interval (min)" value="30" min="5" style="width:110px">
+      <button class="btn" onclick="startScoutTimer()">Start</button>
+      <button class="btn btn-danger" onclick="stopScoutTimer()">Stop</button>
+      <button class="btn" onclick="loadScoutTimerStatus()">Status</button>
+    </div>
+    <div id="scout-timer-status" style="font-size:11px;color:#888;margin-top:6px"></div>
+
+    <!-- Source Discovery (Feature 8) -->
+    <div class="section-title" style="margin-top:16px">Source Library</div>
+    <div class="aafl-ctrl-row" style="flex-wrap:wrap;gap:8px">
+      <input type="text" id="src-lib-topic" placeholder="Filter by topic…" style="flex:1;min-width:150px">
+      <button class="btn" onclick="loadSourceLibrary()">Load</button>
+      <button class="btn" onclick="runSourceDiscovery()">Discover</button>
+    </div>
+    <div id="source-library-out" style="max-height:200px;overflow-y:auto;margin-top:8px;font-size:11px;color:#ccc"></div>
+    <!-- Quick add source -->
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+      <input type="text" id="src-add-url" placeholder="URL to add…" style="flex:1;min-width:180px;font-size:11px">
+      <input type="text" id="src-add-desc" placeholder="Description…" style="flex:1;min-width:150px;font-size:11px">
+      <button class="btn" onclick="addSource()" style="font-size:11px">+ Add Source</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── COSTS TAB ── -->
+<div class="tab-pane" id="tab-costs">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadCosts()">Refresh</button>
+      <span class="home-last-refresh" id="costs-ts"></span>
+    </div>
+    <div id="costs-content"><div class="loading">Loading Costs…</div></div>
+  </div>
+</div>
+
+<!-- ── AAFL CONTROL TAB ── -->
+<div class="tab-pane" id="tab-aafl-control">
+  <div class="pane-scroll">
+
+    <div class="section-title">Run Now</div>
+    <div class="aafl-ctrl-row">
+      <input type="text" id="run-now-goal" placeholder="Enter goal text…">
+      <select id="run-now-provider">
+        <option value="auto">Auto (Best Free)</option>
+        <option value="mistral">Mistral</option>
+        <option value="cerebras">Cerebras</option>
+        <option value="gemini">Gemini</option>
+        <option value="openrouter">OpenRouter</option>
+        <option value="cohere">Cohere</option>
+        <option value="huggingface">HuggingFace</option>
+      </select>
+      <button class="btn" id="btn-run-now" onclick="runNow()">▶ Run Now</button>
+    </div>
+    <div class="cost-preview" id="cost-preview"></div>
+    <div id="run-now-status"></div>
+
+    <!-- Smart Suggester (Feature 5) -->
+    <div class="section-title" style="margin-top:12px">Smart Suggester</div>
+    <div class="aafl-ctrl-row">
+      <button class="btn" onclick="suggestProvider()">Suggest Provider</button>
+      <span id="suggest-result" style="color:#4af;font-size:12px;margin-left:8px"></span>
+    </div>
+
+    <!-- Chain Mode (Feature 6) -->
+    <div class="section-title" style="margin-top:12px">Chain Mode</div>
+    <div class="aafl-ctrl-row">
+      <button class="btn" id="btn-run-chain" onclick="runChain()">Run Chain</button>
+      <button class="btn" onclick="loadChainStatus()">Status</button>
+      <button class="btn" onclick="loadChainLog()">Log</button>
+      <span id="chain-status-badge" style="color:#4af;font-size:12px;margin-left:8px"></span>
+    </div>
+    <div id="chain-log-out" style="max-height:120px;overflow-y:auto;margin-top:6px;font-size:11px;color:#888"></div>
+
+    <!-- AAFL Settings (Feature 3) -->
+    <div class="section-title" style="margin-top:12px">AAFL Settings</div>
+    <div id="aafl-settings-form" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:500px">
+      <label style="color:#888;font-size:12px">Confidence Threshold</label>
+      <input type="number" id="as-confidence" step="0.1" min="0" max="10" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:3px 6px;font-size:12px">
+      <label style="color:#888;font-size:12px">Cost Cap (USD)</label>
+      <input type="number" id="as-cost-cap" step="0.01" min="0" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:3px 6px;font-size:12px">
+      <label style="color:#888;font-size:12px">Max Retries</label>
+      <input type="number" id="as-max-retries" step="1" min="1" max="10" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:3px 6px;font-size:12px">
+    </div>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button class="btn" onclick="loadAaflSettings()">Load</button>
+      <button class="btn" onclick="saveAaflSettings()">Save</button>
+      <span id="aafl-settings-msg" style="color:#4af;font-size:12px"></span>
+    </div>
+
+    <!-- Stuck Inbox -->
+    <div class="section-title" style="margin-top:12px">Stuck Inbox <span id="stuck-count-badge" style="background:#a33;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;vertical-align:middle;display:none"></span></div>
+    <!-- Feature 9: severity summary + bulk resolve -->
+    <div id="stuck-severity-bar" style="display:flex;gap:8px;margin-bottom:8px;font-size:11px;align-items:center">
+      <span id="stuck-high-pill" style="background:#a33;color:#fff;border-radius:10px;padding:1px 7px;display:none">High: 0</span>
+      <span id="stuck-medium-pill" style="background:#a80;color:#fff;border-radius:10px;padding:1px 7px;display:none">Med: 0</span>
+      <span id="stuck-low-pill" style="background:#393;color:#fff;border-radius:10px;padding:1px 7px;display:none">Low: 0</span>
+      <button class="btn" onclick="bulkResolveStuck()" style="font-size:11px;padding:2px 8px;margin-left:auto">Bulk Resolve All</button>
+    </div>
+    <div id="stuck-inbox-list"><div class="loading">Loading…</div></div>
+
+  </div>
+</div>
+
+<!-- ── MEMORY TAB ── -->
+<div class="tab-pane" id="tab-memory">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadMemory()">Refresh</button>
+      <div id="memory-summary" class="tab-summary" style="flex:1;margin:0"></div>
+    </div>
+
+    <div class="section-title">Knowledge Bank</div>
+    <input type="text" class="search-box" id="memory-search-kb" placeholder="Search knowledge…" oninput="filterMemoryTable('kb-table', this.value)">
+    <div style="overflow-x:auto">
+      <table class="data-table" id="kb-table">
+        <thead><tr><th>ID</th><th>Title</th><th>Content Preview</th><th>Source</th><th>Timestamp</th></tr></thead>
+        <tbody id="kb-tbody"><tr><td colspan="5" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Solution Log</div>
+    <input type="text" class="search-box" id="memory-search-sol" placeholder="Search solutions…" oninput="filterMemoryTable('sol-table', this.value)">
+    <div style="overflow-x:auto">
+      <table class="data-table" id="sol-table">
+        <thead><tr><th>ID</th><th>Goal</th><th>Solution Preview</th><th>Score</th><th>Provider</th><th>Timestamp</th></tr></thead>
+        <tbody id="sol-tbody"><tr><td colspan="6" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Source Reputation</div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="src-table">
+        <thead><tr><th>Source URL</th><th>Reputation Score</th><th>Times Used</th><th>Last Used</th></tr></thead>
+        <tbody id="src-tbody"><tr><td colspan="4" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROMO TAB ── -->
+<div class="tab-pane" id="tab-promo">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadPromo()">Refresh</button>
+      <span id="promo-count-label" class="home-last-refresh"></span>
+    </div>
+    <div id="promo-list"><div class="loading">Loading…</div></div>
+  </div>
+</div>
+
+<!-- ── ACCA TAB ── -->
+<div class="tab-pane" id="tab-acca">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadAcca()">Refresh</button>
+      <span id="acca-count-label" class="home-last-refresh"></span>
+    </div>
+    <input type="text" class="search-box" id="acca-search" placeholder="Search codes…" oninput="filterAcca(this.value)">
+    <div style="overflow-x:auto">
+      <table class="data-table" id="acca-table">
+        <thead><tr><th>Code</th><th>Meaning</th><th>Date Added</th></tr></thead>
+        <tbody id="acca-tbody"><tr><td colspan="3" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── ALP TAB ── -->
+<div class="tab-pane" id="tab-alp">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadAlp()">Refresh</button>
+      <span id="alp-count-label" class="home-last-refresh"></span>
+    </div>
+
+    <div class="section-title">Add New ALP Entry</div>
+    <div class="alp-add-row">
+      <input type="text" id="alp-entry-input" placeholder="Describe the saving / lesson learned…">
+      <button class="btn" id="btn-alp-add" onclick="alpAdd()">+ Add Entry</button>
+    </div>
+
+    <div class="section-title">ALP Database</div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="alp-table">
+        <thead><tr><th>#</th><th>Col 1</th><th>Col 2</th><th>Col 3</th><th>Col 4</th></tr></thead>
+        <tbody id="alp-tbody"><tr><td colspan="5" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ── STORAGE TAB ── (Feature 10) -->
+<div class="tab-pane" id="tab-storage">
+  <div class="pane-scroll">
+    <div class="home-ctrl">
+      <button class="btn" onclick="loadStorage()">Refresh</button>
+      <button class="btn" onclick="loadStorageReport()">Weekly Report</button>
+      <span class="home-last-refresh" id="storage-ts"></span>
+    </div>
+    <div id="storage-slots" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:12px"></div>
+    <div id="storage-report-out" style="margin-top:16px"></div>
+  </div>
+</div>
+
+<!-- ── SELF-DIAGNOSIS TAB ── (Scott's internal cockpit — not in commercial version) -->
+<div class="tab-pane" id="tab-self-diagnosis">
+  <div class="pane-scroll">
+
+    <!-- SECTION 1: Last MOT Results -->
+    <div class="sd-section">
+      <div class="section-title">Last MOT Results</div>
+      <div class="sd-mot-row">
+        <div id="sd-mot-summary">
+          <div class="sd-mot-score" id="sd-mot-score">—</div>
+          <div class="sd-mot-sub" id="sd-mot-sub">No MOT run yet</div>
+        </div>
+        <button class="btn" id="btn-run-mot" onclick="sdRunMot()">🔍 Run Full MOT</button>
+      </div>
+      <div class="sd-bar-wrap" id="sd-bar-wrap" style="display:none">
+        <div class="sd-bar-fill" id="sd-bar-fill" style="width:0%"></div>
+      </div>
+      <div id="sd-mot-failures"></div>
+    </div>
+
+    <!-- SECTION 1b: Module Manager (Feature 1) -->
+    <div class="sd-section">
+      <div class="section-title">Module Manager <button class="btn" onclick="loadModules()" style="font-size:11px;padding:2px 8px;margin-left:8px">Refresh</button></div>
+      <div id="module-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:8px"><div class="loading">Loading…</div></div>
+    </div>
+
+    <!-- SECTION 2: Known Issues -->
+    <div class="sd-section">
+      <div class="section-title">Known Issues</div>
+      <div class="sd-issue-add">
+        <input type="text" id="sd-issue-desc" placeholder="Describe the issue…">
+        <select id="sd-issue-sev">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button class="btn" onclick="sdAddIssue()">+ Add</button>
+      </div>
+      <div id="sd-issues-list"><div class="loading">Loading…</div></div>
+    </div>
+
+    <!-- SECTION 3: System Info -->
+    <div class="sd-section">
+      <div class="section-title">System Info</div>
+      <div id="sd-sysinfo-grid" class="sd-sysinfo-grid">
+        <div class="loading">Loading…</div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: File Health -->
+    <div class="sd-section">
+      <div class="section-title">
+        File Health
+        <span style="color:#555;font-weight:normal;font-size:11px;margin-left:8px">click header to sort</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="sd-files-table">
+          <thead>
+            <tr>
+              <th onclick="sdSortFiles('name')" style="cursor:pointer">File ⇅</th>
+              <th onclick="sdSortFiles('lines')" style="cursor:pointer">Lines ⇅</th>
+              <th onclick="sdSortFiles('modified')" style="cursor:pointer">Modified ⇅</th>
+              <th onclick="sdSortFiles('import_ok')" style="cursor:pointer">Import ⇅</th>
+            </tr>
+          </thead>
+          <tbody id="sd-files-tbody">
+            <tr><td colspan="4" style="text-align:center;color:#555">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- KB HELP OVERLAY -->
+<div class="kb-overlay" id="kb-overlay" onclick="if(event.target===this)closeKbHelp()">
+  <div class="kb-box">
+    <h3>Keyboard Shortcuts</h3>
+    <div class="kb-row"><span class="kb-key">1 – 9</span><span class="kb-desc">Jump to tab 1–9</span></div>
+    <div class="kb-row"><span class="kb-key">R</span><span class="kb-desc">Refresh current tab data</span></div>
+    <div class="kb-row"><span class="kb-key">C</span><span class="kb-desc">Connect Data</span></div>
+    <div class="kb-row"><span class="kb-key">Esc</span><span class="kb-desc">Close overlay / dialog</span></div>
+    <div class="kb-row"><span class="kb-key">Shift+?</span><span class="kb-desc">Show this help</span></div>
+    <div style="margin-top:16px">
+      <button class="btn" onclick="closeKbHelp()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-btns">
+      <button class="btn" id="confirm-yes" style="min-width:72px">Yes</button>
+      <button class="btn btn-danger" id="confirm-no" style="min-width:72px">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<script>
+'use strict';
+
+const S = {
+  timeline: [],
+  autoWccs: { active: false, interval: 30, last_save: null, next_in_s: null, log: [] },
+  countdown: null,
+};
+
+function esc(s) {
+  return String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function apiFetch(url, opts = {}) {
+  const defaults = {};
+  if (opts.body && !opts.headers) defaults.headers = {'Content-Type':'application/json'};
+  const res = await fetch(url, {...defaults, ...opts});
+  return res.json();
+}
+
+function toast(msg, type = 'ok', duration = 3000) {
+  const c = document.getElementById('toast-container');
+  const d = document.createElement('div');
+  d.className = 'toast ' + type;
+  d.textContent = msg;
+  c.appendChild(d);
+  setTimeout(() => d.remove(), duration);
+}
+
+function showConfirmDialog(msg) {
+  return new Promise(resolve => {
+    const overlay = document.getElementById('confirm-overlay');
+    document.getElementById('confirm-msg').textContent = msg;
+    overlay.classList.add('visible');
+    const yes = document.getElementById('confirm-yes');
+    const no  = document.getElementById('confirm-no');
+    const cleanup = val => {
+      overlay.classList.remove('visible');
+      yes.removeEventListener('click', onYes);
+      no.removeEventListener('click', onNo);
+      resolve(val);
+    };
+    const onYes = () => cleanup(true);
+    const onNo  = () => cleanup(false);
+    yes.addEventListener('click', onYes);
+    no.addEventListener('click', onNo);
+  });
+}
+
+function goToTab(name) {
+  const btn = document.querySelector('.tab-btn[data-tab="' + name + '"]');
+  if (btn) btn.click();
+}
+
+function initTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById('tab-' + btn.dataset.tab);
+      if (pane) pane.classList.add('active');
+      if (btn.dataset.tab === 'home') loadHomeScreen();
+      if (btn.dataset.tab === 'wccs') renderWccsTab();
+      if (btn.dataset.tab === 'autolog') { syncAutoLog(); renderAutoLog(); }
+      if (btn.dataset.tab === 'sessions') loadSessionLogs();
+      if (btn.dataset.tab === 'diff') populateDiffSelectors();
+      if (btn.dataset.tab === 'rewind') renderRewindList();
+      if (btn.dataset.tab === 'providerhealth') loadProviderHealth();
+      if (btn.dataset.tab === 'kanban') loadKanban();
+      if (btn.dataset.tab === 'aafl-runs') loadAaflRuns();
+      if (btn.dataset.tab === 'scout') loadScout();
+      if (btn.dataset.tab === 'costs') loadCosts();
+      if (btn.dataset.tab === 'aafl-control') { loadStuckInbox(); updateCostPreview(); }
+      if (btn.dataset.tab === 'memory') loadMemory();
+      if (btn.dataset.tab === 'promo') loadPromo();
+      if (btn.dataset.tab === 'acca') loadAcca();
+      if (btn.dataset.tab === 'alp') loadAlp();
+      if (btn.dataset.tab === 'self-diagnosis') { loadSelfDiagnosis(); loadModules(); }
+      if (btn.dataset.tab === 'storage') loadStorage();
+      if (btn.dataset.tab === 'aafl-control') { loadStuckSummary(); }
+    });
+  });
+}
+
+// ── TIMELINE ──────────────────────────────────────────────────────────────────
+
+async function loadTimeline() {
+  try {
+    const data = await apiFetch('/api/timeline');
+    S.timeline = data.points || [];
+  } catch (e) {
+    console.warn('Timeline load failed:', e.message);
+  }
+}
+
+// ── AUTO-WCCS ─────────────────────────────────────────────────────────────────
+
+async function loadAutoWccs() {
+  try {
+    const data = await apiFetch('/api/auto-wccs');
+    S.autoWccs = data;
+    S.countdown = data.next_in_s;
+  } catch (e) {
+    console.warn('Auto-WCCS load failed:', e.message);
+  }
+}
+
+function syncAutoUi() {
+  const active = S.autoWccs.active;
+  ['auto-toggle','auto-toggle2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = active;
+  });
+  ['auto-badge-hdr','auto-badge2','wccs-auto-label'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = active ? 'ON' : 'OFF';
+    el.className = 'auto-badge ' + (active ? 'auto-on' : 'auto-off');
+  });
+  const ivEl = document.getElementById('auto-interval2');
+  if (ivEl) ivEl.value = S.autoWccs.interval;
+}
+
+function syncAutoLog() {
+  const ivEl = document.getElementById('auto-interval');
+  if (ivEl) ivEl.value = S.autoWccs.interval;
+}
+
+async function toggleAutoWccs(checked) {
+  const interval = parseInt(document.getElementById('auto-interval')?.value || '30');
+  try {
+    const data = await apiFetch('/api/auto-wccs', {
+      method: 'POST',
+      body: JSON.stringify({ action: checked ? 'start' : 'stop', interval }),
+    });
+    S.autoWccs.active   = data.active;
+    S.autoWccs.interval = data.interval;
+    toast(data.active ? 'Auto-WCCS started' : 'Auto-WCCS stopped', 'ok');
+    await loadAutoWccs();
+    syncAutoUi();
+    renderWccsTab();
+    renderAutoLog();
+  } catch (e) {
+    toast('Toggle failed: ' + e.message, 'error');
+  }
+}
+
+async function applyAutoInterval() {
+  const iv = parseInt(document.getElementById('auto-interval2')?.value || '30');
+  if (S.autoWccs.active) {
+    await toggleAutoWccs(false);
+    document.getElementById('auto-interval').value = iv;
+    await toggleAutoWccs(true);
+  } else {
+    document.getElementById('auto-interval').value = iv;
+    toast('Interval set to ' + iv + ' min (activate Auto-WCCS to use it)', 'ok');
+  }
+}
+
+// ── WCCS TAB RENDER ───────────────────────────────────────────────────────────
+
+function renderWccsTab() {
+  syncAutoUi();
+
+  const nextSave = document.getElementById('wccs-next-save');
+  if (nextSave) {
+    if (S.countdown != null && S.autoWccs.active) {
+      const m = Math.floor(S.countdown / 60);
+      const s = S.countdown % 60;
+      nextSave.textContent = m + ':' + String(s).padStart(2,'0');
+    } else {
+      nextSave.textContent = '—';
+    }
+  }
+
+  const list = document.getElementById('wccs-recent-list');
+  if (!list) return;
+  const recent = S.timeline.slice().reverse().slice(0, 5);
+  if (!recent.length) {
+    list.innerHTML = '<div class="empty-msg">No saves yet — click Save Session Now to create the first one.</div>';
+    return;
+  }
+  list.innerHTML = recent.map((pt, i) => {
+    const idx = S.timeline.length - 1 - i;
+    return '<div class="wccs-recent-entry" onclick="selectPoint(' + idx + '); goToTab(\'diff\')">' +
+      '<span class="log-dot ' + (pt.pass ? 'ok' : 'fail') + '"></span>' +
+      '<span class="log-time">' + esc(pt.date_display) + '</span>' +
+      '<span class="log-trigger" style="flex:1">' + pt.line_count + ' lines</span>' +
+      '<span class="log-status ' + (pt.pass ? 'ok' : 'fail') + '">' + (pt.pass ? 'PASS' : 'FAIL') + '</span>' +
+      '</div>';
+  }).join('');
+}
+
+// ── SAVE SESSION ──────────────────────────────────────────────────────────────
+
+let _selectedPoint = null;
+function selectPoint(idx) { _selectedPoint = idx; }
+
+async function saveSession() {
+  const chatInput = document.getElementById('wccs-chat-input');
+  const chatText  = chatInput ? chatInput.value.trim() : '';
+
+  if (!chatText) {
+    try {
+      const caps = await apiFetch('/captures');
+      if (!caps.content || !caps.content.trim()) {
+        const proceed = await showConfirmDialog(
+          'No captures yet — save will have empty history. Continue?'
+        );
+        if (!proceed) return;
+      }
+    } catch { /* network error — proceed anyway */ }
+  }
+
+  const btn = document.getElementById('btn-wccs-hub');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Saving…'; }
+
+  try {
+    const body = chatText ? { chat: chatText } : {};
+    const res  = await apiFetch('/api/wccs', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      toast('Session saved — PASS', 'ok', 4000);
+      if (chatInput) chatInput.value = '';
+      const meta = document.getElementById('wccs-chat-meta');
+      if (meta) meta.textContent = '0 chars';
+      await loadTimeline();
+      renderWccsTab();
+    } else {
+      const detail = res.error || (res.stdout ? res.stdout.slice(0, 100) : 'unknown');
+      toast('Save failed: ' + detail, 'error', 6000);
+    }
+  } catch (e) {
+    toast('Save error: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Save Session Now'; }
+  }
+}
+
+// ── DIFF TAB ──────────────────────────────────────────────────────────────────
+
+function populateDiffSelectors() {
+  const selA = document.getElementById('diff-sel-a');
+  const selB = document.getElementById('diff-sel-b');
+  if (!selA || !selB) return;
+  const base = [
+    '<option value="current">Current STATUS.md</option>',
+    '<option value="previous">Latest Backup</option>',
+  ];
+  const pts  = S.timeline.slice().reverse().map(pt =>
+    '<option value="' + esc(pt.filename) + '">' +
+    esc(pt.date_display) + ' (' + pt.line_count + 'L)</option>'
+  );
+  const html = base.concat(pts).join('');
+  selA.innerHTML = html;
+  selB.innerHTML = html;
+  if (selB.options.length > 1) selB.selectedIndex = 1;
+}
+
+async function runDiff() {
+  const a = document.getElementById('diff-sel-a')?.value || 'current';
+  const b = document.getElementById('diff-sel-b')?.value || 'previous';
+  const out = document.getElementById('diff-output');
+  if (out) out.innerHTML = '<div class="loading">Loading diff…</div>';
+  try {
+    const data = await apiFetch('/api/diff?a=' + encodeURIComponent(a) + '&b=' + encodeURIComponent(b));
+    renderDiff(data);
+  } catch (e) {
+    if (out) out.innerHTML = '<div class="error-msg">Diff failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderDiff(data) {
+  const out = document.getElementById('diff-output');
+  if (!out) return;
+  const s = data.summary;
+  const changes = data.hunks.filter(h => h.type !== 'equal');
+  if (!changes.length) {
+    out.innerHTML = '<div class="diff-summary">Files are identical.</div>';
+    return;
+  }
+  let html = '<div class="diff-summary">+' + s.added + ' added &nbsp; -' + s.removed +
+             ' removed &nbsp; ~' + s.changed + ' changed</div>';
+  html += '<table class="diff-table">';
+  for (const h of changes) {
+    const cls = h.type === 'added' ? 'diff-add' : h.type === 'removed' ? 'diff-del' : 'diff-chg';
+    html += '<tr class="' + cls + '">' +
+      '<td class="diff-ln">' + (h.ln_a ?? '') + '</td>' +
+      '<td class="diff-text">' + esc(h.text_a) + '</td>' +
+      '<td class="diff-ln">' + (h.ln_b ?? '') + '</td>' +
+      '<td class="diff-text">' + esc(h.text_b) + '</td>' +
+      '</tr>';
+  }
+  html += '</table>';
+  out.innerHTML = html;
+}
+
+// ── REWIND TAB ────────────────────────────────────────────────────────────────
+
+let _rewindSelected = null;
+
+function renderRewindList() {
+  const list = document.getElementById('rewind-list');
+  if (!list) return;
+  if (!S.timeline.length) {
+    list.innerHTML = '<div class="empty-msg">No backups yet.</div>';
+    return;
+  }
+  list.innerHTML = S.timeline.slice().reverse().map(pt =>
+    '<div class="rewind-entry' + (pt.filename === _rewindSelected ? ' selected' : '') + '"' +
+    ' onclick="selectRewind(\'' + esc(pt.filename) + '\')">' +
+    '<span class="log-dot ' + (pt.pass ? 'ok' : 'fail') + '"></span>' +
+    '<span style="font-size:12px">' + esc(pt.date_display) + '</span>' +
+    '<span style="margin-left:auto;opacity:.5;font-size:11px">' + pt.line_count + 'L</span>' +
+    '</div>'
+  ).join('');
+}
+
+async function selectRewind(filename) {
+  _rewindSelected = filename;
+  renderRewindList();
+  try {
+    const data = await apiFetch('/api/backup?f=' + encodeURIComponent(filename));
+    const edit = document.getElementById('rewind-edit');
+    const meta = document.getElementById('rewind-meta');
+    if (edit) edit.value = data.content || '';
+    if (meta) meta.textContent = data.line_count + ' lines · ' +
+      (Math.round(data.size_bytes / 102.4) / 10).toFixed(1) + ' KB';
+  } catch (e) {
+    toast('Load failed: ' + e.message, 'error');
+  }
+}
+
+async function restoreRewind() {
+  if (!_rewindSelected) { toast('Select a backup first', 'error'); return; }
+  const edit    = document.getElementById('rewind-edit');
+  const content = edit ? edit.value : null;
+  const proceed = await showConfirmDialog(
+    'Restore ' + _rewindSelected + '? The current STATUS.md will be backed up first.'
+  );
+  if (!proceed) return;
+  try {
+    const res = await apiFetch('/api/restore', {
+      method: 'POST',
+      body: JSON.stringify({ filename: _rewindSelected, content }),
+    });
+    if (res.ok) {
+      toast('Restored — ' + res.line_count + ' lines', 'ok', 4000);
+      await loadTimeline();
+      renderRewindList();
+    } else {
+      toast('Restore failed: ' + (res.error || 'unknown'), 'error');
+    }
+  } catch (e) {
+    toast('Restore error: ' + e.message, 'error');
+  }
+}
+
+// ── SESSIONS TAB ──────────────────────────────────────────────────────────────
+
+async function loadSessionLogs() {
+  const list = document.getElementById('session-list');
+  if (list) list.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const data = await apiFetch('/api/session-logs');
+    renderSessionList(data.logs || []);
+  } catch (e) {
+    if (list) list.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderSessionList(logs) {
+  const list = document.getElementById('session-list');
+  if (!list) return;
+  if (!logs.length) {
+    list.innerHTML = '<div class="empty-msg">No session logs in archive_dead/session_logs/.</div>';
+    return;
+  }
+  list.innerHTML = logs.map(l =>
+    '<div class="session-entry" onclick="loadSessionLog(\'' + esc(l.filename) + '\')">' +
+    '<div class="session-name">' + esc(l.filename) + '</div>' +
+    '<div class="session-meta">' + l.line_count + ' lines · ' + esc(l.mtime.slice(0,10)) + '</div>' +
+    '<div class="session-preview">' + esc(l.preview) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function loadSessionLog(filename) {
+  const view = document.getElementById('session-view');
+  if (view) view.textContent = 'Loading…';
+  try {
+    const data = await apiFetch('/api/session-log?f=' + encodeURIComponent(filename));
+    if (view) view.textContent = data.content || '';
+  } catch (e) {
+    if (view) view.textContent = 'Load failed: ' + e.message;
+  }
+}
+
+// ── SEARCH TAB ────────────────────────────────────────────────────────────────
+
+let _searchTimer = null;
+function onSearchInput() {
+  clearTimeout(_searchTimer);
+  _searchTimer = setTimeout(runSearch, 400);
+}
+
+async function runSearch() {
+  const q       = document.getElementById('search-input')?.value.trim() || '';
+  const section = document.getElementById('search-section')?.value.trim() || '';
+  const out     = document.getElementById('search-results');
+  if (!q) { if (out) out.innerHTML = ''; return; }
+  try {
+    const data = await apiFetch(
+      '/api/search?q=' + encodeURIComponent(q) + '&section=' + encodeURIComponent(section)
+    );
+    renderSearchResults(data.results || [], data.count);
+  } catch (e) {
+    if (out) out.innerHTML = '<div class="error-msg">Search failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderSearchResults(results, count) {
+  const out = document.getElementById('search-results');
+  if (!out) return;
+  if (!results.length) {
+    out.innerHTML = '<div class="empty-msg">No results found.</div>';
+    return;
+  }
+  out.innerHTML = '<div class="search-count">' + count + ' result' + (count !== 1 ? 's' : '') + '</div>' +
+    results.map(r =>
+      '<div class="search-result">' +
+      '<div class="search-source">' + esc(r.source) + ' · line ' + r.line_n + '</div>' +
+      '<div class="search-match">' + esc(r.match) + '</div>' +
+      r.after.map(l => '<div class="search-ctx">' + esc(l) + '</div>').join('') +
+      '</div>'
+    ).join('');
+}
+
+// ── AUTO-LOG TAB ──────────────────────────────────────────────────────────────
+
+function renderAutoLog() {
+  const list = document.getElementById('autolog-list');
+  if (!list) return;
+  const log = S.autoWccs.log || [];
+  if (!log.length) {
+    list.innerHTML = '<div class="empty-msg">No auto-saves recorded yet.</div>';
+    return;
+  }
+  list.innerHTML = log.map(e =>
+    '<div class="log-entry">' +
+    '<span class="log-dot ' + (e.ok ? 'ok' : 'fail') + '"></span>' +
+    '<span class="log-time">' + esc(e.time) + '</span>' +
+    '<span class="log-trigger" style="flex:1">' + esc(e.trigger) + '</span>' +
+    '<span class="log-status ' + (e.ok ? 'ok' : 'fail') + '">' + (e.ok ? 'PASS' : 'FAIL') + '</span>' +
+    '</div>'
+  ).join('');
+}
+
+// ── COUNTDOWN TICK ────────────────────────────────────────────────────────────
+
+setInterval(() => {
+  if (S.countdown != null && S.autoWccs.active) {
+    S.countdown = Math.max(0, S.countdown - 1);
+    const el = document.getElementById('wccs-next-save');
+    if (el) {
+      const m = Math.floor(S.countdown / 60);
+      const s = S.countdown % 60;
+      el.textContent = m + ':' + String(s).padStart(2,'0');
+    }
+  }
+}, 1000);
+
+// ── SECTION 1: SERVER CONNECT BUTTON + STATUS DOT ────────────────────────────
+
+function _setServerDot(live) {
+  const dot = document.getElementById('server-dot');
+  if (!dot) return;
+  dot.className = 'server-dot ' + (live === true ? 'live' : live === false ? 'dead' : 'unknown');
+  dot.title = live === true ? 'Server live' : live === false ? 'Server offline' : 'Checking...';
+}
+
+async function checkServerAlive() {
+  try {
+    await fetch('/status', { method: 'GET' });
+    _setServerDot(true);
+    return true;
+  } catch (e) {
+    _setServerDot(false);
+    return false;
+  }
+}
+
+async function connectData() {
+  const btn = document.getElementById('btn-connect');
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.className = 'btn-connect connecting';
+  btn.innerHTML = '<span class="btn-spinner"></span>Connecting...';
+  try {
+    const alive = await checkServerAlive();
+    if (alive) {
+      btn.className = 'btn-connect connected';
+      btn.innerHTML = 'Connected &#10003;';
+      setTimeout(() => { btn.className = 'btn-connect'; btn.innerHTML = 'Connect Data'; btn.disabled = false; }, 3000);
+      loadHomeScreen();
+      loadHomeInstruments();
+    } else {
+      throw new Error('offline');
+    }
+  } catch (e) {
+    btn.className = 'btn-connect failed';
+    btn.innerHTML = 'Server offline - start mcc_server.py';
+    setTimeout(() => { btn.className = 'btn-connect'; btn.innerHTML = 'Connect Data'; btn.disabled = false; }, 5000);
+  }
+}
+
+setInterval(checkServerAlive, 10000);
+
+// ── SECTION 2: HOME SCREEN ────────────────────────────────────────────────────
+
+const HOME_CARD_FILES = [
+  { file: 'provider_health.json', tabId: 'providerhealth' },
+  { file: 'aafl_runs.json',       tabId: 'aafl-runs'      },
+  { file: 'scout.json',           tabId: 'scout'           },
+  { file: 'kanban.json',          tabId: 'kanban'          },
+  { file: 'costs.json',           tabId: 'costs'           },
+  { file: 'wccs.json',            tabId: 'wccs'            },
+  { file: 'aafl_control.json',    tabId: 'aafl-control'    },
+];
+
+function homeCardClick(tabId) {
+  const btn = document.querySelector('.tab-btn[data-tab="' + tabId + '"]');
+  if (btn) { btn.click(); }
+  else { toast('"' + tabId + '" tab is not available yet', 'error', 3000); }
+}
+
+async function loadHomeScreen() {
+  const grid    = document.getElementById('home-grid');
+  const refresh = document.getElementById('home-last-refresh');
+  if (!grid) return;
+
+  // Fetch all card data in parallel, never crash on failure
+  const cardData = await Promise.all(HOME_CARD_FILES.map(async def => {
+    try {
+      const d = await apiFetch('/dashboard-data/' + def.file);
+      return { ...d, _tabId: def.tabId, _ok: true };
+    } catch (e) {
+      return {
+        tab_name: def.file.replace('.json','').replace(/_/g,' '),
+        tab_id: def.tabId, icon: '?', status: 'red',
+        facts: ['No data — server may be offline'],
+        last_updated: null, _tabId: def.tabId, _ok: false,
+      };
+    }
+  }));
+
+  renderHomeCards(cardData);
+  if (refresh) refresh.textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
+}
+
+function renderHomeCards(cards) {
+  const grid = document.getElementById('home-grid');
+  if (!grid) return;
+
+  let html = cards.map(c => {
+    const status  = (c.status || 'grey').toLowerCase();
+    const facts   = Array.isArray(c.facts) ? c.facts.filter(Boolean) : [];
+    const updated = c.last_updated ? c.last_updated.replace('T',' ').slice(0,16) : null;
+    const tabId   = c._tabId || c.tab_id || '';
+    const icon    = c.icon || '?';
+    const title   = c.tab_name || tabId;
+
+    const factsHtml = facts.length
+      ? facts.map(f => '<div class="home-fact">' + esc(f) + '</div>').join('')
+      : '<div class="home-fact-none">No data yet</div>';
+
+    return '<div class="home-card" onclick="homeCardClick(\'' + tabId + '\')" title="Go to ' + esc(title) + '">' +
+      '<div class="home-card-hdr">' +
+      '<span class="home-card-icon">' + esc(icon) + '</span>' +
+      '<span class="home-card-title">' + esc(title) + '</span>' +
+      '<span class="hc-dot ' + status + '"></span>' +
+      '</div>' +
+      '<div class="home-facts">' + factsHtml + '</div>' +
+      (updated ? '<div class="home-ts">' + esc(updated) + '</div>' : '') +
+      '</div>';
+  }).join('');
+
+  // 3 empty placeholder slots
+  for (let i = 0; i < 3; i++) {
+    html += '<div class="home-card slot">' +
+      '<div class="home-card-hdr">' +
+      '<span class="home-card-icon" style="opacity:.25">+</span>' +
+      '<span class="home-card-title" style="color:#333">Empty Slot</span>' +
+      '</div>' +
+      '<div class="home-slot-text">Future feature &#8212; plug in later</div>' +
+      '</div>';
+  }
+
+  grid.innerHTML = html;
+}
+
+// ── PROVIDER HEALTH TAB ──────────────────────────────────────────────────────
+
+async function loadProviderHealth() {
+  const grid    = document.getElementById('ph-grid');
+  const summary = document.getElementById('ph-summary');
+  const lastRun = document.getElementById('ph-last-run');
+  if (grid) grid.innerHTML = '<div class="loading">Fetching health data…</div>';
+  try {
+    const data = await apiFetch('/health-status');
+    if (!data.providers || !data.providers.length) {
+      if (grid) grid.innerHTML = '<div class="empty-msg">No health data yet. Run: <code>python provider_health.py</code></div>';
+      if (lastRun) lastRun.textContent = data.message || 'No data available.';
+      return;
+    }
+    if (lastRun) lastRun.textContent = 'Last run: ' + (data.generated_at || 'unknown');
+
+    // Summary counts
+    const counts = {GREEN:0,YELLOW:0,RED:0,COOLING:0,DEAD:0,NO_KEY:0,SKIP:0};
+    data.providers.forEach(p => { if (counts[p.status] !== undefined) counts[p.status]++; else counts.DEAD++; });
+    if (summary) {
+      summary.innerHTML = ['GREEN','YELLOW','RED','COOLING','DEAD'].map(k =>
+        '<div class="ph-summary-item">' +
+        '<div class="count">' + counts[k] + '</div>' +
+        '<div class="label">' + k + '</div>' +
+        '</div>'
+      ).join('');
+    }
+
+    // Provider cards sorted by score desc
+    const sorted = data.providers.slice().sort((a,b) => (b.score||0)-(a.score||0));
+    if (grid) {
+      grid.innerHTML = sorted.map(p => {
+        const qText  = p.quality_pass ? 'PASS' : 'FAIL';
+        const qColor = p.quality_pass ? '#2a7' : '#a33';
+        const repPct = (p.reputation_pct != null) ? p.reputation_pct.toFixed(0) + '%' : '—';
+        const rt     = (p.response_time != null) ? p.response_time.toFixed(2) + 's' : '—';
+        const errStr = p.error ? esc(p.error.slice(0, 60)) : '';
+        return '<div class="ph-card">' +
+          '<div class="ph-name">' + esc(p.label) + '</div>' +
+          '<span class="ph-badge ' + esc(p.status) + '">' + esc(p.status) + '</span>' +
+          (errStr ? '<div style="font-size:10px;color:#666;margin-bottom:4px">' + errStr + '</div>' : '') +
+          '<div class="ph-row"><span>Response time</span><span>' + rt + '</span></div>' +
+          '<div class="ph-row"><span>Quality test</span><span style="color:' + qColor + '">' + qText + '</span></div>' +
+          '<div class="ph-row"><span>Reputation</span><span>' + repPct + '</span></div>' +
+          '<div class="ph-row"><span>Score</span><span>' + (p.score||0) + '/100</span></div>' +
+          '<div class="ph-row"><span>Total calls</span><span>' + (p.total_calls||0) + '</span></div>' +
+          '</div>';
+      }).join('');
+    }
+  } catch (e) {
+    if (grid) grid.innerHTML = '<div class="error-msg">Health fetch failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+// ── UNDO STACK ────────────────────────────────────────────────────────────────
+
+const undo_stack = [];
+const UNDO_MAX = 10;
+
+function pushUndo(label, reverseFunction) {
+  if (undo_stack.length >= UNDO_MAX) undo_stack.shift();
+  undo_stack.push({ label, reverseFunction, timestamp: Date.now() });
+}
+
+function showUndoToast(label, reverseFunction) {
+  pushUndo(label, reverseFunction);
+  const c = document.getElementById('toast-container');
+  const d = document.createElement('div');
+  d.className = 'undo-toast';
+  let remaining = 10;
+  d.innerHTML = '<span style="flex:1">' + esc(label) + '</span>' +
+    '<button class="undo-btn" id="undo-act-btn">Undo</button>' +
+    '<span class="undo-count" id="undo-timer">10s</span>';
+  c.appendChild(d);
+
+  const entry = undo_stack[undo_stack.length - 1];
+  const tick = setInterval(() => {
+    remaining--;
+    const el = d.querySelector('#undo-timer');
+    if (el) el.textContent = remaining + 's';
+    if (remaining <= 0) { clearInterval(tick); d.remove(); }
+  }, 1000);
+
+  d.querySelector('#undo-act-btn').addEventListener('click', () => {
+    clearInterval(tick);
+    d.remove();
+    try { entry.reverseFunction(); } catch(e) { toast('Undo failed: ' + e.message, 'error'); }
+  });
+  setTimeout(() => { try { d.remove(); } catch(e){} }, 10500);
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────────────
+
+function showKbHelp() {
+  const el = document.getElementById('kb-overlay');
+  if (el) el.classList.add('visible');
+}
+function closeKbHelp() {
+  const el = document.getElementById('kb-overlay');
+  if (el) el.classList.remove('visible');
+}
+
+document.addEventListener('keydown', function(e) {
+  const tag = (e.target || {}).tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+  if (e.key === 'Escape') {
+    closeKbHelp();
+    document.getElementById('confirm-overlay')?.classList.remove('visible');
+    return;
+  }
+  if (e.shiftKey && e.key === '?') { showKbHelp(); return; }
+
+  if (e.key === 'r' || e.key === 'R') {
+    const active = document.querySelector('.tab-btn.active');
+    if (active) {
+      const tab = active.dataset.tab;
+      if (tab === 'home') loadHomeScreen();
+      else if (tab === 'providerhealth') loadProviderHealth();
+      else if (tab === 'kanban') loadKanban();
+      else if (tab === 'aafl-runs') loadAaflRuns();
+      else if (tab === 'scout') loadScout();
+      else if (tab === 'costs') loadCosts();
+      else if (tab === 'aafl-control') { loadStuckInbox(); loadStuckSummary(); }
+      else if (tab === 'storage') loadStorage();
+      else if (tab === 'memory') loadMemory();
+      else if (tab === 'promo') loadPromo();
+      else if (tab === 'acca') loadAcca();
+      else if (tab === 'alp') loadAlp();
+      else if (tab === 'self-diagnosis') loadSelfDiagnosis();
+    }
+    return;
+  }
+  if (e.key === 'c' || e.key === 'C') { connectData(); return; }
+
+  const num = parseInt(e.key);
+  if (num >= 1 && num <= 9) {
+    const tabs = document.querySelectorAll('.tab-btn');
+    if (tabs[num - 1]) tabs[num - 1].click();
+  }
+});
+
+// ── STUB TABS (Kanban / AAFL Runs / Scout / Costs) ────────────────────────────
+
+async function _loadDashCard(file, containerId, tsId) {
+  const el = document.getElementById(containerId);
+  const ts = document.getElementById(tsId);
+  if (!el) return;
+  try {
+    const d = await apiFetch('/dashboard-data/' + file);
+    const facts = Array.isArray(d.facts) ? d.facts : [];
+    el.innerHTML = facts.length
+      ? '<div class="tab-summary">' + facts.map(f => '<span>' + esc(f) + '</span>').join('') + '</div>'
+        + '<div style="font-size:12px;color:#666;padding:12px">Data from dashboard_data/' + file + '</div>'
+      : '<div class="empty-msg">No data in ' + file + ' yet.</div>';
+    if (ts) ts.textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    if (el) el.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+function loadKanban()   { _loadDashCard('kanban.json',    'kanban-content',    'kanban-ts'); }
+function loadAaflRuns() { _loadDashCard('aafl_runs.json', 'aafl-runs-content', 'aafl-runs-ts'); }
+function loadScout()    { _loadDashCard('scout.json',     'scout-content',     'scout-ts'); }
+function loadCosts()    { _loadDashCard('costs.json',     'costs-content',     'costs-ts'); }
+
+// ── AAFL CONTROL TAB ──────────────────────────────────────────────────────────
+
+let _costDebounce = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const goalInput = document.getElementById('run-now-goal');
+  const provSel   = document.getElementById('run-now-provider');
+  if (goalInput) goalInput.addEventListener('input', updateCostPreview);
+  if (provSel)   provSel.addEventListener('change', updateCostPreview);
+});
+
+function updateCostPreview() {
+  clearTimeout(_costDebounce);
+  _costDebounce = setTimeout(_doCostPreview, 300);
+}
+
+function _doCostPreview() {
+  const goal = document.getElementById('run-now-goal')?.value.trim() || '';
+  const prov = document.getElementById('run-now-provider')?.value || 'auto';
+  const el   = document.getElementById('cost-preview');
+  if (!el) return;
+  if (!goal) { el.style.display = 'none'; return; }
+  const rates = {
+    auto:        {cost:0, tps:60, free:true,  label:'Auto (Best Free)'},
+    mistral:     {cost:0, tps:60, free:true,  label:'Mistral'},
+    cerebras:    {cost:0, tps:180,free:true,  label:'Cerebras'},
+    gemini:      {cost:0, tps:50, free:true,  label:'Gemini'},
+    openrouter:  {cost:0.0015,tps:40,free:false,label:'OpenRouter'},
+    cohere:      {cost:0.0005,tps:35,free:false,label:'Cohere'},
+    huggingface: {cost:0, tps:20, free:true,  label:'HuggingFace'},
+  };
+  const r    = rates[prov] || rates.auto;
+  const words = goal.split(/\s+/).length;
+  const toks  = Math.ceil(words / 0.75);
+  const out   = Math.min(toks * 2.5, 4000);
+  const total = toks + out;
+  const costUsd = r.free ? 0 : (total / 1000) * r.cost;
+  const secs  = Math.ceil(out / r.tps);
+  el.style.display = 'block';
+  el.textContent = r.label + ' — est. ~' + total + ' tokens | cost: $' +
+    costUsd.toFixed(4) + ' | time: ~' + secs + 's';
+}
+
+async function runNow() {
+  const goal    = document.getElementById('run-now-goal')?.value.trim() || '';
+  const prevGoal = goal;
+  const btn     = document.getElementById('btn-run-now');
+  const status  = document.getElementById('run-now-status');
+  if (!goal) { toast('Enter a goal first', 'error'); return; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Queueing…'; }
+  try {
+    const res = await apiFetch('/run-now', {
+      method: 'POST',
+      body: JSON.stringify({ goal }),
+    });
+    if (res.ok) {
+      if (status) status.innerHTML = '<div style="color:#6f6;font-size:12px;padding:6px 0">Goal queued at ' + esc(res.queued_at || '') + '</div>';
+      document.getElementById('run-now-goal').value = '';
+      document.getElementById('cost-preview').style.display = 'none';
+      showUndoToast('Goal queued: ' + prevGoal.slice(0,40), async () => {
+        toast('Cannot undo a queued goal (already written to queue)', 'error');
+      });
+    } else {
+      if (status) status.innerHTML = '<div style="color:#f88;font-size:12px;padding:6px 0">Error: ' + esc(res.error || 'unknown') + '</div>';
+    }
+  } catch(e) {
+    if (status) status.innerHTML = '<div style="color:#f88;font-size:12px;padding:6px 0">Error: ' + esc(e.message) + '</div>';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '▶ Run Now'; }
+  }
+}
+
+async function loadStuckInbox() {
+  const list  = document.getElementById('stuck-inbox-list');
+  const badge = document.getElementById('stuck-count-badge');
+  if (!list) return;
+  try {
+    const data = await apiFetch('/stuck-inbox');
+    const items = data.items || [];
+    if (badge) {
+      badge.textContent = items.length;
+      badge.style.display = items.length ? 'inline' : 'none';
+    }
+    if (!items.length) {
+      list.innerHTML = '<div class="empty-msg">No stuck goals — all clear.</div>';
+      return;
+    }
+    list.innerHTML = items.map(item =>
+      '<div class="stuck-item" id="stuck-' + esc(item.item_id) + '">' +
+      '<div class="stuck-item-body">' +
+      '<div class="stuck-goal">' + esc(item.goal) + '</div>' +
+      '<div class="stuck-meta">Attempts: ' + esc(item.attempts) + ' | ' + esc(item.created_at||'').slice(0,16) + '</div>' +
+      '<div class="stuck-meta" style="color:#a55">' + esc(item.reason) + '</div>' +
+      '</div>' +
+      '<button class="btn" onclick="resolveStuck(\'' + esc(item.item_id) + '\',\'' + esc((item.goal||'').slice(0,40)) + '\')">Resolve</button>' +
+      '</div>'
+    ).join('');
+  } catch(e) {
+    if (list) list.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+async function resolveStuck(itemId, goalSnippet) {
+  const prevEl = document.getElementById('stuck-' + itemId);
+  const prevHtml = prevEl ? prevEl.outerHTML : '';
+  try {
+    const res = await apiFetch('/resolve-stuck', {
+      method: 'POST',
+      body: JSON.stringify({ item_id: itemId }),
+    });
+    if (res.ok) {
+      if (prevEl) prevEl.remove();
+      await loadStuckInbox();
+      showUndoToast('Resolved: ' + goalSnippet, async () => {
+        toast('Undo not supported for stuck item resolve (use manual re-entry)', 'error');
+      });
+    } else {
+      toast('Resolve failed: ' + (res.error || 'unknown'), 'error');
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── MEMORY TAB ────────────────────────────────────────────────────────────────
+
+let _memoryData = { kb: [], sol: [], src: [] };
+
+async function loadMemory() {
+  const sum = document.getElementById('memory-summary');
+  try {
+    const [kb, sol, src] = await Promise.all([
+      apiFetch('/memory/knowledge'),
+      apiFetch('/memory/solutions'),
+      apiFetch('/memory/sources'),
+    ]);
+    _memoryData = {
+      kb:  kb.rows  || [],
+      sol: sol.rows || [],
+      src: src.rows || [],
+    };
+    if (sum) {
+      const avgRep = _memoryData.src.length
+        ? (_memoryData.src.reduce((a,r) => a + (r.reputation_score||0), 0) / _memoryData.src.length).toFixed(1)
+        : '—';
+      sum.innerHTML =
+        '<span>' + _memoryData.kb.length + ' knowledge entries</span>' +
+        '<span>' + _memoryData.sol.length + ' solutions</span>' +
+        '<span>Avg rep: <span>' + avgRep + '</span></span>';
+    }
+    renderKbTable(_memoryData.kb);
+    renderSolTable(_memoryData.sol);
+    renderSrcTable(_memoryData.src);
+  } catch(e) {
+    toast('Memory load failed: ' + e.message, 'error');
+  }
+}
+
+function renderKbTable(rows) {
+  const tbody = document.getElementById('kb-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = rows.length ? rows.map(r =>
+    '<tr><td>' + esc(r.id||'').slice(0,8) + '</td>' +
+    '<td>' + esc(r.title) + '</td>' +
+    '<td>' + esc(r.content_preview) + '</td>' +
+    '<td>' + esc(r.source) + '</td>' +
+    '<td>' + esc((r.timestamp||'').slice(0,16)) + '</td></tr>'
+  ).join('') : '<tr><td colspan="5" style="text-align:center;color:#555">No entries</td></tr>';
+}
+
+function renderSolTable(rows) {
+  const tbody = document.getElementById('sol-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = rows.length ? rows.map(r =>
+    '<tr><td>' + esc(r.id) + '</td>' +
+    '<td>' + esc(r.goal) + '</td>' +
+    '<td>' + esc(r.solution_preview) + '</td>' +
+    '<td>' + esc(r.score) + '</td>' +
+    '<td>' + esc(r.provider||'—') + '</td>' +
+    '<td>' + esc((r.timestamp||'').slice(0,16)) + '</td></tr>'
+  ).join('') : '<tr><td colspan="6" style="text-align:center;color:#555">No solutions</td></tr>';
+}
+
+function renderSrcTable(rows) {
+  const tbody = document.getElementById('src-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = rows.length ? rows.map(r =>
+    '<tr><td>' + esc(r.source_url) + '</td>' +
+    '<td>' + esc(r.reputation_score) + '</td>' +
+    '<td>' + esc(r.times_used) + '</td>' +
+    '<td>' + esc((r.last_used||'').slice(0,16)) + '</td></tr>'
+  ).join('') : '<tr><td colspan="4" style="text-align:center;color:#555">No sources</td></tr>';
+}
+
+function filterMemoryTable(tableId, q) {
+  const tbody = document.getElementById(
+    tableId === 'kb-table' ? 'kb-tbody' : tableId === 'sol-table' ? 'sol-tbody' : 'src-tbody'
+  );
+  if (!tbody) return;
+  const lower = q.toLowerCase();
+  const data  = tableId === 'kb-table' ? _memoryData.kb
+              : tableId === 'sol-table' ? _memoryData.sol : _memoryData.src;
+  if (!lower) {
+    if (tableId === 'kb-table') renderKbTable(data);
+    else if (tableId === 'sol-table') renderSolTable(data);
+    else renderSrcTable(data);
+    return;
+  }
+  const filtered = data.filter(r =>
+    JSON.stringify(r).toLowerCase().includes(lower)
+  );
+  if (tableId === 'kb-table') renderKbTable(filtered);
+  else if (tableId === 'sol-table') renderSolTable(filtered);
+  else renderSrcTable(filtered);
+}
+
+// ── PROMO TAB ─────────────────────────────────────────────────────────────────
+
+async function loadPromo() {
+  const list  = document.getElementById('promo-list');
+  const label = document.getElementById('promo-count-label');
+  if (!list) return;
+  try {
+    const data = await apiFetch('/promo-queue');
+    const items = data.items || [];
+    if (label) label.textContent = (data.pending_count || 0) + ' pending review';
+    if (!items.length) {
+      list.innerHTML = '<div class="empty-msg">No promo items yet. High-scoring results (≥9.0) auto-queue here.</div>';
+      return;
+    }
+    list.innerHTML = items.map(item => {
+      const badgeCls = 'badge-' + (item.status || 'pending');
+      return '<div class="promo-card" id="promo-' + esc(item.item_id) + '">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+        '<span class="' + badgeCls + '">' + esc(item.status||'pending') + '</span>' +
+        '<span style="font-size:11px;color:#666">' + esc((item.created_at||'').slice(0,16)) + '</span>' +
+        '<span style="font-size:11px;color:#888;flex:1">' + esc(item.reason||'') + '</span>' +
+        '</div>' +
+        '<div class="promo-content">' + esc(item.content||'') + '</div>' +
+        '<div class="promo-meta">Source: ' + esc(item.source||'—') + '</div>' +
+        (item.status === 'pending'
+          ? '<div class="promo-btns">' +
+            '<button class="btn-approve" onclick="approvePromo(\'' + esc(item.item_id) + '\')">✓ Approve</button>' +
+            '<button class="btn-reject"  onclick="rejectPromo(\'' + esc(item.item_id) + '\')">✗ Reject</button>' +
+            '</div>'
+          : '') +
+        '</div>';
+    }).join('');
+  } catch(e) {
+    if (list) list.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+async function approvePromo(itemId) {
+  try {
+    const res = await apiFetch('/approve-promo', { method:'POST', body: JSON.stringify({ item_id: itemId }) });
+    if (res.ok) {
+      showUndoToast('Approved promo item', async () => {
+        await apiFetch('/reject-promo', { method:'POST', body: JSON.stringify({ item_id: itemId }) });
+        loadPromo();
+        toast('Approval undone (marked rejected)', 'ok');
+      });
+      loadPromo();
+    } else { toast('Approve failed: ' + (res.error||''), 'error'); }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function rejectPromo(itemId) {
+  try {
+    const res = await apiFetch('/reject-promo', { method:'POST', body: JSON.stringify({ item_id: itemId }) });
+    if (res.ok) {
+      showUndoToast('Rejected promo item', async () => {
+        await apiFetch('/approve-promo', { method:'POST', body: JSON.stringify({ item_id: itemId }) });
+        loadPromo();
+        toast('Rejection undone (marked approved)', 'ok');
+      });
+      loadPromo();
+    } else { toast('Reject failed: ' + (res.error||''), 'error'); }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── ACCA TAB ──────────────────────────────────────────────────────────────────
+
+let _accaCodes = [];
+
+async function loadAcca() {
+  const tbody = document.getElementById('acca-tbody');
+  const label = document.getElementById('acca-count-label');
+  if (!tbody) return;
+  try {
+    const data = await apiFetch('/acca-codes');
+    _accaCodes = data.codes || [];
+    if (label) label.textContent = _accaCodes.length + ' codes';
+    renderAccaTable(_accaCodes);
+  } catch(e) {
+    if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="error-msg">Load failed: ' + esc(e.message) + '</td></tr>';
+  }
+}
+
+function renderAccaTable(codes) {
+  const tbody = document.getElementById('acca-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = codes.length ? codes.map(c =>
+    '<tr><td style="font-weight:bold;color:#fc8">' + esc(c.code) + '</td>' +
+    '<td>' + esc(c.meaning) + '</td>' +
+    '<td>' + esc(c.added) + '</td></tr>'
+  ).join('') : '<tr><td colspan="3" style="text-align:center;color:#555">No ACCA codes found</td></tr>';
+}
+
+function filterAcca(q) {
+  const lower = q.toLowerCase();
+  renderAccaTable(lower ? _accaCodes.filter(c =>
+    (c.code+c.meaning+c.added).toLowerCase().includes(lower)
+  ) : _accaCodes);
+}
+
+// ── ALP TAB ───────────────────────────────────────────────────────────────────
+
+async function loadAlp() {
+  const tbody = document.getElementById('alp-tbody');
+  const label = document.getElementById('alp-count-label');
+  if (!tbody) return;
+  try {
+    const data = await apiFetch('/alp-data');
+    const entries = data.entries || [];
+    if (label) label.textContent = entries.length + ' entries';
+    tbody.innerHTML = entries.length ? entries.map((e, i) =>
+      '<tr><td>' + (i+1) + '</td>' +
+      '<td>' + esc(e.col1) + '</td>' +
+      '<td>' + esc(e.col2) + '</td>' +
+      '<td>' + esc(e.col3) + '</td>' +
+      '<td>' + esc(e.col4) + '</td></tr>'
+    ).join('') : '<tr><td colspan="5" style="text-align:center;color:#555">No ALP entries</td></tr>';
+  } catch(e) {
+    if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="error-msg">Load failed: ' + esc(e.message) + '</td></tr>';
+  }
+}
+
+async function alpAdd() {
+  const input   = document.getElementById('alp-entry-input');
+  const entry   = input ? input.value.trim() : '';
+  const prevVal = entry;
+  const btn     = document.getElementById('btn-alp-add');
+  if (!entry) { toast('Enter an ALP entry first', 'error'); return; }
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Adding…'; }
+  try {
+    const res = await apiFetch('/alp-add', {
+      method: 'POST',
+      body: JSON.stringify({ entry }),
+    });
+    if (res.ok) {
+      if (input) input.value = '';
+      await loadAlp();
+      showUndoToast('Added ALP entry: ' + prevVal.slice(0,40), async () => {
+        toast('ALP entries cannot be auto-removed — delete from ALP_Database.md manually', 'error');
+      });
+    } else {
+      toast('Add failed: ' + (res.error||'unknown'), 'error');
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '+ Add Entry'; }
+  }
+}
+
+// ── HOME INSTRUMENTS (PHASE 3) ────────────────────────────────────────────────
+
+const GAUGE_CIRC  = 301.6;   // 2 * π * 48
+const GAUGE_TRACK = 226.2;   // 270/360 * CIRC
+
+function _gaugeSet(arcId, valId, subId, pct, valText, subText, color) {
+  const fill = Math.min(100, Math.max(0, pct)) / 100 * GAUGE_TRACK;
+  const arc  = document.getElementById(arcId);
+  if (arc) {
+    arc.setAttribute('stroke-dasharray', fill.toFixed(1) + ' ' + (GAUGE_CIRC - fill).toFixed(1));
+    arc.setAttribute('stroke', color);
+  }
+  const valEl = document.getElementById(valId);
+  if (valEl) valEl.textContent = valText;
+  const subEl = document.getElementById(subId);
+  if (subEl) subEl.textContent = subText;
+}
+
+function _tlSet(elId, state) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.className = 'tl-circle ' + (state === 'green' ? 'green' : state === 'yellow' ? 'yellow' : 'red');
+}
+
+function _burnSet(fillId, countId, subId, count, max, unitLabel) {
+  const pct   = Math.min(100, Math.round(count / max * 100));
+  const color = pct < 50 ? '#2a7' : pct < 80 ? '#aa5' : '#a33';
+  const fill  = document.getElementById(fillId);
+  if (fill) { fill.style.width = pct + '%'; fill.style.background = color; }
+  const cnt = document.getElementById(countId);
+  if (cnt) cnt.textContent = count;
+  const sub = document.getElementById(subId);
+  if (sub) sub.textContent = unitLabel;
+}
+
+function _renderSparkline(svgId, subId, values) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const W = 120, H = 36;
+  if (!values || values.length < 2) {
+    const line = document.getElementById('sparkline-line');
+    if (line) line.setAttribute('points', '0,' + (H/2) + ' ' + W + ',' + (H/2));
+    return;
+  }
+  const maxV = Math.max(...values, 1);
+  const pts = values.map((v, i) => {
+    const x = (i / (values.length - 1)) * (W - 4) + 2;
+    const y = H - 4 - ((v / maxV) * (H - 8));
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  const line = document.getElementById('sparkline-line');
+  if (line) line.setAttribute('points', pts);
+  const sub = document.getElementById(subId);
+  if (sub) sub.textContent = 'last: ' + values[values.length - 1];
+}
+
+function _renderCostBars(containerId, providers) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!providers || !providers.length) {
+    el.innerHTML = '<div class="inst-sublabel">No cost data</div>';
+    return;
+  }
+  const active = providers.filter(p => p.status === 'GREEN' && p.response_time > 0).slice(0, 5);
+  if (!active.length) {
+    el.innerHTML = '<div class="inst-sublabel">No active providers</div>';
+    return;
+  }
+  const maxT = Math.max(...active.map(p => p.response_time), 1);
+  el.innerHTML = active.map(p => {
+    const pct = Math.round((p.response_time / maxT) * 100);
+    const name = (p.label || '').split(' ')[0].slice(0, 8);
+    return '<div class="cost-bar-row">' +
+      '<div class="cost-bar-label">' + esc(name) + '</div>' +
+      '<div class="cost-bar-track"><div class="cost-bar-fill" style="width:' + pct + '%"></div></div>' +
+      '</div>';
+  }).join('');
+}
+
+async function loadHomeInstruments() {
+  // MCC server is alive (if we got here, it is)
+  _tlSet('tl-mcc', 'green');
+
+  // Provider Health gauge
+  try {
+    const ph = await apiFetch('/health-status');
+    if (ph.providers && ph.providers.length) {
+      const active = ph.providers.filter(p => !['SKIP', 'COOLING', 'NO_KEY'].includes(p.status));
+      const green  = active.filter(p => p.status === 'GREEN').length;
+      const total  = active.length;
+      const pct    = total ? Math.round(green / total * 100) : 0;
+      const color  = pct >= 70 ? '#2a7' : pct >= 40 ? '#aa5' : '#a33';
+      _gaugeSet('ph-arc', 'ph-val', 'ph-sub', pct, green + '/' + total, 'green providers', color);
+      _renderCostBars('cost-bars-inner', ph.providers);
+    }
+  } catch(e) { /* server offline handled by dot already */ }
+
+  // AAFL Score gauge
+  try {
+    const ar = await apiFetch('/dashboard-data/aafl_runs.json');
+    const facts = ar.facts || [];
+    let score = 0;
+    for (const f of facts) {
+      const m = f.match(/(\d+\.?\d*)\s*\/\s*10/);
+      if (m) { score = parseFloat(m[1]); break; }
+    }
+    const pct   = score * 10;
+    const color = score >= 7 ? '#2a7' : score >= 5 ? '#aa5' : score > 0 ? '#a33' : '#444';
+    _gaugeSet('aafl-arc', 'aafl-val', 'aafl-sub', pct,
+              score > 0 ? score.toFixed(1) : '—', '/10', color);
+    _tlSet('tl-aafl', score >= 7 ? 'green' : score >= 5 ? 'yellow' : score > 0 ? 'red' : 'yellow');
+  } catch(e) { _tlSet('tl-aafl', 'yellow'); }
+
+  // Scout sparkline
+  try {
+    const sc = await apiFetch('/dashboard-data/scout.json');
+    const hasData = sc.status && sc.status !== 'grey';
+    _tlSet('tl-scout', hasData ? 'green' : 'yellow');
+    // Placeholder sparkline — 7 days, using status as proxy
+    _renderSparkline('sparkline-svg', 'scout-spark-sub', [0,1,0,1,0,2,hasData?3:0]);
+  } catch(e) { _tlSet('tl-scout', 'yellow'); }
+
+  // ALP burn rate
+  try {
+    const alp = await apiFetch('/alp-data');
+    const count = alp.count || 0;
+    _burnSet('alp-burn-fill', 'alp-count-inst', 'alp-burn-label', count, 30, 'savings logged');
+  } catch(e) {}
+}
+
+function runHealthCheck() {
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ Starting…';
+  apiFetch('/run-health-check', { method: 'POST' })
+    .then(r => {
+      toast(r.ok ? 'Health check started in background' : 'Failed: ' + (r.error || ''), r.ok ? 'ok' : 'error');
+      setTimeout(() => loadHomeInstruments(), 8000);
+    })
+    .catch(e => toast('Error: ' + e.message, 'error'))
+    .finally(() => { btn.disabled = false; btn.textContent = '🏥 Run Health Check'; });
+}
+
+function runSundayMerge() {
+  apiFetch('/run-merge-sessions', { method: 'POST' })
+    .then(r => toast(r.ok ? 'Sunday Merge started' : 'Failed: ' + (r.error || ''), r.ok ? 'ok' : 'error'))
+    .catch(e => toast('Error: ' + e.message, 'error'));
+}
+
+function homeStartScout() {
+  const goal = 'VKB joystick Star Citizen research';
+  apiFetch('/scout-timer/start', {
+    method: 'POST',
+    body: JSON.stringify({ goal, hours: 0, interval_minutes: 30 }),
+  })
+    .then(r => toast(r.ok ? 'Scout started (indefinite): ' + goal : 'Error: ' + (r.error || 'unknown'), r.ok ? 'ok' : 'error'))
+    .catch(e => toast('Error: ' + e.message, 'error'));
+}
+
+function homeRunAafl() {
+  const goal = prompt('Enter AAFL goal:');
+  if (!goal || !goal.trim()) return;
+  apiFetch('/run-now', { method: 'POST', body: JSON.stringify({ goal: goal.trim() }) })
+    .then(r => toast(r.ok ? 'Goal queued: ' + goal.trim().slice(0, 40) : 'Error: ' + (r.error || 'unknown'), r.ok ? 'ok' : 'error'))
+    .catch(e => toast('Error: ' + e.message, 'error'));
+}
+
+// ── SELF-DIAGNOSIS TAB (PHASE 2) ─────────────────────────────────────────────
+
+let _sdFilesData = [];
+let _sdSortCol   = 'name';
+let _sdSortAsc   = true;
+
+async function loadSelfDiagnosis() {
+  await Promise.all([sdLoadMot(), sdLoadIssues(), sdLoadSysInfo()]);
+}
+
+async function sdLoadMot() {
+  try {
+    const data = await apiFetch('/self-diagnosis');
+    const rpt  = data.mot_report || {};
+    const scoreEl = document.getElementById('sd-mot-score');
+    const subEl   = document.getElementById('sd-mot-sub');
+    const barWrap = document.getElementById('sd-bar-wrap');
+    const barFill = document.getElementById('sd-bar-fill');
+    const failEl  = document.getElementById('sd-mot-failures');
+    if (rpt.total) {
+      const pct = rpt.pass_rate || 0;
+      if (scoreEl) scoreEl.textContent = pct.toFixed(0) + '%';
+      if (subEl)   subEl.textContent   = rpt.passed + '/' + rpt.total + ' tests passed · ' + rpt.verdict;
+      if (barWrap) barWrap.style.display = 'block';
+      if (barFill) {
+        barFill.style.width = pct + '%';
+        barFill.style.background = pct >= 90 ? '#2a7' : pct >= 70 ? '#aa5' : '#a33';
+      }
+      const fails = rpt.failures || [];
+      if (failEl) {
+        failEl.innerHTML = fails.length ? fails.map(f =>
+          '<div class="sd-fail-item"><span class="sd-fail-group">[' + esc(f.group) + ']</span>' +
+          esc(f.name) + ': ' + esc(f.detail) + '</div>'
+        ).join('') : '<div style="color:#6f6;font-size:12px;padding:8px 0">No failures — all tests passing</div>';
+      }
+    } else {
+      if (scoreEl) scoreEl.textContent = '—';
+      if (subEl)   subEl.textContent   = 'No MOT report found — click Run Full MOT';
+      if (barWrap) barWrap.style.display = 'none';
+      if (failEl)  failEl.innerHTML = '';
+    }
+    // File health table
+    _sdFilesData = data.files || [];
+    sdRenderFileTable();
+    // System info
+    sdRenderSysInfo(data);
+  } catch(e) {
+    toast('Diagnosis load failed: ' + e.message, 'error');
+  }
+}
+
+async function sdRunMot() {
+  const btn = document.getElementById('btn-run-mot');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Running MOT…'; }
+  toast('Running full MOT — this takes ~30 seconds', 'ok', 5000);
+  try {
+    const res = await apiFetch('/run-mot', { method: 'POST' });
+    if (res.ok) {
+      toast('MOT complete — reloading results', 'ok');
+      await sdLoadMot();
+    } else {
+      toast('MOT failed: ' + (res.error || 'unknown'), 'error');
+    }
+  } catch(e) {
+    toast('MOT error: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🔍 Run Full MOT'; }
+  }
+}
+
+function sdRenderSysInfo(data) {
+  const grid = document.getElementById('sd-sysinfo-grid');
+  if (!grid) return;
+  const cards = [
+    { label: 'Python Version', value: data.python_version || '—' },
+    { label: 'Project Path',   value: data.project_path   || '—' },
+    { label: '.py Files',      value: (data.py_file_count || 0) + ' files' },
+    { label: 'Total Lines',    value: (data.total_lines   || 0).toLocaleString() + ' lines' },
+    { label: 'Disk Usage',     value: (data.disk_mb || 0) + ' MB' },
+    { label: 'Last Git Commit',
+      value: data.git && data.git.hash
+        ? data.git.hash + ' — ' + (data.git.message || '').slice(0, 50)
+        : 'No git info' },
+  ];
+  grid.innerHTML = cards.map(c =>
+    '<div class="sd-sysinfo-card">' +
+    '<div class="sd-sysinfo-label">' + esc(c.label) + '</div>' +
+    '<div class="sd-sysinfo-value">' + esc(c.value) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function sdRenderFileTable() {
+  const tbody = document.getElementById('sd-files-tbody');
+  if (!tbody) return;
+  const data = [..._sdFilesData];
+  data.sort((a, b) => {
+    let av = a[_sdSortCol], bv = b[_sdSortCol];
+    if (_sdSortCol === 'import_ok') { av = av === true ? 1 : av === false ? -1 : 0; bv = bv === true ? 1 : bv === false ? -1 : 0; }
+    if (av == null) av = ''; if (bv == null) bv = '';
+    return _sdSortAsc ? (av < bv ? -1 : av > bv ? 1 : 0) : (av > bv ? -1 : av < bv ? 1 : 0);
+  });
+  tbody.innerHTML = data.length ? data.map(f => {
+    const imp = f.import_ok === true  ? '<span class="sd-import-ok">✓</span>'
+               : f.import_ok === false ? '<span class="sd-import-fail">✗</span>'
+               : '<span style="color:#555">—</span>';
+    return '<tr>' +
+      '<td>' + esc(f.name) + '</td>' +
+      '<td>' + (f.lines || 0).toLocaleString() + '</td>' +
+      '<td>' + esc(f.modified || '—') + '</td>' +
+      '<td>' + imp + '</td>' +
+      '</tr>';
+  }).join('') : '<tr><td colspan="4" style="text-align:center;color:#555">No file data — run Self-Diagnosis</td></tr>';
+}
+
+function sdSortFiles(col) {
+  if (_sdSortCol === col) _sdSortAsc = !_sdSortAsc;
+  else { _sdSortCol = col; _sdSortAsc = true; }
+  sdRenderFileTable();
+}
+
+async function sdLoadIssues() {
+  const list = document.getElementById('sd-issues-list');
+  if (!list) return;
+  try {
+    const data  = await apiFetch('/known-issues');
+    const items = data.items || [];
+    if (!items.length) {
+      list.innerHTML = '<div class="empty-msg">No known issues logged — add one above.</div>';
+      return;
+    }
+    list.innerHTML = items.map(item => {
+      const sevCls = 'sd-sev-' + (item.severity || 'medium');
+      const stCls  = item.status === 'fixed' ? 'sd-status-fixed' : 'sd-status-open';
+      return '<div class="sd-issue-item" id="issue-' + esc(item.id) + '">' +
+        '<div class="sd-issue-body">' +
+        '<div class="sd-issue-desc">' + esc(item.description) + '</div>' +
+        '<div class="sd-issue-meta">' +
+        '<span class="' + sevCls + '">' + esc(item.severity || 'medium') + '</span>' +
+        '<span class="' + stCls  + '">' + esc(item.status  || 'open')    + '</span>' +
+        ' &nbsp; Added: ' + esc(item.date_added || '—') +
+        '</div></div>' +
+        '<div style="display:flex;flex-direction:column;gap:5px">' +
+        (item.status !== 'fixed'
+          ? '<button class="btn" onclick="sdSetStatus(\'' + esc(item.id) + '\',\'fixed\')">Mark Fixed</button>'
+          : '<button class="btn" onclick="sdSetStatus(\'' + esc(item.id) + '\',\'open\')">Reopen</button>') +
+        '<button class="btn btn-danger" onclick="sdDeleteIssue(\'' + esc(item.id) + '\')">Delete</button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) {
+    if (list) list.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+async function sdAddIssue() {
+  const descEl = document.getElementById('sd-issue-desc');
+  const sevEl  = document.getElementById('sd-issue-sev');
+  const desc = descEl ? descEl.value.trim() : '';
+  const sev  = sevEl  ? sevEl.value        : 'medium';
+  if (!desc) { toast('Enter a description first', 'error'); return; }
+  try {
+    const res = await apiFetch('/known-issues', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'add', description: desc, severity: sev }),
+    });
+    if (res.ok) {
+      if (descEl) descEl.value = '';
+      await sdLoadIssues();
+      toast('Issue added', 'ok');
+    } else {
+      toast('Failed: ' + (res.error || ''), 'error');
+    }
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function sdDeleteIssue(id) {
+  try {
+    const res = await apiFetch('/known-issues', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'delete', id }),
+    });
+    if (res.ok) { await sdLoadIssues(); toast('Issue removed', 'ok'); }
+    else toast('Failed: ' + (res.error || ''), 'error');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+async function sdSetStatus(id, newStatus) {
+  try {
+    const res = await apiFetch('/known-issues', {
+      method: 'POST',
+      body: JSON.stringify({ action: 'set_status', id, status: newStatus }),
+    });
+    if (res.ok) { await sdLoadIssues(); toast('Status updated', 'ok'); }
+    else toast('Failed: ' + (res.error || ''), 'error');
+  } catch(e) { toast(e.message, 'error'); }
+}
+
+// ── POLLS ─────────────────────────────────────────────────────────────────────
+
+// 30s — home screen card + instruments refresh
+setInterval(() => {
+  const homePane = document.getElementById('tab-home');
+  if (homePane && homePane.classList.contains('active')) {
+    loadHomeScreen();
+    loadHomeInstruments();
+  }
+}, 30000);
+
+// 60s — WCCS, auto-log, provider health
+setInterval(async () => {
+  await loadAutoWccs();
+  await loadTimeline();
+  renderWccsTab();
+  renderAutoLog();
+  const phPane = document.getElementById('tab-providerhealth');
+  if (phPane && phPane.classList.contains('active')) loadProviderHealth();
+}, 60000);
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+async function init() {
+  initTabs();
+  checkServerAlive();
+  await Promise.all([loadTimeline(), loadAutoWccs(), loadHomeScreen()]);
+  syncAutoUi();
+  renderWccsTab();
+  loadHomeInstruments();
+}
+
+document.addEventListener('DOMContentLoaded', () => { init(); loadPresets(); });
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 1 — Module Manager
+// ══════════════════════════════════════════════════════════════════
+
+async function loadModules() {
+  const el = document.getElementById('module-list');
+  el.innerHTML = '<div class="loading">Loading…</div>';
+  const d = await apiFetch('/modules');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error loading modules</span>'; return; }
+  if (!d.modules.length) { el.innerHTML = '<span style="color:#555">No modules registered</span>'; return; }
+  el.innerHTML = d.modules.map(m => `
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;padding:8px 10px;display:flex;align-items:center;gap:8px">
+      <label style="flex:1;cursor:pointer;font-size:12px;color:${m.enabled ? '#ccc' : '#555'}">
+        <input type="checkbox" ${m.enabled ? 'checked' : ''} onchange="toggleModule('${m.id}', this.checked)" style="margin-right:6px">
+        ${esc(m.name)}
+      </label>
+      ${m.personal_only ? '<span style="font-size:9px;color:#666;background:#222;border-radius:8px;padding:1px 5px">personal</span>' : ''}
+    </div>`).join('');
+}
+
+async function toggleModule(id, enabled) {
+  const d = await apiFetch('/toggle-module', { method: 'POST', body: JSON.stringify({ id, enabled }) });
+  if (!d.ok) showToast('Toggle failed: ' + (d.error || '?'), 'error');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 2 — Preset System
+// ══════════════════════════════════════════════════════════════════
+
+async function loadPresets() {
+  const d = await apiFetch('/presets');
+  const bar = document.getElementById('preset-buttons');
+  if (!d.ok || !d.presets.length) { bar.innerHTML = '<span style="color:#555;font-size:11px">No presets</span>'; return; }
+  bar.innerHTML = d.presets.map(p => `
+    <button class="btn" onclick="applyPreset('${esc(p.name)}')" style="font-size:11px;padding:3px 10px;position:relative">
+      ${esc(p.name)}
+      <span onclick="event.stopPropagation();deletePreset('${esc(p.name)}')" style="margin-left:6px;color:#a55;cursor:pointer">&#x2715;</span>
+    </button>`).join('');
+}
+
+async function savePreset() {
+  const name = document.getElementById('preset-save-name').value.trim();
+  if (!name) { showToast('Enter a preset name first', 'warn'); return; }
+  const state = { active_tab: document.querySelector('.tab-btn.active')?.dataset?.tab || 'home' };
+  const d = await apiFetch('/presets/save', { method: 'POST', body: JSON.stringify({ name, state }) });
+  if (d.ok) { showToast('Preset saved: ' + name); document.getElementById('preset-save-name').value = ''; loadPresets(); }
+  else showToast('Save failed: ' + (d.error || '?'), 'error');
+}
+
+async function applyPreset(name) {
+  const d = await apiFetch('/presets/load?name=' + encodeURIComponent(name));
+  if (!d.ok) { showToast('Load failed: ' + (d.error || '?'), 'error'); return; }
+  const state = d.state || {};
+  if (state.active_tab) switchTab(state.active_tab);
+  showToast('Preset applied: ' + name);
+}
+
+async function deletePreset(name) {
+  if (!confirm('Delete preset "' + name + '"?')) return;
+  const d = await apiFetch('/presets/delete', { method: 'POST', body: JSON.stringify({ name }) });
+  if (d.ok) { showToast('Preset deleted'); loadPresets(); }
+  else showToast('Delete failed: ' + (d.error || '?'), 'error');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 3 — AAFL Settings
+// ══════════════════════════════════════════════════════════════════
+
+async function loadAaflSettings() {
+  const d = await apiFetch('/aafl-settings');
+  if (!d.ok) { showToast('Load failed: ' + (d.error || '?'), 'error'); return; }
+  const s = d.settings || {};
+  document.getElementById('as-confidence').value   = s.confidence_threshold ?? 7.0;
+  document.getElementById('as-cost-cap').value     = s.cost_cap_per_goal_usd ?? 0.05;
+  document.getElementById('as-max-retries').value  = s.max_retries ?? 3;
+  document.getElementById('aafl-settings-msg').textContent = 'Loaded';
+  setTimeout(() => { document.getElementById('aafl-settings-msg').textContent = ''; }, 2000);
+}
+
+async function saveAaflSettings() {
+  const payload = {
+    confidence_threshold:   parseFloat(document.getElementById('as-confidence').value) || 7.0,
+    cost_cap_per_goal_usd:  parseFloat(document.getElementById('as-cost-cap').value) || 0.05,
+    max_retries:            parseInt(document.getElementById('as-max-retries').value) || 3,
+  };
+  const d = await apiFetch('/aafl-settings', { method: 'POST', body: JSON.stringify(payload) });
+  if (d.ok) { showToast('Settings saved'); document.getElementById('aafl-settings-msg').textContent = 'Saved'; }
+  else showToast('Save failed: ' + (d.error || '?'), 'error');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 4 — Retry Log
+// ══════════════════════════════════════════════════════════════════
+
+async function loadRetryLog() {
+  const el = document.getElementById('retry-log-out');
+  el.innerHTML = '<span style="color:#555">Loading…</span>';
+  const d = await apiFetch('/retry-log');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error: ' + esc(d.error || '?') + '</span>'; return; }
+  if (!d.entries.length) { el.innerHTML = '<span style="color:#555">No retry entries yet</span>'; return; }
+  el.innerHTML = d.entries.slice(-20).reverse().map(e =>
+    `<div style="border-bottom:1px solid #1a1a1a;padding:3px 0"><span style="color:#4af">${esc(e.timestamp||'')}</span> — ${esc(e.goal||'')} — attempt ${e.attempt_number||'?'} — ${esc(e.next_provider||'?')}</div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 5 — Smart Suggester
+// ══════════════════════════════════════════════════════════════════
+
+async function suggestProvider() {
+  const goal = document.getElementById('run-now-goal').value.trim();
+  if (!goal) { showToast('Enter a goal first', 'warn'); return; }
+  const d = await apiFetch('/suggest-provider', { method: 'POST', body: JSON.stringify({ goal }) });
+  const el = document.getElementById('suggest-result');
+  if (d.ok) {
+    el.textContent = 'Suggested: ' + (d.suggested_provider || '?') + ' (' + (d.confidence || '?') + ')';
+    const sel = document.getElementById('run-now-provider');
+    if (sel && d.suggested_provider) {
+      for (const opt of sel.options) { if (opt.value === d.suggested_provider) { sel.value = d.suggested_provider; break; } }
+    }
+  } else {
+    el.textContent = 'Error: ' + (d.error || '?');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 6 — Chain Mode
+// ══════════════════════════════════════════════════════════════════
+
+async function runChain() {
+  const goal = document.getElementById('run-now-goal').value.trim();
+  if (!goal) { showToast('Enter a goal first', 'warn'); return; }
+  const btn = document.getElementById('btn-run-chain');
+  btn.disabled = true; btn.textContent = 'Running…';
+  const d = await apiFetch('/run-chain', { method: 'POST', body: JSON.stringify({ goal }) });
+  btn.disabled = false; btn.textContent = 'Run Chain';
+  if (d.ok) showToast('Chain started');
+  else showToast('Error: ' + (d.error || '?'), 'error');
+}
+
+async function loadChainStatus() {
+  const d = await apiFetch('/chain-status');
+  const el = document.getElementById('chain-status-badge');
+  if (d.ok) el.textContent = d.running ? 'Running' : ('Last: ' + esc(d.last_goal || 'none'));
+  else el.textContent = 'Error';
+}
+
+async function loadChainLog() {
+  const d = await apiFetch('/chain-log');
+  const el = document.getElementById('chain-log-out');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error</span>'; return; }
+  if (!d.entries.length) { el.innerHTML = '<span style="color:#555">No chain runs yet</span>'; return; }
+  el.innerHTML = d.entries.slice(-10).reverse().map(e =>
+    `<div style="border-bottom:1px solid #1a1a1a;padding:2px 0"><span style="color:#4af">${esc(e.timestamp||'')}</span> ${esc(e.goal||'')} — score: ${e.score ?? '?'}</div>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 7 — Timed Scout
+// ══════════════════════════════════════════════════════════════════
+
+async function startScoutTimer() {
+  const goal     = document.getElementById('scout-timer-goal').value.trim();
+  const hours    = parseFloat(document.getElementById('scout-timer-hours').value) || 0;
+  const interval = parseInt(document.getElementById('scout-timer-interval').value) || 30;
+  if (!goal) { showToast('Enter a scout goal', 'warn'); return; }
+  const d = await apiFetch('/scout-timer/start', { method: 'POST', body: JSON.stringify({ goal, hours, interval_minutes: interval }) });
+  if (d.ok) showToast('Scout timer started');
+  else showToast('Error: ' + (d.error || '?'), 'error');
+}
+
+async function stopScoutTimer() {
+  const d = await apiFetch('/scout-timer/stop', { method: 'POST', body: '{}' });
+  if (d.ok) showToast('Stop flag written');
+  else showToast('Error: ' + (d.error || '?'), 'error');
+}
+
+async function loadScoutTimerStatus() {
+  const d = await apiFetch('/scout-timer/status');
+  const el = document.getElementById('scout-timer-status');
+  if (!d.ok) { el.textContent = 'Error loading status'; return; }
+  el.textContent = 'Running: ' + d.running + ' | Runs: ' + (d.total_runs ?? 0) + ' | Last: ' + esc(d.last_run || 'never');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 8 — Source Library
+// ══════════════════════════════════════════════════════════════════
+
+async function loadSourceLibrary() {
+  const topic = document.getElementById('src-lib-topic').value.trim();
+  const url   = '/sources-library' + (topic ? '?topic=' + encodeURIComponent(topic) : '');
+  const d     = await apiFetch(url);
+  const el    = document.getElementById('source-library-out');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error</span>'; return; }
+  if (!d.sources.length) { el.innerHTML = '<span style="color:#555">No sources found</span>'; return; }
+  el.innerHTML = d.sources.map(s =>
+    `<div style="border-bottom:1px solid #1a1a1a;padding:3px 0"><a href="${esc(s.url)}" target="_blank" style="color:#4af">${esc(s.domain || s.url)}</a> — ${esc(s.description || '')}</div>`
+  ).join('');
+}
+
+async function addSource() {
+  const url  = document.getElementById('src-add-url').value.trim();
+  const desc = document.getElementById('src-add-desc').value.trim();
+  if (!url) { showToast('Enter a URL', 'warn'); return; }
+  const domain = (new URL(url)).hostname;
+  const d = await apiFetch('/sources-library/add', { method: 'POST', body: JSON.stringify({ url, domain, description: desc, tags: ['manual'] }) });
+  if (d.ok) { showToast('Source added'); document.getElementById('src-add-url').value = ''; document.getElementById('src-add-desc').value = ''; loadSourceLibrary(); }
+  else showToast('Error: ' + (d.error || '?'), 'error');
+}
+
+async function runSourceDiscovery() {
+  const goal = document.getElementById('scout-timer-goal').value.trim() || 'VKB joystick Star Citizen';
+  showToast('Discovery started for: ' + goal.substring(0, 40));
+  await apiFetch('/run-scout', { method: 'POST', body: JSON.stringify({ goal, mode: 'discovery' }) });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 9 — Stuck Inbox enhancements
+// ══════════════════════════════════════════════════════════════════
+
+async function loadStuckSummary() {
+  const d = await apiFetch('/stuck-inbox/summary');
+  if (!d.ok) return;
+  const high = document.getElementById('stuck-high-pill');
+  const med  = document.getElementById('stuck-medium-pill');
+  const low  = document.getElementById('stuck-low-pill');
+  if (high) { high.textContent = 'High: ' + (d.high || 0); high.style.display = d.high ? '' : 'none'; }
+  if (med)  { med.textContent  = 'Med: '  + (d.medium || 0); med.style.display  = d.medium ? '' : 'none'; }
+  if (low)  { low.textContent  = 'Low: '  + (d.low || 0); low.style.display   = d.low ? '' : 'none'; }
+}
+
+async function bulkResolveStuck() {
+  const items = document.querySelectorAll('#stuck-inbox-list .stuck-item-cb:checked');
+  const ids   = Array.from(items).map(i => i.dataset.id);
+  if (!ids.length) { showToast('No items selected', 'warn'); return; }
+  const d = await apiFetch('/stuck-inbox/bulk-resolve', { method: 'POST', body: JSON.stringify({ item_ids: ids }) });
+  if (d.ok) { showToast('Resolved ' + d.resolved + ' items'); loadStuckInbox(); loadStuckSummary(); }
+  else showToast('Error: ' + (d.error || '?'), 'error');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 10 — Storage Manager
+// ══════════════════════════════════════════════════════════════════
+
+async function loadStorage() {
+  const el = document.getElementById('storage-slots');
+  el.innerHTML = '<div class="loading">Loading…</div>';
+  document.getElementById('storage-ts').textContent = new Date().toLocaleTimeString();
+  const d = await apiFetch('/storage');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error: ' + esc(d.error || '?') + '</span>'; return; }
+  const slots = d.slots || [];
+  if (!slots.length) { el.innerHTML = '<span style="color:#555">No slots configured</span>'; return; }
+  el.innerHTML = slots.map(s => {
+    const pct   = Math.min(100, Math.round((s.used_gb || 0) / (s.quota_gb || 1) * 100));
+    const color = pct > 90 ? '#a33' : pct > 70 ? '#a80' : '#393';
+    return `<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px">
+      <div style="font-size:12px;color:#ccc;margin-bottom:4px">${esc(s.name)}</div>
+      <div style="background:#111;border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
+        <div style="background:${color};height:100%;width:${pct}%;transition:.3s"></div>
+      </div>
+      <div style="font-size:10px;color:#666">${(s.used_gb||0).toFixed(2)} / ${s.quota_gb||0} GB (${pct}%) — ${esc(s.status||'')}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadStorageReport() {
+  const el = document.getElementById('storage-report-out');
+  el.innerHTML = '<span style="color:#555">Loading report…</span>';
+  const d = await apiFetch('/storage/report');
+  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error</span>'; return; }
+  const r = d.report || {};
+  el.innerHTML = `<div class="section-title" style="margin-top:0">Weekly Report — ${esc(r.generated_at||'')}</div>
+    <div style="font-size:11px;color:#888">Total allocated: ${r.total_allocated_gb||0} GB | Used: ${(r.total_used_gb||0).toFixed(2)} GB</div>
+    <div id="storage-report-warnings" style="margin-top:8px"></div>`;
+  const warn = document.getElementById('storage-report-warnings');
+  if (r.warnings && r.warnings.length) {
+    warn.innerHTML = r.warnings.map(w => `<div style="color:#fa0;font-size:11px">&#9888; ${esc(w)}</div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD 1 STEP B — WCCS Tab Drill-Down (5 pill buttons)
+// ══════════════════════════════════════════════════════════════════
+
+let _wccsPanel = null;
+let _wrewindVersions = [];
+let _wsessLogs = [];
+let _wdiffVersions = [];
+let _wccsSearchTimer = null;
+
+function wccsDrill(panel) {
+  const allPanels = ['autosave','search','sessions','rewind','diff'];
+  if (_wccsPanel === panel) {
+    document.getElementById('wpanel-' + panel).classList.remove('open');
+    document.getElementById('pill-' + panel).classList.remove('active');
+    _wccsPanel = null;
+    return;
+  }
+  allPanels.forEach(p => {
+    document.getElementById('wpanel-' + p).classList.remove('open');
+    document.getElementById('pill-' + p).classList.remove('active');
+  });
+  document.getElementById('wpanel-' + panel).classList.add('open');
+  document.getElementById('pill-' + panel).classList.add('active');
+  _wccsPanel = panel;
+  if (panel === 'autosave') wccsLoadAutoSaveLog();
+  if (panel === 'sessions') wccsLoadSessions();
+  if (panel === 'rewind')   wccsLoadRewind();
+  if (panel === 'diff')     wccsLoadDiffVersions();
+}
+
+async function wccsLoadAutoSaveLog() {
+  const el = document.getElementById('wpanel-autosave');
+  el.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const d = await apiFetch('/wccs/save-log');
+    if (!d.ok || !d.entries || !d.entries.length) {
+      el.innerHTML = '<div class="empty-msg">No auto-save events found in wccs_log.md.</div>';
+      return;
+    }
+    el.innerHTML =
+      '<table style="width:100%;font-size:11px;border-collapse:collapse">' +
+      '<tr><th style="color:#888;text-align:left;padding:4px 8px;border-bottom:1px solid #222">#</th>' +
+      '<th style="color:#888;text-align:left;padding:4px 8px;border-bottom:1px solid #222">Date</th>' +
+      '<th style="color:#888;text-align:left;padding:4px 8px;border-bottom:1px solid #222">Session Focus</th>' +
+      '<th style="color:#888;text-align:left;padding:4px 8px;border-bottom:1px solid #222">ALP</th></tr>' +
+      d.entries.map(e =>
+        '<tr><td style="padding:4px 8px;color:#4af;border-bottom:1px solid #111">' + esc(e.version) + '</td>' +
+        '<td style="padding:4px 8px;color:#888;white-space:nowrap;border-bottom:1px solid #111">' + esc(e.date) + '</td>' +
+        '<td style="padding:4px 8px;color:#ccc;border-bottom:1px solid #111;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(e.focus || e.session || '') + '</td>' +
+        '<td style="padding:4px 8px;color:#6f6;border-bottom:1px solid #111;font-size:10px">' + esc(e.alp || '—') + '</td></tr>'
+      ).join('') + '</table>' +
+      '<div style="font-size:10px;color:#555;margin-top:6px;text-align:right">Showing last ' + d.entries.length + ' of ' + d.total + ' — auto-refreshes in 60s</div>';
+  } catch(e) {
+    el.innerHTML = '<div class="error-msg">Error: ' + esc(e.message) + '</div>';
+  }
+  setTimeout(() => { if (_wccsPanel === 'autosave') wccsLoadAutoSaveLog(); }, 60000);
+}
+
+function wccsHistorySearch() {
+  clearTimeout(_wccsSearchTimer);
+  _wccsSearchTimer = setTimeout(_wccsDoSearch, 300);
+}
+
+async function _wccsDoSearch() {
+  const q       = document.getElementById('wccs-srch-input').value.trim();
+  const countEl = document.getElementById('wccs-srch-count');
+  const resEl   = document.getElementById('wccs-srch-results');
+  if (!q) { countEl.textContent = ''; resEl.innerHTML = ''; return; }
+  try {
+    const d = await apiFetch('/wccs/history-search?q=' + encodeURIComponent(q));
+    countEl.textContent = d.count + ' match' + (d.count === 1 ? '' : 'es') + ' for "' + esc(q) + '"';
+    if (!d.results || !d.results.length) {
+      resEl.innerHTML = '<div class="empty-msg">No results.</div>'; return;
+    }
+    const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    const hi = txt => esc(txt).replace(re, '<mark style="background:#2a6;color:#fff;border-radius:2px;padding:0 2px">$1</mark>');
+    resEl.innerHTML = d.results.map(r =>
+      '<div class="search-result">' +
+      '<div class="search-source">' + esc(r.source) + ' — line ' + r.line_n + '</div>' +
+      (r.before && r.before.length ? '<div class="search-ctx">' + r.before.map(l => esc(l)).join('<br>') + '</div>' : '') +
+      '<div class="search-match">' + hi(r.match) + '</div>' +
+      (r.after && r.after.length ? '<div class="search-ctx">' + r.after.map(l => esc(l)).join('<br>') + '</div>' : '') +
+      '</div>'
+    ).join('');
+  } catch(e) {
+    resEl.innerHTML = '<div class="error-msg">Error: ' + esc(e.message) + '</div>';
+  }
+}
+
+async function wccsLoadSessions() {
+  const listEl = document.getElementById('wsess-list');
+  const viewEl = document.getElementById('wsess-view');
+  listEl.innerHTML = '<div class="loading">Loading…</div>';
+  viewEl.textContent = 'Select a session from the left.';
+  try {
+    const d = await apiFetch('/wccs/session-logs');
+    _wsessLogs = d.logs || [];
+    if (!_wsessLogs.length) {
+      listEl.innerHTML = '<div class="empty-msg" style="padding:8px">No session logs found.</div>';
+      return;
+    }
+    listEl.innerHTML = _wsessLogs.map((log, i) =>
+      '<div style="padding:5px 6px;cursor:pointer;border-bottom:1px solid #111;font-size:11px" ' +
+      'onclick="wsessSelect(' + i + ')" class="session-entry" id="wsess-e' + i + '">' +
+      '<div style="color:#ddd;word-break:break-all">' + esc(log.filename) + '</div>' +
+      '<div style="color:#666;font-size:10px;margin-top:2px">' + esc((log.mtime||'').slice(0,10)) + ' — ' + log.line_count + ' lines</div>' +
+      '</div>'
+    ).join('');
+  } catch(e) {
+    listEl.innerHTML = '<div class="error-msg">Error: ' + esc(e.message) + '</div>';
+  }
+}
+
+function wsessSelect(i) {
+  const log = _wsessLogs[i];
+  if (!log) return;
+  document.querySelectorAll('#wsess-list .session-entry').forEach((el, j) => {
+    el.style.background = j === i ? '#152030' : '';
+  });
+  document.getElementById('wsess-view').textContent = log.content || '(empty)';
+}
+
+async function wccsLoadRewind() {
+  const sel = document.getElementById('wrewind-sel');
+  sel.innerHTML = '<option value="">Loading…</option>';
+  document.getElementById('wrewind-edit').value = '';
+  document.getElementById('wrewind-msg').textContent = '';
+  try {
+    const d = await apiFetch('/wccs/versions');
+    _wrewindVersions = d.versions || [];
+    if (!_wrewindVersions.length) {
+      sel.innerHTML = '<option value="">No versions found in archive_dead/</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">— select version —</option>' +
+      _wrewindVersions.map(v =>
+        '<option value="' + esc(v.filename) + '">' + esc(v.display) + ' (' + v.line_count + ' lines)</option>'
+      ).join('');
+  } catch(e) {
+    sel.innerHTML = '<option value="">Error loading</option>';
+  }
+}
+
+function wrewindLoad() {
+  const fname = document.getElementById('wrewind-sel').value;
+  const v = _wrewindVersions.find(x => x.filename === fname);
+  document.getElementById('wrewind-edit').value = v ? v.content : '';
+  document.getElementById('wrewind-msg').textContent = '';
+}
+
+async function wrewindRestore() {
+  const fname   = document.getElementById('wrewind-sel').value;
+  const content = document.getElementById('wrewind-edit').value;
+  if (!fname) { toast('Select a version first', 'error'); return; }
+  const ok = await showConfirmDialog('Restore ' + fname + ' to STATUS.md?\n\nCurrent STATUS.md will be backed up to archive_dead/ first.');
+  if (!ok) return;
+  try {
+    const d = await apiFetch('/wccs/restore', {
+      method: 'POST',
+      body: JSON.stringify({ filename: fname, content }),
+    });
+    if (d.ok) {
+      document.getElementById('wrewind-msg').textContent = 'Restored (' + d.line_count + ' lines)';
+      toast('STATUS.md restored from ' + fname, 'ok');
+    } else {
+      toast('Restore failed: ' + (d.error || '?'), 'error');
+    }
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
+async function wccsLoadDiffVersions() {
+  try {
+    const d = await apiFetch('/wccs/versions');
+    _wdiffVersions = d.versions || [];
+    const opts = '<option value="">— select —</option>' +
+      _wdiffVersions.map(v =>
+        '<option value="' + esc(v.filename) + '">' + esc(v.display) + '</option>'
+      ).join('');
+    document.getElementById('wdiff-a').innerHTML = opts;
+    document.getElementById('wdiff-b').innerHTML = opts;
+    if (_wdiffVersions.length >= 2) {
+      document.getElementById('wdiff-a').value = _wdiffVersions[0].filename;
+      document.getElementById('wdiff-b').value = _wdiffVersions[1].filename;
+    }
+  } catch(e) {
+    console.warn('diff versions load error:', e.message);
+  }
+}
+
+async function wccsRunDiff() {
+  const a = document.getElementById('wdiff-a').value;
+  const b = document.getElementById('wdiff-b').value;
+  if (!a || !b) { toast('Select both versions first', 'error'); return; }
+  const sumEl = document.getElementById('wdiff-summary');
+  const outEl = document.getElementById('wdiff-out');
+  sumEl.textContent = 'Comparing…';
+  outEl.innerHTML = '';
+  try {
+    const d = await apiFetch('/wccs/diff', {
+      method: 'POST',
+      body: JSON.stringify({ a, b }),
+    });
+    if (!d.ok) { sumEl.textContent = 'Error: ' + (d.error || '?'); return; }
+    const s = d.summary || {};
+    sumEl.textContent = 'A: ' + a + '  vs  B: ' + b +
+      '  —  +' + s.added + ' added, -' + s.removed + ' removed, ~' + s.changed + ' changed';
+    const hunks = (d.hunks || []).filter(h => h.type !== 'equal');
+    if (!hunks.length) {
+      outEl.innerHTML = '<div class="empty-msg">Files are identical.</div>'; return;
+    }
+    outEl.innerHTML = '<table style="width:100%;border-collapse:collapse">' +
+      hunks.map(h => {
+        const bg  = h.type === 'added' ? '#0a2212' : h.type === 'removed' ? '#220a0a' : '#161210';
+        const clr = h.type === 'added' ? '#6f6'    : h.type === 'removed' ? '#f66'    : '#fc8';
+        const pfx = h.type === 'added' ? '+ '      : h.type === 'removed' ? '- '      : '~ ';
+        return '<tr style="background:' + bg + '">' +
+          '<td style="color:#555;width:32px;text-align:right;padding:1px 4px;user-select:none;font-size:10px">' + (h.ln_a != null ? h.ln_a : '') + '</td>' +
+          '<td style="color:#555;width:32px;text-align:right;padding:1px 4px;user-select:none;font-size:10px">' + (h.ln_b != null ? h.ln_b : '') + '</td>' +
+          '<td style="padding:1px 8px;white-space:pre-wrap;word-break:break-all;color:' + clr + '">' + pfx + esc(h.text_b || h.text_a) + '</td></tr>';
+      }).join('') + '</table>';
+  } catch(e) {
+    sumEl.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BUILD 1 STEP C — Home Provider Health Drill-Down
+// ══════════════════════════════════════════════════════════════════
+
+let _phDetailOpen = false;
+let _phDetailRefreshTimer = null;
+
+function phToggleDetail() {
+  _phDetailOpen = !_phDetailOpen;
+  const panel = document.getElementById('ph-inst-detail');
+  const btn   = document.getElementById('ph-detail-btn');
+  if (_phDetailOpen) {
+    panel.classList.add('open');
+    btn.textContent = 'Hide Details';
+    phLoadDetail();
+  } else {
+    panel.classList.remove('open');
+    btn.textContent = 'Show Details';
+    clearTimeout(_phDetailRefreshTimer);
+  }
+}
+
+async function phLoadDetail() {
+  const rowsEl = document.getElementById('ph-inst-rows');
+  const tsEl   = document.getElementById('ph-inst-ts');
+  try {
+    const d = await apiFetch('/health-status');
+    const providers = d.providers || [];
+    if (!providers.length) {
+      rowsEl.innerHTML = '<div style="color:#555;font-size:10px;text-align:center;padding:4px">No health data yet — run a health check.</div>';
+      return;
+    }
+    const badgeCls = st => {
+      if (st === 'GREEN')  return 'background:#174;color:#8f8';
+      if (st === 'YELLOW') return 'background:#332;color:#fc8';
+      if (st === 'RED')    return 'background:#311;color:#f88';
+      if (st === 'COOLING')return 'background:#133;color:#8df';
+      return 'background:#222;color:#666';
+    };
+    rowsEl.innerHTML = providers.map(p =>
+      '<div class="ph-inst-row">' +
+      '<span class="ph-inst-name">' + esc(p.label || p.id) + '</span>' +
+      '<span class="ph-inst-badge" style="' + badgeCls(p.status) + '">' + esc(p.status || '?') + '</span>' +
+      '<span class="ph-inst-time">' + (p.response_time > 0 ? p.response_time.toFixed(1) + 's' : '—') + '</span>' +
+      '</div>'
+    ).join('');
+    tsEl.textContent = 'Checked: ' + (d.generated_at ? d.generated_at.slice(0,16).replace('T',' ') : '?');
+  } catch(e) {
+    rowsEl.innerHTML = '<div style="color:#a55;font-size:10px;padding:4px">Error: ' + esc(e.message) + '</div>';
+  }
+  if (_phDetailOpen) {
+    _phDetailRefreshTimer = setTimeout(phLoadDetail, 30000);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// MISSING FUNCTION STUBS — required to prevent ReferenceErrors
+// ══════════════════════════════════════════════════════════════════
+
+// showToast: alias for toast(), used throughout Feature 1-10 code
+function showToast(msg, type, duration) {
+  toast(msg, type || 'ok', duration || 3000);
+}
+
+// switchTab: alias for goToTab(), called by applyPreset()
+function switchTab(name) {
+  goToTab(name);
+}
+
+// copyProjectFile: copies STATUS.md or HISTORY.md from server to clipboard
+async function copyProjectFile(which) {
+  const ep = which === 'history' ? '/api/history' : '/api/status';
+  const label = which === 'history' ? 'HISTORY.md' : 'STATUS.md';
+  try {
+    const r = await fetch(BASE + ep);
+    if (!r.ok) { showToast('Server error: ' + r.status, 'error'); return; }
+    const d = await r.json();
+    const text = d.content || '';
+    await navigator.clipboard.writeText(text);
+    showToast('Copied ' + label + ' (' + text.split('\n').length + ' lines)', 'ok', 2000);
+  } catch(e) {
+    showToast('Copy failed: ' + e.message, 'error');
+  }
+}
+
+// sdLoadSysInfo: called by loadSelfDiagnosis() but never defined.
+// System info is already fetched inside sdLoadMot() via /self-diagnosis;
+// this stub prevents the Promise.all from throwing.
+async function sdLoadSysInfo() {
+  // no-op: sdLoadMot() already calls sdRenderSysInfo(data) with the same endpoint
+}
+
+</script>
+</body>
+</html>
