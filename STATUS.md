@@ -86,6 +86,7 @@
 | Auto git push | aafl_wccs.py pushes to remote after every commit (non-fatal on failure) |
 | DESIGN_RULES.md | FFUE + dual-mode (workstation/API) documented. All 4 components covered. |
 | LiteLLM installed | Already installed + comment at aafl_core.py:201. Full integration pending. |
+| mcc_test.py | Test session completed successfully 2026-05-24 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -151,11 +152,11 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Test aafl_wccs.py — run: python aafl_wccs.py --dry-run
-2. Build 2 CLAC block (23 parking lot features)
-3. Star Citizen v0.2 benchmark via AAFL autonomous run
-4. Add GROQ + Cloudflare keys to .env (manual — security rule)
-5. Post on r/LocalLLaMA when Star Citizen benchmark passes
-6. LiteLLM full integration — replace direct provider calls with LiteLLM router
+1. Build 2 CLAC block (23 parking lot features)
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Add GROQ + Cloudflare keys to .env (manual — security rule)
+4. Post on r/LocalLLaMA when Star Citizen benchmark passes
+5. LiteLLM full integration — replace direct provider calls with LiteLLM router
+6. Electron wrapper for packaging
 
 <!-- END_OF_FILE -->
