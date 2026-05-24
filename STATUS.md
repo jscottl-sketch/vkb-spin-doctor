@@ -87,6 +87,7 @@
 | DESIGN_RULES.md | FFUE + dual-mode (workstation/API) documented. All 4 components covered. |
 | LiteLLM installed | Already installed + comment at aafl_core.py:201. Full integration pending. |
 | mcc_test.py | Test session completed successfully 2026-05-24 |
+| mcc_test.py capture | Added 2026-05-24 from chat summary |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
