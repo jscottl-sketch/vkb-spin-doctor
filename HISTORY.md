@@ -700,6 +700,14 @@ test session from mcc_test.py[2026-05-24 19:32:35] "test capture from mcc_test.p
 SESUM (Session Summary) — 24 May 2026:
 MCC test suite built (mcc_test.py, 138 tests, 133/138 PASS, dual-run comparison). Auto-refresh polling added (30s, "updated Xs ago" label, manual refresh button). AAFL Control fixed — Run Now works, Live Output panel with phase/provider badges, Workflow Builder with presets, AAFL↔Scout Bridge. Scout tab wired — 6 strategy buttons linked to chief_scout.py. ACCA tab renamed to "Instructions & Codes" with collapsible MCC guide. Full project audit — docs/PROJECT_AUDIT.md created, STATUS.md updated with 22 missing items. 10 dead files archived. ACCA.md cleaned — 5 codes added (CLACH/CNP/RIBS/SESUM/SBS), 5 mode codes reformatted, CAP duplicate confirmed clean. FFUE corrected to Fluid Flexible Upgradeable Editable. aafl_wccs.py attempted — all providers failed, manual session log cc2 committed. Coder 32B loaded for retry.
 
+
+---
+
+### 2026-05-25
+
+SESSION: 25 May 2026 (AM) — SIF + Build 2 Test + WCBB + Knowledge Bank
+✅ SIF delivered, Build 2 CLAC block written (23 features), 68-test smoke test designed, 17 WCBB fixes designed, Knowledge Harvester + Auto-Capture Hook built, AAFL Plan phase now queries knowledge bank, Knowledge tab designed for MCC, Mission statement confirmed aligned.
+
 <!-- END_OF_FILE -->
 
 
@@ -1674,3 +1682,232 @@ NEXT: File cleanup caps (loop_output 50 max), provider keys (Gemini/Mistral dead
 - sfl_agent.py HANDOVER_FILENAME updated to v43
 - mcu_optimizer.py run
 - dashboard_builder.py run
+
+
+---
+<!-- merged from session_logs/2026-05-24-cc1.md on 2026-05-24 21:26 -->
+
+# Session Log — 2026-05-24 (Claude Code session 1)
+
+**Date:** 2026-05-24
+**Tool:** Claude Code (CLAC)
+**Focus:** MCC 8-fix run + full project audit + housekeeping
+
+---
+
+## What was done
+
+### 1. mcc_server.py — 7 new endpoints wired
+
+Added GET routes:
+- `/aafl/live` — returns last 100 lines of aafl_output/latest.txt + parsed phase (plan/work/verify/store/done) + provider name
+- `/aafl/bridge-result` — returns aafl_output/bridge_result.json (AAFL↔Scout bridge result)
+- `/aafl/workflow-presets` — returns saved workflow presets from aafl_workflow_presets.json
+
+Added POST routes:
+- `/aafl/run-goal` — **fixes "Failed to fetch" bug**: sets goal in goal.txt + aafl_control_config.json then actually launches loop_manager.py via `_run_aafl_bg()`. Root cause was old `/run-now` only queued to goal_queue.txt but never launched AAFL.
+- `/scout/strategy` — launches individual scout strategy (ddg/reddit/github/youtube/forum/all) via chief_scout.py
+- `/aafl/scout-bridge` — runs chief_scout.py for current goal in background, writes result to bridge_result.json
+- `/aafl/workflow` — saves/replaces named workflow preset in aafl_workflow_presets.json
+
+Added 7 handler methods: `_handle_aafl_run_goal`, `_handle_aafl_live`, `_handle_scout_strategy`, `_handle_aafl_scout_bridge`, `_handle_aafl_bridge_result`, `_handle_workflow_presets_get`, `_handle_workflow_save`
+
+### 2. mission_control.html — AAFL Control + Scout tab upgrades
+
+**Run Now button fixed:**
+- Changed `onclick="runNow()"` → `onclick="runGoalNow()"`. New `runGoalNow()` calls `/aafl/run-goal` — actually launches AAFL instead of just queuing.
+
+**AAFL Live Output panel added (AAFL Control tab):**
+- Monospace scrolling output box (last 100 lines)
+- Phase badge (plan/work/verify/store/done)
+- Provider badge (→ mistral etc.)
+- Running indicator (orange dot)
+- Refresh + Clear buttons
+
+**AAFL↔Scout Bridge added (AAFL Control tab):**
+- "Run Scout for Current Goal" button → POST /aafl/scout-bridge
+- "Show Result" button → GET /aafl/bridge-result
+- Status pill (idle/running/done/error)
+
+**Workflow Builder added (AAFL Control tab):**
+- Step add/remove with provider + task type dropdowns
+- Named preset save/load (backed by /aafl/workflow + /aafl/workflow-presets)
+- Run Workflow + Stop buttons
+- loadWorkflows() called on DOMContentLoaded
+
+**Scout Strategies section added (Scout tab):**
+- Goal input field
+- 6 buttons: DDG Search / Reddit / GitHub / YouTube / Forum / All Parallel
+- Calls POST /scout/strategy with selected strategy
+- Results appear in Scout tab (loadScout() called after 3s)
+
+**JS functions added:** `runGoalNow`, `refreshAaflOutput`, `clearAaflChat`, `triggerScoutBridge`, `loadBridgeResult`, `addWorkflowStep`, `removeWorkflowStep`, `_renderWfSteps`, `saveWorkflow`, `loadWorkflows`, `loadWorkflowPreset`, `runWorkflow`, `stopWorkflow`, `runScoutStrategy`
+
+### 3. Auto-refresh polling (earlier this session)
+- `pollCoreData()` — 30s interval, fetches /api/status, /api/history, /api/acca, /api/health + calls tab refresh functions
+- `manualRefresh()` + ↻ Refresh button in header
+- "Last updated: Xs ago" label, updates every 1s
+- `_lastPollAt` global, set on init
+
+### 4. mcc_test.py validation
+- Run 1: 134/138 PASS | Run 2: 133/138 PASS
+- 5 failures all pre-existing timeout endpoints (/run-mot, /api/wccs, /self-diagnosis)
+- Above 130/138 threshold — all clear
+
+### 5. Full project audit — docs/PROJECT_AUDIT.md
+- Read every file in root + subfolders
+- Classified all files: ACTIVE / DEAD / UNKNOWN
+- STATUS.md coverage gaps identified (22 missing items)
+- ACCA.md completeness checked against full 38-code list
+- DESIGN_RULES.md FFUE confirmed correct
+- Built-but-not-in-STATUS items listed
+- Unactioned HISTORY ideas catalogued
+
+### 6. STATUS.md updated
+- 22 missing built items added (mcu_optimizer, wccs_runner, aafl_watchdog, cost_guard, meta_loop, mcc_full_mot, queue_runner, morning_report, provider_health, source_library_manager, docs/MCC_FULL_GUIDE.md, afna_strategies, auto-refresh, AAFL Live Output, Scout Bridge, Workflow Builder, Scout Strategies, /aafl/run-goal, /scout/strategy, preset_manager, and more)
+- mcc_server.py entry updated: "10+ endpoints" → "30+ endpoints"
+- 13 new pending items added (aafl_watchdog wiring, meta_proposals review, loop_output cap, AFNA→Stuck Inbox, ACCA cleanup, Stage 3 WCCS, Ko-fi/Itch.io, xAI Grok, n8n investigation, dead file archive)
+
+### 7. ACCA.md housekeeping
+- **SBS = Step By Step** added (was in HISTORY.md 2026-05-20, never appended until now)
+- **Modes moved to table:** TBLM, DDM, BGM, BPM, EM (were in prose line, now proper table rows)
+- **FFUE integrated** into table (was stray block at bottom)
+- **4 new codes added:** CLACH = Claude Chat | CNP = Copy and Paste | RIBS = Random Inspirational BrainStorm | SESUM = Session Summary
+- **CAP duplicate removed:** CAP (Copy and Paste, pre-split) removed — CNP kept as canonical. CAP and CNP had identical meanings.
+
+### 8. 10 dead files archived to archive_dead/
+| File | Reason |
+|---|---|
+| model_router.py | Historical AAFL prototype — flagged for archive May 23, never moved |
+| setup_router.py | One-time admin setup, calls dead model_router |
+| quick_fix.py | Old patch script — historical |
+| control_panel.py | Early prototype — superseded |
+| aafl_loop.py | Original AAFLLoop class — fully superseded by aafl_core.py + loop_manager.py |
+| full_auto_setup.py | Setup script calling dead model_router.py — DEAD |
+| free_providers.py | Provider registry superseded by aafl_core.py PROVIDERS list |
+| VKB_SpinDoctor_Handover_v40.md | Stale handover |
+| VKB_SpinDoctor_Handover_v41.md | Stale handover |
+| VKB_SpinDoctor_Handover_v43.md | Already in archive_dead/ (skipped) |
+
+### 9. 4 UNKNOWN files assessed
+| File | Verdict | Notes |
+|---|---|---|
+| preset_manager.py | ACTIVE | Build 1 Feature 2 — save/load/list/delete presets in presets/ |
+| full_auto_setup.py | DEAD → archived | Called model_router.py (dead) |
+| free_providers.py | DEAD → archived | Superseded by aafl_core.py PROVIDERS |
+| aafl_loop.py | DEAD → archived | Original prototype, fully superseded |
+
+---
+
+## Files changed
+
+| File | Change |
+|---|---|
+| mcc_server.py | +3 GET routes, +4 POST routes, +7 handler methods |
+| mission_control.html | Run Now fixed, +AAFL Live Output, +Bridge, +Workflow Builder, +Scout Strategies, +13 JS functions, +auto-refresh polling |
+| docs/PROJECT_AUDIT.md | Created — full audit |
+| STATUS.md | +22 built items, +13 pending items, updated mcc_server.py endpoint count |
+| ACCA.md | +SBS, +CLACH, +CNP, +RIBS, +SESUM, modes moved to table, FFUE integrated, CAP removed |
+| session_logs/2026-05-24-cc1.md | This file |
+| archive_dead/ | +model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41 handovers |
+
+---
+
+## Bugs fixed
+
+- **Run Now "Failed to fetch"** — runNow() called /run-now which only queued. Fixed: runGoalNow() calls /aafl/run-goal which actually launches loop_manager.py.
+- **Stuck Inbox "Load failed"** — was pre-existing; endpoint /stuck-inbox was already working (test confirms HTTP 200).
+- **ACCA codes missing from table** — SBS was in HISTORY but never appended. Modes were in prose. All fixed.
+- **CAP/CNP duplicate** — CAP removed, CNP kept.
+
+---
+
+## FFUE confirmed
+FFUE = Fluid, Flexible, Upgradeable, Editable. Correctly defined in DESIGN_RULES.md. No change needed.
+
+---
+
+## Next priorities
+
+1. Confirm aafl_watchdog.py + cost_guard.py are wired into loop_manager.py (URGENT before overnight run)
+2. Read meta_proposals/ (3 AAFL self-improvement proposals from May 18 — never implemented)
+3. Build 2 CLAC block (23 parking lot features)
+4. Star Citizen v0.2 benchmark via AAFL
+5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+6. loop_output file cap (35+ files, 50 max planned never built)
+
+
+---
+<!-- merged from session_logs/2026-05-24-cc2.md on 2026-05-24 21:26 -->
+
+# Session Log — 2026-05-24 (Claude Code session 2)
+
+**Date:** 2026-05-24
+**Tool:** Claude Code (CLAC)
+**Focus:** CAP/CNP duplicate check + WCCS save attempt
+
+---
+
+## What was done
+
+### 1. CAP/CNP duplicate check
+
+Read ACCA.md. CAP was **already removed** in cc1 — no action needed. CNP = Copy and Paste is present and correct. No duplicate found.
+
+### 2. aafl_wccs.py — FAILED (safety check blocked)
+
+Ran: `python aafl_wccs.py`
+
+Result:
+- Pre-flight: chat_latest.txt found — OK
+- Mistral Codestral: SKIP (timeout)
+- LM Studio Coder 32B: returned 9-line STATUS.md (ratio 5% vs prior 193 lines)
+- Safety check: refused to write (< 90% length ratio)
+- STATUS.md: untouched (restore confirmed)
+
+Root cause: LM Studio returned a near-empty rewrite. Safety guard worked correctly.
+
+### 3. Manual fallback
+
+Written this session log (cc2) and committing via git add -A + git commit as per fallback plan.
+
+---
+
+## Context: cc1 session (same day, earlier)
+
+The bulk of the day's work was completed in cc1 and committed as **8b72b08**. That session covered:
+- MCC test suite (138 tests, 133/138 PASS)
+- Auto-refresh polling (30s pollCoreData)
+- AAFL Control fixes: Run Now fixed, Live Output panel, Workflow Builder, Scout Bridge
+- Scout strategies wired (6 buttons, all 5 chief_scout strategies)
+- Full project audit → docs/PROJECT_AUDIT.md
+- 10 dead files archived to archive_dead/
+- 5 ACCA codes added (CLACH/CNP/RIBS/SESUM/SBS)
+- Mode codes reformatted to table (TBLM/DDM/BGM/BPM/EM)
+- CAP/CNP duplicate resolved (CAP removed, CNP kept)
+- FFUE confirmed: Fluid Flexible Upgradeable Editable
+
+---
+
+## Files changed
+
+| File | Change |
+|---|---|
+| session_logs/2026-05-24-cc2.md | This file — manual fallback WCCS log |
+
+---
+
+## WCCS outcome
+
+aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blocked write. Manual git commit used as fallback. STATUS.md and HISTORY.md unchanged from cc1 state.
+
+---
+
+## Next priorities
+
+1. **URGENT:** Confirm aafl_watchdog.py + cost_guard.py wired into loop_manager.py before overnight run
+2. Read meta_proposals/ (3 AAFL self-improvement proposals, never actioned)
+3. Build 2 CLAC block (23 parking lot features B2-01 through B2-23)
+4. Star Citizen v0.2 benchmark via AAFL
+5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+6. loop_output file cap (35+ files, 50 max planned, never built)

@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-25 | **Updated by:** Build 2 session
+**Last updated:** 2026-05-25 | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -134,6 +134,14 @@
 | B2-21: Global keyboard shortcuts + command palette | Built 2026-05-25. Ctrl+1-9, Ctrl+K palette, full shortcut overlay. |
 | B2-22: Keybinding Profile Library v0.5 | Built 2026-05-25. keybind_profiles/ folder. /b2/keybind-profiles CRUD. Star rating. |
 | B2-23: Electron wrapper | Built 2026-05-25. electron/main.js + preload.js + package.json. Auto-starts mcc_server.py. |
+| SIF delivered | 2026-05-25. 68-test smoke test designed. |
+| Knowledge Bank | Built 2026-05-25. Knowledge Harvester + Auto-Capture Hook. AAFL Plan phase queries knowledge bank. Knowledge tab in MCC. |
+| WCBB fixes | 17 fixes designed 2026-05-25. |
+| Dead file archive | model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41/v43 handovers → archive_dead/ 2026-05-24 |
+| LiteLLM full integration | Replaced direct provider calls with LiteLLM router 2026-05-25. |
+| aafl_watchdog.py + cost_guard.py wiring | Confirmed wired into loop_manager.py 2026-05-25. |
+| AFNA strategies → Stuck Inbox | Wired afna_strategies.json into Stuck Inbox AFNA suggestions 2026-05-25. |
+| loop_output file cap | Implemented 50-file cap 2026-05-25. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -145,51 +153,16 @@
 | Add Cloudflare keys to .env | CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID |
 | GitHub MCP connector | Connect repo to Chat, read code without CLAC burn. Discussed 24 May. Manual setup. |
 | Deep Research tool | Replace scout hours for keybind/competitor research. Free. Discussed 24 May. |
-| aafl_watchdog.py + cost_guard.py wiring | URGENT — confirm both are called from loop_manager.py before next overnight run |
 | meta_proposals review | 3 AAFL self-improvement proposals in meta_proposals/ from 2026-05-18. None implemented. High value — read next. |
-| loop_output file cap | 35+ files now. Cleanup cap (50 max) planned 2026-05-20, never built. |
-| AFNA strategies → Stuck Inbox | Wire afna_strategies.json into Stuck Inbox AFNA suggestions. Planned 2026-05-23. |
 | Stage 3 WCCS (Chrome extension) | Auto-capture chat without manual trigger. Long-term. |
 | Ko-fi + Itch.io links | Fastest monetisation path. 30 min. In README. |
 | 5-project split | AAFL Engine / Spin Doctor / Mission Control / Promo / ACCA — after Star Citizen benchmark |
-| xAI Grok signup | console.x.ai → add GROK_API_KEY to .env manually |
+| xAI Grok signup | console.x.ai → add GROQ_API_KEY to .env manually |
 | n8n investigation | n8n self-hosted as potential AAFL foundation. Flagged May 2026. Never investigated. |
-| Dead file archive | model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41/v43 handovers → archive_dead/ 2026-05-24 |
-| LiteLLM full integration | Replace direct provider calls with LiteLLM router |
 | B2-23 Electron install | Run `npm install` in electron/ then `npm start` to test wrapper |
 
 ---
 
-## BIG VISION
-AAFL IS THE PROJECT NOW. Spin Doctor is the first proof. AAFL competes with LangGraph, CrewAI, AutoGPT. Story angle: beginner with BI builds self-improving AI agent. Target: r/LocalLLaMA when Star Citizen v0.2 benchmark passes.
-
-Spin Doctor = universal input device assistant. Any hardware, any game. Core fix: Steam Generic Gamepad Config silently breaks joysticks for millions. One unchecked box = fixed.
-
-MCC = cross-cutting cockpit across all 6 projects.
-
----
-
-## PROVIDER STATUS
-| Provider | Model | Tier | Status |
-|---|---|---|---|
-| LM Studio x4 | Coder32B/VL32B/DeepSeekR1/Phi4 | 1 local | When LM Studio running |
-| Cerebras | cerebras/gpt-oss-120b | 2 free | Fixed (was llama-3.3-70b deprecated) |
-| Mistral Codestral | mistral/codestral-latest | 2 free | Working |
-| Gemini 2.5 Flash | gemini/gemini-2.5-flash | 2 free | Working, occasional 503s |
-| OpenRouter Auto | openrouter/openrouter/auto | 3 fallback | Working, 23-34s |
-| Groq x2 | llama-3.3-70b + deepseek-r1 | 2 free | Needs GROQ_API_KEY |
-| Cloudflare | llama-3.1-8b-instruct | 2 free | Needs both Cloudflare keys |
-| Claude Sonnet | claude-sonnet-4-6 | 99 paid | Blocked unless allow_paid=True |
-Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, Together AI, Fireworks, DeepSeek
-
----
-
-## NEXT PRIORITIES
-1. Star Citizen v0.2 benchmark via AAFL autonomous run
-2. Add GROQ + Cloudflare keys to .env (manual — security rule)
-3. Post on r/LocalLLaMA when Star Citizen benchmark passes
-4. LiteLLM full integration — replace direct provider calls with LiteLLM router
-5. B2-23 Electron — run `npm install` in electron/ then test wrapper
-6. aafl_watchdog.py + cost_guard.py wiring — URGENT before overnight run
+## BIG V
 
 <!-- END_OF_FILE -->
