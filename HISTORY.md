@@ -708,6 +708,39 @@ MCC test suite built (mcc_test.py, 138 tests, 133/138 PASS, dual-run comparison)
 SESSION: 25 May 2026 (AM) — SIF + Build 2 Test + WCBB + Knowledge Bank
 ✅ SIF delivered, Build 2 CLAC block written (23 features), 68-test smoke test designed, 17 WCBB fixes designed, Knowledge Harvester + Auto-Capture Hook built, AAFL Plan phase now queries knowledge bank, Knowledge tab designed for MCC, Mission statement confirmed aligned.
 
+
+---
+
+### 2026-05-25
+
+Session Summary — 25 May 2026
+Chat: "Implementing Claude software development best practices"
+What happened:
+
+Scott asked if the project is worth investing time into — AIO (AI Opinion): YES, but Star Citizen benchmark is the gate. Pass = keep going, fail = rethink
+Mapped 6 Claude best practices against the project — all 6 already covered
+Scott paid £20 extra on top of Pro subscription (was past weekly limit, resets Tuesday 7PM)
+Caught Scott on Opus 4.7 — SuperClaude flagged it, Scott switched off it permanently for brainstorming/instruction tasks
+Built ALP Audit Skill v2 with Mr Claude (model-switching teacher) + SuperClaude (emergency protocol at 90% allowance) + check #13 (switch back after Opus)
+Uploaded v2 to project files — confirmed loaded and working
+
+Decisions made:
+
+Opus reserved for web searches and file scanning only, not instructions/brainstorming
+Sonnet is the daily driver, Haiku for small jobs
+Star Citizen benchmark is next priority (unchanged)
+
+Files created:
+
+SKILL_alp_audit_v2.md — uploaded to project files ✅
+
+No ACCA codes added (none new this session)
+Next priorities (unchanged):
+
+Wire aafl_watchdog.py + cost_guard.py (safety first)
+Star Citizen v0.2 benchmark via AAFL autonomous run
+Wait for weekly limit reset Tuesday 7PM
+
 <!-- END_OF_FILE -->
 
 

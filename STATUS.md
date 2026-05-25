@@ -142,6 +142,8 @@
 | aafl_watchdog.py + cost_guard.py wiring | Confirmed wired into loop_manager.py 2026-05-25. |
 | AFNA strategies → Stuck Inbox | Wired afna_strategies.json into Stuck Inbox AFNA suggestions 2026-05-25. |
 | loop_output file cap | Implemented 50-file cap 2026-05-25. |
+| ALP Audit Skill v2 | Built 2026-05-25. Mr Claude + SuperClaude protocols implemented. |
+| Opus 4.7 flagged | Scott switched off Opus permanently for brainstorming/instruction tasks. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -158,11 +160,6 @@
 | Ko-fi + Itch.io links | Fastest monetisation path. 30 min. In README. |
 | 5-project split | AAFL Engine / Spin Doctor / Mission Control / Promo / ACCA — after Star Citizen benchmark |
 | xAI Grok signup | console.x.ai → add GROQ_API_KEY to .env manually |
-| n8n investigation | n8n self-hosted as potential AAFL foundation. Flagged May 2026. Never investigated. |
-| B2-23 Electron install | Run `npm install` in electron/ then `npm start` to test wrapper |
-
----
-
-## BIG V
+| n8n investigation | n8
 
 <!-- END_OF_FILE -->
