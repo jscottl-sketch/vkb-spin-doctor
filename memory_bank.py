@@ -80,6 +80,28 @@ def _init_db(conn):
             avg_score  REAL    NOT NULL DEFAULT 0.0,
             last_used  TEXT    NOT NULL DEFAULT ''
         );
+
+        CREATE TABLE IF NOT EXISTS test_results (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            test_id      TEXT    NOT NULL,
+            feature_id   TEXT    NOT NULL DEFAULT '',
+            result       TEXT    NOT NULL,
+            error_detail TEXT,
+            timestamp    TEXT    NOT NULL,
+            run_type     TEXT    NOT NULL DEFAULT 'manual'
+        );
+        CREATE INDEX IF NOT EXISTS idx_tr_feature ON test_results(feature_id);
+        CREATE INDEX IF NOT EXISTS idx_tr_result  ON test_results(result);
+
+        CREATE TABLE IF NOT EXISTS knowledge_archive (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            source_file TEXT    NOT NULL,
+            content     TEXT    NOT NULL,
+            tags        TEXT    NOT NULL DEFAULT '',
+            timestamp   TEXT    NOT NULL,
+            category    TEXT    NOT NULL DEFAULT ''
+        );
+        CREATE INDEX IF NOT EXISTS idx_ka_category ON knowledge_archive(category);
     """)
     conn.commit()
     _migrate_solution_log(conn)
@@ -322,6 +344,94 @@ def recent(n: int = 10) -> list[dict]:
         results.append(entry)
     conn.close()
     return results
+
+
+# ── Test results ─────────────────────────────────────────────────────────────
+
+def store_test_result(test_id: str, feature_id: str, result: str,
+                      error_detail: str | None = None,
+                      run_type: str = "manual") -> int:
+    """Insert one test result row. result should be 'pass' or 'fail'."""
+    conn = _connect()
+    _init_db(conn)
+    now = datetime.utcnow().isoformat()
+    cur = conn.execute(
+        """INSERT INTO test_results
+           (test_id, feature_id, result, error_detail, timestamp, run_type)
+           VALUES (?, ?, ?, ?, ?, ?)""",
+        (test_id, feature_id, result, error_detail, now, run_type),
+    )
+    conn.commit()
+    row_id = cur.lastrowid
+    conn.close()
+    return row_id
+
+
+def get_failure_history(feature_id: str) -> list[dict]:
+    """Return all FAIL rows for a given feature_id, newest first."""
+    conn = _connect()
+    _init_db(conn)
+    rows = conn.execute(
+        """SELECT * FROM test_results
+           WHERE feature_id = ? AND result = 'fail'
+           ORDER BY timestamp DESC""",
+        (feature_id,),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_test_stats() -> list[dict]:
+    """Return pass/fail counts grouped by run_type."""
+    conn = _connect()
+    _init_db(conn)
+    rows = conn.execute(
+        """SELECT run_type,
+                  SUM(CASE WHEN result='pass' THEN 1 ELSE 0 END) AS passed,
+                  SUM(CASE WHEN result='fail' THEN 1 ELSE 0 END) AS failed,
+                  COUNT(*) AS total
+           FROM test_results
+           GROUP BY run_type
+           ORDER BY run_type""",
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+# ── Knowledge archive ────────────────────────────────────────────────────────
+
+def store_knowledge(source_file: str, content: str, tags: str,
+                    category: str) -> int:
+    """Insert one knowledge_archive row. Returns new row id."""
+    conn = _connect()
+    _init_db(conn)
+    now = datetime.utcnow().isoformat()
+    cur = conn.execute(
+        """INSERT INTO knowledge_archive
+           (source_file, content, tags, timestamp, category)
+           VALUES (?, ?, ?, ?, ?)""",
+        (source_file, content, tags, now, category),
+    )
+    conn.commit()
+    row_id = cur.lastrowid
+    conn.close()
+    return row_id
+
+
+def search_knowledge(query: str) -> list[dict]:
+    """Return knowledge_archive rows whose content or tags contain query (LIKE).
+    Results ordered by id DESC (newest first)."""
+    conn = _connect()
+    _init_db(conn)
+    pattern = f"%{query}%"
+    rows = conn.execute(
+        """SELECT * FROM knowledge_archive
+           WHERE content LIKE ? OR tags LIKE ? OR source_file LIKE ?
+           ORDER BY id DESC LIMIT 100""",
+        (pattern, pattern, pattern),
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
 
 
 # ── Self-test ─────────────────────────────────────────────────────────────────
