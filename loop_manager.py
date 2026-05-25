@@ -98,6 +98,21 @@ def _goal_slug(goal: str) -> str:
     return "_".join(w.lower() for w in words)
 
 
+LOOP_OUTPUT_CAP = 50
+
+
+def _cap_loop_output(out_dir: "Path") -> None:
+    files = sorted(out_dir.glob("*"), key=lambda f: f.stat().st_mtime)
+    if len(files) < LOOP_OUTPUT_CAP:
+        return
+    archive = HERE / "archive_dead" / "loop_output_old"
+    archive.mkdir(parents=True, exist_ok=True)
+    excess = files[: len(files) - LOOP_OUTPUT_CAP + 1]
+    for f in excess:
+        f.rename(archive / f.name)
+    print(f"[CAP] loop_output: archived {len(excess)} oldest file(s) to archive_dead/loop_output_old/")
+
+
 def _write_report(goal: str, iterations: int, best: dict | None,
                   total_cost: float, stop_reason: str):
     out_dir  = HERE / "loop_output"
@@ -142,6 +157,7 @@ def _write_report(goal: str, iterations: int, best: dict | None,
     text = "\n".join(lines)
     out_path.write_text(text, encoding="utf-8")
     (HERE / "morning_report.md").write_text(text, encoding="utf-8")
+    _cap_loop_output(out_dir)
 
 
 def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):

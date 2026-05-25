@@ -3283,10 +3283,10 @@ class ThreadingServer(http.server.ThreadingHTTPServer):
 
 def main():
     server = ThreadingServer((HOST, PORT), MCCHandler)
-    print(f"[MCC] MCC Server running at http://{HOST}:{PORT}")
-    print(f"[MCC] Project folder: {HERE}")
-    print(f"[MCC] chat_latest.txt: {CHAT}")
-    print(f"[MCC] Ctrl+C to stop")
+    print(f"[MCC] MCC Server running at http://{HOST}:{PORT}", flush=True)
+    print(f"[MCC] Project folder: {HERE}", flush=True)
+    print(f"[MCC] chat_latest.txt: {CHAT}", flush=True)
+    print(f"[MCC] Ctrl+C to stop", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

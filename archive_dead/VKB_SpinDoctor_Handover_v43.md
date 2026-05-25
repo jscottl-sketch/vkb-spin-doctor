@@ -1,8 +1,8 @@
 # VKB Spin Doctor — Project Handover v43 (MASTER)
 
 **Owner:** Scott (Croydon, England)
-**Status:** AAFL Control Panel built (MCC tab 7). Chief Scout + MCC Mega-Upgrade specced in Chat. aafl_wccs.py = Job 1 next session. MCC-to-.exe plan confirmed (Electron wrapper).
-**Last updated:** 2026-05-19
+**Status:** WCCS Reliability Upgrade designed — 3-stage plan (Mini-Save Protocol, aafl_wccs.py, Chrome extension). New ACCA code CAWPA. aafl_wccs.py queued for next CLAC session.
+**Last updated:** 2026-05-20 (WCCS automation)
 **Consolidates:** v42
 
 ---
@@ -697,13 +697,11 @@ Desktop (C:\Users\jscot\Desktop\):
 
 ## NEXT PRIORITIES
 
-1. Build aafl_wccs.py — AAFL-powered handover writer (CLAC, DSP confirmed required)
-2. Build merge_sessions.py + .bat (DSP confirmed required)
-3. Execute 5-project split + create Master project
-4. Build 5 new MCC features: Stuck Inbox, Run Now button, Cost Predictor, Memory Inspector, Promotion Queue
-5. Star Citizen v0.2 benchmark via AAFL autonomous run (first public demo)
-6. External post when benchmark passes (r/LocalLLaMA primary)
-7. Stage 3 — Claude in Chrome auto-capture (future)
+1. Build database-backed handover (handover.db SQLite + migration from v45)
+2. File cleanup caps (loop_output 50 max)
+3. Provider keys (Gemini/Mistral dead)
+4. MCC Watchdog+Rewind tab
+5. START_MCC.bat rename
 
 ### 5-Project Split Plan
 | Project | What goes in it |
@@ -766,7 +764,7 @@ Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads sa
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v43.md. AAFL Control Panel built (MCC tab 7). Chief Scout + MCC Mega-Upgrade fully specced — 29 outstanding jobs listed, aafl_wccs.py = Job 1. MCC path to .exe confirmed (Electron wrapper). AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark + post trigger. ALP at 17 entries. Next: build aafl_wccs.py (DSP required), build merge_sessions.py (DSP required), MCC Mega-Upgrade one tab at a time, execute 5-project split, Star Citizen benchmark, post when it passes."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v43.md. MAJOR REFRAME: AAFL IS the project. Spin Doctor is the benchmark. Master + 5 sub-projects confirmed. MCC is cross-cutting cockpit layer — 5 new features planned (Stuck Inbox, Run Now, Cost Predictor, Memory Inspector, Promotion Queue). WCCS Reliability Upgrade designed (3 stages: Mini-Save, aafl_wccs.py, Chrome extension). aafl_wccs.py not yet built (DSP required). merge_sessions.py not yet built (DSP pending). New ACCA code: CAWPA = Completely Automate Whats Possible by AI. AAFL competes with LangGraph/CrewAI/AutoGPT. Star Citizen v0.2 = first public benchmark + post trigger. ALP at 17 entries. Next: build aafl_wccs.py, build merge_sessions.py + .bat, execute 5-project split, build 5 MCC features, run Star Citizen benchmark, post when it passes."
 
 ---
 
@@ -966,37 +964,9 @@ Pin in each project: ALP_Database.md + latest handover (v42). MCC still reads sa
 
 ---
 
-### 2026-05-19 (Chat session — Chief Scout + MCC Mega-Upgrade)
-
-**Key decisions:**
-- Opus 4.7 confirmed real — $5/$25 per MTok via API. Batch+caching = up to 95% discount. Future nuclear version when funded.
-- AI tier strategy = car gears: free AI downhill, Sonnet medium, Opus uphill. Single config line swap when funded.
-- Chief Scout parallel agent system BUILT — 5 strategies (ddg/reddit/github/youtube/forum), ThreadPoolExecutor, Mistral synthesis. Smoke test: 8 sources, $0.00116.
-- Scout Control Panel BUILT — 5th MCC tab. Strategy toggles, presets, live results.
-- AAFL Control Panel BUILT — 6th MCC tab. Provider dropdown, fallback chain, goal queue, live output terminal.
-- Full 29-job outstanding list compiled — aafl_wccs.py = Job 1, MCC overhaul = Job 29, MCC as .exe = Job 30.
-- MCC endpoint: HTML now → Electron wrapper → standalone .exe. No rewrite needed.
-- aafl_wccs.py confirmed as Job 1 — unlocks full CA chain: chat → Mistral extracts tasks → handover → mcu_optimizer → board.
-- MCC MEGA-UPGRADE brainstormed — all 6 tabs specced with AI assignment per task, AI selector cards with strengths/weaknesses, editable goals, growing sources library, total variable control. Global: preset system, keyboard shortcuts, tutorial mode, undo on everything. Full spec in this chat.
-- Chief Scout keybind research primary use case — parallel swarm researches known keybinds, popular configs per game/hardware. Feeds Keybinding Profile Library v0.5.
-
+### 2026-05-20 (Claude Code session 1)
+**Key decisions:** Built aafl_watchdog.py and designed database-backed handover as permanent WCCS fix.
 **New ACCA codes:** None
-
-**Ideas discussed:**
-- Hierarchical multi-agent system — Chief Scout = supervisor, AFNA warriors = workers with different strategies.
-- Source discovery mode — dedicated scout runs that only find new sources, grow library passively.
-- AI comparison mode — same goal through 2 AIs, side by side results.
-- Step-by-step AAFL mode — watch/pause each step, override AI output mid-chain.
-- Chain builder — visual drag-and-drop pipeline in MCC.
-- Provider health dashboard — live ping, speed benchmark, success rate per AI.
-- Smart AI suggester — AI reads goal, recommends which provider for each step.
-- Tutorial mode for BI-friendly onboarding.
-- Electron fastest path to .exe — existing HTML drops straight in.
-
-**Next priorities:**
-1. Build aafl_wccs.py — Job 1, DSP confirmed required
-2. Build merge_sessions.py + .bat — Job 3
-3. MCC Mega-Upgrade — one tab at a time via CLAC
-4. MCC interface overhaul — Job 29
-5. MCC to .exe packaging — Job 30
-6. Star Citizen v0.2 benchmark via AAFL autonomous run
+**Ideas discussed:** Scout Control mega-upgrade brainstormed, MCC tabs reorganization discussed.
+**Bugs fixed:** None
+**Next priorities:** 1. Build database-backed handover (handover.db SQLite + migration from v45). 2. File cleanup caps (loop_output 50 max). 3. Provider keys (Gemini/Mistral dead). 4. MCC Watchdog+Rewind tab. 5. START_MCC.bat rename.

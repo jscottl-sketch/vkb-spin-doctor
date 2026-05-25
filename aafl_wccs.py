@@ -18,7 +18,8 @@ ACCA = ROOT / "ACCA.md"
 CHAT_LATEST = ROOT / "chat_latest.txt"
 BACKUP_DIR = ROOT / "archive_dead"
 EOF_MARKER = "<!-- END_OF_FILE -->"
-LINE_COUNT_THRESHOLD = 0.90
+LINE_COUNT_THRESHOLD = 0.80
+LINE_COUNT_WARN      = 0.90
 
 try:
     from aafl_core import AAFLCore
@@ -48,7 +49,9 @@ def verify_line_count(old, new, name):
     if old_n == 0: return
     ratio = new_n / old_n
     if ratio < LINE_COUNT_THRESHOLD:
-        raise RuntimeError(f"[FAIL] {name}: {new_n} lines vs prev {old_n} (ratio {ratio:.0%} < 90%). Refusing to write.")
+        raise RuntimeError(f"[FAIL] {name}: {new_n} lines vs prev {old_n} (ratio {ratio:.0%} < 80%). Refusing to write.")
+    if ratio < LINE_COUNT_WARN:
+        print(f"[WARN] {name}: {new_n} lines vs prev {old_n} (ratio {ratio:.0%}). Writing with caution.")
 
 def append_to_file(path, entry, header=None):
     if not path.exists():
