@@ -1972,20 +1972,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </div>
 
-    <!-- acc-chain-mode -->
-    <div class="aafl-acc open" id="acc-chain-mode">
-      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-chain-mode')">Chain Mode <span class="acc-arrow">▼</span></div>
-      <div class="aafl-acc-body">
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Runs chain_runner.py — processes goals in sequence through multiple AI providers automatically</div>
-    <div class="aafl-ctrl-row">
-      <button class="btn" id="btn-run-chain" onclick="runChain()" title="Run chain_runner.py which processes queued goals through a sequence of AI providers">Run Chain</button>
-      <button class="btn" onclick="loadChainStatus()" title="Check whether the chain is currently running and which step it is on">Status</button>
-      <button class="btn" onclick="loadChainLog()" title="Load the last 50 lines from the chain runner log file">Log</button>
-      <span id="chain-status-badge" style="color:#4af;font-size:12px;margin-left:8px"></span>
-    </div>
-    <div id="chain-log-out" style="max-height:120px;overflow-y:auto;margin-top:6px;font-size:11px;color:#888"></div>
-      </div>
-    </div>
+    <!-- acc-chain-mode: merged into Workflow Builder below -->
 
     <!-- acc-aafl-settings -->
     <div class="aafl-acc open" id="acc-aafl-settings">
@@ -2040,83 +2027,170 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </div>
 
-    <!-- acc-workflow -->
+    <!-- acc-workflow (OCB-C merged: Workflow + Chain Builder + Chain Mode) -->
     <div class="aafl-acc open" id="acc-workflow">
-      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-workflow')">Workflow Builder <span class="acc-arrow">▼</span></div>
+      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-workflow')">Workflow Builder
+        <span style="font-size:10px;background:#1a3a1a;color:#6f6;border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle" title="This section combines the old Workflow Builder, Chain Mode, and Chain Builder into one place">merged</span>
+        <span class="acc-arrow">▼</span>
+      </div>
       <div class="aafl-acc-body">
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Build a custom multi-step workflow — choose a provider and task type for each step, then run the whole sequence</div>
-    <div class="aafl-ctrl-row" style="gap:6px;flex-wrap:wrap;align-items:center">
-      <select id="wf-step-provider" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="Which AI provider to use for this workflow step">
-        <option value="auto">Auto</option>
-        <option value="mistral">Mistral</option>
-        <option value="cerebras">Cerebras</option>
-        <option value="gemini">Gemini</option>
-        <option value="groq">Groq</option>
-        <option value="openrouter">OpenRouter</option>
-      </select>
-      <select id="wf-step-task" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="What type of task this step performs — Plan=break down the goal, Work=execute it, Verify=check the output, Store=save results">
-        <option value="plan">Plan</option>
-        <option value="work">Work</option>
-        <option value="verify">Verify</option>
-        <option value="store">Store</option>
-      </select>
-      <button class="btn" onclick="addWorkflowStep()" style="font-size:12px" title="Add a step with the chosen provider and task type to the workflow sequence below">+ Add Step</button>
-      <button class="btn" onclick="removeWorkflowStep()" style="font-size:12px" title="Remove the last step from the workflow sequence">- Remove Last</button>
-    </div>
-    <div id="wf-steps-list" style="margin-top:6px;min-height:28px;font-size:11px;color:#888;padding:4px 0"></div>
-    <div class="aafl-ctrl-row" style="gap:6px;flex-wrap:wrap;margin-top:6px">
-      <input type="text" id="wf-preset-name" placeholder="Preset name…" style="flex:1;min-width:120px;max-width:200px" title="Give this workflow a name so you can save and reload it">
-      <button class="btn" onclick="saveWorkflow()" style="font-size:12px" title="Save the current workflow steps as a named preset">Save Preset</button>
-      <select id="wf-preset-select" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" onchange="loadWorkflowPreset(this.value)" title="Load a previously saved workflow preset — replaces the current steps">
-        <option value="">Load preset…</option>
-      </select>
-      <button class="btn" onclick="runWorkflow()" style="font-size:12px;background:#1a3a1a;color:#6f6" title="Run the workflow steps in sequence — each step passes its output to the next">▶ Run Workflow</button>
-      <button class="btn" onclick="stopWorkflow()" style="font-size:12px;background:#3a1a1a;color:#f88" title="Stop the workflow after the current step finishes">■ Stop</button>
-    </div>
-    <div id="wf-status" style="font-size:11px;color:#888;margin-top:4px"></div>
+        <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px" title="Build a multi-step workflow. Each step has a provider + goal + settings. Run them in sequence, with optional branching and notifications.">Build multi-step workflows — each step has a provider, goal, and settings. Visual flowchart view below. Chain Builder and Chain Mode are fully merged in.</div>
 
-    <!-- ACCA Loop Behaviour Panel (Task 4) -->
-    <div class="loop-panel" id="loop-behaviour-panel">
-      <div class="loop-panel-title">Loop Behaviour</div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:6px">
-          <label style="font-size:12px;color:#888">Loop count:</label>
-          <input type="number" id="loop-count" value="1" min="1" max="999" style="width:70px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px" title="How many times to loop through the workflow (1–999)">
+        <!-- ── ADD STEP ROW ──────────────────────────────────────── -->
+        <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px" title="Fill in the fields below and click Add Step — each step runs in sequence, passing output to the next">Add Step</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:180px">
+              <label style="font-size:10px;color:#555">Goal (optional — leave blank to reuse previous output)</label>
+              <input type="text" id="wf-step-goal" placeholder="Goal for this step…" style="background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:12px" title="Type the goal for this step — leave blank to pass the previous step's output as the goal">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">Provider</label>
+              <select id="wf-step-provider" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="Which AI provider handles this step — Auto picks the best free one available">
+                <option value="auto">Auto</option>
+                <option value="mistral">Mistral</option>
+                <option value="cerebras">Cerebras</option>
+                <option value="gemini">Gemini</option>
+                <option value="groq">Groq</option>
+                <option value="openrouter">OpenRouter</option>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">Task type</label>
+              <select id="wf-step-task" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="What kind of work this step does — Plan=breakdown, Work=execute, Verify=check, Store=save">
+                <option value="plan">Plan</option>
+                <option value="work">Work</option>
+                <option value="verify">Verify</option>
+                <option value="store">Store</option>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">Timeout (s)</label>
+              <input type="number" id="wf-step-timeout" value="180" min="10" max="600" style="width:70px;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 6px;font-size:12px" title="How many seconds before this step times out — default 180s (3 min)">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">Retries</label>
+              <input type="number" id="wf-step-retries" value="1" min="0" max="5" style="width:50px;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 6px;font-size:12px" title="How many times to retry this step if it fails">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">Min score</label>
+              <input type="number" id="wf-step-minscore" value="7" min="0" max="10" step="0.5" style="width:55px;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 6px;font-size:12px" title="If the step result scores below this, the conditional branch fires — e.g. retry with a different provider">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:#555">If score &lt; min →</label>
+              <select id="wf-step-branch" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="What to do when the score falls below the min-score threshold">
+                <option value="continue">Continue anyway</option>
+                <option value="retry_different">Retry w/ different provider</option>
+                <option value="stop">Stop workflow</option>
+                <option value="skip_next">Skip next step</option>
+              </select>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:6px;padding-bottom:1px">
+              <button class="btn" onclick="addWorkflowStep()" style="font-size:12px" title="Add this step to the workflow canvas below">+ Add Step</button>
+              <button class="btn" onclick="removeWorkflowStep()" style="font-size:12px" title="Remove the last step from the canvas">− Last</button>
+              <button class="btn" onclick="clearWorkflow()" style="font-size:11px;background:#2a1a1a;color:#f88" title="Remove all steps and start fresh">✕ Clear</button>
+            </div>
+          </div>
         </div>
-        <label class="auto-toggle-wrap" style="font-size:12px;color:#888" title="Loop forever until manually stopped">
-          <span>Infinite</span>
-          <label class="toggle-switch"><input type="checkbox" id="loop-infinite" onchange="toggleLoopInfinite(this.checked)"><span class="toggle-slider"></span></label>
-        </label>
-        <div style="display:flex;align-items:center;gap:6px">
-          <label style="font-size:12px;color:#888">End when:</label>
-          <select id="loop-end-condition" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="When should the loop stop?">
-            <option value="manual_stop">Manual Stop</option>
-            <option value="after_n" selected>After N loops</option>
-            <option value="score_threshold">After score &gt;= threshold</option>
-            <option value="wccs_triggered">WCCS triggered</option>
+
+        <!-- ── VISUAL FLOWCHART ───────────────────────────────────── -->
+        <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Each box is a step — arrows show the flow. Click a step to edit it.">Flowchart</div>
+        <div id="wf-flowchart" style="overflow-x:auto;padding:4px 0;margin-bottom:10px;min-height:60px">
+          <div style="font-size:11px;color:#555;font-style:italic">No steps yet — add a step above.</div>
+        </div>
+
+        <!-- ── ACTION BUTTONS ────────────────────────────────────── -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+          <button class="btn" onclick="runWorkflow()" style="font-size:12px;background:#1a3a1a;color:#6f6" title="Run all workflow steps in sequence — each step's output feeds into the next">▶ Run Workflow</button>
+          <button class="btn" id="btn-run-chain" onclick="runChain()" style="font-size:12px;background:#1a2a3a;color:#4af" title="Run chain_runner.py — Scout→Enrich→AAFL→Evaluate→Retry for the current goal">⛓ Run Chain</button>
+          <button class="btn" onclick="stopWorkflow()" style="font-size:12px;background:#3a1a1a;color:#f88" title="Stop the workflow after the current step completes">■ Stop</button>
+          <button class="btn" onclick="wfExportClacr()" style="font-size:12px" title="Export this workflow as a CLACR block you can paste into Claude Code">📋 Export as CLACR</button>
+          <span id="chain-status-badge" style="color:#4af;font-size:12px;margin-left:4px"></span>
+        </div>
+        <div id="wf-status" style="font-size:11px;color:#888;margin-bottom:6px"></div>
+
+        <!-- Chain runner output (merged from Chain Mode) -->
+        <div id="chain-log-out" style="max-height:80px;overflow-y:auto;font-size:11px;color:#888;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;padding:6px;display:none"></div>
+
+        <!-- ── PRESET ROW ─────────────────────────────────────────── -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+          <input type="text" id="wf-preset-name" placeholder="Preset name…" style="flex:1;min-width:120px;max-width:200px;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:12px" title="Give this workflow a name so you can save and reload it later">
+          <button class="btn" onclick="saveWorkflow()" style="font-size:12px" title="Save the current step list as a named preset — stored in aafl_workflow_presets.json">💾 Save</button>
+          <select id="wf-preset-select" style="background:#1a1a1a;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" onchange="loadWorkflowPreset(this.value)" title="Load a saved workflow preset — replaces the current steps">
+            <option value="">Load preset…</option>
           </select>
         </div>
-      </div>
-      <div class="loop-panel-title" style="margin-top:6px">Loop Actions (each iteration):</div>
-      <div class="loop-actions-grid">
-        <label title="SIF — Summarise In Full at end of each loop"><input type="checkbox" id="la-sif" value="SIF"> SIF (Summarise In Full)</label>
-        <label title="SESUM — Session Summary saved each loop"><input type="checkbox" id="la-sesum" value="SESUM"> SESUM (Session Summary)</label>
-        <label title="WCCS — Auto-save handover each loop"><input type="checkbox" id="la-wccs" value="WCCS"> WCCS (Auto-save)</label>
-        <label title="WCBB — What Could Be Better analysis after each result"><input type="checkbox" id="la-wcbb" value="WCBB"> WCBB (What Could Be Better)</label>
-        <label title="AFNA — Attack From New Angle if score below threshold"><input type="checkbox" id="la-afna" value="AFNA"> AFNA (New Angle if low)</label>
-        <label title="WRS — Write Software if code task detected"><input type="checkbox" id="la-wrs" value="WRS"> WRS (Write Software)</label>
-        <label title="DSP — Skip permissions on all sub-tasks"><input type="checkbox" id="la-dsp" value="DSP"> DSP (Skip Permissions)</label>
-        <label title="WENTO — Flag anything unexpected for review"><input type="checkbox" id="la-wento" value="WENTO"> WENTO (Flag Unexpected)</label>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
-        <input type="text" id="loop-preset-name" placeholder="Loop preset name…" style="flex:1;min-width:140px;max-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Give this loop configuration a name to save it">
-        <button class="btn" onclick="saveLoopPreset()" style="font-size:11px" title="Save loop count, end condition and action flags as a named preset">💾 Save Loop Preset</button>
-        <select id="loop-preset-select" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" onchange="loadLoopPreset(this.value)" title="Load a saved loop preset">
-          <option value="">Load preset…</option>
-        </select>
-        <span id="loop-preset-msg" style="font-size:11px;color:#4af"></span>
-      </div>
-    </div>
+
+        <!-- ── SEQUENTIAL GOAL CHAIN (from B2-07 Chain Builder) ──── -->
+        <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px" title="Add bare goals here — AAFL runs them in sequence, one after another, each with the same provider and loop settings">Sequential Goal Queue</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center">
+            <input type="text" id="b2-chain-add-goal" placeholder="Add goal to queue…" style="flex:1;min-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="Type a goal and click + Add to queue it — AAFL will run each goal in order">
+            <button class="btn" onclick="b2ChainAddGoal()" style="font-size:11px" title="Add this goal to the sequential queue">+ Add</button>
+            <button class="btn" onclick="b2ChainClear()" style="font-size:11px" title="Clear all goals from the queue">Clear</button>
+            <button class="btn" onclick="b2RunChainBuilder()" style="font-size:12px;background:#1a3a1a;color:#6f6" title="Run all queued goals in sequence via AAFL — results logged to chain_log.json">▶ Run Queue</button>
+          </div>
+          <div id="b2-chain-list" style="min-height:28px;font-size:11px;color:#888;background:#0a0a0a;border:1px solid #111;border-radius:4px;padding:6px;margin-bottom:6px">Empty queue — add goals above</div>
+          <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;height:5px;overflow:hidden;margin-bottom:6px" title="Progress bar — fills as goals complete"><div id="b2-chain-progress" style="height:100%;background:#2a7;width:0%;transition:.4s"></div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="b2-chain-preset-name" placeholder="Queue preset name…" style="width:160px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Name this queue to save it as a preset">
+            <button class="btn" onclick="b2SaveChain()" style="font-size:11px" title="Save the current goal queue as a named preset">Save Queue</button>
+          </div>
+        </div>
+
+        <!-- ── LOOP BEHAVIOUR (existing, kept intact) ─────────────── -->
+        <div class="loop-panel" id="loop-behaviour-panel">
+          <div class="loop-panel-title" title="Loop settings control how many times the full workflow repeats">Loop Behaviour</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <label style="font-size:12px;color:#888">Loop count:</label>
+              <input type="number" id="loop-count" value="1" min="1" max="999" style="width:70px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px" title="How many times to loop through the workflow (1–999)">
+            </div>
+            <label class="auto-toggle-wrap" style="font-size:12px;color:#888" title="Loop forever until manually stopped">
+              <span>Infinite</span>
+              <label class="toggle-switch"><input type="checkbox" id="loop-infinite" onchange="toggleLoopInfinite(this.checked)"><span class="toggle-slider"></span></label>
+            </label>
+            <div style="display:flex;align-items:center;gap:6px">
+              <label style="font-size:12px;color:#888">End when:</label>
+              <select id="loop-end-condition" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="When should the loop stop? Choose the condition that matches your use case.">
+                <option value="manual_stop">Manual Stop</option>
+                <option value="after_n" selected>After N loops</option>
+                <option value="score_threshold">After score &gt;= threshold</option>
+                <option value="wccs_triggered">WCCS triggered</option>
+              </select>
+            </div>
+          </div>
+          <div class="loop-panel-title" style="margin-top:6px" title="Checkboxes here add ACCA codes that run automatically after each loop iteration">Loop Actions (each iteration):</div>
+          <div class="loop-actions-grid">
+            <label title="SIF — Summarise In Full at end of each loop"><input type="checkbox" id="la-sif" value="SIF"> SIF (Summarise In Full)</label>
+            <label title="SESUM — Session Summary saved each loop"><input type="checkbox" id="la-sesum" value="SESUM"> SESUM (Session Summary)</label>
+            <label title="WCCS — Auto-save handover each loop"><input type="checkbox" id="la-wccs" value="WCCS"> WCCS (Auto-save)</label>
+            <label title="WCBB — What Could Be Better analysis after each result"><input type="checkbox" id="la-wcbb" value="WCBB"> WCBB (What Could Be Better)</label>
+            <label title="AFNA — Attack From New Angle if score below threshold"><input type="checkbox" id="la-afna" value="AFNA"> AFNA (New Angle if low)</label>
+            <label title="WRS — Write Software if code task detected"><input type="checkbox" id="la-wrs" value="WRS"> WRS (Write Software)</label>
+            <label title="DSP — Skip permissions on all sub-tasks"><input type="checkbox" id="la-dsp" value="DSP"> DSP (Skip Permissions)</label>
+            <label title="WENTO — Flag anything unexpected for review"><input type="checkbox" id="la-wento" value="WENTO"> WENTO (Flag Unexpected)</label>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
+            <input type="text" id="loop-preset-name" placeholder="Loop preset name…" style="flex:1;min-width:140px;max-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Give this loop configuration a name to save it">
+            <button class="btn" onclick="saveLoopPreset()" style="font-size:11px" title="Save loop count, end condition and action flags as a named preset">💾 Save Loop Preset</button>
+            <select id="loop-preset-select" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" onchange="loadLoopPreset(this.value)" title="Load a saved loop preset — restores the loop count, end condition, and action flags">
+              <option value="">Load preset…</option>
+            </select>
+            <span id="loop-preset-msg" style="font-size:11px;color:#4af"></span>
+          </div>
+        </div>
+
+        <!-- ── BROWSER NOTIFICATIONS (from B2-07) ───────────────── -->
+        <div style="margin-top:8px;font-size:11px;color:#777;font-weight:bold;text-transform:uppercase;letter-spacing:.05em" title="Desktop notifications — fires when a workflow or chain run completes or errors">Notifications</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#aaa;align-items:center;margin-top:4px">
+          <label title="Send a browser notification when any step finishes successfully"><input type="checkbox" id="b2-notif-complete"> On complete</label>
+          <label title="Send a browser notification when any step fails or errors"><input type="checkbox" id="b2-notif-error"> On error</label>
+          <label style="display:flex;align-items:center;gap:4px" title="Notify when a result achieves this score or above"><input type="checkbox" id="b2-notif-score"> Score ≥
+            <input type="number" id="b2-notif-score-val" value="8" min="0" max="10" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;font-size:11px" title="Minimum score that triggers the score notification (0–10)">
+          </label>
+          <button class="btn" onclick="b2RequestNotifPermission()" style="font-size:11px" title="Ask the browser to allow MCC to send desktop notifications — required before the checkboxes work">Enable Notifications</button>
+        </div>
       </div>
     </div><!-- /acc-workflow -->
 
@@ -2142,33 +2216,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </div><!-- /acc-b2-06 -->
 
-    <!-- acc-b2-07 -->
-    <div class="aafl-acc open" id="acc-b2-07">
-      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-b2-07')">B2-07: Chain Builder <span class="acc-arrow">▼</span></div>
-      <div class="aafl-acc-body">
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;align-items:center">
-      <input type="text" id="b2-chain-add-goal" placeholder="Add goal to chain…" style="flex:1;min-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="Type a goal to add to the chain sequence — AAFL will run them in order">
-      <button class="btn" onclick="b2ChainAddGoal()" style="font-size:11px" title="Add this goal to the chain list below">+ Add</button>
-      <button class="btn" onclick="b2ChainClear()" style="font-size:11px" title="Remove all goals from the chain list">Clear</button>
-    </div>
-    <div id="b2-chain-list" style="min-height:32px;font-size:11px;color:#888;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;padding:6px;margin-bottom:6px">Empty chain — add goals above</div>
-    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;height:6px;overflow:hidden;margin-bottom:6px"><div id="b2-chain-progress" style="height:100%;background:#2a7;width:0%;transition:.4s"></div></div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
-      <input type="text" id="b2-chain-preset-name" placeholder="Chain preset name…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Give this goal chain a name to save it as a reusable preset">
-      <button class="btn" onclick="b2SaveChain()" style="font-size:11px" title="Save the current chain goals list as a named preset for future use">Save Chain</button>
-      <button class="btn" onclick="b2RunChainBuilder()" style="font-size:12px;background:#1a3a1a;color:#6f6" title="Run all goals in the chain in sequence — AAFL processes them one after another">▶ Run Chain</button>
-    </div>
-    <div style="margin-top:8px;font-size:11px;color:#777;font-weight:bold;text-transform:uppercase;letter-spacing:.05em">Notification Settings</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:#aaa;align-items:center;margin-top:4px">
-      <label title="Send a browser notification when any AAFL goal finishes successfully"><input type="checkbox" id="b2-notif-complete"> On complete</label>
-      <label title="Send a browser notification when any AAFL goal fails or errors"><input type="checkbox" id="b2-notif-error"> On error</label>
-      <label style="display:flex;align-items:center;gap:4px" title="Send a browser notification when a result achieves this score or above"><input type="checkbox" id="b2-notif-score"> Score ≥
-        <input type="number" id="b2-notif-score-val" value="8" min="0" max="10" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;font-size:11px" title="Minimum score that triggers the score notification (0–10)">
-      </label>
-      <button class="btn" onclick="b2RequestNotifPermission()" style="font-size:11px" title="Ask the browser to allow MCC to send desktop notifications — required before the checkboxes above work">Enable Notifications</button>
-    </div>
-      </div>
-    </div><!-- /acc-b2-07 -->
+    <!-- acc-b2-07: merged into Workflow Builder (acc-workflow) above -->
 
     <!-- acc-b2-08 -->
     <div class="aafl-acc open" id="acc-b2-08">
@@ -4568,14 +4616,22 @@ async function loadBridgeResult() {
   }
 }
 
-// ── Workflow Builder ──────────────────────────────────────────────────────────
+// ── Workflow Builder (OCB-C merged) ───────────────────────────────────────────
 let _wfSteps = [];
 
 function addWorkflowStep() {
+  const goal     = document.getElementById('wf-step-goal')?.value.trim() || '';
   const provider = document.getElementById('wf-step-provider')?.value || 'auto';
-  const task = document.getElementById('wf-step-task')?.value || 'work';
-  _wfSteps.push({ provider, task });
+  const task     = document.getElementById('wf-step-task')?.value || 'work';
+  const timeout  = parseInt(document.getElementById('wf-step-timeout')?.value||'180');
+  const retries  = parseInt(document.getElementById('wf-step-retries')?.value||'1');
+  const minScore = parseFloat(document.getElementById('wf-step-minscore')?.value||'7');
+  const branch   = document.getElementById('wf-step-branch')?.value || 'continue';
+  _wfSteps.push({ goal, provider, task, timeout, retries, min_score: minScore, branch });
   _renderWfSteps();
+  // clear goal field after adding
+  const gf = document.getElementById('wf-step-goal');
+  if (gf) gf.value = '';
 }
 
 function removeWorkflowStep() {
@@ -4583,14 +4639,58 @@ function removeWorkflowStep() {
   _renderWfSteps();
 }
 
+function clearWorkflow() {
+  if (_wfSteps.length && !confirm('Clear all workflow steps?')) return;
+  _wfSteps = [];
+  _renderWfSteps();
+}
+
 function _renderWfSteps() {
-  const el = document.getElementById('wf-steps-list');
-  if (!el) return;
-  if (!_wfSteps.length) { el.textContent = 'No steps yet.'; return; }
-  el.innerHTML = _wfSteps.map((s, i) =>
-    '<span style="display:inline-block;background:#1a2a3a;border-radius:4px;padding:2px 8px;margin:2px;font-size:11px;color:#4af">' +
-    (i+1) + '. ' + esc(s.provider) + ' / ' + esc(s.task) + '</span>'
-  ).join('');
+  // Render flowchart view
+  const fc = document.getElementById('wf-flowchart');
+  if (fc) {
+    if (!_wfSteps.length) {
+      fc.innerHTML = '<div style="font-size:11px;color:#555;font-style:italic">No steps yet — add a step above.</div>';
+    } else {
+      const TASK_COLORS = {plan:'#4af',work:'#6f6',verify:'#fa0',store:'#a8f'};
+      fc.innerHTML = '<div style="display:flex;align-items:center;gap:0;flex-wrap:wrap">' +
+        _wfSteps.map((s,i) => {
+          const tc = TASK_COLORS[s.task]||'#888';
+          const branchNote = s.branch!=='continue' ? `<div style="font-size:9px;color:#a33;margin-top:2px">if &lt;${s.min_score}: ${s.branch.replace('_',' ')}</div>` : '';
+          return `<div style="display:flex;align-items:center">
+            <div style="background:#111;border:1px solid ${tc};border-radius:6px;padding:6px 10px;min-width:90px;text-align:center;cursor:pointer" onclick="wfEditStep(${i})" title="Step ${i+1} — click to remove">
+              <div style="font-size:10px;color:#555;margin-bottom:2px">Step ${i+1}</div>
+              <div style="font-size:11px;font-weight:bold;color:${tc}">${esc(s.task.toUpperCase())}</div>
+              <div style="font-size:10px;color:#777">${esc(s.provider)}</div>
+              ${s.goal ? `<div style="font-size:9px;color:#555;margin-top:2px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(s.goal)}">${esc(s.goal)}</div>` : ''}
+              ${branchNote}
+            </div>
+            ${i<_wfSteps.length-1?'<div style="font-size:16px;color:#333;padding:0 4px">→</div>':''}
+          </div>`;
+        }).join('') +
+      '</div>';
+    }
+  }
+}
+
+function wfEditStep(idx) {
+  if (confirm('Remove step ' + (idx+1) + '?')) {
+    _wfSteps.splice(idx, 1);
+    _renderWfSteps();
+  }
+}
+
+function wfExportClacr() {
+  if (!_wfSteps.length) { toast('No workflow steps to export','warn'); return; }
+  const lines = ['CLACR — Workflow Export', '='.repeat(40)];
+  _wfSteps.forEach((s,i) => {
+    lines.push(`Step ${i+1}: ${s.task.toUpperCase()} via ${s.provider}`);
+    if (s.goal) lines.push(`  Goal: ${s.goal}`);
+    lines.push(`  Timeout: ${s.timeout}s | Retries: ${s.retries} | Min score: ${s.min_score}`);
+    if (s.branch!=='continue') lines.push(`  On low score: ${s.branch}`);
+  });
+  const text = lines.join('\n');
+  navigator.clipboard.writeText(text).then(()=>toast('CLACR block copied','ok')).catch(()=>toast('Copy failed','error'));
 }
 
 async function saveWorkflow() {
