@@ -1,10 +1,11 @@
 {
-  "ocb": "A_retry",
+  "ocb": "C",
+  "phases": {
+    "1": "complete",
+    "2": "pending",
+    "3": "pending",
+    "4": "pending"
+  },
   "started": "2026-05-27T00:00:00",
-  "phases_completed": [
-    "PHASE_0",
-    "PHASE_1"
-  ],
-  "last_completed": "PHASE_1",
-  "next_phase": "PHASE_2"
+  "notes": "OCB-C — Phase 1 complete: 8 mission cards, KB moved to Missions, Scout summary embedded"
 }

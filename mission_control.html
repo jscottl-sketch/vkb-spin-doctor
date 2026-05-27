@@ -2306,24 +2306,235 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
      ============================================================ -->
 <div class="tab-pane" id="tab-missions">
   <div class="pane-scroll">
-    <div class="home-ctrl" style="flex-wrap:wrap;gap:8px;margin-bottom:12px">
-      <button class="btn" onclick="loadMissions()" title="Reload missions from server">↻ Refresh</button>
-      <button class="btn" onclick="showAddMissionForm()" title="Add a new mission to the registry">+ Add Mission</button>
-      <span id="missions-count-label" style="font-size:12px;color:#666"></span>
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div style="font-size:16px;font-weight:bold;color:#fff">🚀 Mission Launcher</div>
+        <div style="font-size:11px;color:#555;margin-top:2px">All active projects — click a card to expand details</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn" onclick="showAddMissionForm()" title="Add a custom mission to your registry — give it a name, icon, description, and a linked tab">➕ Add New Mission</button>
+        <button class="btn" onclick="loadMissions()" style="font-size:11px" title="Reload custom missions from the server">↻ Refresh</button>
+        <span id="missions-count-label" style="font-size:11px;color:#555;align-self:center"></span>
+      </div>
     </div>
 
-    <!-- Add/Edit form (hidden by default) -->
+    <!-- ══ FIXED PROJECT CARDS ═══════════════════════════════════ -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-bottom:18px">
+
+      <!-- CARD 1: Spin Doctor -->
+      <div style="background:#111;border:1px solid #1e2e1e;border-radius:8px;overflow:hidden" title="Spin Doctor — VKB joystick helper. Fixes the mouse-spin bug in War Thunder, Elite Dangerous, and Star Citizen. Run spin_doctor.py to open the GUI.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#0f180f" onclick="mcToggle('mc-spin')">
+          <span style="font-size:24px;line-height:1">🎮</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">Spin Doctor</div>
+            <div style="font-size:11px;color:#777">VKB helper platform — joystick spin fix</div>
+          </div>
+          <span id="mc-badge-spin" style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a2a0a;color:#2a7;border:1px solid #1a4a1a">ACTIVE</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();mcOpenSpinDoctor()" title="Open spin_doctor.py — launches the joystick fix GUI">Open</button>
+        </div>
+        <div id="mc-spin" style="display:none;padding:10px 14px;background:#0a0f0a;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">War Thunder confirmed working. VKB Gladiator NXT EVO (RH). Steam Generic Gamepad Config fix.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <div style="background:#0d1a0d;border:1px solid #1a2a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#6f6">✓ WT spin fix</div>
+            <div style="background:#0d1a0d;border:1px solid #1a2a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#6f6">✓ 22 problems</div>
+            <div style="background:#1a1a0d;border:1px solid #2a2a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#fa0">⏳ Star Citizen</div>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:4px">Files: spin_doctor.py · problems/conductor.py · problems/win_hardener.py</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="mcOpenSpinDoctor()" title="Launch the Spin Doctor GUI — runs spin_doctor.py">▶ Launch GUI</button>
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('aafl-control')" title="Go to AAFL Control to run a Spin Doctor benchmark goal">🤖 Run via AAFL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: AAFL -->
+      <div style="background:#111;border:1px solid #1e1e2e;border-radius:8px;overflow:hidden" title="AAFL — Autonomous Agent Feedback Loop. The core AI engine. Self-improving loop with Plan→Work→Verify→Store phases. 14 free providers.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#0f0f18" onclick="mcToggle('mc-aafl')">
+          <span style="font-size:24px;line-height:1">🤖</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">AAFL</div>
+            <div style="font-size:11px;color:#777">Autonomous Agent Feedback Loop engine</div>
+          </div>
+          <span id="mc-badge-aafl" style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a2a0a;color:#2a7;border:1px solid #1a4a1a">ACTIVE</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();goToTab('aafl-control')" title="Go to AAFL Control tab to run goals, set providers, and manage the AI loop">Open</button>
+        </div>
+        <div id="mc-aafl" style="display:none;padding:10px 14px;background:#0a0a0f;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">14 providers, Plan→Work→Verify→Store loop. Last score: <span id="mc-aafl-score" style="color:#4af">—</span></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <div style="background:#0a0f18;border:1px solid #1a1a2a;border-radius:4px;padding:4px 10px;font-size:11px;color:#4af">14 providers</div>
+            <div style="background:#0a0f18;border:1px solid #1a1a2a;border-radius:4px;padding:4px 10px;font-size:11px;color:#4af" id="mc-aafl-runs">Runs: —</div>
+            <div style="background:#0a0a0d;border:1px solid #1a1a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#888" id="mc-aafl-state">State: idle</div>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:4px">Files: aafl_core.py · loop_manager.py · evaluator.py · chain_runner.py</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('aafl-control')" title="Open AAFL Control to run a goal now">▶ Run Goal</button>
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('health-suite')" title="Go to Health Suite to see AAFL run history">📊 Run History</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 3: Scout Swarm -->
+      <div style="background:#111;border:1px solid #2e1e1e;border-radius:8px;overflow:hidden" title="Scout Swarm — 5 parallel research strategies (DDG / Reddit / GitHub / YouTube / Forum). Synthesis via Mistral. Feeds results into AAFL.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#180f0f" onclick="mcToggle('mc-scout')">
+          <span style="font-size:24px;line-height:1">🔍</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">Scout Swarm</div>
+            <div style="font-size:11px;color:#777">Parallel research intelligence — 5 strategies</div>
+          </div>
+          <span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a2a0a;color:#2a7;border:1px solid #1a4a1a">ACTIVE</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();goToTab('scout')" title="Go to the Scout tab for full controls — timed scout, source library, parallel strategies">Open</button>
+        </div>
+        <div id="mc-scout" style="display:none;padding:10px 14px;background:#0f0a0a;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">5 strategies: DDG · Reddit · GitHub · YouTube · Forum. Mistral synthesis. Chief Scout coordinator.</div>
+          <!-- Scout quick-run -->
+          <div style="display:flex;gap:6px;margin-bottom:8px;align-items:center">
+            <input type="text" id="mc-scout-goal" placeholder="Quick scout goal…" style="flex:1;background:#0d0d0d;border:1px solid #222;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" title="Type a research question and click Scout to run all 5 strategies in parallel">
+            <button class="btn" style="font-size:11px;padding:3px 10px" onclick="mcQuickScout()" title="Run all 5 Scout strategies on this goal — results appear in the Scout tab">🔍 Scout</button>
+          </div>
+          <!-- Scout recent results placeholder -->
+          <div id="mc-scout-recent" style="font-size:11px;color:#666;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:6px;max-height:80px;overflow-y:auto">No recent scout results.</div>
+          <div style="font-size:10px;color:#555;margin-top:6px">Files: chief_scout.py · researcher.py · scout_timer.py · sources_library.json</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('scout')" title="Full Scout controls — timed runs, source library, strategy overrides">→ Full Scout Tab</button>
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="loadScoutLatest()" title="Load the most recent Scout output">↻ Latest Result</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 4: KB Profile Library (full content embedded here) -->
+      <div style="background:#111;border:1px solid #1e1e2e;border-radius:8px;overflow:hidden" title="KB Profile Library — Save and switch between VKB joystick keybinding profiles for different games. Each profile stores a complete binding layout with star ratings.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#0f0f18" onclick="mcToggle('mc-kb')">
+          <span style="font-size:24px;line-height:1">🎯</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">KB Profile Library</div>
+            <div style="font-size:11px;color:#777">Keybinding profiles — save &amp; switch layouts</div>
+          </div>
+          <span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a1a2a;color:#4af;border:1px solid #1a2a3a">LIBRARY</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();mcToggle('mc-kb')" title="Expand to see and manage all keybinding profiles — no separate tab needed">Expand</button>
+        </div>
+        <div id="mc-kb" style="display:none;padding:10px 14px;background:#0a0a0f;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#666;margin-bottom:10px" title="These controls are now embedded here — the KB Profiles tab also links to this section">Full profile management moved here from the KB Profiles tab.</div>
+          <!-- Filter + action bar -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center">
+            <input type="text" id="b2-kbp-filter-game-m" placeholder="Filter by game…" style="width:130px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfilesMissions()" title="Type a game name to filter profiles — e.g. 'War Thunder'">
+            <input type="text" id="b2-kbp-filter-device-m" placeholder="Filter by device…" style="width:130px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfilesMissions()" title="Type a device name to filter — e.g. 'VKB'">
+            <button class="btn" onclick="b2LoadKbProfilesMissions()" style="font-size:11px" title="Reload all profiles from the server">↻ Refresh</button>
+            <button class="btn" onclick="b2ExportKbProfileMissions()" style="font-size:11px" title="Download the selected keybinding profile as a .json file">📤 Export</button>
+            <button class="btn" onclick="document.getElementById('b2-kbp-import-file-m').click()" style="font-size:11px" title="Import a keybinding profile from a .json file on your computer">📥 Import</button>
+            <input type="file" id="b2-kbp-import-file-m" accept=".json" style="display:none" onchange="b2ImportKbProfileMissions(this)">
+          </div>
+          <!-- New profile form -->
+          <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;padding:8px;margin-bottom:8px">
+            <div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:6px" title="Fill in name, game, and device then click Save Profile">New Profile</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <input type="text" id="b2-kbp-name-m" placeholder="Profile name…" style="flex:1;min-width:120px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="A descriptive name — e.g. 'Star Citizen Combat Setup'">
+              <input type="text" id="b2-kbp-game-m" placeholder="Game…" style="width:110px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Game this profile is for — e.g. 'Star Citizen'">
+              <input type="text" id="b2-kbp-device-m" placeholder="Device (e.g. VKB)…" style="width:120px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Controller or HOTAS device — e.g. 'VKB Gunfighter'">
+              <button class="btn" onclick="b2SaveKbProfileMissions()" style="font-size:11px" title="Save this new keybinding profile to the server">Save</button>
+            </div>
+          </div>
+          <!-- Profile list -->
+          <div id="b2-kbp-list-m" style="max-height:200px;overflow-y:auto"><div class="loading" style="font-size:11px">Loading profiles…</div></div>
+        </div>
+      </div>
+
+      <!-- CARD 5: MCC -->
+      <div style="background:#111;border:1px solid #2e2e1e;border-radius:8px;overflow:hidden" title="MCC — Mission Control Center. This dashboard. Monitors all 6 projects. Run MOT to get a health score.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#18180f" onclick="mcToggle('mc-mcc')">
+          <span style="font-size:24px;line-height:1">🏗</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">MCC</div>
+            <div style="font-size:11px;color:#777">Mission Control Center — this dashboard</div>
+          </div>
+          <span id="mc-mcc-score-badge" style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a2a0a;color:#2a7;border:1px solid #1a4a1a">ACTIVE</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();goToTab('health-suite')" title="Go to Health Suite to see the MOT score and run diagnostics">Open</button>
+        </div>
+        <div id="mc-mcc" style="display:none;padding:10px 14px;background:#0f0f0a;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">19+ tabs, 30+ endpoints. Self-Health score: <span id="mc-mcc-health-score" style="color:#2a7">Loading…</span></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <div style="background:#0f0f0a;border:1px solid #2a2a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#fa0" id="mc-mcc-mot">MOT: —</div>
+            <div style="background:#0f0f0a;border:1px solid #2a2a1a;border-radius:4px;padding:4px 10px;font-size:11px;color:#fa0">30+ endpoints</div>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:4px">Files: mcc_server.py · mission_control.html · mcc_full_mot.py · mcc_medical.py</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('health-suite')" title="Go to Health Suite to run the Full MOT check">🔧 Health Suite</button>
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="mcLoadMccScore()" title="Fetch the latest MOT score from the server">↻ Refresh Score</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 6: Promo -->
+      <div style="background:#111;border:1px solid #2e1e2e;border-radius:8px;overflow:hidden" title="Promo — Monetisation exploration. High-scoring AI results (≥9.0) queue here for approval. Ko-fi + Itch.io planned. Not yet started.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#180f18" onclick="mcToggle('mc-promo')">
+          <span style="font-size:24px;line-height:1">📢</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">Promo</div>
+            <div style="font-size:11px;color:#777">Monetisation exploration</div>
+          </div>
+          <span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#1a1a1a;color:#666;border:1px solid #2a2a2a">NOT STARTED</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();goToTab('promo')" title="Go to the Promo tab to review high-scoring results waiting for approval">Open</button>
+        </div>
+        <div id="mc-promo" style="display:none;padding:10px 14px;background:#0f0a0f;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">High-scoring results (≥9.0) auto-queue here. Ko-fi + Itch.io are the planned monetisation channels.</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <div style="background:#1a1a1a;border:1px solid #222;border-radius:4px;padding:4px 10px;font-size:11px;color:#666" id="mc-promo-count">Queue: — items</div>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:4px">Fastest monetisation: Ko-fi + Itch.io links (~30 min). Next: r/LocalLLaMA when Star Citizen benchmark passes.</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('promo')" title="Go to the Promo tab">→ Promo Tab</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 7: ACCA Database -->
+      <div style="background:#111;border:1px solid #1e2e2e;border-radius:8px;overflow:hidden" title="ACCA Database — Shorthand code system for VKB Spin Doctor project. Codes used in STATUS.md and HISTORY.md for fast cross-referencing.">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;background:#0f1818" onclick="mcToggle('mc-acca')">
+          <span style="font-size:24px;line-height:1">📚</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#eee">ACCA Database</div>
+            <div style="font-size:11px;color:#777">Shorthand code system — <span id="mc-acca-count">— codes</span></div>
+          </div>
+          <span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:bold;background:#0a1a2a;color:#4af;border:1px solid #1a2a3a">ACTIVE</span>
+          <button class="btn" style="font-size:11px;padding:3px 10px" onclick="event.stopPropagation();goToTab('acca')" title="Go to Instructions &amp; Codes tab to see all ACCA codes and MCC instructions">Open</button>
+        </div>
+        <div id="mc-acca" style="display:none;padding:10px 14px;background:#0a0f0f;border-top:1px solid #1a1a1a">
+          <div style="font-size:11px;color:#888;margin-bottom:8px">ACCA = Acca Code System. Shorthand used in STATUS.md and HISTORY.md for fast cross-referencing during sessions.</div>
+          <div style="font-size:10px;color:#555;margin-top:4px">File: ACCA.md — append-only. Add new codes with: | CODE | meaning | date |</div>
+          <div id="mc-acca-preview" style="margin-top:8px;font-size:11px;color:#ccc;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:6px;max-height:80px;overflow-y:auto"></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="goToTab('acca')" title="Go to the full ACCA codes reference">→ Full Reference</button>
+            <button class="btn" style="font-size:11px;padding:3px 8px" onclick="mcLoadAccaPreview()" title="Load a preview of the ACCA codes">↻ Preview</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 8: Add New Mission -->
+      <div style="background:#0d0d0d;border:1px dashed #2a3a2a;border-radius:8px;overflow:hidden;cursor:pointer" onclick="showAddMissionForm()" title="Add a custom mission — give it a name, icon, description, status, and link it to a tab">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+          <span style="font-size:24px;line-height:1;color:#2a4a2a">➕</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14px;font-weight:bold;color:#555">Add New Mission</div>
+            <div style="font-size:11px;color:#444">Click to create a custom project entry</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /mission grid -->
+
+    <!-- ── Add/Edit form ─────────────────────────────────────────── -->
     <div id="mission-form-wrap" style="display:none;background:#0a0f0a;border:1px solid #1a3a1a;border-radius:6px;padding:14px;margin-bottom:16px">
       <div style="font-size:13px;font-weight:bold;color:#eee;margin-bottom:10px" id="mission-form-title">Add Mission</div>
       <input type="hidden" id="mission-form-id">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Name</label>
-          <input type="text" id="mf-name" placeholder="Mission name" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit">
+          <input type="text" id="mf-name" placeholder="Mission name" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit" title="Give your mission a short, memorable name">
         </div>
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Status</label>
-          <select id="mf-status" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 8px;border-radius:4px;font:inherit">
+          <select id="mf-status" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 8px;border-radius:4px;font:inherit" title="Current state of this mission">
             <option value="active">Active</option>
             <option value="paused">Paused</option>
             <option value="complete">Complete</option>
@@ -2332,30 +2543,32 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         </div>
         <div style="grid-column:1/-1">
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Description</label>
-          <input type="text" id="mf-description" placeholder="What this mission does" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit">
+          <input type="text" id="mf-description" placeholder="What this mission does" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit" title="One-line summary of what this mission is trying to achieve">
         </div>
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Tags (comma-separated)</label>
-          <input type="text" id="mf-tags" placeholder="ai, gaming, core" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit">
+          <input type="text" id="mf-tags" placeholder="ai, gaming, core" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit" title="Tags help you filter and find missions later">
         </div>
         <div>
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Started (YYYY-MM)</label>
-          <input type="text" id="mf-started" placeholder="2026-05" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit">
+          <input type="text" id="mf-started" placeholder="2026-05" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit" title="When you started this mission — used for sorting and timeline views">
         </div>
         <div style="grid-column:1/-1">
           <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Notes / WENTO</label>
-          <textarea id="mf-notes" placeholder="Freeform notes, context, next steps..." style="width:100%;height:80px;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit;resize:vertical"></textarea>
+          <textarea id="mf-notes" placeholder="Freeform notes, context, next steps..." style="width:100%;height:80px;background:#111;border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:4px;font:inherit;resize:vertical" title="Any notes, WENTO extras, or context for this mission"></textarea>
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn" onclick="saveMissionForm()" title="Save this mission">Save Mission</button>
+        <button class="btn" onclick="saveMissionForm()" title="Save this mission to the server">Save Mission</button>
         <button class="btn btn-danger" onclick="hideMissionForm()" title="Cancel without saving">Cancel</button>
         <span id="mission-form-msg" style="font-size:12px;color:#4af;margin-left:8px"></span>
       </div>
     </div>
 
-    <!-- Mission cards -->
-    <div id="missions-list"><div class="loading">Loading...</div></div>
+    <!-- ── Custom Missions (API-driven) ──────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Custom Missions</div>
+    <div id="missions-list"><div class="loading">Loading…</div></div>
+
   </div>
 </div>
 
@@ -2604,31 +2817,18 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
      ============================================================ -->
 <div class="tab-pane" id="tab-keybind-profiles">
   <div class="pane-scroll">
-    <!-- B2-22 START -->
-    <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
-      <button class="btn" onclick="b2LoadKbProfiles()" title="Reload all saved keybinding profiles from the server">Refresh</button>
-      <button class="btn" onclick="b2ExportKbProfile()" style="font-size:11px" title="Download the currently selected keybinding profile as a .json file — useful for backup or sharing">📤 Export Profile</button>
-      <button class="btn" onclick="document.getElementById('b2-kbp-import-file').click()" style="font-size:11px" title="Import a keybinding profile from a .json file on your computer">📥 Import Profile</button>
-      <input type="file" id="b2-kbp-import-file" accept=".json" style="display:none" onchange="b2ImportKbProfile(this)">
-    </div>
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">Save and switch between joystick keybinding setups for different games — each profile stores a complete binding layout</div>
-    <!-- Filter bar -->
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
-      <input type="text" id="b2-kbp-filter-game" placeholder="Filter by game…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfiles()" title="Type a game name to show only profiles for that game">
-      <input type="text" id="b2-kbp-filter-device" placeholder="Filter by device…" style="width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:11px inherit" oninput="b2FilterKbProfiles()" title="Type a device name (e.g. VKB) to show only profiles for that controller">
-    </div>
-    <!-- New profile form -->
-    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:12px">
-      <div class="section-title" style="margin-top:0">New Profile</div>
-      <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Fill in the details below and click Save Profile to create a new keybinding profile</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <input type="text" id="b2-kbp-name" placeholder="Profile name…" style="flex:1;min-width:150px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="A descriptive name for this profile — e.g. 'Star Citizen Combat Setup'">
-        <input type="text" id="b2-kbp-game" placeholder="Game…" style="width:120px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="The game this profile is for — e.g. 'Star Citizen'">
-        <input type="text" id="b2-kbp-device" placeholder="Device (e.g. VKB)…" style="width:130px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="The controller or HOTAS device this profile is for — e.g. 'VKB Gunfighter'">
-        <button class="btn" onclick="b2SaveKbProfile()" style="font-size:12px" title="Save this new keybinding profile to the server">Save Profile</button>
+    <!-- B2-22: Content moved to Missions tab > KB Profile Library card -->
+    <div style="text-align:center;padding:40px 20px;color:#666">
+      <div style="font-size:28px;margin-bottom:12px">🎯</div>
+      <div style="font-size:15px;font-weight:bold;color:#888;margin-bottom:8px">KB Profile Library has moved</div>
+      <div style="font-size:12px;color:#555;margin-bottom:16px">The full profile manager now lives in the Missions tab under the <b style="color:#4af">🎯 KB Profile Library</b> card. Click it to expand the full UI.</div>
+      <button class="btn" onclick="goToTab('missions');setTimeout(()=>{mcToggle('mc-kb');b2LoadKbProfilesMissions()},300)" title="Go to the Missions tab and open the KB Profile Library card" style="font-size:13px;padding:8px 20px">→ Go to Missions Tab</button>
+      <div style="margin-top:20px;padding:10px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;font-size:11px;color:#555">
+        The import/export buttons, profile filters, new profile form, and profile list are all in Missions &gt; 🎯 KB Profile Library card.
       </div>
     </div>
-    <div id="b2-kbp-list"><div class="loading">Loading profiles…</div></div><!-- B2-22 END -->
+    <!-- Keep hidden inputs for backward compat -->
+    <input type="file" id="b2-kbp-import-file" accept=".json" style="display:none" onchange="b2ImportKbProfile(this)">
   </div>
 </div>
 
@@ -3444,7 +3644,7 @@ function initTabs() {
       if (btn.dataset.tab === 'aafl-control') { loadStuckInbox(); updateCostPreview(); }
       if (btn.dataset.tab === 'memory') loadMemory();
       if (btn.dataset.tab === 'promo') loadPromo();
-      if (btn.dataset.tab === 'missions') loadMissions();
+      if (btn.dataset.tab === 'missions') mcInitTab();
       if (btn.dataset.tab === 'acca') loadAcca();
       if (btn.dataset.tab === 'alp') loadAlp();
       if (btn.dataset.tab === 'self-diagnosis') { loadSelfDiagnosis(); loadModules(); }
@@ -4160,7 +4360,7 @@ document.addEventListener('keydown', function(e) {
       else if (tab === 'storage') loadStorage();
       else if (tab === 'memory') loadMemory();
       else if (tab === 'promo') loadPromo();
-      else if (tab === 'missions') loadMissions();
+      else if (tab === 'missions') mcInitTab();
       else if (tab === 'acca') loadAcca();
       else if (tab === 'alp') loadAlp();
       else if (tab === 'self-diagnosis') loadSelfDiagnosis();
@@ -4644,13 +4844,212 @@ function filterMemoryTable(tableId, q) {
   else renderSrcTable(filtered);
 }
 
-// ── MISSIONS TAB (Task 4) ──────────────────────────────────────────────────────
+// ── MISSIONS TAB (OCB-C consolidated) ─────────────────────────────────────────
 const STATUS_BADGE_STYLE = {
   active:   'background:#0a2a0a;color:#2a7;border:1px solid #1a4a1a',
   paused:   'background:#2a1a00;color:#fa0;border:1px solid #4a2a00',
   complete: 'background:#0a1a2a;color:#4af;border:1px solid #1a3a4a',
   archived: 'background:#1a1a1a;color:#666;border:1px solid #2a2a2a',
 };
+
+// ── Mission card expand/collapse ──────────────────────────────────────────────
+function mcToggle(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+}
+
+// ── Spin Doctor launcher ──────────────────────────────────────────────────────
+function mcOpenSpinDoctor() {
+  apiFetch('/api/launch-spindoctor', {method:'POST'}).catch(()=>{});
+  toast('Launching Spin Doctor — if nothing opens, run spin_doctor.py manually','info');
+}
+
+// ── Scout quick-run from Missions ─────────────────────────────────────────────
+async function mcQuickScout() {
+  const goal = (document.getElementById('mc-scout-goal')||{}).value || '';
+  if (!goal.trim()) { toast('Enter a scout goal first','warn'); return; }
+  const out = document.getElementById('mc-scout-recent');
+  if (out) out.textContent = '🔍 Scouting…';
+  try {
+    const d = await apiFetch('/scout/run', {method:'POST', body: JSON.stringify({goal})});
+    if (out) out.textContent = d.output || d.result || 'Done — check Scout tab for full results.';
+  } catch(e) {
+    if (out) out.textContent = 'Error: ' + e;
+  }
+}
+
+async function loadScoutLatest() {
+  const out = document.getElementById('mc-scout-recent');
+  if (out) out.textContent = 'Loading…';
+  try {
+    const d = await apiFetch('/scout/latest');
+    if (out) out.textContent = (d.output||'').slice(0,400) || 'No recent output.';
+  } catch(e) { if (out) out.textContent = 'Error: '+e; }
+}
+
+// ── MCC health score ──────────────────────────────────────────────────────────
+async function mcLoadMccScore() {
+  try {
+    const d = await apiFetch('/api/health/latest');
+    const score = d.score || d.overall_score || '—';
+    const el = document.getElementById('mc-mcc-health-score');
+    if (el) { el.textContent = score + '/100'; el.style.color = score >= 80 ? '#2a7' : score >= 60 ? '#fa0' : '#a33'; }
+    const mot = document.getElementById('mc-mcc-mot');
+    if (mot && d.mot_score) mot.textContent = 'MOT: ' + d.mot_score;
+  } catch(e) {
+    const el = document.getElementById('mc-mcc-health-score');
+    if (el) el.textContent = '—';
+  }
+}
+
+// ── ACCA preview in Missions ──────────────────────────────────────────────────
+async function mcLoadAccaPreview() {
+  const out = document.getElementById('mc-acca-preview');
+  if (out) out.textContent = 'Loading…';
+  try {
+    const d = await apiFetch('/api/acca');
+    const codes = d.codes || [];
+    const cnt = document.getElementById('mc-acca-count');
+    if (cnt) cnt.textContent = codes.length + ' codes';
+    if (out) out.innerHTML = codes.slice(0,8).map(c=>`<span style="background:#0a1a1a;border:1px solid #1a2a2a;border-radius:3px;padding:1px 6px;font-family:monospace;color:#4af;margin:2px;display:inline-block">${c.code||c[0]||''}</span>`).join('') + (codes.length>8?`<span style="color:#555"> +${codes.length-8} more…</span>`:'');
+  } catch(e) { if (out) out.textContent = 'Error: '+e; }
+}
+
+// ── Promo count in Missions ───────────────────────────────────────────────────
+async function mcLoadPromoCount() {
+  try {
+    const d = await apiFetch('/api/promo');
+    const items = d.queue || d.items || [];
+    const el = document.getElementById('mc-promo-count');
+    if (el) el.textContent = 'Queue: ' + items.length + ' item' + (items.length!==1?'s':'');
+  } catch(e) {}
+}
+
+// ── KB Profile functions for Missions embedded panel ─────────────────────────
+let _kbpDataMissions = [];
+
+async function b2LoadKbProfilesMissions() {
+  const list = document.getElementById('b2-kbp-list-m');
+  if (list) list.innerHTML = '<div class="loading" style="font-size:11px">Loading…</div>';
+  try {
+    const d = await apiFetch('/api/keybind-profiles');
+    _kbpDataMissions = d.profiles || [];
+    b2RenderKbProfilesMissions(_kbpDataMissions);
+  } catch(e) {
+    if (list) list.innerHTML = '<div style="font-size:11px;color:#a33">Error: '+e+'</div>';
+  }
+}
+
+function b2FilterKbProfilesMissions() {
+  const game   = (document.getElementById('b2-kbp-filter-game-m')||{}).value||'';
+  const device = (document.getElementById('b2-kbp-filter-device-m')||{}).value||'';
+  const filtered = _kbpDataMissions.filter(p =>
+    p.game.toLowerCase().includes(game.toLowerCase()) &&
+    p.device.toLowerCase().includes(device.toLowerCase())
+  );
+  b2RenderKbProfilesMissions(filtered);
+}
+
+function b2RenderKbProfilesMissions(profiles) {
+  const list = document.getElementById('b2-kbp-list-m');
+  if (!list) return;
+  if (!profiles.length) { list.innerHTML = '<div style="font-size:11px;color:#555">No profiles yet. Create one above.</div>'; return; }
+  list.innerHTML = profiles.map(p => {
+    const stars = '★'.repeat(Math.round(p.rating||0)) + '☆'.repeat(5-Math.round(p.rating||0));
+    return `<div style="background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:8px 10px;margin-bottom:5px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:13px;color:#fa0">${stars}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:bold;color:#eee">${p.name||'Unnamed'}</div>
+        <div style="font-size:10px;color:#666">${p.game||''} · ${p.device||''}</div>
+      </div>
+      <button class="btn" style="font-size:10px;padding:2px 6px" onclick="b2ExportKbProfileById('${p.id}')" title="Export this profile as a .json file">📤</button>
+      <button class="btn btn-danger" style="font-size:10px;padding:2px 6px" onclick="b2DeleteKbProfileMissions('${p.id}')" title="Delete this profile permanently">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function b2SaveKbProfileMissions() {
+  const name   = (document.getElementById('b2-kbp-name-m')||{}).value||'';
+  const game   = (document.getElementById('b2-kbp-game-m')||{}).value||'';
+  const device = (document.getElementById('b2-kbp-device-m')||{}).value||'';
+  if (!name.trim()) { toast('Enter a profile name','warn'); return; }
+  try {
+    await apiFetch('/api/keybind-profiles', {method:'POST', body:JSON.stringify({name,game,device,rating:3,bindings:{}})});
+    toast('Profile saved','ok');
+    b2LoadKbProfilesMissions();
+    ['b2-kbp-name-m','b2-kbp-game-m','b2-kbp-device-m'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  } catch(e) { toast('Error: '+e,'error'); }
+}
+
+async function b2ExportKbProfileMissions() {
+  try {
+    const d = await apiFetch('/api/keybind-profiles');
+    const profiles = d.profiles || [];
+    if (!profiles.length) { toast('No profiles to export','warn'); return; }
+    const blob = new Blob([JSON.stringify(profiles,null,2)],{type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'kb_profiles.json'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { toast('Export error: '+e,'error'); }
+}
+
+async function b2ExportKbProfileById(id) {
+  try {
+    const d = await apiFetch('/api/keybind-profiles');
+    const p = (d.profiles||[]).find(x=>x.id===id);
+    if (!p) { toast('Profile not found','error'); return; }
+    const blob = new Blob([JSON.stringify(p,null,2)],{type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = (p.name||'profile')+'.json'; a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) { toast('Export error: '+e,'error'); }
+}
+
+async function b2ImportKbProfileMissions(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const text = await file.text();
+  try {
+    const data = JSON.parse(text);
+    const profiles = Array.isArray(data) ? data : [data];
+    for (const p of profiles) {
+      await apiFetch('/api/keybind-profiles', {method:'POST', body:JSON.stringify(p)});
+    }
+    toast('Imported ' + profiles.length + ' profile(s)','ok');
+    b2LoadKbProfilesMissions();
+  } catch(e) { toast('Import error: '+e,'error'); }
+}
+
+async function b2DeleteKbProfileMissions(id) {
+  if (!confirm('Delete this profile?')) return;
+  try {
+    await apiFetch('/api/keybind-profiles/' + id, {method:'DELETE'});
+    toast('Profile deleted','ok');
+    b2LoadKbProfilesMissions();
+  } catch(e) { toast('Error: '+e,'error'); }
+}
+
+// ── Auto-populate Missions data on tab open ───────────────────────────────────
+function mcInitTab() {
+  loadMissions();
+  mcLoadMccScore();
+  mcLoadAccaPreview();
+  mcLoadPromoCount();
+  // Populate AAFL state from live output if available
+  const aaflRunning = document.getElementById('aafl-running-badge');
+  const mcState = document.getElementById('mc-aafl-state');
+  if (mcState && aaflRunning) {
+    mcState.textContent = 'State: ' + (aaflRunning.style.display!=='none' ? 'running' : 'idle');
+  }
+  // Load KB profiles if card is open
+  if (document.getElementById('mc-kb') && document.getElementById('mc-kb').style.display !== 'none') {
+    b2LoadKbProfilesMissions();
+  }
+}
 
 // ── TASK 7: IBR Scanner ───────────────────────────────────────────────────────
 async function runIbrScan() {
