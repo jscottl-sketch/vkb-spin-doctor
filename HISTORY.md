@@ -741,6 +741,58 @@ Wire aafl_watchdog.py + cost_guard.py (safety first)
 Star Citizen v0.2 benchmark via AAFL autonomous run
 Wait for weekly limit reset Tuesday 7PM
 
+
+---
+
+### 2026-05-27
+
+DATE: 2026-05-27
+SESSION_TYPE: Chat (CLACH)
+PROJECT: VKB-SpinDoctor / AAFL
+
+CLAC_BLOCKS_WRITTEN_NOT_YET_RUN:
+- Block A: STATUS.md restore + aafl_wccs.py read-merge-write + 90% sanity check in mcc_server.py
+- Block B: 7 features (line count warning, old saves scanner, chat→SESUM, Missions tab, UI shuffle, tooltips, IBR scan) — RAN, mostly complete, 3 bugs found
+- Block C: 3 bug fixes (banner location, undefined/undefined, wrong timestamps)
+- Block D: Red banner replaced with post-save nudge → blue pulse glow + bouncing arrow + "Next step →" label on Copy STATUS.md button
+- Block E: SESUM saved to session_logs/sesum_2026-05-27.md
+
+BUGS_IDENTIFIED_THIS_SESSION:
+- Red banner showing on ALL tabs — should be WCCS tab only
+- Banner shows "undefined / undefined lines" — JS reading wrong field names from /api/statuscheck
+- Recent saves timestamps showing 2026-05-25 — using git dates not file mtime
+- Red banner UX wrong entirely — replaced with post-save nudge design (Block D)
+
+TASKS_CONFIRMED_INCOMPLETE:
+- ALP still showing as standalone top tab — Task 5 (UI shuffle) failed to remove it
+- Memory tab still in top bar — likely same failure
+- AAFL Runs removal from top bar — unconfirmed
+
+JOBS_AUDIT_DONE:
+- 18 jobs tracked
+- 7 complete, 8 not run, 3 partially failed
+- All outstanding jobs listed and prioritised
+
+NEW_ACCA_CODES_THIS_SESSION:
+- IBR = Investigate Brainstorm Report
+- AXO = accident (acca)
+- OCB = One Copy Box
+- STATUS: in chat only, NOT yet written to ACCA.md on disk
+
+STATUS_MD_HEALTH: DEGRADED — 168 lines vs 195 baseline (86%). Block A not run. URGENT.
+MOT_CURRENT: 108/108 ALL CLEAR (last confirmed Build 7 features session)
+
+NEXT_PRIORITIES:
+1. OCB — combine all outstanding blocks (A+C+D+E + ALP/Memory/Runs UI fix + ACCA codes to disk) into one block
+2. Run combined block
+3. Star Citizen v0.2 benchmark
+4. GROQ + Cloudflare keys to .env
+5. meta_proposals/ — 3 unactioned self-improvement proposals
+
+RULE_VIOLATIONS_THIS_SESSION:
+- ALP tab still in top bar = Rule 1 violation (wasted tokens loading unused tab every message)
+- 3 screenshots sent in one message (earlier) = ALP leak
+
 <!-- END_OF_FILE -->
 
 

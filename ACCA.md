@@ -48,4 +48,12 @@
 | RIBS | Random Inspirational BrainStorm | 2026-05-24 |
 | SESUM | Session Summary | 2026-05-24 |
 
+| MCCM | Mission Control Center Master (urgency-sorted master dashboard section) | 2026-05-25 |
+| OCB | One CLAC Block | 2026-05-25 |
+| WCYA | What Can You Add | 2026-05-25 |
+
+| IBR | Investigate Brainstorm Report | 2026-05-27 |
+| AXO | Accident (acca) | 2026-05-27 |
+| CLACR | CLAC Request | 2026-05-27 |
+
 <!-- END_OF_FILE -->
