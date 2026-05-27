@@ -155,9 +155,189 @@ def generate_weekly_report() -> dict:
     }
 
 
+def get_health_db_info() -> dict:
+    """Return size + last archive date for the self-health DB."""
+    health_db = HERE / "data" / "health.db"
+    archive_dir = HERE / "data" / "archives"
+
+    size_mb = 0.0
+    if health_db.exists():
+        try:
+            size_mb = round(health_db.stat().st_size / (1024 * 1024), 3)
+        except Exception:
+            pass
+
+    last_archive = None
+    if archive_dir.exists():
+        archives = sorted(archive_dir.glob("health_*.db"), key=lambda f: f.stat().st_mtime, reverse=True)
+        if archives:
+            last_archive = archives[0].name
+
+    return {
+        "health_db_size_mb": size_mb,
+        "health_db_path":    str(health_db),
+        "last_archive_name": last_archive,
+        "archive_dir":       str(archive_dir),
+    }
+
+
+def archive_health_db(days: int = 90) -> dict:
+    """Delegate to self_health.py to archive results older than N days."""
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("self_health", HERE / "self_health.py")
+        if spec and spec.loader:
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            runner = mod.SelfHealthRunner()
+            return runner.archive_old_results(days=days)
+    except Exception as exc:
+        return {"error": str(exc)}
+    return {"error": "self_health.py not found"}
+
+
+# ── STORM: Deduplication methods ─────────────────────────────────────────────
+
+def deduplicate_status() -> dict:
+    """Read STATUS.md BUILT section and find/remove duplicate component entries."""
+    status_path = HERE / "STATUS.md"
+    if not status_path.exists():
+        return {"error": "STATUS.md not found"}
+
+    lines = status_path.read_text(encoding="utf-8").splitlines()
+    in_built = False
+    built_rows = []
+    other_lines = []
+    duplicates = []
+
+    for line in lines:
+        if "## CURRENT STATUS — BUILT" in line:
+            in_built = True
+            other_lines.append(line)
+            continue
+        if in_built and line.startswith("## "):
+            in_built = False
+
+        if in_built and line.startswith("|") and not line.startswith("|---|"):
+            cols = [c.strip() for c in line.split("|") if c.strip()]
+            if cols and cols[0] != "Component":
+                key = cols[0].lower().replace("-", " ").replace("_", " ").strip()
+                if key in {r["key"] for r in built_rows}:
+                    duplicates.append(cols[0])
+                    continue
+                built_rows.append({"key": key, "line": line})
+                other_lines.append(line)
+            else:
+                other_lines.append(line)
+        else:
+            other_lines.append(line)
+
+    if duplicates:
+        status_path.write_text("\n".join(other_lines), encoding="utf-8")
+
+    return {
+        "duplicates_found": len(duplicates),
+        "duplicates": duplicates,
+        "action": "removed" if duplicates else "none",
+    }
+
+
+def deduplicate_sesums() -> dict:
+    """Check session_logs/sesum_*.md files for overlapping content."""
+    logs_dir = HERE / "session_logs"
+    if not logs_dir.exists():
+        return {"error": "session_logs/ not found"}
+
+    sesum_files = sorted(logs_dir.glob("sesum_*.md"))
+    if not sesum_files:
+        return {"overlapping": [], "note": "No sesum files found"}
+
+    contents = {}
+    for f in sesum_files:
+        try:
+            contents[f.name] = f.read_text(encoding="utf-8").lower()
+        except Exception:
+            pass
+
+    overlaps = []
+    names = list(contents.keys())
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            a, b = names[i], names[j]
+            # Sample 3 key lines from a and check if they appear in b
+            lines_a = [l.strip() for l in contents[a].splitlines() if len(l.strip()) > 30][:10]
+            shared = sum(1 for l in lines_a if l in contents[b])
+            if shared >= 3:
+                overlaps.append(f"{a} ↔ {b} ({shared} matching lines)")
+
+    return {
+        "sesum_files_checked": len(sesum_files),
+        "overlapping": overlaps,
+        "note": "No files deleted — report only",
+    }
+
+
+def deduplicate_history() -> dict:
+    """Check HISTORY.md for repeated date entries."""
+    history_path = HERE / "HISTORY.md"
+    if not history_path.exists():
+        return {"error": "HISTORY.md not found"}
+
+    import re
+    lines = history_path.read_text(encoding="utf-8").splitlines()
+    date_pat = re.compile(r"#+\s+\d{4}-\d{2}-\d{2}")
+    seen_dates: dict[str, int] = {}
+    repeated = []
+
+    for line in lines:
+        m = date_pat.match(line)
+        if m:
+            key = line.strip()
+            seen_dates[key] = seen_dates.get(key, 0) + 1
+            if seen_dates[key] == 2:
+                repeated.append(key)
+
+    return {
+        "repeated_entries": repeated,
+        "count": len(repeated),
+        "note": "No deletions — report only. Manual review required.",
+    }
+
+
+def run_all_dedup() -> dict:
+    """Run all 3 STORM deduplication checks and print combined report."""
+    status_result  = deduplicate_status()
+    sesum_result   = deduplicate_sesums()
+    history_result = deduplicate_history()
+    return {
+        "status_dedup":  status_result,
+        "sesum_dedup":   sesum_result,
+        "history_dedup": history_result,
+    }
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "report"
-    if cmd == "report":
+    if cmd == "dedup":
+        result = run_all_dedup()
+        print("=" * 60)
+        print("  STORM — DEDUPLICATION REPORT")
+        print("=" * 60)
+        s = result["status_dedup"]
+        print(f"  STATUS.md:  {s.get('duplicates_found', 0)} duplicates {'removed' if s.get('action') == 'removed' else 'found (none)'}")
+        if s.get("duplicates"):
+            for d in s["duplicates"]:
+                print(f"    - {d}")
+        se = result["sesum_dedup"]
+        print(f"  SESUMs:     {len(se.get('overlapping', []))} overlapping pairs")
+        for o in se.get("overlapping", []):
+            print(f"    - {o}")
+        h = result["history_dedup"]
+        print(f"  HISTORY.md: {h.get('count', 0)} repeated date entries (manual review needed)")
+        for r in h.get("repeated_entries", []):
+            print(f"    - {r}")
+        print("=" * 60)
+    elif cmd == "report":
         report = generate_weekly_report()
         print("=" * 60)
         print("  STORAGE MANAGER — WEEKLY REPORT")

@@ -902,6 +902,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .run-detail-label{color:#666;font-weight:bold;white-space:nowrap}
 .run-detail-val{color:#ccc;word-break:break-word}
 .run-detail-close{float:right;background:#2a1a1a;border:1px solid #4a2a2a;color:#f88;padding:1px 7px;border-radius:3px;cursor:pointer;font-size:10px}
+@keyframes sysLivePulse{0%,100%{opacity:.5;box-shadow:0 0 4px #4f4}50%{opacity:1;box-shadow:0 0 10px #4f4}}
 </style>
 </head>
 <body>
@@ -3266,41 +3267,117 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 
     <!-- GPU / CPU / RAM sub-pane -->
     <div class="hs-pane" id="hs-pane-system" style="display:none">
-      <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">
-        <button class="btn" onclick="_refreshSystemGauges()" style="font-size:11px" title="Refresh CPU, RAM, and Disk stats now">Refresh Now</button>
-        <span style="font-size:11px;color:#666">Auto-refreshes every 5 s</span>
-        <button class="tip-btn" onclick="b3ShowTip(this,'Live system resource usage. Gauges fill from 0% (empty) to 100% (full). Turns orange above 60%, red above 80%.')">?</button>
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:bold;color:#bbb;letter-spacing:1px;text-transform:uppercase">System Resources — Real-Time</span>
+        <span id="sys-live-badge" style="background:#0d200d;color:#4f4;border:1px solid #4f4;border-radius:3px;font-size:9px;padding:2px 7px;letter-spacing:1px;opacity:0">LIVE</span>
+        <button class="btn" onclick="_stopSystemPoller()" style="font-size:10px;margin-left:auto" title="Pause 2-second auto-refresh">Pause</button>
+        <button class="btn" onclick="_startSystemPoller()" style="font-size:10px" title="Resume auto-refresh">Resume</button>
+        <button class="tip-btn" onclick="b3ShowTip(this,'System monitor — polls /api/system/snapshot every 2 s. CPU/GPU load turns orange above 60%, red above 80%. Thermal prediction uses a slope of last 6 GPU temperature readings.')">?</button>
       </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
-        <!-- CPU gauge -->
-        <div style="text-align:center">
-          <svg viewBox="0 0 100 60" width="140" height="84">
-            <path d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-            <path id="gauge-arc-cpu" d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#4af" stroke-width="10" stroke-linecap="round" stroke-dasharray="0,141"/>
-          </svg>
-          <div style="font-size:18px;font-weight:bold;color:#4af;margin-top:-16px" id="gauge-val-cpu">—%</div>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:4px">CPU</div>
+
+      <!-- System Score bar -->
+      <div style="background:#141414;border:1px solid #222;border-radius:5px;padding:7px 12px;display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px;white-space:nowrap" title="Composite health score — 100 means no load on any resource">System Score</span>
+        <div style="flex:1;height:7px;background:#222;border-radius:4px;overflow:hidden">
+          <div id="sys-score-fill" style="height:100%;width:0%;background:#4af;border-radius:4px;transition:width 0.6s,background 0.6s"></div>
         </div>
-        <!-- RAM gauge -->
-        <div style="text-align:center">
-          <svg viewBox="0 0 100 60" width="140" height="84">
-            <path d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-            <path id="gauge-arc-ram" d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#6f6" stroke-width="10" stroke-linecap="round" stroke-dasharray="0,141"/>
+        <span id="sys-score-val" style="font-size:14px;font-weight:bold;color:#4af;min-width:32px;text-align:right;transition:color 0.4s" title="0=fully loaded, 100=idle">—</span>
+        <span id="sys-bottleneck-chip" style="font-size:10px;color:#666;border:1px solid #333;border-radius:3px;padding:1px 7px;min-width:64px;text-align:center" title="Which resource is currently the bottleneck">balanced</span>
+      </div>
+
+      <!-- ROW 1: 4 Needle Dials -->
+      <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="CPU utilisation across all logical cores. Above 80% = cpu-bound.">
+          <svg viewBox="0 0 120 80" width="118" height="78">
+            <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
+            <path id="sys-arc-cpu" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#4af" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
+            <line id="sys-needle-cpu" x1="60" y1="70" x2="60" y2="26" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="60" cy="70" r="4" fill="#222" stroke="#4af" stroke-width="1.5"/>
+            <text id="sys-val-cpu" x="60" y="60" text-anchor="middle" fill="#4af" font-size="12" font-weight="bold">—%</text>
           </svg>
-          <div style="font-size:18px;font-weight:bold;color:#6f6;margin-top:-16px" id="gauge-val-ram">—%</div>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:4px">RAM</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">CPU Load</div>
         </div>
-        <!-- Disk gauge -->
-        <div style="text-align:center">
-          <svg viewBox="0 0 100 60" width="140" height="84">
-            <path d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-            <path id="gauge-arc-disk" d="M10,55 A45,45 0 0,1 90,55" fill="none" stroke="#fa0" stroke-width="10" stroke-linecap="round" stroke-dasharray="0,141"/>
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="System RAM used. Total installed: 48 GB DDR5. Above 80% = ram-bound.">
+          <svg viewBox="0 0 120 80" width="118" height="78">
+            <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
+            <path id="sys-arc-ram" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#6f6" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
+            <line id="sys-needle-ram" x1="60" y1="70" x2="60" y2="26" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="60" cy="70" r="4" fill="#222" stroke="#6f6" stroke-width="1.5"/>
+            <text id="sys-val-ram" x="60" y="60" text-anchor="middle" fill="#6f6" font-size="11" font-weight="bold">— GB</text>
           </svg>
-          <div style="font-size:18px;font-weight:bold;color:#fa0;margin-top:-16px" id="gauge-val-disk">—%</div>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:4px">DISK</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">RAM (48 GB)</div>
+        </div>
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="GPU shader utilisation — RTX 5090. Above 80% = gpu-bound.">
+          <svg viewBox="0 0 120 80" width="118" height="78">
+            <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
+            <path id="sys-arc-gpu" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#f8c" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
+            <line id="sys-needle-gpu" x1="60" y1="70" x2="60" y2="26" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="60" cy="70" r="4" fill="#222" stroke="#f8c" stroke-width="1.5"/>
+            <text id="sys-val-gpu" x="60" y="60" text-anchor="middle" fill="#f8c" font-size="12" font-weight="bold">—%</text>
+          </svg>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">GPU Load</div>
+        </div>
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="GPU VRAM used. Total: 32 GB (RTX 5090). Above 28 GB = vram pressure.">
+          <svg viewBox="0 0 120 80" width="118" height="78">
+            <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
+            <path id="sys-arc-vram" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#fa0" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
+            <line id="sys-needle-vram" x1="60" y1="70" x2="60" y2="26" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="60" cy="70" r="4" fill="#222" stroke="#fa0" stroke-width="1.5"/>
+            <text id="sys-val-vram" x="60" y="60" text-anchor="middle" fill="#fa0" font-size="11" font-weight="bold">— GB</text>
+          </svg>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">VRAM (32 GB)</div>
         </div>
       </div>
-      <div id="hs-system-detail" style="font-size:11px;color:#666;margin-top:10px;text-align:center"></div>
+
+      <!-- ROW 3: Spec Banner -->
+      <div id="sys-spec-banner" style="background:#0f0f0f;border:1px solid #222;border-radius:5px;padding:5px 12px;font-size:11px;color:#555;text-align:center;margin-bottom:8px;letter-spacing:0.5px" title="Hardware spec detected at first poll">
+        RTX 5090 32GB | 48GB DDR5 | CPU: detecting... | — cores
+      </div>
+
+      <!-- ROW 4: Alerts Panel -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <div style="flex:1;min-width:110px;background:#111;border:1px solid #222;border-radius:5px;padding:6px 10px" title="GPU core temperature. Thermal slope predicts time to throttle (85°C threshold).">
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">GPU Temp</div>
+          <div style="margin-top:2px"><span id="sys-alert-temp-val" style="font-size:13px;font-weight:bold;color:#ccc">—°C</span> <span id="sys-alert-thermal-pred" style="font-size:10px;color:#555">stable</span></div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#111;border:1px solid #222;border-radius:5px;padding:6px 10px" title="Active bottleneck — cpu-bound, ram-bound, gpu-bound, or balanced.">
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">Bottleneck</div>
+          <div style="margin-top:2px"><span id="sys-alert-bn-val" style="font-size:13px;font-weight:bold;color:#4f4">balanced</span></div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#111;border:1px solid #222;border-radius:5px;padding:6px 10px" title="Triggered when a game and AI process are simultaneously competing for the GPU (>50% load).">
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">Game/AI</div>
+          <div style="margin-top:2px"><span id="sys-alert-conf-val" style="font-size:13px;font-weight:bold;color:#4f4">no conflict</span></div>
+        </div>
+        <div style="flex:1;min-width:110px;background:#111;border:1px solid #222;border-radius:5px;padding:6px 10px" title="Disk I/O over last 0.5-second sample window.">
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">Disk I/O</div>
+          <div style="margin-top:2px"><span id="sys-alert-disk-val" style="font-size:11px;color:#ccc">— MB/s</span></div>
+        </div>
+      </div>
+
+      <!-- ROW 2: AI Process Cards -->
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">AI Processes</span>
+          <button class="btn" onclick="_sysFreeUpIdle()" style="font-size:10px;padding:2px 8px" title="Kill all AI processes using under 1% CPU and under 50 MB RAM">Free Up Idle</button>
+        </div>
+        <div id="sys-ai-cards" style="display:flex;gap:5px;flex-wrap:wrap">
+          <div style="font-size:11px;color:#333">No AI processes detected</div>
+        </div>
+      </div>
+
+      <!-- ROW 5: Timeline -->
+      <div>
+        <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px" title="CPU (blue), GPU (pink), RAM % (green) over the last 60 readings at 2-second intervals (~2 min window)">Timeline — last 60 readings</div>
+        <svg id="sys-timeline-svg" viewBox="0 0 600 55" width="100%" height="55" style="background:#0a0a0a;border-radius:4px;border:1px solid #1a1a1a">
+          <text x="300" y="31" text-anchor="middle" fill="#2a2a2a" font-size="11">Collecting data…</text>
+        </svg>
+        <div style="display:flex;gap:14px;margin-top:3px">
+          <span style="font-size:9px;color:#4af" title="CPU utilisation %">■ CPU</span>
+          <span style="font-size:9px;color:#f8c" title="GPU load %">■ GPU</span>
+          <span style="font-size:9px;color:#6f6" title="RAM % of total">■ RAM</span>
+        </div>
+      </div>
     </div>
 
     <!-- Medical sub-pane -->
@@ -9331,7 +9408,7 @@ function hsTabSwitch(tab) {
   if (tab === 'provider')     loadHsProviderHealth();
   if (tab === 'selfdiag')     loadHsSelfDiag();
   if (tab === 'aaflruns')     loadHsAaflRuns();
-  if (tab === 'system')       { _refreshSystemGauges(); _startSystemPoller(); }
+  if (tab === 'system')       { _refreshSystemMonitor(); _startSystemPoller(); }
   if (tab === 'medical')      loadMedical();
   if (tab === 'workchecker')  wcLoadReport();
 }
@@ -9405,42 +9482,170 @@ async function loadHsAaflRuns() {
   }
 }
 
-// ── Task 2: System gauges (CPU / RAM / Disk) ──────────────────────────────
+// ── OCB-C Phase 4: System Monitor ─────────────────────────────────────────
 let _sysPollerTimer = null;
+const _sysSnapHistory = []; // {cpu, gpu, ram} up to 60 entries
 
-function _setGaugeDial(arcId, valId, pct) {
+function _sysDial(arcId, needleId, valId, pct, maxVal, unit, baseColor) {
+  const arcLen = 157;
+  const c = Math.max(0, Math.min(100, pct));
+  const fill = (c / 100) * arcLen;
+  const col = c > 80 ? '#f44' : c > 60 ? '#fa0' : baseColor;
   const arc = document.getElementById(arcId);
+  if (arc) { arc.style.strokeDasharray = fill + ',' + arcLen; arc.style.stroke = col; }
+  const needle = document.getElementById(needleId);
+  if (needle) {
+    const deg = -90 + c * 1.8;
+    needle.setAttribute('transform', `rotate(${deg} 60 70)`);
+  }
   const val = document.getElementById(valId);
-  if (!arc || !val) return;
-  const total = 141;
-  const fill  = (Math.min(100, Math.max(0, pct)) / 100) * total;
-  arc.style.strokeDasharray = fill + ',' + total;
-  if (pct >= 80)      arc.style.stroke = '#f44';
-  else if (pct >= 60) arc.style.stroke = '#fa0';
-  // else keep original colour set in HTML
-  val.textContent = Math.round(pct) + '%';
+  if (val) {
+    val.textContent = unit === 'GB' ? (maxVal * c / 100).toFixed(1) + ' GB' : Math.round(c) + '%';
+    val.setAttribute('fill', col);
+  }
 }
 
-async function _refreshSystemGauges() {
+async function _refreshSystemMonitor() {
+  const badge = document.getElementById('sys-live-badge');
   try {
-    const d = await apiFetch('/health/system');
-    _setGaugeDial('gauge-arc-cpu',  'gauge-val-cpu',  d.cpu_pct  || 0);
-    _setGaugeDial('gauge-arc-ram',  'gauge-val-ram',  d.ram_pct  || 0);
-    _setGaugeDial('gauge-arc-disk', 'gauge-val-disk', d.disk_pct || 0);
-    const detail = document.getElementById('hs-system-detail');
-    if (detail) {
-      detail.textContent = [
-        d.cpu_name    ? 'CPU: ' + d.cpu_name                                           : '',
-        d.ram_used_gb ? 'RAM: ' + d.ram_used_gb + ' / ' + d.ram_total_gb + ' GB'      : '',
-        d.disk_free_gb? 'Disk free: ' + d.disk_free_gb + ' GB'                         : '',
-      ].filter(Boolean).join('  ·  ');
+    const snap = await apiFetch('/api/system/snapshot');
+    if (!snap || !snap.ok) throw new Error('bad snap');
+
+    if (badge) { badge.style.opacity = '1'; badge.style.animation = 'sysLivePulse 1.2s ease-in-out infinite'; }
+
+    // Score + bottleneck
+    const sc = snap.health_score || 0;
+    const scoreV = document.getElementById('sys-score-val');
+    const scoreF = document.getElementById('sys-score-fill');
+    const bnChip = document.getElementById('sys-bottleneck-chip');
+    const bnAlert = document.getElementById('sys-alert-bn-val');
+    if (scoreV) { scoreV.textContent = sc; scoreV.style.color = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : '#f44'; }
+    if (scoreF) { scoreF.style.width = sc + '%'; scoreF.style.background = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : '#f44'; }
+    if (bnChip) { bnChip.textContent = snap.bottleneck || 'balanced'; bnChip.style.color = snap.bottleneck && snap.bottleneck !== 'balanced' ? '#fa0' : '#555'; }
+    if (bnAlert) { bnAlert.textContent = snap.bottleneck || 'balanced'; bnAlert.style.color = snap.bottleneck && snap.bottleneck !== 'balanced' ? '#fa0' : '#4f4'; }
+
+    // CPU dial
+    const cpu = snap.cpu || {};
+    _sysDial('sys-arc-cpu', 'sys-needle-cpu', 'sys-val-cpu', cpu.overall_pct || 0, 100, '%', '#4af');
+
+    // RAM dial
+    const ram = snap.ram || {};
+    const ramPct = ram.total_gb ? (ram.used_gb / ram.total_gb * 100) : 0;
+    _sysDial('sys-arc-ram', 'sys-needle-ram', 'sys-val-ram', ramPct, ram.total_gb || 48, 'GB', '#6f6');
+
+    // GPU dials
+    const gpus = (snap.gpu || {}).gpus || [];
+    const g = gpus[0] || {};
+    _sysDial('sys-arc-gpu', 'sys-needle-gpu', 'sys-val-gpu', g.load_pct || 0, 100, '%', '#f8c');
+    const vramPct = g.vram_total_gb ? (g.vram_used_gb / g.vram_total_gb * 100) : 0;
+    _sysDial('sys-arc-vram', 'sys-needle-vram', 'sys-val-vram', vramPct, g.vram_total_gb || 32, 'GB', '#fa0');
+
+    // Spec banner
+    const specEl = document.getElementById('sys-spec-banner');
+    if (specEl && cpu.per_core_pct) {
+      const cores = cpu.per_core_pct.length;
+      const gpuName = g.name || 'RTX 5090';
+      const vramTot = g.vram_total_gb ? g.vram_total_gb.toFixed(0) : 32;
+      const ramTot  = ram.total_gb ? ram.total_gb.toFixed(0) : 48;
+      specEl.textContent = `${gpuName} ${vramTot}GB | ${ramTot}GB DDR5 | ${cores} cores @ ${Math.round(cpu.freq_mhz || 0)} MHz`;
     }
-  } catch(e) {}
+
+    // Thermal alert
+    const th = snap.thermal || {};
+    const tempV = document.getElementById('sys-alert-temp-val');
+    const tempP = document.getElementById('sys-alert-thermal-pred');
+    const tc = g.temperature_c;
+    if (tempV) { tempV.textContent = tc != null ? tc + '°C' : '—°C'; tempV.style.color = tc > 80 ? '#f44' : tc > 70 ? '#fa0' : '#ccc'; }
+    if (tempP) {
+      const pred = th.prediction || 'stable';
+      tempP.textContent = pred === 'rising' ? `↑ ~${th.readings_to_throttle || '?'}r to throttle` : pred === 'throttling_now' ? '⚠ THROTTLING' : 'stable';
+      tempP.style.color = pred === 'throttling_now' ? '#f44' : pred === 'rising' ? '#fa0' : '#555';
+    }
+
+    // Game/AI conflict
+    const confV = document.getElementById('sys-alert-conf-val');
+    if (confV) { confV.textContent = snap.game_ai_conflict ? '⚠ CONFLICT' : 'no conflict'; confV.style.color = snap.game_ai_conflict ? '#f44' : '#4f4'; }
+
+    // Disk I/O (from snapshot disk data if present, else placeholder)
+    const diskV = document.getElementById('sys-alert-disk-val');
+    if (diskV && snap.disk) { diskV.textContent = `↑ ${snap.disk.write_mb_s || 0} / ↓ ${snap.disk.read_mb_s || 0} MB/s`; }
+
+    // AI process cards
+    _sysRenderAiCards((snap.ai_allocation || {}).processes || []);
+
+    // Timeline
+    _sysSnapHistory.push({ cpu: cpu.overall_pct || 0, gpu: g.load_pct || 0, ram: ramPct });
+    if (_sysSnapHistory.length > 60) _sysSnapHistory.shift();
+    _sysRenderTimeline();
+
+  } catch(e) {
+    if (badge) badge.style.opacity = '0.3';
+  }
+}
+
+function _sysRenderAiCards(procs) {
+  const el = document.getElementById('sys-ai-cards');
+  if (!el) return;
+  if (!procs.length) { el.innerHTML = '<div style="font-size:11px;color:#333">No AI processes detected</div>'; return; }
+  el.innerHTML = procs.map(p => {
+    const cpuHi = (p.cpu_pct || 0) > 20;
+    const ramHi = (p.ram_mb || 0) > 500;
+    const col = cpuHi ? '#fa0' : ramHi ? '#f8c' : '#4f4';
+    const idle = (p.cpu_pct || 0) < 1 && (p.ram_mb || 0) < 50;
+    const shortName = (p.name || 'proc').slice(0, 14);
+    return `<div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:5px;padding:5px 9px;min-width:108px" title="PID ${p.pid} — ${p.name}&#10;CPU: ${p.cpu_pct}%  RAM: ${p.ram_mb} MB">
+      <div style="color:${col};font-weight:bold;font-size:10px;white-space:nowrap">${shortName}</div>
+      <div style="color:#444;font-size:9px">CPU ${p.cpu_pct||0}% · ${p.ram_mb||0} MB</div>
+      ${idle ? `<button class="btn" onclick="sysFreeUp(${p.pid})" style="font-size:9px;padding:1px 5px;margin-top:3px" title="Kill idle process PID ${p.pid}">Kill</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function _sysRenderTimeline() {
+  const svg = document.getElementById('sys-timeline-svg');
+  if (!svg || _sysSnapHistory.length < 2) return;
+  const W = 600, H = 55, PX = 2, PY = 3;
+  const n = _sysSnapHistory.length;
+  const mkPoly = (key, stroke, fill) => {
+    const pts = _sysSnapHistory.map((d, i) => {
+      const x = PX + (i / (n - 1)) * (W - PX * 2);
+      const y = H - PY - (d[key] / 100) * (H - PY * 2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    const first = PX + ',';
+    const last  = ',' + (H - PY);
+    const area  = `${PX},${H - PY} ` + pts.join(' ') + ` ${W - PX},${H - PY}`;
+    return `<polygon points="${area}" fill="${fill}" opacity="0.12"/><polyline points="${pts.join(' ')}" fill="none" stroke="${stroke}" stroke-width="1.3" stroke-linejoin="round"/>`;
+  };
+  svg.innerHTML = mkPoly('ram', '#6f6', '#6f6') + mkPoly('gpu', '#f8c', '#f8c') + mkPoly('cpu', '#4af', '#4af');
 }
 
 function _startSystemPoller() {
   if (_sysPollerTimer) return;
-  _sysPollerTimer = setInterval(_refreshSystemGauges, 5000);
+  _refreshSystemMonitor();
+  _sysPollerTimer = setInterval(_refreshSystemMonitor, 2000);
+}
+
+function _stopSystemPoller() {
+  if (_sysPollerTimer) { clearInterval(_sysPollerTimer); _sysPollerTimer = null; }
+  const badge = document.getElementById('sys-live-badge');
+  if (badge) badge.style.opacity = '0';
+}
+
+async function sysFreeUp(pid) {
+  if (!confirm('Kill PID ' + pid + '?')) return;
+  try { await apiFetch('/api/system/kill', {method:'POST', body: JSON.stringify({pid})}); setTimeout(_refreshSystemMonitor, 600); } catch(e) {}
+}
+
+function _sysFreeUpIdle() {
+  apiFetch('/api/system/snapshot').then(snap => {
+    const procs = ((snap || {}).ai_allocation || {}).processes || [];
+    const idle = procs.filter(p => (p.cpu_pct || 0) < 1 && (p.ram_mb || 0) < 50);
+    if (!idle.length) { toast('No idle AI processes found', 'ok'); return; }
+    if (!confirm(`Kill ${idle.length} idle process(es)?`)) return;
+    idle.forEach(p => apiFetch('/api/system/kill', {method:'POST', body: JSON.stringify({pid: p.pid})}).catch(() => {}));
+    setTimeout(_refreshSystemMonitor, 800);
+  }).catch(() => {});
 }
 
 // ── Task 5: Chart.js lazy loader + helpers ────────────────────────────────

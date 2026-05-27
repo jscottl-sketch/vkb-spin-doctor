@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-27 | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-28 | **Updated by:** Claude Code (OCB-C complete)
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -124,6 +124,16 @@
 | IBR scan | Added to WCCS tab — scans for Investigate Brainstorm Reports |
 | Red banner fix | Replaced with blue pulse glow + bouncing arrow (Block D) |
 | SESUM saved | Saved to session_logs/sesum_2026-05-27.md |
+| Build 4 (MCC) | Quick Ask, AAFL Results, Scout Search, Loop Presets, Chain Builder — 108/108 MOT |
+| Build 4b (Health Suite) | Sidebar nav tree, sticky scroll fix, duplicate ID removal — 109/109 MOT |
+| Build 5a (Unified Query) | Unified query bar (AAFL + Scout tabs), quick-ask endpoint fix, hsTabSwitch fix |
+| OCB-A (MCC Self-Health) | work_checker.py, self_health.py, data/health.db, data/element_registry.json, data/solution_database.json |
+| OCB-B (Body Map + Auto-Fix) | auto_fixer.py, Body Map SVG in MCC, real-time Health Suite polling |
+| OCB-C Phase 1 (Missions) | 8-card mission launcher, KB Profiles merged into Missions, launch-spindoctor API |
+| OCB-C Phase 2 (Workflow) | Workflow Builder + Chain Mode + B2-07 merged into single accordion with SVG flowchart |
+| OCB-C Phase 3 (Storage) | 8 visual elements + 3 API endpoints — pie chart, bar graphs, dial, trend, forecast, sliders |
+| OCB-C Phase 4 (System Monitor) | system_monitor.py, 4-dial hs-pane-system, AI process cards, timeline SVG, 6 API endpoints |
+| STORM (deduplication) | deduplicate_status/sesums/history methods in storage_manager.py — ACCA: STORM |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -140,7 +150,7 @@
 | B2-04: AAFL Runs — compare mode + failure analysis + success patterns | AAFL Runs tab |
 | B2-05: AAFL Runs — tag/notes on runs | AAFL Runs tab |
 | B2-06: AAFL Control — step-by-step + pause mode | AAFL Control tab |
-| B2-07: AAFL Control — chain builder + notification settings | AAFL Control tab |
+| B2-07: AAFL Control — chain builder + notification settings | MERGED into OCB-C Workflow Builder |
 | B2-08: AAFL Control — benchmark runner | AAFL Control tab |
 | B2-09: AAFL Control — second opinion AI | AAFL Control tab |
 | B2-10: Costs — budget caps + savings tracker + ROI tracker | Costs tab |
@@ -196,11 +206,13 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Build 2 CLAC block (23 parking lot features)
-2. Star Citizen v0.2 benchmark via AAFL autonomous run
-3. Add GROQ + Cloudflare keys to .env (manual — security rule)
-4. Post on r/LocalLLaMA when Star Citizen benchmark passes
-5. LiteLLM full integration — replace direct provider calls with LiteLLM router
-6. Electron wrapper for packaging
+1. OCB-D (LLOW — Large Language Orchestration Workbench) — next session
+2. mcc-instructions-keeper skill — context persistence helper
+3. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
+4. Star Citizen v0.2 benchmark via AAFL autonomous run
+5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+6. Post on r/LocalLLaMA when Star Citizen benchmark passes
+7. LiteLLM full integration — replace direct provider calls with LiteLLM router
+8. Electron wrapper for packaging
 
 <!-- END_OF_FILE -->

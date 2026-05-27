@@ -727,6 +727,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-C: System monitor ─────────────────────────────────────────
             elif path == "/api/launch-spindoctor":
                 self._handle_launch_spindoctor()
+            elif path == "/api/system/kill":
+                self._handle_system_kill()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -5098,6 +5100,28 @@ def _handle_system_ai_allocation(self):
         self._send_json({"ok": False, "error": str(exc)}, 500)
 
 
+def _handle_system_kill(self):
+    """POST /api/system/kill — terminate a process by PID (AI processes only)."""
+    try:
+        import psutil
+        body = json.loads(self._read_body())
+        pid = int(body.get("pid", 0))
+        if not pid:
+            self._send_json({"ok": False, "error": "pid required"}, 400)
+            return
+        proc = psutil.Process(pid)
+        name = proc.name().lower()
+        _ai_safe = {"python", "node", "lm studio", "mcc_server", "loop_manager", "aafl"}
+        if not any(k in name for k in _ai_safe):
+            self._send_json({"ok": False, "error": f"Process '{name}' not in AI-safe list"}, 403)
+            return
+        proc.terminate()
+        self._send_json({"ok": True, "killed_pid": pid, "name": name})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_system_kill          = _handle_system_kill           # type: ignore[attr-defined]
 MCCHandler._handle_system_snapshot      = _handle_system_snapshot       # type: ignore[attr-defined]
 MCCHandler._handle_system_cpu           = _handle_system_cpu            # type: ignore[attr-defined]
 MCCHandler._handle_system_ram           = _handle_system_ram            # type: ignore[attr-defined]
