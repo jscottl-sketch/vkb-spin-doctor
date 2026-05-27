@@ -400,11 +400,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── Feature 9 ──────────────────────────────────────────────────────
             elif path == "/stuck-inbox/summary":
                 self._handle_stuck_summary_get()
-            # ── Feature 10 ─────────────────────────────────────────────────────
+            # ── Feature 10 + OCB-C storage ─────────────────────────────────────
             elif path == "/storage":
                 self._handle_storage_get()
             elif path == "/storage/report":
                 self._handle_storage_report()
+            elif path == "/api/storage/stats":
+                self._handle_storage_stats()
+            elif path == "/api/storage/largest":
+                self._handle_storage_largest()
             # ── Build 1 Step B: WCCS Drill-Down ────────────────────────────────
             elif path == "/wccs/save-log":
                 self._handle_wccs_save_log()
@@ -511,6 +515,23 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_af_proposals()
             elif path == "/api/auto-fix/history":
                 self._handle_af_history()
+            # ── OCB-C: Storage + System endpoints ─────────────────────────────
+            elif path == "/api/storage/stats":
+                self._handle_storage_stats()
+            elif path == "/api/storage/largest":
+                self._handle_storage_largest()
+            elif path == "/api/system/snapshot":
+                self._handle_system_snapshot()
+            elif path == "/api/system/cpu":
+                self._handle_system_cpu()
+            elif path == "/api/system/ram":
+                self._handle_system_ram()
+            elif path == "/api/system/gpu":
+                self._handle_system_gpu()
+            elif path == "/api/system/ai-allocation":
+                self._handle_system_ai_allocation()
+            elif path == "/api/health/latest":
+                self._handle_health_latest()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -700,6 +721,12 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_af_approve()
             elif path == "/api/auto-fix/reject":
                 self._handle_af_reject()
+            # ── OCB-C: Storage reallocation ───────────────────────────────────
+            elif path == "/api/storage/reallocate":
+                self._handle_storage_reallocate()
+            # ── OCB-C: System monitor ─────────────────────────────────────────
+            elif path == "/api/launch-spindoctor":
+                self._handle_launch_spindoctor()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -4913,6 +4940,169 @@ MCCHandler._handle_af_proposals = _af_handle_proposals  # type: ignore[attr-defi
 MCCHandler._handle_af_history   = _af_handle_history    # type: ignore[attr-defined]
 MCCHandler._handle_af_approve   = _af_handle_approve    # type: ignore[attr-defined]
 MCCHandler._handle_af_reject    = _af_handle_reject     # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-C: Storage stats, largest files, quota reallocation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_storage_stats(self):
+    """GET /api/storage/stats — slot sizes, totals, growth trends."""
+    try:
+        from storage_manager import check_all_slots
+        data = check_all_slots()
+        slots_list = list(data.get("slots", {}).values())
+        # Build growth map (stub — would need historical data in a real impl)
+        growth = {s["name"]: 0.0 for s in slots_list}
+        self._send_json({
+            "ok": True,
+            "slots": slots_list,
+            "total_allocated_gb": data.get("total_allocated_gb", 1000),
+            "total_used_gb": data.get("total_used_gb", 0.0),
+            "growth_gb_per_day": growth,
+            "trend": [],
+            "archive_log": [],
+        })
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_storage_largest(self):
+    """GET /api/storage/largest — top 10 biggest files across all slots."""
+    try:
+        from storage_manager import _load_config, _resolve_folder
+        cfg = _load_config()
+        all_files = []
+        for slot in cfg.get("slots", []):
+            folder = _resolve_folder(slot)
+            if not folder.exists():
+                continue
+            for f in folder.rglob("*"):
+                if not f.is_file():
+                    continue
+                try:
+                    stat   = f.stat()
+                    age    = int((datetime.datetime.now().timestamp() - stat.st_mtime) / 86400)
+                    all_files.append({
+                        "name":     f.name,
+                        "path":     str(f),
+                        "size_gb":  round(stat.st_size / (1024**3), 6),
+                        "slot":     slot["name"],
+                        "age_days": age,
+                    })
+                except Exception:
+                    pass
+        all_files.sort(key=lambda x: x["size_gb"], reverse=True)
+        self._send_json({"ok": True, "files": all_files[:10]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_storage_reallocate(self):
+    """POST /api/storage/reallocate — body: {quotas: {slot_name: gb}} — update quotas in storage_config.json."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        quotas = body.get("quotas", {})
+        cfg = json.loads(STORAGE_CFG.read_text(encoding="utf-8")) if STORAGE_CFG.exists() else {}
+        changed = 0
+        for slot in cfg.get("slots", []):
+            name = slot.get("name", "")
+            if name in quotas:
+                slot["quota_gb"] = float(quotas[name])
+                changed += 1
+        STORAGE_CFG.write_text(json.dumps(cfg, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True, "changed": changed})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_launch_spindoctor(self):
+    """POST /api/launch-spindoctor — launch spin_doctor.py GUI."""
+    try:
+        subprocess.Popen(
+            [sys.executable, str(HERE / "spin_doctor.py")],
+            cwd=str(HERE),
+            creationflags=getattr(subprocess, "CREATE_NEW_CONSOLE", 0),
+        )
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_health_latest(self):
+    """GET /api/health/latest — return last MOT / medical score."""
+    try:
+        result = {}
+        if LATEST_HEALTH.exists():
+            result = json.loads(LATEST_HEALTH.read_text(encoding="utf-8"))
+        mot_file = HEALTH_RESULTS / "full_mot_report.json"
+        if mot_file.exists():
+            mot = json.loads(mot_file.read_text(encoding="utf-8"))
+            result["mot_score"] = f"{mot.get('passed',0)}/{mot.get('total',0)}"
+        result["ok"] = True
+        self._send_json(result)
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_storage_stats      = _handle_storage_stats       # type: ignore[attr-defined]
+MCCHandler._handle_storage_largest    = _handle_storage_largest      # type: ignore[attr-defined]
+MCCHandler._handle_storage_reallocate = _handle_storage_reallocate   # type: ignore[attr-defined]
+MCCHandler._handle_launch_spindoctor  = _handle_launch_spindoctor    # type: ignore[attr-defined]
+MCCHandler._handle_health_latest      = _handle_health_latest        # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-C: System monitor endpoints (delegates to system_monitor.py)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_system_snapshot(self):
+    """GET /api/system/snapshot — full system state."""
+    try:
+        from system_monitor import SystemMonitor
+        sm = SystemMonitor()
+        self._send_json(sm.get_full_snapshot())
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+def _handle_system_cpu(self):
+    """GET /api/system/cpu — CPU only."""
+    try:
+        from system_monitor import SystemMonitor
+        self._send_json(SystemMonitor().get_cpu())
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+def _handle_system_ram(self):
+    """GET /api/system/ram — RAM only."""
+    try:
+        from system_monitor import SystemMonitor
+        self._send_json(SystemMonitor().get_ram())
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+def _handle_system_gpu(self):
+    """GET /api/system/gpu — GPU only."""
+    try:
+        from system_monitor import SystemMonitor
+        self._send_json(SystemMonitor().get_gpu())
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+def _handle_system_ai_allocation(self):
+    """GET /api/system/ai-allocation — AI process breakdown."""
+    try:
+        from system_monitor import SystemMonitor
+        self._send_json(SystemMonitor().get_ai_allocation())
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_system_snapshot      = _handle_system_snapshot       # type: ignore[attr-defined]
+MCCHandler._handle_system_cpu           = _handle_system_cpu            # type: ignore[attr-defined]
+MCCHandler._handle_system_ram           = _handle_system_ram            # type: ignore[attr-defined]
+MCCHandler._handle_system_gpu           = _handle_system_gpu            # type: ignore[attr-defined]
+MCCHandler._handle_system_ai_allocation = _handle_system_ai_allocation  # type: ignore[attr-defined]
 
 
 def main():

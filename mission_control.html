@@ -2825,18 +2825,107 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
      ============================================================ -->
 <div class="tab-pane" id="tab-storage">
   <div class="pane-scroll">
-    <div class="home-ctrl">
-      <button class="btn" onclick="loadStorage()" title="Reload disk usage data from storage_config.json on the server">Refresh</button>
-      <button class="btn" onclick="loadStorageReport()" title="Generate a summary report showing total allocated space, total used, and any slots near their quota">Weekly Report</button>
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="btn" onclick="loadStorageFull()" title="Reload all storage data — slot sizes, trends, and largest files — from the server">↻ Refresh All</button>
+      <button class="btn" onclick="loadStorageReport()" style="font-size:11px" title="Generate a summary report: total allocated, total used, and any warnings">📋 Weekly Report</button>
       <span class="home-last-refresh" id="storage-ts"></span>
     </div>
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">Disk quota monitor — green = under 70%, amber = 70–90%, red = over 90% of quota used</div>
-    <div id="storage-slots" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:12px"></div>
-    <div id="storage-report-out" style="margin-top:16px"></div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:12px" title="All visuals update when you click Refresh All — data comes from storage_config.json and actual disk scans">Disk quota monitor — animated visuals. Green &lt;60%, amber 60–80%, red &gt;80% used.</div>
 
-    <!-- MEMORY STATUS — Task 5 -->
-    <div class="section-title" style="margin-top:20px">Memory Status</div>
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px">Knowledge Bank entries and Solution Log — what the AI has learned and how many solutions are stored</div>
+    <!-- ── ROW 1: Pulse Dial + Pie Chart ─────────────────────────── -->
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-bottom:16px">
+
+      <!-- Pulse Dial — total 1TB used % -->
+      <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:14px;text-align:center;min-width:160px" title="Pulse dial showing the percentage of your 1TB total allocation currently in use. Needle animates to the current position.">
+        <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Total Used (1TB)</div>
+        <svg id="storage-dial-svg" viewBox="0 0 120 80" width="160" height="106">
+          <!-- Arc track -->
+          <path d="M15,75 A50,50 0 0,1 105,75" fill="none" stroke="#1a1a1a" stroke-width="12" stroke-linecap="round"/>
+          <!-- Arc fill (animated) -->
+          <path id="storage-dial-fill" d="M15,75 A50,50 0 0,1 105,75" fill="none" stroke="#2a7" stroke-width="12" stroke-linecap="round" stroke-dasharray="0,157"/>
+          <!-- Needle -->
+          <line id="storage-dial-needle" x1="60" y1="75" x2="60" y2="30" stroke="#eee" stroke-width="2" stroke-linecap="round" transform="rotate(-90,60,75)"/>
+          <circle cx="60" cy="75" r="4" fill="#eee"/>
+          <!-- Zone labels -->
+          <text x="12" y="85" font-size="8" fill="#2a7">0</text>
+          <text x="57" y="18" font-size="8" fill="#fa0" text-anchor="middle">50%</text>
+          <text x="103" y="85" font-size="8" fill="#a33">100</text>
+        </svg>
+        <div style="font-size:24px;font-weight:bold;color:#eee;margin-top:-8px" id="storage-dial-val">—%</div>
+        <div style="font-size:10px;color:#555;margin-top:4px" id="storage-dial-sub">— GB used</div>
+      </div>
+
+      <!-- Animated Pie Chart — per-slot allocation -->
+      <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:14px;flex:1;min-width:220px" title="Pie chart showing how storage is split between AAFL, Scout, MCC, models, health, and general slots. Segments animate on load.">
+        <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Allocation by Slot</div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <svg id="storage-pie-svg" viewBox="0 0 100 100" width="100" height="100">
+            <circle cx="50" cy="50" r="48" fill="#0a0a0a"/>
+            <!-- Segments inserted by JS -->
+          </svg>
+          <div id="storage-pie-legend" style="font-size:11px;color:#aaa;line-height:1.8"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── ROW 2: Live Bar Graphs per slot ──────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px" title="One bar per storage slot — fills as the slot fills up. Green under 60%, amber 60–80%, red over 80%.">Slot Usage Bars</div>
+    <div id="storage-bars" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+      <div style="font-size:11px;color:#555">Loading…</div>
+    </div>
+
+    <!-- ── ROW 3: Slot cards (existing) ─────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px" title="Detailed view of each slot — used GB, quota GB, and status">Slot Details</div>
+    <div id="storage-slots" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:16px"></div>
+    <div id="storage-report-out" style="margin-bottom:16px"></div>
+
+    <!-- ── ROW 4: Forecast Card ─────────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px" title="Based on current growth rate — estimates how many days until each slot is full">Forecast</div>
+    <div id="storage-forecast" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="font-size:11px;color:#555">Loading forecast…</div>
+    </div>
+
+    <!-- ── ROW 5: Trend Line ─────────────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Storage growth over the last 30 days — one line per slot, different colours">Growth Trend (30 days)</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <svg id="storage-trend-svg" width="100%" height="120" viewBox="0 0 600 120" preserveAspectRatio="none">
+        <text x="10" y="60" fill="#555" font-size="12">No trend data yet — click Refresh All to load</text>
+      </svg>
+      <div id="storage-trend-legend" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:10px;color:#666"></div>
+    </div>
+
+    <!-- ── ROW 6: Quota Slider ───────────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Drag sliders to reallocate space between slots — changes write to storage_config.json">Quota Reallocation</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <div id="storage-quota-sliders" style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:11px;color:#555">Loading quota controls…</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn" onclick="storSaveQuotas()" style="font-size:11px" title="Write the new quota values to storage_config.json on the server">💾 Save Quotas</button>
+        <button class="btn" onclick="loadStorageFull()" style="font-size:11px" title="Reload from server and discard unsaved slider changes">↺ Revert</button>
+        <span id="stor-quota-msg" style="font-size:11px;color:#4af"></span>
+      </div>
+    </div>
+
+    <!-- ── ROW 7: Largest Files Leaderboard ─────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Top 10 largest files across all storage slots — name, size, which slot, and age">Largest Files (Top 10)</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <button class="btn" onclick="loadStorageLargest()" style="font-size:11px;margin-bottom:8px" title="Scan all slots for the 10 largest files — may take a few seconds">🔍 Scan Largest Files</button>
+      <div id="storage-largest" style="font-size:11px;color:#888">Click Scan to find largest files.</div>
+    </div>
+
+    <!-- ── ROW 8: Auto-Archive Log ───────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Recent automatic archive actions — when files were moved to overflow to free up space">Auto-Archive Log</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <div id="storage-archive-log" style="font-size:11px;color:#888">No archive actions recorded yet.</div>
+    </div>
+
+    <!-- Memory Status (existing) -->
+    <div class="section-title" style="margin-top:4px">Memory Status</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px" title="Knowledge Bank and Solution Log counts from the AAFL database">Knowledge Bank entries and Solution Log — what the AI has learned</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
       <div style="background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:12px 16px;min-width:130px;text-align:center">
         <div style="font-size:24px;font-weight:bold;color:#eee" id="mem-status-kb-count">—</div>
@@ -3696,7 +3785,7 @@ function initTabs() {
       if (btn.dataset.tab === 'acca') loadAcca();
       if (btn.dataset.tab === 'alp') loadAlp();
       if (btn.dataset.tab === 'self-diagnosis') { loadSelfDiagnosis(); loadModules(); }
-      if (btn.dataset.tab === 'storage') { loadStorage(); loadMemoryStatus(); }
+      if (btn.dataset.tab === 'storage') loadStorageTabInit();
       if (btn.dataset.tab === 'aafl-control') { loadStuckSummary(); }
       if (btn.dataset.tab === 'medical') loadMedical();
     });
@@ -4405,7 +4494,7 @@ document.addEventListener('keydown', function(e) {
       else if (tab === 'scout') loadScout();
       else if (tab === 'costs') loadCosts();
       else if (tab === 'aafl-control') { loadStuckInbox(); loadStuckSummary(); }
-      else if (tab === 'storage') loadStorage();
+      else if (tab === 'storage') loadStorageTabInit();
       else if (tab === 'memory') loadMemory();
       else if (tab === 'promo') loadPromo();
       else if (tab === 'missions') mcInitTab();
@@ -6220,40 +6309,308 @@ async function bulkResolveStuck() {
 // FEATURE 10 — Storage Manager
 // ══════════════════════════════════════════════════════════════════
 
+// ── Storage: original loadStorage (slot detail cards) ────────────────────────
 async function loadStorage() {
   const el = document.getElementById('storage-slots');
-  el.innerHTML = '<div class="loading">Loading…</div>';
-  document.getElementById('storage-ts').textContent = new Date().toLocaleTimeString();
-  const d = await apiFetch('/storage');
-  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error: ' + esc(d.error || '?') + '</span>'; return; }
-  const slots = d.slots || [];
-  if (!slots.length) { el.innerHTML = '<span style="color:#555">No slots configured</span>'; return; }
-  el.innerHTML = slots.map(s => {
-    const pct   = Math.min(100, Math.round((s.used_gb || 0) / (s.quota_gb || 1) * 100));
-    const color = pct > 90 ? '#a33' : pct > 70 ? '#a80' : '#393';
-    return `<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px">
-      <div style="font-size:12px;color:#ccc;margin-bottom:4px">${esc(s.name)}</div>
-      <div style="background:#111;border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
-        <div style="background:${color};height:100%;width:${pct}%;transition:.3s"></div>
-      </div>
-      <div style="font-size:10px;color:#666">${(s.used_gb||0).toFixed(2)} / ${s.quota_gb||0} GB (${pct}%) — ${esc(s.status||'')}</div>
-    </div>`;
-  }).join('');
+  if (el) el.innerHTML = '<div class="loading">Loading…</div>';
+  const tsEl = document.getElementById('storage-ts');
+  if (tsEl) tsEl.textContent = new Date().toLocaleTimeString();
+  try {
+    const d = await apiFetch('/storage');
+    if (!d.ok) { if (el) el.innerHTML = '<span style="color:#a55">Error: ' + esc(d.error || '?') + '</span>'; return; }
+    const slots = d.slots || [];
+    if (!slots.length) { if (el) el.innerHTML = '<span style="color:#555">No slots configured</span>'; return; }
+    if (el) el.innerHTML = slots.map(s => {
+      const pct   = Math.min(100, Math.round((s.used_gb || 0) / (s.quota_gb || 1) * 100));
+      const color = pct > 80 ? '#a33' : pct > 60 ? '#a80' : '#393';
+      return `<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px" title="${esc(s.name)} slot — ${pct}% of ${s.quota_gb}GB quota used. Status: ${esc(s.status||'ok')}">
+        <div style="font-size:12px;color:#ccc;margin-bottom:4px">${esc(s.name)}</div>
+        <div style="background:#111;border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
+          <div style="background:${color};height:100%;width:${pct}%;transition:.6s ease-out"></div>
+        </div>
+        <div style="font-size:10px;color:#666">${(s.used_gb||0).toFixed(2)} / ${s.quota_gb||0} GB (${pct}%) — ${esc(s.status||'')}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { if (el) el.innerHTML = '<span style="color:#a55">Error: '+esc(e.message)+'</span>'; }
 }
 
 async function loadStorageReport() {
   const el = document.getElementById('storage-report-out');
-  el.innerHTML = '<span style="color:#555">Loading report…</span>';
-  const d = await apiFetch('/storage/report');
-  if (!d.ok) { el.innerHTML = '<span style="color:#a55">Error</span>'; return; }
-  const r = d.report || {};
-  el.innerHTML = `<div class="section-title" style="margin-top:0">Weekly Report — ${esc(r.generated_at||'')}</div>
-    <div style="font-size:11px;color:#888">Total allocated: ${r.total_allocated_gb||0} GB | Used: ${(r.total_used_gb||0).toFixed(2)} GB</div>
-    <div id="storage-report-warnings" style="margin-top:8px"></div>`;
-  const warn = document.getElementById('storage-report-warnings');
-  if (r.warnings && r.warnings.length) {
-    warn.innerHTML = r.warnings.map(w => `<div style="color:#fa0;font-size:11px">&#9888; ${esc(w)}</div>`).join('');
+  if (el) el.innerHTML = '<span style="color:#555">Loading report…</span>';
+  try {
+    const d = await apiFetch('/storage/report');
+    if (!d.ok || !el) return;
+    const r = d.report || {};
+    el.innerHTML = `<div class="section-title" style="margin-top:0">Weekly Report — ${esc(r.generated_at||'')}</div>
+      <div style="font-size:11px;color:#888">Total allocated: ${r.total_allocated_gb||0} GB | Used: ${(r.total_used_gb||0).toFixed(2)} GB</div>
+      <div id="storage-report-warnings" style="margin-top:8px"></div>`;
+    const warn = document.getElementById('storage-report-warnings');
+    const recs = (r.recommendations||r.warnings||[]);
+    if (warn && recs.length) {
+      warn.innerHTML = recs.map(w => `<div style="color:#fa0;font-size:11px">⚠ ${esc(w)}</div>`).join('');
+    }
+  } catch(e) { if (el) el.innerHTML = '<span style="color:#a55">Error</span>'; }
+}
+
+// ── Storage OCB-C: full refresh with all visuals ──────────────────────────────
+let _storSlots = [];
+
+async function loadStorageFull() {
+  // Update timestamp
+  const tsEl = document.getElementById('storage-ts');
+  if (tsEl) tsEl.textContent = new Date().toLocaleTimeString();
+
+  // Load stats from new endpoint
+  let stats = null;
+  try {
+    const d = await apiFetch('/api/storage/stats');
+    stats = d.ok !== false ? d : null;
+  } catch(e) {}
+
+  // Fallback: load from /storage
+  if (!stats) {
+    try {
+      const d = await apiFetch('/storage');
+      if (d.ok) {
+        stats = { slots: d.slots||[], total_allocated_gb: d.total_allocated_gb||1000, total_used_gb: d.total_used_gb||0 };
+      }
+    } catch(e) {}
   }
+
+  if (!stats || !stats.slots) {
+    loadStorage(); // fall back to simple view
+    return;
+  }
+
+  _storSlots = stats.slots;
+
+  // Render slot detail cards
+  loadStorage();
+
+  // Render animated bar graphs
+  _storRenderBars(stats.slots);
+
+  // Render pie chart
+  _storRenderPie(stats.slots);
+
+  // Render pulse dial
+  const totalPct = stats.total_allocated_gb > 0
+    ? Math.min(100, Math.round(stats.total_used_gb / stats.total_allocated_gb * 100))
+    : 0;
+  _storRenderDial(totalPct, stats.total_used_gb, stats.total_allocated_gb);
+
+  // Render trend (if available)
+  _storRenderTrend(stats.trend || []);
+
+  // Render forecast
+  _storRenderForecast(stats.slots, stats.growth_gb_per_day || {});
+
+  // Render quota sliders
+  _storRenderSliders(stats.slots);
+
+  // Render archive log
+  _storRenderArchiveLog(stats.archive_log || []);
+}
+
+function _storBarColor(pct) {
+  return pct > 80 ? '#a33' : pct > 60 ? '#a80' : '#2a7';
+}
+
+function _storRenderBars(slots) {
+  const el = document.getElementById('storage-bars');
+  if (!el || !slots.length) return;
+  el.innerHTML = slots.map(s => {
+    const pct   = Math.min(100, Math.round((s.used_gb||0) / (s.quota_gb||1) * 100));
+    const color = _storBarColor(pct);
+    return `<div title="${esc(s.name)}: ${pct}% of ${s.quota_gb}GB used — ${esc(s.status||'ok')}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:11px;color:#aaa">${esc(s.name)}</span>
+        <span style="font-size:11px;color:${color}">${pct}% · ${(s.used_gb||0).toFixed(2)} GB</span>
+      </div>
+      <div style="background:#111;border-radius:4px;height:10px;overflow:hidden">
+        <div style="background:${color};height:100%;width:0%;border-radius:4px;transition:.8s ease-out" data-target="${pct}"></div>
+      </div>
+    </div>`;
+  }).join('');
+  // Animate fills
+  requestAnimationFrame(() => {
+    el.querySelectorAll('[data-target]').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  });
+}
+
+function _storRenderPie(slots) {
+  const svg = document.getElementById('storage-pie-svg');
+  const leg = document.getElementById('storage-pie-legend');
+  if (!svg || !slots.length) return;
+  const COLORS = ['#4af','#6f6','#fa0','#a8f','#f84','#4ff','#f4a','#8f8'];
+  const total  = slots.reduce((a,s) => a + (s.quota_gb||0), 0) || 1;
+  let offset   = 0;
+  const segments = [];
+  const R = 48, cx = 50, cy = 50;
+
+  slots.forEach((s, i) => {
+    const frac = (s.quota_gb||0) / total;
+    const angle = frac * 360;
+    const rad   = deg => deg * Math.PI / 180;
+    const x1 = cx + R * Math.sin(rad(offset));
+    const y1 = cy - R * Math.cos(rad(offset));
+    const x2 = cx + R * Math.sin(rad(offset + angle));
+    const y2 = cy - R * Math.cos(rad(offset + angle));
+    const large = angle > 180 ? 1 : 0;
+    const color = COLORS[i % COLORS.length];
+    segments.push(`<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${color}" opacity="0.85" title="${esc(s.name)} ${(s.quota_gb||0)}GB"/>`);
+    offset += angle;
+    if (leg) {
+      const dot = `<span style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle"></span>`;
+      leg.innerHTML = (leg.innerHTML||'') + `<div>${dot}${esc(s.name)} ${s.quota_gb}GB</div>`;
+    }
+  });
+  svg.innerHTML = `<circle cx="50" cy="50" r="48" fill="#0a0a0a"/>` + segments.join('');
+}
+
+function _storRenderDial(pct, usedGb, allocGb) {
+  const fill   = document.getElementById('storage-dial-fill');
+  const needle = document.getElementById('storage-dial-needle');
+  const valEl  = document.getElementById('storage-dial-val');
+  const subEl  = document.getElementById('storage-dial-sub');
+  if (!fill) return;
+
+  const maxArc = 157; // half-circle circumference ≈ π*50
+  const filled = (pct / 100) * maxArc;
+  const color  = pct > 80 ? '#a33' : pct > 60 ? '#fa0' : '#2a7';
+
+  fill.setAttribute('stroke', color);
+  // Animate: set to 0 first then transition
+  fill.setAttribute('stroke-dasharray', `0,${maxArc}`);
+  requestAnimationFrame(() => {
+    fill.style.transition = 'stroke-dasharray .9s ease-out';
+    fill.setAttribute('stroke-dasharray', `${filled.toFixed(1)},${maxArc}`);
+  });
+
+  // Needle: -90° = left (0%), 0° = top (50%), 90° = right (100%)
+  if (needle) {
+    const angle = -90 + (pct / 100) * 180;
+    needle.setAttribute('transform', `rotate(${angle},60,75)`);
+  }
+  if (valEl) valEl.textContent = pct + '%';
+  if (subEl) subEl.textContent = usedGb.toFixed(2) + ' / ' + allocGb + ' GB';
+}
+
+function _storRenderTrend(trendData) {
+  const svg = document.getElementById('storage-trend-svg');
+  const leg = document.getElementById('storage-trend-legend');
+  if (!svg) return;
+  if (!trendData || !trendData.length) {
+    svg.innerHTML = '<text x="10" y="60" fill="#555" font-size="12">No trend data — will populate after 7+ days of data</text>';
+    return;
+  }
+  const COLORS = ['#4af','#6f6','#fa0','#a8f','#f84'];
+  const slotNames = Object.keys(trendData[0] || {}).filter(k => k !== 'date');
+  const W = 600, H = 120, PAD = 10;
+  const maxVal = Math.max(...trendData.flatMap(d => slotNames.map(k => d[k]||0)), 1);
+  const xStep  = (W - PAD*2) / Math.max(trendData.length-1, 1);
+
+  let paths = '';
+  slotNames.forEach((slot, si) => {
+    const pts = trendData.map((d, i) => {
+      const x = PAD + i * xStep;
+      const y = H - PAD - ((d[slot]||0) / maxVal) * (H - PAD*2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    paths += `<polyline points="${pts}" fill="none" stroke="${COLORS[si%COLORS.length]}" stroke-width="2"/>`;
+    if (leg) leg.innerHTML += `<span style="color:${COLORS[si%COLORS.length]}">${esc(slot)}</span>`;
+  });
+  svg.innerHTML = paths;
+}
+
+function _storRenderForecast(slots, growthMap) {
+  const el = document.getElementById('storage-forecast');
+  if (!el) return;
+  const cards = slots.map(s => {
+    const growth = growthMap[s.name] || 0;
+    const remaining = (s.quota_gb||0) - (s.used_gb||0);
+    const daysLeft = growth > 0 ? Math.round(remaining / growth) : null;
+    const color = daysLeft !== null && daysLeft < 30 ? '#a33' : daysLeft !== null && daysLeft < 90 ? '#fa0' : '#2a7';
+    const msg = daysLeft === null ? 'No growth data' : daysLeft < 0 ? 'OVER QUOTA' : daysLeft + ' days left';
+    return `<div style="background:#111;border:1px solid #1e1e1e;border-radius:6px;padding:10px 12px;min-width:130px" title="${esc(s.name)}: at current growth rate of ${growth.toFixed(4)} GB/day, ${msg}">
+      <div style="font-size:11px;color:#888;margin-bottom:4px">${esc(s.name)}</div>
+      <div style="font-size:18px;font-weight:bold;color:${color}">${msg}</div>
+      <div style="font-size:10px;color:#555">Growth: ${growth.toFixed(4)} GB/day</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = cards || '<div style="font-size:11px;color:#555">No slots to forecast.</div>';
+}
+
+function _storRenderSliders(slots) {
+  const el = document.getElementById('storage-quota-sliders');
+  if (!el) return;
+  if (!slots.length) { el.innerHTML = '<div style="font-size:11px;color:#555">No slots configured.</div>'; return; }
+  el.innerHTML = slots.map(s => `<div style="display:flex;align-items:center;gap:10px" title="Drag to change ${esc(s.name)} quota — click Save Quotas to write to server">
+    <span style="font-size:11px;color:#aaa;width:100px;flex-shrink:0">${esc(s.name)}</span>
+    <input type="range" min="0" max="500" value="${s.quota_gb||0}" step="1"
+      id="stor-slider-${esc(s.name)}" style="flex:1"
+      oninput="document.getElementById('stor-slider-val-${esc(s.name)}').textContent=this.value+'GB'"
+      title="Drag to set quota for ${esc(s.name)} — current: ${s.quota_gb}GB">
+    <span id="stor-slider-val-${esc(s.name)}" style="font-size:11px;color:#4af;width:60px;text-align:right">${s.quota_gb||0}GB</span>
+  </div>`).join('');
+}
+
+async function storSaveQuotas() {
+  const quotas = {};
+  _storSlots.forEach(s => {
+    const el = document.getElementById('stor-slider-' + s.name);
+    if (el) quotas[s.name] = parseFloat(el.value);
+  });
+  const msg = document.getElementById('stor-quota-msg');
+  if (msg) msg.textContent = 'Saving…';
+  try {
+    const d = await apiFetch('/api/storage/reallocate', {method:'POST', body: JSON.stringify({quotas})});
+    if (msg) msg.textContent = d.ok ? 'Saved!' : 'Error: ' + (d.error||'?');
+    if (d.ok) setTimeout(() => loadStorageFull(), 500);
+  } catch(e) { if (msg) msg.textContent = 'Error: '+e.message; }
+}
+
+function _storRenderArchiveLog(entries) {
+  const el = document.getElementById('storage-archive-log');
+  if (!el) return;
+  if (!entries.length) { el.innerHTML = '<div style="font-size:11px;color:#555">No archive actions recorded yet.</div>'; return; }
+  el.innerHTML = '<table style="width:100%;font-size:11px;border-collapse:collapse">' +
+    '<tr><th style="text-align:left;color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a">Date</th><th style="text-align:left;color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a">Slot</th><th style="color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a;text-align:left">Files</th><th style="color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a;text-align:left">Freed</th></tr>' +
+    entries.map(e => `<tr>
+      <td style="padding:3px 8px;color:#888;border-bottom:1px solid #111;white-space:nowrap">${esc(e.date||'')}</td>
+      <td style="padding:3px 8px;color:#4af;border-bottom:1px solid #111">${esc(e.slot||'')}</td>
+      <td style="padding:3px 8px;color:#ccc;border-bottom:1px solid #111">${e.files_archived||0}</td>
+      <td style="padding:3px 8px;color:#2a7;border-bottom:1px solid #111">${(e.space_freed_gb||0).toFixed(3)} GB</td>
+    </tr>`).join('') +
+  '</table>';
+}
+
+async function loadStorageLargest() {
+  const el = document.getElementById('storage-largest');
+  if (el) el.innerHTML = '<div class="loading" style="font-size:11px">Scanning…</div>';
+  try {
+    const d = await apiFetch('/api/storage/largest');
+    const files = d.files || d.largest || [];
+    if (!files.length) { if (el) el.textContent = 'No files found.'; return; }
+    if (el) el.innerHTML = '<table style="width:100%;font-size:11px;border-collapse:collapse">' +
+      '<tr><th style="text-align:left;color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a">#</th><th style="text-align:left;color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a">File</th><th style="color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a;text-align:left">Size</th><th style="color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a;text-align:left">Slot</th><th style="color:#555;padding:3px 8px;border-bottom:1px solid #1a1a1a;text-align:left">Age</th></tr>' +
+      files.map((f,i) => `<tr title="${esc(f.path||f.name||'')}">
+        <td style="padding:3px 8px;color:#555;border-bottom:1px solid #111">${i+1}</td>
+        <td style="padding:3px 8px;color:#ccc;border-bottom:1px solid #111;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(f.name||f.path||'')}</td>
+        <td style="padding:3px 8px;color:#fa0;border-bottom:1px solid #111">${(f.size_gb||f.size_mb/1024||0).toFixed(3)} GB</td>
+        <td style="padding:3px 8px;color:#4af;border-bottom:1px solid #111">${esc(f.slot||'?')}</td>
+        <td style="padding:3px 8px;color:#666;border-bottom:1px solid #111">${esc(f.age_days!=null?f.age_days+'d':'?')}</td>
+      </tr>`).join('') +
+    '</table>';
+  } catch(e) { if (el) el.textContent = 'Error: '+e.message; }
+}
+
+// Wire storage tab to use new loadStorageFull
+function loadStorageTabInit() {
+  loadStorageFull();
+  loadMemoryStatus();
 }
 
 // ══════════════════════════════════════════════════════════════════
