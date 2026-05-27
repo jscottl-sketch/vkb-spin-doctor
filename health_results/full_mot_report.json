@@ -1,44 +1,14 @@
 {
-  "timestamp": "2026-05-24T20:41:27.670481",
+  "timestamp": "2026-05-27T19:56:41.669169",
   "total": 108,
-  "passed": 102,
-  "failed": 6,
-  "pass_rate": 94.4,
+  "passed": 107,
+  "failed": 1,
+  "pass_rate": 99.1,
   "verdict": "ISSUES FOUND",
   "failures": [
     {
       "group": "C",
-      "name": "Tab: Activity Feed",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Tab: Provider Health",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Save Feature: Rewind panel",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Save Feature: Diff Viewer",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Save Feature: Session Log Browser",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Save Feature: HISTORY Search",
+      "name": "Feature: ALP Counter",
       "status": "FAIL",
       "detail": "MISSING"
     }
@@ -316,18 +286,6 @@
     },
     {
       "group": "C",
-      "name": "Tab: Activity Feed",
-      "status": "FAIL",
-      "detail": "MISSING"
-    },
-    {
-      "group": "C",
-      "name": "Tab: AAFL Runs",
-      "status": "PASS",
-      "detail": "found"
-    },
-    {
-      "group": "C",
       "name": "Tab: Costs",
       "status": "PASS",
       "detail": "found"
@@ -352,9 +310,9 @@
     },
     {
       "group": "C",
-      "name": "Tab: Provider Health",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "name": "Tab: Health Suite",
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
@@ -401,12 +359,24 @@
     {
       "group": "C",
       "name": "Feature: ALP Counter",
+      "status": "FAIL",
+      "detail": "MISSING"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Keyboard Shortcuts",
       "status": "PASS",
       "detail": "found"
     },
     {
       "group": "C",
-      "name": "Feature: Keyboard Shortcuts",
+      "name": "Feature: Provider Health (in Health Suite)",
+      "status": "PASS",
+      "detail": "found"
+    },
+    {
+      "group": "C",
+      "name": "Feature: Activity Feed (in WCCS)",
       "status": "PASS",
       "detail": "found"
     },
@@ -431,26 +401,26 @@
     {
       "group": "C",
       "name": "Save Feature: Rewind panel",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
       "name": "Save Feature: Diff Viewer",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
       "name": "Save Feature: Session Log Browser",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
       "name": "Save Feature: HISTORY Search",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
@@ -654,7 +624,7 @@
       "group": "G",
       "name": "memory_bank.store()",
       "status": "PASS",
-      "detail": "uid=7888b201-edf1-44"
+      "detail": "uid=89baedc7-b275-42"
     },
     {
       "group": "G",
@@ -688,9 +658,9 @@
     },
     {
       "group": "H",
-      "name": "ALP_Database.md >=12 entries (found: 29)",
+      "name": "ALP_Database.md >=12 entries (found: 43)",
       "status": "PASS",
-      "detail": "29 rows"
+      "detail": "43 rows"
     }
   ]
 }
