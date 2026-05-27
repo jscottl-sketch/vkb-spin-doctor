@@ -26,18 +26,26 @@ import urllib.parse
 from pathlib import Path
 
 PORT         = 8080
-HOST         = "localhost"
+HOST         = "127.0.0.1"
 HERE         = Path(__file__).parent
 CHAT         = HERE / "chat_latest.txt"
 SCOUT_OUTPUT = HERE / "scout_output"
 SCOUT_LATEST = SCOUT_OUTPUT / "latest.txt"
 SCOUT_CONFIG = HERE / "chief_scout_config.json"
 PYTHON       = sys.executable
-FULL_PYTHON  = Path(r"C:\Users\jscot\AppData\Local\Python\pythoncore-3.14-64\python.exe")
+from config import PYTHON_EXE as FULL_PYTHON  # noqa: E402
 ARCHIVE_DIR  = HERE / "archive_dead"
 STATUS_FILE  = HERE / "STATUS.md"
 HISTORY_FILE = HERE / "HISTORY.md"
 ACCA_FILE    = HERE / "ACCA.md"
+WCCS_ERROR_LOG = HERE / "wccs_errors.log"
+STATUS_SANITY_THRESHOLD = 0.90
+STATUS_LINECOUNT_JSON    = HERE / "data" / "status_linecount.json"
+
+def _log_status_error(msg):
+    stamp = datetime.datetime.now().isoformat(timespec="seconds")
+    with open(WCCS_ERROR_LOG, "a", encoding="utf-8") as f:
+        f.write(f"[{stamp}] {msg}\n")
 
 # ── AAFL Control paths ────────────────────────────────────────────────────────
 AAFL_CONFIG  = HERE / "aafl_control_config.json"
@@ -54,6 +62,9 @@ PROMO_QUEUE_FILE = HERE / "promo_queue.json"
 ALP_FILE         = HERE / "ALP_Database.md"
 KNOWN_ISSUES     = DASHBOARD_DATA / "known_issues.json"
 MOT_SCRIPT       = HERE / "mcc_full_mot.py"
+MEDICAL_SCRIPT   = HERE / "mcc_medical.py"
+MEDICAL_DIR      = HERE / "health_results" / "mcc_medical"
+MEDICAL_HISTORY  = MEDICAL_DIR / "mcc_medical_history.json"
 
 # ── Feature paths ──────────────────────────────────────────────────────────────
 MODULE_REGISTRY  = HERE / "modules" / "module_registry.json"
@@ -67,6 +78,15 @@ SCOUT_TIMER_STOP = HERE / "scout_timer_stop.flag"
 WCCS_LOG_MD        = HERE / "wccs_log.md"
 SESSION_LOGS_DIR   = HERE / "session_logs"
 WORKFLOW_PRESETS   = HERE / "aafl_workflow_presets.json"
+LOOP_PRESETS       = HERE / "aafl_loop_presets.json"
+
+# ── Self-Health paths (OCB-A / OCB-B) ────────────────────────────────────────
+SH_REGISTRY     = HERE / "data" / "element_registry.json"
+SH_HEALTH_DB    = HERE / "data" / "health.db"
+SH_CONFIG       = HERE / "data" / "self_health_config.json"
+SH_SOLUTIONS    = HERE / "data" / "solution_database.json"
+AF_PROPOSALS    = HERE / "data" / "fix_proposals.json"
+AF_HISTORY_FILE = HERE / "data" / "fix_history.json"
 
 # ── B2 paths ──────────────────────────────────────────────────────────────────
 KANBAN_JSON       = HERE / "kanban_board.json"
@@ -81,6 +101,8 @@ B2_CHAIN_FILE     = HERE / "b2_chain.json"
 B2_STEP_FILE      = HERE / "b2_step_state.json"
 B2_BLOCKED        = HERE / "b2_blocked_sources.json"
 COST_LOG          = HERE / "data" / "cost_log.txt"
+WORK_REPORT       = HERE / "data" / "work_report.json"
+WORK_CHECKER      = HERE / "work_checker.py"
 
 _state_lock  = threading.Lock()
 _wccs_lock   = threading.Lock()
@@ -90,6 +112,8 @@ _aafl_lock   = threading.Lock()
 _last_wccs: dict = {"result": None, "time": None, "stdout": ""}
 _last_capture: datetime.datetime | None = None
 _scout_running: bool = False
+_scout_proc          = None  # subprocess.Popen handle (killable)
+_scout_start_time    = None  # datetime when scout started (for 120s auto-clear)
 _aafl_running: bool  = False
 _aafl_proc           = None  # subprocess.Popen handle
 
@@ -104,7 +128,7 @@ _auto_wccs_lock      = threading.Lock()
 
 
 def _run_scout_bg(goal: str):
-    global _scout_running
+    global _scout_running, _scout_proc, _scout_start_time
     SCOUT_OUTPUT.mkdir(exist_ok=True)
     try:
         with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
@@ -112,18 +136,22 @@ def _run_scout_bg(goal: str):
         cmd = [PYTHON, str(HERE / "chief_scout.py")]
         if goal:
             cmd.append(goal)
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
-        output = (res.stdout + res.stderr).strip()
+        _scout_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(HERE))
+        stdout, stderr = _scout_proc.communicate(timeout=120)
+        output = (stdout.decode("utf-8", errors="replace") + stderr.decode("utf-8", errors="replace")).strip()
         with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
             f.write(output if output else "[DONE] No output received")
     except subprocess.TimeoutExpired:
+        if _scout_proc:
+            _scout_proc.kill()
         with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
             f.write("[ERROR] Scout timed out after 120s")
     except Exception as exc:
         with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
             f.write(f"[ERROR] {exc}")
     finally:
-        global _scout_running
+        _scout_proc = None
+        _scout_start_time = None
         _scout_running = False
         try:
             _scout_lock.release()
@@ -253,12 +281,16 @@ def _auto_wccs_set(action, interval=30):
 
 class MCCHandler(http.server.BaseHTTPRequestHandler):
 
+    def address_string(self):
+        # Override to skip reverse-DNS lookup (which adds ~2s per request on some systems)
+        return self.client_address[0]
+
     def log_message(self, fmt, *args):
         print(f"[MCC] {self.address_string()} -- {fmt % args}")
 
     def _cors(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def _send_json(self, data: dict, status: int = 200) -> None:
@@ -392,6 +424,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path == "/api/health":
                 self._handle_api_health()
             # ── Fix: AAFL live + bridge + workflow GET ──────────────────────────
+            elif path == "/aafl/last-result":
+                self._handle_aafl_last_result()
             elif path == "/aafl/live":
                 self._handle_aafl_live()
             elif path == "/aafl/bridge-result":
@@ -415,6 +449,68 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_b2_kbp_get()
             elif path == "/b2/source-health":
                 self._handle_b2_source_health()
+            # ── Task 3: Scout Results + Task Inbox ─────────────────────────────
+            elif path == "/scout/results":
+                self._handle_scout_results_json()
+            elif path == "/api/task-inbox":
+                self._handle_api_task_inbox_get()
+            elif path == "/api/processes":
+                self._handle_api_processes()
+            elif path == "/api/medical-report":
+                self._handle_api_medical_report()
+            elif path == "/api/medical-history":
+                self._handle_api_medical_history()
+            # ── Build 3 GET endpoints ──────────────────────────────────────────
+            elif path == "/health/system":
+                self._handle_b3_system_health()
+            elif path == "/b3/urgency":
+                self._handle_b3_urgency_get()
+            elif path == "/b3/design-presets":
+                self._handle_b3_design_presets_get()
+            elif path == "/b3/scout-ai-summary":
+                self._handle_b3_scout_ai_summary()
+            elif path == "/b2/loop-presets":
+                self._handle_b2_loop_presets_get()
+            elif path.startswith("/b2/loop-preset/"):
+                name = path[len("/b2/loop-preset/"):]
+                self._handle_b2_loop_preset_get(name)
+            elif path == "/api/statuscheck":
+                self._handle_api_statuscheck()
+            elif path == "/api/old-saves-report":
+                self._handle_api_old_saves_report()
+            elif path == "/api/ibr-scan":
+                self._handle_api_ibr_scan()
+            elif path == "/api/ibr-latest":
+                self._handle_api_ibr_latest()
+            elif path == "/api/missions":
+                self._handle_api_missions_get()
+            # ── Work Checker GET endpoints ─────────────────────────────────────
+            elif path == "/api/work-checker/report":
+                self._handle_wc_report()
+            elif path == "/api/work-checker/requeue":
+                self._handle_wc_requeue()
+            elif path == "/api/work-checker/orphaned":
+                self._handle_wc_orphaned()
+            # ── OCB-A / OCB-B: Self-Health endpoints ──────────────────────────
+            elif path == "/api/self-health/registry":
+                self._handle_sh_registry()
+            elif path == "/api/self-health/last-run":
+                self._handle_sh_last_run()
+            elif path == "/api/self-health/config":
+                self._handle_sh_config_get()
+            elif path == "/api/self-health/solutions":
+                self._handle_sh_solutions()
+            elif path == "/api/self-health/history":
+                self._handle_sh_history()
+            elif path == "/api/self-health/results":
+                self._handle_sh_results()
+            elif path == "/api/self-health/element-history":
+                self._handle_sh_element_history()
+            # ── OCB-B: Auto-Fix endpoints ──────────────────────────────────────
+            elif path == "/api/auto-fix/proposals":
+                self._handle_af_proposals()
+            elif path == "/api/auto-fix/history":
+                self._handle_af_history()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -506,6 +602,12 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_aafl_run_goal()
             elif path == "/scout/strategy":
                 self._handle_scout_strategy()
+            elif path == "/scout/force-stop":
+                self._handle_scout_force_stop()
+            elif path == "/scout/stop":
+                self._handle_scout_force_stop()     # alias for force-stop
+            elif path == "/aafl/stop":
+                self._handle_stop_aafl()            # alias for stop-aafl
             elif path == "/aafl/scout-bridge":
                 self._handle_aafl_scout_bridge()
             elif path == "/aafl/workflow":
@@ -559,6 +661,59 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_b2_export_briefing()
             elif path == "/b2/scout-compare":
                 self._handle_b2_scout_compare()
+            # ── Task 3: Scout Results + Task Inbox ─────────────────────────────
+            elif path == "/api/task-inbox":
+                self._handle_api_task_inbox_post()
+            elif path == "/api/run-queue":
+                self._handle_api_run_queue()
+            elif path == "/api/run-medical":
+                self._handle_api_run_medical()
+            # ── Build 3 POST endpoints ─────────────────────────────────────────
+            elif path == "/b3/urgency":
+                self._handle_b3_urgency_post()
+            elif path == "/b3/design-presets":
+                self._handle_b3_design_presets_post()
+            elif path == "/b3/delegate":
+                self._handle_b3_delegate()
+            elif path == "/quick-ask":
+                self._handle_quick_ask()
+            elif path == "/scout/search":
+                self._handle_scout_search()
+            elif path == "/b2/save-loop-preset":
+                self._handle_b2_save_loop_preset()
+            elif path == "/api/chat-to-sesum":
+                self._handle_api_chat_to_sesum()
+            elif path == "/api/missions":
+                self._handle_api_missions_post()
+            # ── Work Checker POST endpoints ────────────────────────────────────
+            elif path == "/api/work-checker/refresh":
+                self._handle_wc_refresh()
+            # ── OCB-A / OCB-B: Self-Health POST endpoints ─────────────────────
+            elif path == "/api/self-health/run":
+                self._handle_sh_run_all()
+            elif path == "/api/self-health/run-tab":
+                self._handle_sh_run_tab()
+            elif path == "/api/self-health/config":
+                self._handle_sh_config_post()
+            # ── OCB-B: Auto-Fix POST endpoints ────────────────────────────────
+            elif path == "/api/auto-fix/approve":
+                self._handle_af_approve()
+            elif path == "/api/auto-fix/reject":
+                self._handle_af_reject()
+            else:
+                self._send_json({"error": "Not found"}, 404)
+        except Exception as exc:
+            try:
+                self._send_json({"error": f"Server error: {exc}"}, 500)
+            except Exception:
+                pass
+
+    def do_PUT(self):
+        path = self.path.split("?")[0]
+        try:
+            if path.startswith("/api/missions/"):
+                mission_id = path[len("/api/missions/"):]
+                self._handle_api_missions_put(mission_id)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -571,6 +726,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/aafl-queue":
             self._handle_aafl_queue_delete()
+        elif path.startswith("/api/missions/"):
+            mission_id = path[len("/api/missions/"):]
+            self._handle_api_missions_delete(mission_id)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -690,13 +848,10 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 pass
         merged = {**existing, **overrides}
 
-        # Persist merged config
+        # Bug fix: do NOT persist merged config on every run — that overwrites
+        # chief_scout_config.json from the Scout results panel on each poll/run.
+        # Config persistence is handled exclusively by POST /scout-config.
         SCOUT_OUTPUT.mkdir(exist_ok=True)
-        try:
-            with open(SCOUT_CONFIG, "w", encoding="utf-8") as f:
-                json.dump(merged, f, indent=2, ensure_ascii=False)
-        except Exception:
-            pass
 
         goal = merged.get("goal", "")
 
@@ -1028,6 +1183,12 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             ok  = res.returncode == 0
             out = (res.stdout + res.stderr).strip()
             _auto_wccs_record(ok, "manual")
+            if ok and STATUS_FILE.exists():
+                try:
+                    cnt = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines())
+                    self._update_statuscheck_baseline(cnt)
+                except Exception:
+                    pass
             self._send_json({"ok": ok, "result": "PASS" if ok else "FAIL",
                              "stdout": out, "time": _now_iso()})
         except subprocess.TimeoutExpired:
@@ -1044,12 +1205,7 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         if ARCHIVE_DIR.exists():
             for f in sorted(ARCHIVE_DIR.glob("STATUS_*.md")):
                 try:
-                    parts = f.stem.split("_")
-                    if len(parts) >= 3:
-                        dt_parsed = datetime.datetime.strptime(
-                            parts[1] + parts[2], "%Y%m%d%H%M%S")
-                    else:
-                        dt_parsed = datetime.datetime.fromtimestamp(f.stat().st_mtime)
+                    dt_parsed = datetime.datetime.fromtimestamp(f.stat().st_mtime)
                     content = f.read_text(encoding="utf-8", errors="replace")
                     lines   = content.splitlines()
                     source  = "unknown"
@@ -1133,13 +1289,23 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             self._send_json({"ok": False, "error": "Backup not found"}, 404)
             return
         ARCHIVE_DIR.mkdir(exist_ok=True)
+        old_lines = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines()) if STATUS_FILE.exists() else 0
         if STATUS_FILE.exists():
             stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             shutil.copy2(STATUS_FILE, ARCHIVE_DIR / f"STATUS_{stamp}.md")
         text = override if override is not None else src.read_text(encoding="utf-8", errors="replace")
         STATUS_FILE.write_text(text, encoding="utf-8")
+        new_lines = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines())
+        if old_lines > 0 and new_lines < old_lines * STATUS_SANITY_THRESHOLD:
+            bak = ARCHIVE_DIR / f"STATUS_{stamp}.md"
+            if bak.exists():
+                shutil.copy2(bak, STATUS_FILE)
+            err = f"POST /api/restore sanity check failed: {new_lines} lines < 90% of {old_lines}"
+            _log_status_error(err)
+            self._send_json({"ok": False, "error": "STATUS.md sanity check failed — write aborted"}, 500)
+            return
         self._send_json({"ok": True, "restored_from": fname,
-                         "line_count": len(text.splitlines())})
+                         "line_count": new_lines})
 
     # ── GET /api/diff ──────────────────────────────────────────────────────────
 
@@ -2298,12 +2464,22 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         if not src.exists():
             self._send_json({"ok": False, "error": "Version not found"}, 404)
             return
+        old_lines = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines()) if STATUS_FILE.exists() else 0
         if STATUS_FILE.exists():
             stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             shutil.copy2(STATUS_FILE, ARCHIVE_DIR / f"STATUS_{stamp}.md")
         text = content if content is not None else src.read_text(encoding="utf-8", errors="replace")
         STATUS_FILE.write_text(text, encoding="utf-8")
-        self._send_json({"ok": True, "restored_from": fname, "line_count": len(text.splitlines())})
+        new_lines = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines())
+        if old_lines > 0 and new_lines < old_lines * STATUS_SANITY_THRESHOLD:
+            bak = ARCHIVE_DIR / f"STATUS_{stamp}.md"
+            if bak.exists():
+                shutil.copy2(bak, STATUS_FILE)
+            err = f"POST /wccs/restore sanity check failed: {new_lines} lines < 90% of {old_lines}"
+            _log_status_error(err)
+            self._send_json({"ok": False, "error": "STATUS.md sanity check failed — write aborted"}, 500)
+            return
+        self._send_json({"ok": True, "restored_from": fname, "line_count": new_lines})
 
     # ── Build 1 Step B: POST /wccs/diff ──────────────────────────────────────
 
@@ -2482,6 +2658,66 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
 
     # ── GET /aafl/live ────────────────────────────────────────────────────────
 
+    def _handle_aafl_last_result(self):
+        """GET /aafl/last-result — scan aafl_output/ for most recent file, return structured JSON."""
+        import re as _re
+        result: dict = {
+            "running":   _aafl_running,
+            "status":    "running" if _aafl_running else "idle",
+            "goal":      "",
+            "provider":  "—",
+            "result":    "",
+            "score":     None,
+            "timestamp": "",
+        }
+        # Find the most recently modified file in aafl_output/
+        best_path = None
+        if AAFL_OUTPUT.exists():
+            candidates = [f for f in AAFL_OUTPUT.iterdir()
+                          if f.is_file() and f.suffix in (".txt", ".json", ".md")]
+            if candidates:
+                best_path = max(candidates, key=lambda f: f.stat().st_mtime)
+        if not best_path:
+            self._send_json(result)
+            return
+        try:
+            text  = best_path.read_text(encoding="utf-8", errors="replace")
+            lines = text.splitlines()
+            content_parts: list = []
+            for ln in lines:
+                if ln.startswith("[RUNNING] Goal:"):
+                    result["goal"] = ln[len("[RUNNING] Goal:"):].strip()
+                elif ln.startswith("[RUNNING] Strategy:"):
+                    # e.g. "[RUNNING] Strategy: ddg | Goal: ..."
+                    if "Goal:" in ln:
+                        result["goal"] = ln.split("Goal:")[-1].strip()
+                elif ln.startswith("[STARTED]"):
+                    result["timestamp"] = ln[len("[STARTED]"):].strip()
+                elif ln.startswith("[FINISHED]"):
+                    result["timestamp"] = ln[len("[FINISHED]"):].strip()
+                    result["status"]    = "complete"
+                elif ln.startswith("[DONE]"):
+                    result["status"] = "complete"
+                elif ln.startswith("[ERROR]"):
+                    result["status"] = "error"
+                    content_parts.append(ln)
+                elif "[AAFL] ->" in ln:
+                    result["provider"] = ln.split("[AAFL] ->")[-1].strip().split()[0]
+                else:
+                    content_parts.append(ln)
+                m = _re.search(r'[Ss]core[:\s=]+([0-9]+(?:\.[0-9]+)?)', ln)
+                if m:
+                    try:
+                        result["score"] = float(m.group(1))
+                    except ValueError:
+                        pass
+            result["result"] = "\n".join(content_parts).strip()
+            if _aafl_running:
+                result["status"] = "running"
+        except Exception as exc:
+            result["error"] = str(exc)
+        self._send_json(result)
+
     def _handle_aafl_live(self):
         lines = []
         if AAFL_LATEST.exists():
@@ -2515,7 +2751,7 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
     # ── POST /scout/strategy ──────────────────────────────────────────────────
 
     def _handle_scout_strategy(self):
-        global _scout_running
+        global _scout_running, _scout_proc, _scout_start_time
         body = self._read_body().strip()
         try:
             data = json.loads(body) if body else {}
@@ -2527,14 +2763,30 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         if not goal:
             self._send_json({"ok": False, "error": "Empty goal"}, 400)
             return
+        # Auto-clear stale lock if scout has been running for more than 120s
+        if _scout_start_time and (datetime.datetime.now() - _scout_start_time).total_seconds() > 120:
+            if _scout_proc:
+                try:
+                    _scout_proc.kill()
+                except Exception:
+                    pass
+            _scout_proc = None
+            _scout_start_time = None
+            _scout_running = False
+            try:
+                _scout_lock.release()
+            except RuntimeError:
+                pass
         if not _scout_lock.acquire(blocking=False):
-            self._send_json({"ok": False, "status": "already_running"})
+            self._send_json({"ok": False, "status": "already_running",
+                             "message": "A search is still running — click Force Stop to cancel it"})
             return
         _scout_running = True
+        _scout_start_time = datetime.datetime.now()
         SCOUT_OUTPUT.mkdir(exist_ok=True)
 
         def _bg():
-            global _scout_running
+            global _scout_running, _scout_proc, _scout_start_time
             try:
                 with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
                     f.write(f"[RUNNING] Strategy: {strategy} | Goal: {goal}\n[STARTED] {_now_iso()}\n")
@@ -2542,17 +2794,22 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                     cmd = [PYTHON, str(HERE / "chief_scout.py"), goal]
                 else:
                     cmd = [PYTHON, str(HERE / "chief_scout.py"), goal, "--strategy", strategy]
-                res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
-                output = (res.stdout + res.stderr).strip()
+                _scout_proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(HERE))
+                stdout, stderr = _scout_proc.communicate(timeout=120)
+                output = (stdout.decode("utf-8", errors="replace") + stderr.decode("utf-8", errors="replace")).strip()
                 with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
                     f.write(output if output else "[DONE] No output received")
             except subprocess.TimeoutExpired:
+                if _scout_proc:
+                    _scout_proc.kill()
                 with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
                     f.write("[ERROR] Scout timed out after 120s")
             except Exception as exc:
                 with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
                     f.write(f"[ERROR] {exc}")
             finally:
+                _scout_proc = None
+                _scout_start_time = None
                 _scout_running = False
                 try:
                     _scout_lock.release()
@@ -2562,6 +2819,31 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         t = threading.Thread(target=_bg, daemon=True)
         t.start()
         self._send_json({"ok": True, "status": "running", "strategy": strategy, "goal": goal})
+
+    # ── POST /scout/force-stop ────────────────────────────────────────────────
+
+    def _handle_scout_force_stop(self):
+        global _scout_running, _scout_proc, _scout_start_time
+        killed = False
+        if _scout_proc:
+            try:
+                _scout_proc.kill()
+                killed = True
+            except Exception:
+                pass
+        _scout_proc = None
+        _scout_start_time = None
+        _scout_running = False
+        try:
+            _scout_lock.release()
+        except RuntimeError:
+            pass
+        try:
+            with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                f.write(f"[STOPPED] Force-stopped by user at {_now_iso()}")
+        except Exception:
+            pass
+        self._send_json({"ok": True, "killed": killed})
 
     # ── POST /aafl/scout-bridge ───────────────────────────────────────────────
 
@@ -3038,7 +3320,17 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         except Exception:
             self._send_json({"ok": False, "error": "Bad JSON"}, 400)
             return
-        chain = data.get("chain", [])
+        # Support both {goals:[str,...]} (from chain builder) and {chain:[{goal,provider},...]}
+        raw_goals = data.get("goals", [])
+        chain     = data.get("chain", [])
+        if raw_goals and not chain:
+            chain = [{"goal": g, "provider": ""} for g in raw_goals if isinstance(g, str) and g.strip()]
+        loop_count    = int(data.get("loop_count", 1))
+        loop_infinite = bool(data.get("loop_infinite", False))
+        end_condition = data.get("end_condition", "after_n")
+        loop_actions  = data.get("loop_actions", [])
+        if loop_infinite:
+            loop_count = 0  # 0 means unlimited
         if not chain:
             chain_data = self._b2_load_json(B2_CHAIN_FILE, {"chain": []})
             chain      = chain_data.get("chain", [])
@@ -3048,27 +3340,59 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         py = str(FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable))
 
         def _bg():
-            results = []
-            for item in chain:
-                goal     = item.get("goal", "").strip()
-                provider = item.get("provider", "")
-                if not goal:
-                    continue
-                try:
-                    env = dict(os.environ)
-                    env["AAFL_GOAL"] = goal
-                    cmd = [py, str(HERE / "loop_manager.py"), "--once"]
-                    if provider:
-                        cmd.append(f"--provider={provider}")
-                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=300, cwd=str(HERE), env=env)
-                    results.append({"goal": goal, "provider": provider, "ok": res.returncode == 0,
-                                    "output": (res.stdout + res.stderr)[-300:]})
-                except Exception as exc:
-                    results.append({"goal": goal, "provider": provider, "ok": False, "output": str(exc)})
-            self._b2_save_json(HERE / "b2_chain_results.json", {"ts": _now_iso(), "results": results})
+            iteration = 0
+            while True:
+                results = []
+                for item in chain:
+                    goal     = item.get("goal", "").strip()
+                    provider = item.get("provider", "")
+                    if not goal:
+                        continue
+                    try:
+                        env = dict(os.environ)
+                        env["AAFL_GOAL"] = goal
+                        env["AAFL_LOOP_ACTIONS"] = ",".join(loop_actions)
+                        cmd = [py, str(HERE / "loop_manager.py"), "--once"]
+                        if provider:
+                            cmd.append(f"--provider={provider}")
+                        res = subprocess.run(cmd, capture_output=True, text=True,
+                                             timeout=300, cwd=str(HERE), env=env)
+                        results.append({"goal": goal, "provider": provider,
+                                        "ok": res.returncode == 0,
+                                        "output": (res.stdout + res.stderr)[-300:]})
+                    except Exception as exc:
+                        results.append({"goal": goal, "provider": provider,
+                                        "ok": False, "output": str(exc)})
+                iteration += 1
+                self._b2_save_json(HERE / "b2_chain_results.json",
+                                   {"ts": _now_iso(), "results": results,
+                                    "iteration": iteration, "loop_actions": loop_actions})
+                # Check WCCS action
+                if "WCCS" in loop_actions:
+                    try:
+                        wccs_script = HERE / "aafl_wccs.py"
+                        if wccs_script.exists():
+                            subprocess.run([py, str(wccs_script)],
+                                           capture_output=True, text=True,
+                                           timeout=120, cwd=str(HERE))
+                    except Exception:
+                        pass
+                # Check loop end condition (loop_count==0 means infinite)
+                if end_condition == "after_n" and loop_count > 0 and iteration >= loop_count:
+                    break
+                if end_condition == "manual_stop":
+                    stop_flag = HERE / "chain_stop.flag"
+                    if stop_flag.exists():
+                        try:
+                            stop_flag.unlink()
+                        except Exception:
+                            pass
+                        break
 
         threading.Thread(target=_bg, daemon=True).start()
-        self._send_json({"ok": True, "status": "running", "count": len(chain)})
+        self._send_json({"ok": True, "status": "running", "count": len(chain),
+                         "loop_count": loop_count, "end_condition": end_condition,
+                         "loop_actions": loop_actions})
 
     # ── B2-22: Keybinding Profiles ────────────────────────────────────────────
 
@@ -3277,11 +3601,1322 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         self._send_json({"ok": True, "status": "running", "providers": providers})
 
 
+    # ── Task 3: GET /scout/results ────────────────────────────────────────────
+
+    def _handle_scout_results_json(self):
+        """Returns latest scout output as JSON. Polls every 10s from the MCC front-end."""
+        content = ""
+        mtime   = None
+        if SCOUT_LATEST.exists():
+            try:
+                content = SCOUT_LATEST.read_text(encoding="utf-8", errors="replace")
+                mtime   = SCOUT_LATEST.stat().st_mtime
+            except Exception:
+                content = "[ERROR] Could not read scout output"
+        else:
+            content = "No scout results yet — run a scout first."
+
+        # Try to parse as structured JSON if the scout wrote it
+        data = None
+        try:
+            data = json.loads(content)
+        except Exception:
+            data = None
+
+        self._send_json({
+            "content": content,
+            "data":    data,
+            "running": _scout_running,
+            "ts":      mtime,
+        })
+
+    # ── Task 3: GET /api/task-inbox ───────────────────────────────────────────
+
+    def _handle_api_task_inbox_get(self):
+        """Return current active goals from goal_queue.txt."""
+        goals = []
+        if GOAL_QUEUE.exists():
+            try:
+                lines = GOAL_QUEUE.read_text(encoding="utf-8", errors="replace").splitlines()
+                goals = [l.strip() for l in lines
+                         if l.strip() and not l.strip().startswith("#")]
+            except Exception:
+                pass
+        self._send_json({"goals": goals, "count": len(goals)})
+
+    # ── Task 3: POST /api/task-inbox ──────────────────────────────────────────
+
+    def _handle_api_task_inbox_post(self):
+        """Append a goal to goal_queue.txt and return updated queue."""
+        body = self._read_body().strip()
+        try:
+            data = json.loads(body) if body else {}
+            goal = data.get("goal", "").strip() if isinstance(data, dict) else body.strip()
+        except Exception:
+            goal = body.strip()
+        if not goal:
+            self._send_json({"ok": False, "error": "Empty goal"}, 400)
+            return
+        try:
+            with open(GOAL_QUEUE, "a", encoding="utf-8") as f:
+                f.write(goal + "\n")
+            goals = []
+            if GOAL_QUEUE.exists():
+                lines = GOAL_QUEUE.read_text(encoding="utf-8", errors="replace").splitlines()
+                goals = [l.strip() for l in lines
+                         if l.strip() and not l.strip().startswith("#")]
+            self._send_json({"ok": True, "queue": goals, "count": len(goals)})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── Task 3: POST /api/run-queue ───────────────────────────────────────────
+
+    def _handle_api_run_queue(self):
+        """Launch queue_runner.py in the background."""
+        runner = HERE / "queue_runner.py"
+        if not runner.exists():
+            self._send_json({"ok": False, "error": "queue_runner.py not found"}, 404)
+            return
+        try:
+            subprocess.Popen(
+                [PYTHON, str(runner)],
+                cwd=str(HERE),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            self._send_json({"ok": True, "status": "queue_runner started"})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+    # ── GET /api/processes ────────────────────────────────────────────────────
+
+    def _handle_api_processes(self):
+        """Returns JSON list of tracked processes with name, status, pid."""
+        procs = []
+        # MCC server — always running (we are it)
+        procs.append({"name": "mcc_server", "status": "running", "pid": os.getpid()})
+        # AAFL loop
+        aafl_live = _aafl_proc is not None and _aafl_proc.poll() is None
+        procs.append({
+            "name":   "aafl_loop",
+            "status": "running" if aafl_live else "stopped",
+            "pid":    _aafl_proc.pid if aafl_live else None,
+        })
+        # Scout
+        scout_live = _scout_proc is not None and _scout_proc.poll() is None
+        procs.append({
+            "name":   "scout",
+            "status": "running" if scout_live else "stopped",
+            "pid":    _scout_proc.pid if scout_live else None,
+        })
+        # queue_runner — check via tasklist (Windows)
+        qr_status = "unknown"
+        try:
+            res = subprocess.run(
+                ["tasklist", "/fo", "csv", "/nh"],
+                capture_output=True, text=True, timeout=5,
+            )
+            qr_status = "running" if "queue_runner" in res.stdout.lower() else "stopped"
+        except Exception:
+            try:
+                import psutil
+                qr_status = "running" if any(
+                    "queue_runner" in " ".join(p.info.get("cmdline") or [])
+                    for p in psutil.process_iter(["cmdline"])
+                ) else "stopped"
+            except Exception:
+                pass
+        procs.append({"name": "queue_runner", "status": qr_status, "pid": None})
+        self._send_json({"processes": procs, "ts": _now_iso()})
+
+
+    # ── GET /api/medical-report ───────────────────────────────────────────────
+
+    def _handle_api_medical_report(self):
+        MEDICAL_DIR.mkdir(parents=True, exist_ok=True)
+        reports = sorted(MEDICAL_DIR.glob("mcc_medical_report_*.md"), reverse=True)
+        if not reports:
+            self._send_json({"ok": False, "report": None, "score": None,
+                             "message": "No medical run yet. Click Run Medical."})
+            return
+        latest = reports[0]
+        try:
+            content = latest.read_text(encoding="utf-8", errors="replace")
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+            return
+        score = None
+        try:
+            import re as _re
+            m = _re.search(r"\*\*Score:\*\* (\d+)/100", content)
+            if m:
+                score = int(m.group(1))
+        except Exception:
+            pass
+        self._send_json({
+            "ok": True,
+            "filename": latest.name,
+            "content": content,
+            "score": score,
+            "generated_at": _now_iso(),
+        })
+
+    # ── GET /api/medical-history ──────────────────────────────────────────────
+
+    def _handle_api_medical_history(self):
+        MEDICAL_DIR.mkdir(parents=True, exist_ok=True)
+        if not MEDICAL_HISTORY.exists():
+            self._send_json({"ok": True, "history": [],
+                             "message": "No history yet — run Medical first."})
+            return
+        try:
+            history = json.loads(MEDICAL_HISTORY.read_text(encoding="utf-8"))
+        except Exception:
+            history = []
+        self._send_json({"ok": True, "history": history})
+
+    # ── POST /api/run-medical ─────────────────────────────────────────────────
+
+    def _handle_api_run_medical(self):
+        if not MEDICAL_SCRIPT.exists():
+            self._send_json({"ok": False, "error": "mcc_medical.py not found"}, 500)
+            return
+        py = FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable)
+        body = self._read_body()
+        try:
+            opts = json.loads(body) if body.strip() else {}
+        except Exception:
+            opts = {}
+        cmd = [str(py), str(MEDICAL_SCRIPT)]
+        if opts.get("quick"):
+            cmd.append("--quick")
+        elif opts.get("category"):
+            cmd += ["--category", opts["category"]]
+
+        # Stream output via chunked plain-text
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Transfer-Encoding", "chunked")
+        self.end_headers()
+
+        def _send_chunk(text: str):
+            try:
+                encoded = text.encode("utf-8", errors="replace")
+                chunk_hdr = f"{len(encoded):X}\r\n".encode()
+                self.wfile.write(chunk_hdr)
+                self.wfile.write(encoded)
+                self.wfile.write(b"\r\n")
+                self.wfile.flush()
+            except Exception:
+                pass
+
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                cwd=str(HERE),
+            )
+            for line in proc.stdout:
+                _send_chunk(line)
+            proc.wait()
+            _send_chunk(f"\n[EXIT] code={proc.returncode}\n")
+        except Exception as exc:
+            _send_chunk(f"[ERROR] {exc}\n")
+        finally:
+            # Chunked terminator
+            try:
+                self.wfile.write(b"0\r\n\r\n")
+                self.wfile.flush()
+            except Exception:
+                pass
+
+
+    # ── Build 3: GET /health/system ───────────────────────────────────────────
+
+    def _handle_b3_system_health(self):
+        try:
+            import psutil
+        except ImportError:
+            subprocess.run([sys.executable, "-m", "pip", "install", "psutil", "-q"],
+                           capture_output=True)
+            try:
+                import psutil
+            except ImportError:
+                self._send_json({"ok": False, "error": "psutil not available"})
+                return
+
+        info = {
+            "ok": True,
+            "cpu_percent": psutil.cpu_percent(interval=0.5),
+            "cpu_count": psutil.cpu_count(),
+            "ram_percent": psutil.virtual_memory().percent,
+            "ram_total_gb": round(psutil.virtual_memory().total / (1024**3), 1),
+            "ram_used_gb": round(psutil.virtual_memory().used / (1024**3), 1),
+            "disk_percent": psutil.disk_usage(str(HERE)).percent,
+            "gpu": [],
+        }
+        # Optional GPU info via GPUtil or nvidia-smi
+        try:
+            import GPUtil
+            for g in GPUtil.getGPUs():
+                info["gpu"].append({
+                    "name": g.name,
+                    "load_percent": round(g.load * 100, 1),
+                    "mem_used_mb": round(g.memoryUsed, 0),
+                    "mem_total_mb": round(g.memoryTotal, 0),
+                    "temp_c": g.temperature,
+                })
+        except Exception:
+            try:
+                res = subprocess.run(
+                    ["nvidia-smi", "--query-gpu=name,utilization.gpu,memory.used,memory.total,temperature.gpu",
+                     "--format=csv,noheader,nounits"],
+                    capture_output=True, text=True, timeout=5
+                )
+                if res.returncode == 0:
+                    for line in res.stdout.strip().splitlines():
+                        parts = [p.strip() for p in line.split(",")]
+                        if len(parts) >= 5:
+                            info["gpu"].append({
+                                "name": parts[0],
+                                "load_percent": float(parts[1]),
+                                "mem_used_mb": float(parts[2]),
+                                "mem_total_mb": float(parts[3]),
+                                "temp_c": float(parts[4]),
+                            })
+            except Exception:
+                pass
+        self._send_json(info)
+
+    # ── Build 3: GET/POST /b3/urgency ─────────────────────────────────────────
+
+    def _handle_b3_urgency_get(self):
+        prefs = self._b2_load_json(MCC_PREFS, {})
+        self._send_json({"urgency": prefs.get("urgency", {})})
+
+    def _handle_b3_urgency_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+            return
+        prefs = self._b2_load_json(MCC_PREFS, {})
+        if "urgency" not in prefs:
+            prefs["urgency"] = {}
+        prefs["urgency"].update(data.get("urgency", {}))
+        try:
+            with open(MCC_PREFS, "w", encoding="utf-8") as f:
+                json.dump(prefs, f, indent=2)
+            self._send_json({"ok": True})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── Build 3: GET/POST /b3/design-presets ─────────────────────────────────
+
+    DESIGN_PRESETS = HERE / "design_presets.json"
+
+    def _handle_b3_design_presets_get(self):
+        try:
+            if self.DESIGN_PRESETS.exists():
+                data = json.loads(self.DESIGN_PRESETS.read_text(encoding="utf-8"))
+                self._send_json(data)
+                return
+        except Exception:
+            pass
+        self._send_json({"presets": []})
+
+    def _handle_b3_design_presets_post(self):
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+            return
+        existing = {"presets": []}
+        if self.DESIGN_PRESETS.exists():
+            try:
+                existing = json.loads(self.DESIGN_PRESETS.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        if "preset" in data:
+            existing.setdefault("presets", [])
+            existing["presets"] = [p for p in existing["presets"] if p.get("name") != data["preset"].get("name")]
+            existing["presets"].append(data["preset"])
+        elif "delete" in data:
+            existing["presets"] = [p for p in existing.get("presets", []) if p.get("name") != data["delete"]]
+        try:
+            self.DESIGN_PRESETS.write_text(json.dumps(existing, indent=2), encoding="utf-8")
+            self._send_json({"ok": True, "presets": existing["presets"]})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── Build 3: GET /b3/scout-ai-summary ────────────────────────────────────
+
+    def _handle_b3_scout_ai_summary(self):
+        """Read latest scout output, pass through Mistral to get plain-English summary."""
+        content = ""
+        if SCOUT_LATEST.exists():
+            try:
+                content = SCOUT_LATEST.read_text(encoding="utf-8", errors="replace").strip()
+            except Exception:
+                pass
+        if not content or content.startswith("[RUNNING]") or content.startswith("[ERROR]"):
+            self._send_json({"ok": False, "summary": "", "reason": "No complete results available"})
+            return
+
+        try:
+            sys.path.insert(0, str(HERE))
+            from aafl_core import call_llm
+            prompt = (
+                "You are a research assistant. Below is raw output from a web scout search. "
+                "Write ONE plain-English paragraph (3-5 sentences) summarising the most important "
+                "findings, key web links found, and what the user should do next. "
+                "Do NOT include technical warnings, tracebacks, or log noise. "
+                "Focus on actionable insights for the user.\n\n"
+                f"RAW SCOUT OUTPUT:\n{content[:4000]}"
+            )
+            result = call_llm(
+                provider="mistral",
+                model="mistral/mistral-small-latest",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=400,
+            )
+            summary = result.get("content", "").strip() if isinstance(result, dict) else str(result).strip()
+            self._send_json({"ok": True, "summary": summary})
+        except Exception as exc:
+            self._send_json({"ok": False, "summary": "", "reason": str(exc)})
+
+    # ── POST /quick-ask ───────────────────────────────────────────────────────
+
+    def _handle_quick_ask(self):
+        """Instant AI call — tries Cerebras then Mistral then Gemini, 15s timeout each."""
+        import time as _time
+        try:
+            data = json.loads(self._read_body() or "{}")
+        except Exception:
+            self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+            return
+        question = data.get("question", "").strip()
+        provider = data.get("provider", "auto").strip()
+        if not question:
+            self._send_json({"ok": False, "error": "Empty question"}, 400)
+            return
+
+        t0 = _time.time()
+        try:
+            sys.path.insert(0, str(HERE))
+            import litellm as _ll
+            from aafl_core import PROVIDERS
+            pmap = {p["id"]: p for p in PROVIDERS}
+
+            alias = {
+                "gemini": "gemini_flash", "gemini_flash": "gemini_flash",
+                "mistral": "mistral_code", "mistral_code": "mistral_code",
+                "cerebras": "cerebras",
+            }
+            FALLBACK_ORDER = ["cerebras", "mistral_code", "gemini_flash"]
+            if provider != "auto":
+                pid = alias.get(provider, provider)
+                trial_order = [pid] + [x for x in FALLBACK_ORDER if x != pid]
+            else:
+                trial_order = list(FALLBACK_ORDER)
+
+            errors = {}
+            for pid in trial_order:
+                p = pmap.get(pid)
+                if not p:
+                    errors[pid] = "Unknown provider ID"
+                    continue
+                api_key = (p.get("api_key") or
+                           os.environ.get(p.get("api_key_env") or "", "") or "")
+                if p.get("api_key_env") and not api_key:
+                    errors[pid] = "No API key configured"
+                    continue
+                try:
+                    kwargs = dict(
+                        model=p["model"],
+                        messages=[{"role": "user", "content": question}],
+                        max_tokens=1024,
+                        timeout=15,
+                    )
+                    if p.get("api_base"):
+                        kwargs["api_base"] = p["api_base"]
+                    if api_key:
+                        kwargs["api_key"] = api_key
+                    resp = _ll.completion(**kwargs)
+                    text = (resp.choices[0].message.content or "").strip()
+                    if text:
+                        elapsed = round(_time.time() - t0, 2)
+                        self._send_json({
+                            "ok": True,
+                            "provider_used": pid,
+                            "response": text,
+                            "time_seconds": elapsed,
+                        })
+                        return
+                    errors[pid] = "Empty response from provider"
+                except Exception as exc:
+                    errors[pid] = str(exc)[:200]
+
+            elapsed = round(_time.time() - t0, 2)
+            detail = "; ".join(f"{k}: {v}" for k, v in errors.items())
+            self._send_json({
+                "ok": False,
+                "error": "All providers failed",
+                "detail": detail,
+                "time_seconds": elapsed,
+            })
+        except Exception as exc:
+            elapsed = round(_time.time() - t0, 2)
+            self._send_json({
+                "ok": False,
+                "error": f"Quick Ask setup error: {exc}",
+                "time_seconds": elapsed,
+            })
+
+    # ── POST /scout/search ────────────────────────────────────────────────────
+
+    def _handle_scout_search(self):
+        """Launch chief_scout.py with a user query, write results to scout_output/."""
+        global _scout_running, _scout_proc, _scout_start_time
+        body = self._read_body().strip()
+        try:
+            data  = json.loads(body) if body else {}
+            query = data.get("query", "").strip()
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad request"}, 400)
+            return
+        if not query:
+            self._send_json({"ok": False, "error": "Empty query"}, 400)
+            return
+        # Auto-clear stale lock
+        if _scout_start_time and (datetime.datetime.now() - _scout_start_time).total_seconds() > 120:
+            if _scout_proc:
+                try:
+                    _scout_proc.kill()
+                except Exception:
+                    pass
+            _scout_proc = None
+            _scout_start_time = None
+            _scout_running = False
+            try:
+                _scout_lock.release()
+            except RuntimeError:
+                pass
+        if not _scout_lock.acquire(blocking=False):
+            self._send_json({"ok": False, "status": "already_running",
+                             "message": "A search is still running — click Force Stop to cancel it"})
+            return
+        _scout_running = True
+        _scout_start_time = datetime.datetime.now()
+        SCOUT_OUTPUT.mkdir(exist_ok=True)
+
+        def _bg():
+            global _scout_running, _scout_proc, _scout_start_time
+            try:
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(f"[RUNNING] Query: {query}\n[STARTED] {_now_iso()}\n")
+                cmd = [PYTHON, str(HERE / "chief_scout.py"), query]
+                _scout_proc = subprocess.Popen(
+                    cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=str(HERE)
+                )
+                stdout, stderr = _scout_proc.communicate(timeout=120)
+                output = (
+                    stdout.decode("utf-8", errors="replace") +
+                    stderr.decode("utf-8", errors="replace")
+                ).strip()
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(output if output else "[DONE] No output received")
+            except subprocess.TimeoutExpired:
+                if _scout_proc:
+                    _scout_proc.kill()
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write("[ERROR] Scout timed out after 120s")
+            except Exception as exc:
+                with open(SCOUT_LATEST, "w", encoding="utf-8") as f:
+                    f.write(f"[ERROR] {exc}")
+            finally:
+                _scout_proc = None
+                _scout_start_time = None
+                _scout_running = False
+                try:
+                    _scout_lock.release()
+                except RuntimeError:
+                    pass
+
+        threading.Thread(target=_bg, daemon=True).start()
+        self._send_json({"ok": True, "status": "running", "query": query})
+
+    # ── Build 3: POST /b3/delegate ────────────────────────────────────────────
+
+    def _handle_b3_delegate(self):
+        """Trigger the highest-urgency tab's default action."""
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            data = {}
+        tab = data.get("tab", "")
+        action_map = {
+            "scout":    ("/run-scout", {}),
+            "aafl":     ("/run-aafl", {}),
+            "wccs":     ("/wccs", {}),
+            "health":   ("/run-health-check", {}),
+            "medical":  ("/api/run-medical", {}),
+        }
+        if tab not in action_map:
+            self._send_json({"ok": False, "error": f"No delegate action for tab '{tab}'"})
+            return
+        endpoint, payload = action_map[tab]
+        try:
+            import urllib.request as ulr
+            req = ulr.Request(
+                f"http://127.0.0.1:{PORT}{endpoint}",
+                data=json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with ulr.urlopen(req, timeout=5) as resp:
+                result = json.loads(resp.read())
+            self._send_json({"ok": True, "tab": tab, "result": result})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)})
+
+    # ── Loop Preset endpoints ─────────────────────────────────────────────────
+
+    def _handle_b2_save_loop_preset(self):
+        """POST /b2/save-loop-preset — save a named loop configuration."""
+        body = self._read_body()
+        try:
+            data = json.loads(body) if body else {}
+        except Exception:
+            self._send_json({"ok": False, "error": "Bad JSON"}, 400)
+            return
+        name = (data.get("name") or "").strip()
+        if not name:
+            self._send_json({"ok": False, "error": "name required"}, 400)
+            return
+        presets: dict = {}
+        if LOOP_PRESETS.exists():
+            try:
+                with open(LOOP_PRESETS, encoding="utf-8") as f:
+                    presets = json.load(f)
+            except Exception:
+                presets = {}
+        presets[name] = data
+        with open(LOOP_PRESETS, "w", encoding="utf-8") as f:
+            json.dump(presets, f, indent=2)
+        self._send_json({"ok": True, "name": name})
+
+    def _handle_b2_loop_presets_get(self):
+        """GET /b2/loop-presets — list saved loop preset names."""
+        presets: dict = {}
+        if LOOP_PRESETS.exists():
+            try:
+                with open(LOOP_PRESETS, encoding="utf-8") as f:
+                    presets = json.load(f)
+            except Exception:
+                pass
+        self._send_json({"presets": list(presets.keys())})
+
+    def _handle_b2_loop_preset_get(self, name: str):
+        """GET /b2/loop-preset/<name> — load a specific loop preset."""
+        import urllib.parse as _up
+        name = _up.unquote(name)
+        presets: dict = {}
+        if LOOP_PRESETS.exists():
+            try:
+                with open(LOOP_PRESETS, encoding="utf-8") as f:
+                    presets = json.load(f)
+            except Exception:
+                pass
+        if name not in presets:
+            self._send_json({"ok": False, "error": "Preset not found"}, 404)
+            return
+        self._send_json({"ok": True, "preset": presets[name]})
+
+
+    # ── Task 1: GET /api/statuscheck ─────────────────────────────────────────────
+
+    def _handle_api_statuscheck(self):
+        current = 0
+        if STATUS_FILE.exists():
+            try:
+                current = len(STATUS_FILE.read_text(encoding="utf-8", errors="replace").splitlines())
+            except Exception:
+                pass
+        baseline = current
+        if STATUS_LINECOUNT_JSON.exists():
+            try:
+                data = json.loads(STATUS_LINECOUNT_JSON.read_text(encoding="utf-8"))
+                baseline = int(data.get("baseline", current))
+            except Exception:
+                pass
+        else:
+            (HERE / "data").mkdir(exist_ok=True)
+            STATUS_LINECOUNT_JSON.write_text(
+                json.dumps({"baseline": current, "updated": _now_iso()}, indent=2),
+                encoding="utf-8",
+            )
+        if baseline == 0:
+            health = "ok"
+        else:
+            ratio = current / baseline
+            if ratio >= 0.90:
+                health = "ok"
+            elif ratio >= 0.85:
+                health = "warning"
+            else:
+                health = "critical"
+        self._send_json({"current": current, "baseline": baseline, "health": health})
+
+    def _update_statuscheck_baseline(self, new_count: int):
+        """Call after a successful WCCS save — update baseline if count rose."""
+        try:
+            (HERE / "data").mkdir(exist_ok=True)
+            baseline = 0
+            if STATUS_LINECOUNT_JSON.exists():
+                baseline = int(json.loads(
+                    STATUS_LINECOUNT_JSON.read_text(encoding="utf-8")
+                ).get("baseline", 0))
+            if new_count > baseline:
+                STATUS_LINECOUNT_JSON.write_text(
+                    json.dumps({"baseline": new_count, "updated": _now_iso()}, indent=2),
+                    encoding="utf-8",
+                )
+        except Exception:
+            pass
+
+    # ── Task 2: GET /api/old-saves-report ────────────────────────────────────────
+
+    def _handle_api_old_saves_report(self):
+        report_file = HERE / "data" / "old_saves_report.txt"
+        if not report_file.exists():
+            self._send_json({"ok": False, "error": "No report yet — run scan_old_saves.py first"})
+            return
+        try:
+            content = report_file.read_text(encoding="utf-8", errors="replace")
+            self._send_json({"ok": True, "report": content})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── Task 3: POST /api/chat-to-sesum ──────────────────────────────────────────
+
+    def _handle_api_chat_to_sesum(self):
+        body = self._read_body().strip()
+        if not body:
+            self._send_json({"ok": False, "error": "No chat text provided"}, 400)
+            return
+        try:
+            import litellm as _ll
+            from aafl_core import PROVIDERS
+            pmap = {p["id"]: p for p in PROVIDERS}
+            p = pmap.get("mistral_code") or next(
+                (x for x in PROVIDERS if "mistral" in x.get("model", "").lower()), None
+            )
+            if not p:
+                self._send_json({"ok": False, "error": "Mistral provider not found"}, 500)
+                return
+            api_key = (p.get("api_key") or
+                       os.environ.get(p.get("api_key_env") or "", "") or "")
+            system_prompt = (
+                "You are a SESUM (Session Summary) generator for a software project called VKB Spin Doctor / AAFL.\n"
+                "A SESUM must contain:\n"
+                "- Date and session number\n"
+                "- What was built or decided (bullet points, max 15)\n"
+                "- What was NOT completed (bullet points, max 5)\n"
+                "- Next priorities (numbered, max 5)\n"
+                "- Any new ACCA codes mentioned\n"
+                "- Any ALP savings found\n"
+                "Keep it under 40 lines total. Be specific, not vague."
+            )
+            kwargs = dict(
+                model=p["model"],
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"Generate a SESUM from this chat export:\n\n{body[:8000]}"},
+                ],
+                max_tokens=1200,
+                timeout=60,
+            )
+            if api_key:
+                kwargs["api_key"] = api_key
+            resp = _ll.completion(**kwargs)
+            sesum_text = (resp.choices[0].message.content or "").strip()
+            ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            out_path = SESSION_LOGS_DIR / f"sesum_imported_{ts}.md"
+            SESSION_LOGS_DIR.mkdir(exist_ok=True)
+            out_path.write_text(sesum_text, encoding="utf-8")
+            self._send_json({"ok": True, "sesum": sesum_text, "saved_to": str(out_path)})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    # ── Task 4: Missions endpoints ────────────────────────────────────────────────
+
+    MISSIONS_FILE = None  # set after class def
+
+    def _missions_path(self):
+        return HERE / "data" / "missions.json"
+
+    def _load_missions(self):
+        p = self._missions_path()
+        if p.exists():
+            try:
+                return json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return {"missions": [], "archived": []}
+
+    def _save_missions(self, data: dict):
+        p = self._missions_path()
+        p.parent.mkdir(exist_ok=True)
+        p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    def _handle_api_missions_get(self):
+        self._send_json(self._load_missions())
+
+    def _handle_api_missions_post(self):
+        try:
+            data = json.loads(self._read_body() or "{}")
+        except Exception:
+            self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+            return
+        import uuid as _uuid
+        data["id"] = data.get("id") or str(_uuid.uuid4())[:8]
+        db = self._load_missions()
+        db["missions"].append(data)
+        self._save_missions(db)
+        self._send_json({"ok": True, "mission": data})
+
+    def _handle_api_missions_put(self, mission_id: str):
+        try:
+            updates = json.loads(self._read_body() or "{}")
+        except Exception:
+            self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+            return
+        db = self._load_missions()
+        found = False
+        for m in db["missions"]:
+            if m.get("id") == mission_id:
+                m.update(updates)
+                found = True
+                break
+        if found:
+            self._save_missions(db)
+            self._send_json({"ok": True})
+        else:
+            self._send_json({"ok": False, "error": "Mission not found"}, 404)
+
+    def _handle_api_missions_delete(self, mission_id: str):
+        db = self._load_missions()
+        to_archive = None
+        db["missions"] = [m for m in db["missions"]
+                          if not (m.get("id") == mission_id and (to_archive := m) or False)]
+        if to_archive is None:
+            self._send_json({"ok": False, "error": "Mission not found"}, 404)
+            return
+        archived = db.get("archived", [])
+        to_archive["status"] = "archived"
+        archived.append(to_archive)
+        db["archived"] = archived
+        self._save_missions(db)
+        self._send_json({"ok": True, "archived": to_archive})
+
+    # ── Task 7: IBR endpoints ─────────────────────────────────────────────────────
+
+    def _handle_api_ibr_scan(self):
+        ibr_script = HERE / "ibr_scanner.py"
+        if not ibr_script.exists():
+            self._send_json({"ok": False, "error": "ibr_scanner.py not found"}, 500)
+            return
+        py = FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable)
+        try:
+            res = subprocess.run(
+                [str(py), str(ibr_script)],
+                capture_output=True, text=True, timeout=120, cwd=str(HERE),
+            )
+            ok = res.returncode == 0
+            latest_file = HERE / "data" / "ibr_latest.txt"
+            report = {}
+            if latest_file.exists():
+                try:
+                    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                    json_file = HERE / "data" / f"ibr_report_{ts}.json"
+                    # ibr_scanner writes its own JSON; load it
+                    for jf in sorted((HERE / "data").glob("ibr_report_*.json"), reverse=True):
+                        try:
+                            report = json.loads(jf.read_text(encoding="utf-8"))
+                            break
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+            self._send_json({"ok": ok, "stdout": (res.stdout + res.stderr)[-3000:], "report": report})
+        except subprocess.TimeoutExpired:
+            self._send_json({"ok": False, "error": "Timed out after 120s"})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+    def _handle_api_ibr_latest(self):
+        latest_file = HERE / "data" / "ibr_latest.txt"
+        if not latest_file.exists():
+            self._send_json({"ok": False, "error": "No IBR report yet — run a scan first"})
+            return
+        try:
+            content = latest_file.read_text(encoding="utf-8", errors="replace")
+            self._send_json({"ok": True, "report": content})
+        except Exception as exc:
+            self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
 class ThreadingServer(http.server.ThreadingHTTPServer):
     pass
 
 
+def _qa_startup_test():
+    """Fire-and-forget: test Quick Ask on startup, print result to terminal."""
+    import time as _time
+    try:
+        sys.path.insert(0, str(HERE))
+        import litellm as _ll
+        from aafl_core import PROVIDERS
+        pmap = {p["id"]: p for p in PROVIDERS}
+        for pid in ["cerebras", "mistral_code", "gemini_flash"]:
+            p = pmap.get(pid)
+            if not p:
+                continue
+            api_key = (p.get("api_key") or
+                       os.environ.get(p.get("api_key_env") or "", "") or "")
+            if p.get("api_key_env") and not api_key:
+                print(f"[MCC] Quick Ask test [{pid}]: SKIP (no API key)", flush=True)
+                continue
+            try:
+                t0 = _time.time()
+                kwargs = dict(
+                    model=p["model"],
+                    messages=[{"role": "user", "content": "1+1="}],
+                    max_tokens=16,
+                    timeout=15,
+                )
+                if api_key:
+                    kwargs["api_key"] = api_key
+                resp = _ll.completion(**kwargs)
+                text = (resp.choices[0].message.content or "").strip()
+                elapsed = round(_time.time() - t0, 2)
+                print(f"[MCC] Quick Ask test [{pid}]: OK ({elapsed}s) -> {text[:40]!r}", flush=True)
+                return
+            except Exception as exc:
+                print(f"[MCC] Quick Ask test [{pid}]: FAILED -> {exc}", flush=True)
+        print("[MCC] Quick Ask test: ALL PROVIDERS FAILED", flush=True)
+    except Exception as exc:
+        print(f"[MCC] Quick Ask test: SETUP ERROR -> {exc}", flush=True)
+
+
+    # ── Work Checker endpoints ────────────────────────────────────────────────
+
+    def _wc_run_checker(self):
+        py = FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable)
+        if not WORK_CHECKER.exists():
+            return None, "work_checker.py not found"
+        try:
+            res = subprocess.run(
+                [str(py), str(WORK_CHECKER)],
+                capture_output=True, text=True, timeout=60, cwd=str(HERE),
+            )
+            if res.returncode != 0:
+                return None, (res.stderr or res.stdout).strip()
+            if WORK_REPORT.exists():
+                return json.loads(WORK_REPORT.read_text(encoding="utf-8")), None
+            return None, "work_report.json not written"
+        except Exception as exc:
+            return None, str(exc)
+
+    def _handle_wc_report(self):
+        if WORK_REPORT.exists():
+            age = datetime.datetime.now().timestamp() - WORK_REPORT.stat().st_mtime
+            if age < 300:
+                try:
+                    self._send_json(json.loads(WORK_REPORT.read_text(encoding="utf-8")))
+                    return
+                except Exception:
+                    pass
+        report, err = self._wc_run_checker()
+        if report:
+            self._send_json(report)
+        else:
+            self._send_json({"error": err or "Unknown error"}, 500)
+
+    def _handle_wc_refresh(self):
+        report, err = self._wc_run_checker()
+        if report:
+            self._send_json(report)
+        else:
+            self._send_json({"ok": False, "error": err or "Unknown error"}, 500)
+
+    def _handle_wc_requeue(self):
+        report = None
+        if WORK_REPORT.exists():
+            try:
+                report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        if not report:
+            report, _ = self._wc_run_checker()
+        if not report:
+            body = b"work_report.json not found"
+            self.send_response(500)
+            self._cors()
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        text = report.get("requeue_block", "No requeue block found.")
+        body = text.encode("utf-8")
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _handle_wc_orphaned(self):
+        report = None
+        if WORK_REPORT.exists():
+            try:
+                report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        if not report:
+            report, _ = self._wc_run_checker()
+        if not report:
+            self._send_json({"error": "work_report.json not found"}, 500)
+            return
+        self._send_json(report.get("orphaned_plans", []))
+
+
+# ── OCB-A: Self-Health handlers — monkey-patched onto MCCHandler ──────────────
+
+def _sh_import_runner():
+    """Import SelfHealthRunner lazily to avoid circular startup cost."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("self_health", HERE / "self_health.py")
+    if not spec or not spec.loader:
+        raise ImportError("self_health.py not found")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.SelfHealthRunner
+
+
+def _sh_handle_registry(self):
+    if SH_REGISTRY.exists():
+        try:
+            self._send_json(json.loads(SH_REGISTRY.read_text(encoding="utf-8")))
+            return
+        except Exception as exc:
+            self._send_json({"error": str(exc)}, 500)
+            return
+    self._send_json({"error": "registry not found"}, 404)
+
+
+def _sh_handle_last_run(self):
+    try:
+        runner = _sh_import_runner()()
+        last = runner.get_last_run()
+        self._send_json(last or {})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _sh_handle_run_all(self):
+    try:
+        runner = _sh_import_runner()()
+        summary = runner.run_all(trigger_source="manual")
+        self._send_json(summary)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _sh_handle_run_tab(self):
+    body = self._read_body()
+    try:
+        data = json.loads(body) if body else {}
+    except Exception:
+        data = {}
+    tab = data.get("tab", "")
+    if not tab:
+        self._send_json({"error": "tab required"}, 400)
+        return
+    try:
+        runner = _sh_import_runner()()
+        summary = runner.run_by_tab(tab)
+        self._send_json(summary)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _sh_handle_config_get(self):
+    if SH_CONFIG.exists():
+        try:
+            self._send_json(json.loads(SH_CONFIG.read_text(encoding="utf-8")))
+            return
+        except Exception as exc:
+            self._send_json({"error": str(exc)}, 500)
+            return
+    self._send_json({"error": "config not found"}, 404)
+
+
+def _sh_handle_config_post(self):
+    body = self._read_body()
+    try:
+        new_cfg = json.loads(body) if body else {}
+    except Exception as exc:
+        self._send_json({"error": f"Invalid JSON: {exc}"}, 400)
+        return
+    try:
+        existing = {}
+        if SH_CONFIG.exists():
+            try:
+                existing = json.loads(SH_CONFIG.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        existing.update(new_cfg)
+        tmp = SH_CONFIG.with_suffix(".tmp")
+        tmp.write_text(json.dumps(existing, indent=2), encoding="utf-8")
+        tmp.replace(SH_CONFIG)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _sh_handle_solutions(self):
+    if SH_SOLUTIONS.exists():
+        try:
+            self._send_json(json.loads(SH_SOLUTIONS.read_text(encoding="utf-8")))
+            return
+        except Exception as exc:
+            self._send_json({"error": str(exc)}, 500)
+            return
+    self._send_json({"error": "solution_database.json not found"}, 404)
+
+
+def _sh_handle_history(self):
+    try:
+        runner = _sh_import_runner()()
+        history = runner.get_history(limit=50)
+        self._send_json(history)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_sh_registry   = _sh_handle_registry    # type: ignore[attr-defined]
+MCCHandler._handle_sh_last_run   = _sh_handle_last_run    # type: ignore[attr-defined]
+MCCHandler._handle_sh_run_all    = _sh_handle_run_all     # type: ignore[attr-defined]
+MCCHandler._handle_sh_run_tab    = _sh_handle_run_tab     # type: ignore[attr-defined]
+MCCHandler._handle_sh_config_get = _sh_handle_config_get  # type: ignore[attr-defined]
+MCCHandler._handle_sh_config_post= _sh_handle_config_post # type: ignore[attr-defined]
+MCCHandler._handle_sh_solutions  = _sh_handle_solutions   # type: ignore[attr-defined]
+MCCHandler._handle_sh_history    = _sh_handle_history     # type: ignore[attr-defined]
+
+
+# ── OCB-B: Results + Element History endpoints ────────────────────────────────
+
+def _sh_handle_results(self):
+    """GET /api/self-health/results?run_id=xxx — results for one run."""
+    import sqlite3
+    qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+    run_id = (qs.get("run_id") or [None])[0]
+    if not run_id:
+        self._send_json({"error": "run_id required"}, 400)
+        return
+    try:
+        if not SH_HEALTH_DB.exists():
+            self._send_json([])
+            return
+        conn = sqlite3.connect(str(SH_HEALTH_DB))
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM health_results WHERE test_run_id=? ORDER BY id",
+            (run_id,)
+        ).fetchall()
+        conn.close()
+        self._send_json([dict(r) for r in rows])
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _sh_handle_element_history(self):
+    """GET /api/self-health/element-history?element_id=xxx — last 50 results for element."""
+    import sqlite3
+    qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+    element_id = (qs.get("element_id") or [None])[0]
+    if not element_id:
+        self._send_json({"error": "element_id required"}, 400)
+        return
+    try:
+        if not SH_HEALTH_DB.exists():
+            self._send_json([])
+            return
+        conn = sqlite3.connect(str(SH_HEALTH_DB))
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT * FROM health_results WHERE element_id=? ORDER BY id DESC LIMIT 50",
+            (element_id,)
+        ).fetchall()
+        conn.close()
+        self._send_json([dict(r) for r in rows])
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_sh_results        = _sh_handle_results        # type: ignore[attr-defined]
+MCCHandler._handle_sh_element_history = _sh_handle_element_history # type: ignore[attr-defined]
+
+
+# ── OCB-B: Auto-Fix Engine endpoints ─────────────────────────────────────────
+
+def _af_load_proposals() -> list:
+    if AF_PROPOSALS.exists():
+        try:
+            data = json.loads(AF_PROPOSALS.read_text(encoding="utf-8"))
+            return data if isinstance(data, list) else []
+        except Exception:
+            pass
+    return []
+
+
+def _af_save_proposals(proposals: list):
+    AF_PROPOSALS.parent.mkdir(parents=True, exist_ok=True)
+    AF_PROPOSALS.write_text(json.dumps(proposals, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def _af_load_history() -> list:
+    if AF_HISTORY_FILE.exists():
+        try:
+            data = json.loads(AF_HISTORY_FILE.read_text(encoding="utf-8"))
+            return data if isinstance(data, list) else []
+        except Exception:
+            pass
+    return []
+
+
+def _af_save_history(history: list):
+    AF_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+    AF_HISTORY_FILE.write_text(json.dumps(history, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def _af_handle_proposals(self):
+    """GET /api/auto-fix/proposals — pending proposals awaiting approval."""
+    proposals = _af_load_proposals()
+    pending = [p for p in proposals if p.get("status") == "awaiting_approval"]
+    self._send_json(pending)
+
+
+def _af_handle_history(self):
+    """GET /api/auto-fix/history — all applied/rejected fixes."""
+    self._send_json(_af_load_history())
+
+
+def _af_handle_approve(self):
+    """POST /api/auto-fix/approve — body: {fix_id} — executes the fix."""
+    import subprocess as _sp
+    try:
+        body = json.loads(self._read_body() or "{}")
+    except Exception:
+        self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+        return
+    fix_id = body.get("fix_id", "").strip()
+    if not fix_id:
+        self._send_json({"ok": False, "error": "fix_id required"}, 400)
+        return
+
+    proposals = _af_load_proposals()
+    proposal  = next((p for p in proposals if p.get("fix_id") == fix_id), None)
+    if not proposal:
+        self._send_json({"ok": False, "error": "Proposal not found"}, 404)
+        return
+
+    # Load solution
+    solutions = []
+    try:
+        solutions = json.loads(SH_SOLUTIONS.read_text(encoding="utf-8")).get("solutions", [])
+    except Exception:
+        pass
+    solution = next((s for s in solutions if s.get("id") == proposal.get("solution_id")), None)
+
+    success = False
+    stdout_log = ""
+    stderr_log = ""
+    if solution:
+        try:
+            for step in solution.get("fix_steps", []):
+                result = _sp.run(step, shell=True, capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                stdout_log += result.stdout
+                stderr_log += result.stderr
+            success = True
+        except Exception as exc:
+            stderr_log += str(exc)
+
+    # Update proposal status
+    for p in proposals:
+        if p.get("fix_id") == fix_id:
+            p["status"] = "applied" if success else "failed"
+            p["applied_at"] = datetime.datetime.now().isoformat(timespec="seconds")
+            break
+    _af_save_proposals(proposals)
+
+    # Log to history
+    history = _af_load_history()
+    history.insert(0, {
+        "fix_id":     fix_id,
+        "element_id": proposal.get("element_id", ""),
+        "fix_name":   solution.get("name", fix_id) if solution else fix_id,
+        "success":    success,
+        "applied_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        "stdout":     stdout_log[:500],
+        "stderr":     stderr_log[:500],
+    })
+    _af_save_history(history[:200])
+
+    self._send_json({"ok": True, "success": success, "stdout": stdout_log[:200], "stderr": stderr_log[:200]})
+
+
+def _af_handle_reject(self):
+    """POST /api/auto-fix/reject — body: {fix_id} — marks proposal rejected."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+    except Exception:
+        self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+        return
+    fix_id = body.get("fix_id", "").strip()
+    if not fix_id:
+        self._send_json({"ok": False, "error": "fix_id required"}, 400)
+        return
+    proposals = _af_load_proposals()
+    for p in proposals:
+        if p.get("fix_id") == fix_id:
+            p["status"] = "rejected"
+            p["rejected_at"] = datetime.datetime.now().isoformat(timespec="seconds")
+            break
+    _af_save_proposals(proposals)
+    self._send_json({"ok": True})
+
+
+MCCHandler._handle_af_proposals = _af_handle_proposals  # type: ignore[attr-defined]
+MCCHandler._handle_af_history   = _af_handle_history    # type: ignore[attr-defined]
+MCCHandler._handle_af_approve   = _af_handle_approve    # type: ignore[attr-defined]
+MCCHandler._handle_af_reject    = _af_handle_reject     # type: ignore[attr-defined]
+
+
 def main():
+    threading.Thread(target=_qa_startup_test, daemon=True).start()
     server = ThreadingServer((HOST, PORT), MCCHandler)
     print(f"[MCC] MCC Server running at http://{HOST}:{PORT}", flush=True)
     print(f"[MCC] Project folder: {HERE}", flush=True)
