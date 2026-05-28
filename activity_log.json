@@ -508,5 +508,41 @@
     "cat": "wccs",
     "msg": "WCCS save triggered",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-28T23:22:13",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-28T23:22:13",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-28T23:22:14",
+    "cat": "integration",
+    "msg": "int_test_1780006934",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-28T23:22:14",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-28T23:24:01",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-28T23:24:01",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
   }
 ]

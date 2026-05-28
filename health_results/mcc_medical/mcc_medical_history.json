@@ -160,5 +160,23 @@
     "passed": 229,
     "failed": 3,
     "warned": 2
+  },
+  {
+    "run_at": "2026-05-28T23:22:12",
+    "fitness_score": 94,
+    "verdict": "PATIENT IS FIT FOR SERVICE",
+    "total": 234,
+    "passed": 229,
+    "failed": 3,
+    "warned": 2
+  },
+  {
+    "run_at": "2026-05-28T23:24:00",
+    "fitness_score": 100,
+    "verdict": "PATIENT IS FIT FOR SERVICE",
+    "total": 93,
+    "passed": 93,
+    "failed": 0,
+    "warned": 0
   }
 ]

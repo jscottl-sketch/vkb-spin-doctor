@@ -99,6 +99,23 @@
         {"id": "JB_ROUTER",   "name": "Router",   "desc": "Reads score/value, routes to matching LEL (editable rules)"},
         {"id": "JB_DELAY",    "name": "Delay",    "desc": "Adds wait timer before passing through (editable seconds)"}
       ]
+    },
+    "ai_providers": {
+      "icon": "🤖",
+      "colour": "#00D4FF",
+      "elements": [
+        {"id": "AI_MISTRAL",   "name": "Mistral",        "desc": "Tier 2 free — fast code + reasoning via Codestral endpoint", "tier": "free",  "strength": "Code generation",  "weakness": "Context length"},
+        {"id": "AI_GEMINI",    "name": "Gemini Flash",   "desc": "Tier 2 free — huge 1M token context window", "tier": "free",  "strength": "Long context",     "weakness": "Latency variance"},
+        {"id": "AI_CEREBRAS",  "name": "Cerebras",       "desc": "Tier 2 free — ultra-fast wafer-scale inference", "tier": "free",  "strength": "Speed",            "weakness": "Model selection"},
+        {"id": "AI_GROQ",      "name": "Groq",           "desc": "Tier 2 free — very fast, rate-limited per tier", "tier": "free",  "strength": "Speed",            "weakness": "Rate limits"},
+        {"id": "AI_OPENROUTER","name": "OpenRouter",     "desc": "Tier 3 fallback — routes to multiple model providers", "tier": "free",  "strength": "Model variety",    "weakness": "Consistency"},
+        {"id": "AI_CLOUDFLARE","name": "Cloudflare AI",  "desc": "Tier 2 free — edge-deployed workers AI", "tier": "free",  "strength": "Reliability",      "weakness": "Model quality"},
+        {"id": "AI_CLAUDE",    "name": "Claude Sonnet",  "desc": "Tier 99 paid — best reasoning, uses Claude allowance", "tier": "paid",  "strength": "Reasoning",        "weakness": "Cost"},
+        {"id": "AI_LM_CODER",  "name": "LM Coder 32B",  "desc": "Tier 1 local — code-specialist model via LM Studio", "tier": "local", "strength": "Code quality",     "weakness": "RAM 32GB+"},
+        {"id": "AI_LM_VL",     "name": "LM VL 32B",     "desc": "Tier 1 local — vision-language model via LM Studio", "tier": "local", "strength": "Multimodal",       "weakness": "Speed"},
+        {"id": "AI_DEEPSEEK",  "name": "DeepSeek R1",   "desc": "Tier 1 local — strong reasoning chain-of-thought model", "tier": "local", "strength": "Reasoning depth",  "weakness": "Response time"},
+        {"id": "AI_PHI4",      "name": "Phi-4 14B",     "desc": "Tier 1 local — small but highly capable model", "tier": "local", "strength": "Efficiency",       "weakness": "Knowledge cutoff"}
+      ]
     }
   }
 }

@@ -1,6 +1,12 @@
 {
-  "generated_at": "2026-05-28T15:56:36",
+  "generated_at": "2026-05-28T23:24:00",
   "tabs": [
+    {
+      "id": "help",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
     {
       "id": "wccs",
       "label": "",
@@ -51,12 +57,6 @@
     },
     {
       "id": "acca",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "keybind-profiles",
       "label": "",
       "title": "",
       "classes": "tab-btn"
@@ -219,6 +219,42 @@
     {
       "id": "",
       "type": "button",
+      "classes": "btn",
+      "data-tip": "Ask (Ctrl+Enter)",
+      "onclick": "helpAsk()",
+      "parent_tab": "tab-help",
+      "label": "Ask"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload history",
+      "onclick": "helpLoadHistory()",
+      "parent_tab": "tab-help",
+      "label": "↻"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Immediately re-runs all safety checks against the server",
+      "onclick": "runSafetyCheck()",
+      "parent_tab": "tab-home",
+      "label": "Run Check Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Show/hide individual check pills",
+      "onclick": "this.closest('[id=safety-shield]').querySelector('#safety-pills').style.display=(this.closest('[id=safety-shield]').querySelector('#safety-pills').style.display==='none'?'flex':'none');this.textContent=this.textContent.includes('▼')?'▲ Checks':'▼ Checks';",
+      "parent_tab": "tab-home",
+      "label": "▼ Checks"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "btn home-act-btn",
       "data-tip": "Runs provider_health.py (~30s) — checks all AI providers and updates the health gauge",
       "onclick": "runHealthCheck()",
@@ -310,7 +346,7 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Adds each line as a separate goal for AAFL to run — they appear in the Current Queue below",
+      "data-tip": "Adds each line as a separate goal for AAFL to run",
       "onclick": "taskInboxAdd()",
       "parent_tab": "tab-home",
       "label": "+ Add to Queue"
@@ -319,10 +355,37 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Starts AAFL running through all queued goals automatically — runs them one after another",
+      "data-tip": "Starts AAFL running through all queued goals",
       "onclick": "taskInboxRunQueue()",
       "parent_tab": "tab-home",
       "label": "▶ Run Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Dispatches all queued tasks to queue_runner.py (non-blocking)",
+      "onclick": "clachrDispatch()",
+      "parent_tab": "tab-home",
+      "label": "🚀 Dispatch All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clears goal_queue.txt and resets relay display",
+      "onclick": "clearClachrRelay()",
+      "parent_tab": "tab-home",
+      "label": "🗑 Clear Relay"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copies all results formatted as TASK/RESULT blocks — paste back into Claude Chat",
+      "onclick": "event.stopPropagation();copyClachrResults()",
+      "parent_tab": "tab-home",
+      "label": "📋 Copy"
     },
     {
       "id": "",
@@ -516,6 +579,15 @@
     {
       "id": "",
       "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is the WCCS tab?",
+      "onclick": "showInstructions('section_wccs',this)",
+      "parent_tab": "tab-wccs",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "btn",
       "data-tip": "Scan session_logs, archive_dead and other locations for lost chat/SESUM data",
       "onclick": "runOldSavesScan()",
@@ -683,6 +755,15 @@
       "onclick": "loadRetryLog()",
       "parent_tab": "tab-aafl-runs",
       "label": "Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is Scout Swarm?",
+      "onclick": "showInstructions('section_scout_swarm',this)",
+      "parent_tab": "tab-scout",
+      "label": "?"
     },
     {
       "id": "scout-uq-ask-btn",
@@ -1054,6 +1135,15 @@
       "label": "+ Log Saving"
     },
     {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is AAFL Control?",
+      "onclick": "showInstructions('section_aafl_control',this)",
+      "parent_tab": "tab-aafl-control",
+      "label": "?"
+    },
+    {
       "id": "aafl-uq-ask-btn",
       "type": "button",
       "classes": "btn uq-btn-ask",
@@ -1300,19 +1390,19 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Save loop count, end condition and action flags as a named preset",
-      "onclick": "saveLoopPreset()",
-      "parent_tab": "tab-aafl-control",
-      "label": "💾 Save Loop Preset"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
       "data-tip": "Ask the browser to allow MCC to send desktop notifications — required before the checkboxes work",
       "onclick": "b2RequestNotifPermission()",
       "parent_tab": "tab-aafl-control",
       "label": "Enable Notifications"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is LLOW Canvas?",
+      "onclick": "event.stopPropagation();showInstructions('section_llow_canvas',this)",
+      "parent_tab": "tab-aafl-control",
+      "label": "?"
     },
     {
       "id": "",
@@ -1367,6 +1457,33 @@
       "onclick": "llowOpenSettings()",
       "parent_tab": "tab-aafl-control",
       "label": "⚙️ Settings"
+    },
+    {
+      "id": "llow-fs-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Toggle LLOW fullscreen — expand canvas to fill browser viewport (Escape to exit)",
+      "onclick": "llowToggleFullscreen()",
+      "parent_tab": "tab-aafl-control",
+      "label": "↗"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Smart Auto-Assign — AAFL picks the best AI for each phase based on memory_bank performance scores. Updates the Per-Phase AI dropdowns.",
+      "onclick": "llowSmartAutoAssign()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⚡ Smart Auto-Assign"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save current loop settings as a named preset",
+      "onclick": "llowSaveLoopPreset()",
+      "parent_tab": "tab-aafl-control",
+      "label": "💾 Save Preset"
     },
     {
       "id": "",
@@ -1519,7 +1636,7 @@
       "data-tip": "Reload the promotion queue from the server",
       "onclick": "loadPromo()",
       "parent_tab": "tab-promo",
-      "label": "Refresh"
+      "label": "↻ Refresh Queue"
     },
     {
       "id": "",
@@ -1536,6 +1653,24 @@
       "classes": "btn",
       "data-tip": "Reload custom missions from the server",
       "onclick": "loadMissions()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What are Missions?",
+      "onclick": "showInstructions('section_missions',this)",
+      "parent_tab": "tab-missions",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload project awareness from server",
+      "onclick": "loadProjectBrain()",
       "parent_tab": "tab-missions",
       "label": "↻ Refresh"
     },
@@ -1794,6 +1929,15 @@
     {
       "id": "",
       "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is the Storage tab?",
+      "onclick": "showInstructions('section_storage',this)",
+      "parent_tab": "tab-storage",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "btn",
       "data-tip": "Write the new quota values to storage_config.json on the server",
       "onclick": "storSaveQuotas()",
@@ -1898,6 +2042,15 @@
       "onclick": "",
       "parent_tab": "tab-keybind-profiles",
       "label": "No"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn mcc-popup-safe",
+      "data-tip": "What is Health Suite?",
+      "onclick": "showInstructions('section_health_suite',this)",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
     },
     {
       "id": "",
@@ -2080,6 +2233,15 @@
       "label": "🔍 Run Full MOT"
     },
     {
+      "id": "btn-run-mot-live",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Stream each MOT check live — see every test as it runs with its description and result",
+      "onclick": "motRunLive()",
+      "parent_tab": "tab-health-suite",
+      "label": "▶ Run MOT Live"
+    },
+    {
       "id": "",
       "type": "button",
       "classes": "btn",
@@ -2150,6 +2312,15 @@
       "onclick": "b3ShowTip(this,'System monitor — polls /api/system/snapshot every 2 s. CPU/GPU load turns orange above 60%, red above 80%. Thermal prediction uses a slope of last 6 GPU temperature readings.')",
       "parent_tab": "tab-health-suite",
       "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Close",
+      "onclick": "sysDrillClose()",
+      "parent_tab": "tab-health-suite",
+      "label": "✕"
     },
     {
       "id": "",
@@ -2280,6 +2451,60 @@
     {
       "id": "",
       "type": "button",
+      "classes": "",
+      "data-tip": "Standard spacing — default MCC layout",
+      "onclick": "b3SetDensity('comfortable')",
+      "parent_tab": "tab-design",
+      "label": "Comfortable"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Tighter spacing — fit more on screen",
+      "onclick": "b3SetDensity('compact')",
+      "parent_tab": "tab-design",
+      "label": "Compact"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "More breathing room — easier on eyes",
+      "onclick": "b3SetDensity('spacious')",
+      "parent_tab": "tab-design",
+      "label": "Spacious"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Standard tab bar",
+      "onclick": "b3SetTabStyle('default')",
+      "parent_tab": "tab-design",
+      "label": "Default"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Pill-shaped tabs",
+      "onclick": "b3SetTabStyle('pill')",
+      "parent_tab": "tab-design",
+      "label": "Pills"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Minimal underline only",
+      "onclick": "b3SetTabStyle('minimal')",
+      "parent_tab": "tab-design",
+      "label": "Minimal"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "btn",
       "data-tip": "Save current design as a named preset",
       "onclick": "b3SaveDesignPreset()",
@@ -2294,6 +2519,15 @@
       "onclick": "b3LoadDesignPreset('__reset__')",
       "parent_tab": "tab-design",
       "label": "Reset to Default"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Restore ALL MCC settings to defaults (saves to disk)",
+      "onclick": "mccRestoreDefaults()",
+      "parent_tab": "tab-design",
+      "label": "🔄 Restore All Defaults"
     },
     {
       "id": "",
@@ -2326,6 +2560,13 @@
       "placeholder": "New preset name…",
       "classes": "",
       "parent_tab": "root"
+    },
+    {
+      "id": "help-query",
+      "type": "text",
+      "placeholder": "Ask anything about this project…",
+      "classes": "",
+      "parent_tab": "tab-help"
     },
     {
       "id": "urg-wccs",
@@ -2631,7 +2872,7 @@
     {
       "id": "loop-preset-name",
       "type": "text",
-      "placeholder": "Loop preset name…",
+      "placeholder": "",
       "classes": "",
       "parent_tab": "tab-aafl-control"
     },
@@ -2671,6 +2912,139 @@
       "parent_tab": "tab-aafl-control"
     },
     {
+      "id": "amc-parallel",
+      "type": "range",
+      "placeholder": "",
+      "classes": "llow-amc-input",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-cost-cap",
+      "type": "number",
+      "placeholder": "",
+      "classes": "llow-amc-input",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-temp",
+      "type": "range",
+      "placeholder": "",
+      "classes": "llow-amc-input",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-tog-mistral",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-tog-cerebras",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-tog-gemini",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-tog-groq",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-tog-openrouter",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-loop-count",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-loop-infinite",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-sif",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-sesum",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-wccs",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-wcbb",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-afna",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-wrs",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-dsp",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-la-wento",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-loop-preset-name",
+      "type": "text",
+      "placeholder": "Loop preset name…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
       "id": "llow-search",
       "type": "text",
       "placeholder": "Search elements…",
@@ -2699,7 +3073,7 @@
       "parent_tab": "tab-aafl-control"
     },
     {
-      "id": "llow-strat-strict",
+      "id": "llow-strat-snap-mode",
       "type": "checkbox",
       "placeholder": "",
       "classes": "",
@@ -3014,6 +3388,27 @@
       "parent_tab": "tab-design"
     },
     {
+      "id": "d-anim-speed",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-sidebar-bg",
+      "type": "color",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-tabbar-accent",
+      "type": "color",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
       "id": "d-preset-name",
       "type": "text",
       "placeholder": "Preset name…",
@@ -3156,6 +3551,31 @@
       "parent_tab": "tab-aafl-control"
     },
     {
+      "id": "amc-phase-input",
+      "classes": "llow-amc-select",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-phase-process",
+      "classes": "llow-amc-select",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "amc-phase-output",
+      "classes": "llow-amc-select",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-loop-end-cond",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-loop-preset-sel",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
       "id": "mf-status",
       "classes": "",
       "parent_tab": "tab-missions"
@@ -3210,17 +3630,23 @@
     "/aafl/workflow-presets",
     "/acca-codes",
     "/alp-data",
+    "/api/aafl/errors",
     "/api/acca",
     "/api/auto-fix/history",
     "/api/auto-fix/proposals",
     "/api/auto-wccs",
     "/api/backup",
+    "/api/clachr/queue",
+    "/api/clachr/results",
     "/api/diff",
     "/api/health",
     "/api/health/latest",
+    "/api/help/history",
     "/api/history",
     "/api/ibr-latest",
     "/api/ibr-scan",
+    "/api/instructions",
+    "/api/instructions/",
     "/api/llow/arrows",
     "/api/llow/elements",
     "/api/llow/workflow/",
@@ -3228,8 +3654,19 @@
     "/api/medical-history",
     "/api/medical-report",
     "/api/missions",
+    "/api/mot/live",
     "/api/old-saves-report",
     "/api/processes",
+    "/api/project-awareness",
+    "/api/project-vision",
+    "/api/provider-health",
+    "/api/resources/cpu-detail",
+    "/api/resources/disk-detail",
+    "/api/resources/gpu-detail",
+    "/api/resources/lmstudio-detail",
+    "/api/resources/ram-detail",
+    "/api/resources/snapshot",
+    "/api/safety-status",
     "/api/search",
     "/api/self-health/config",
     "/api/self-health/element-history",
@@ -3240,6 +3677,7 @@
     "/api/self-health/solutions",
     "/api/session-log",
     "/api/session-logs",
+    "/api/settings",
     "/api/status",
     "/api/statuscheck",
     "/api/storage/archive-history",
@@ -3248,6 +3686,7 @@
     "/api/storage/largest",
     "/api/storage/stats",
     "/api/storage/treemap",
+    "/api/stuck/afna-suggestions",
     "/api/system/ai-allocation",
     "/api/system/cpu",
     "/api/system/gpu",
@@ -3316,6 +3755,8 @@
     "/api/auto-fix/reject",
     "/api/auto-wccs",
     "/api/chat-to-sesum",
+    "/api/clachr/dispatch",
+    "/api/help/ask",
     "/api/launch-spindoctor",
     "/api/llow/dry-run",
     "/api/llow/export-clacr",
@@ -3323,12 +3764,14 @@
     "/api/llow/validate",
     "/api/llow/workflow",
     "/api/missions",
+    "/api/project-awareness/update",
     "/api/restore",
     "/api/run-medical",
     "/api/run-queue",
     "/api/self-health/config",
     "/api/self-health/run",
     "/api/self-health/run-tab",
+    "/api/settings",
     "/api/storage/reallocate",
     "/api/system/kill",
     "/api/task-inbox",
@@ -3406,6 +3849,7 @@
     "aafl_output",
     "aafl_workflow_presets.json",
     "activity_log.json",
+    "afna_strategies.json",
     "archive_dead",
     "b2_blocked_sources.json",
     "b2_chain.json",
@@ -3445,6 +3889,8 @@
   "dependencies": [],
   "fetch_calls_in_html": [
     "/api/chat-to-sesum",
+    "/api/help/ask",
+    "/api/instructions/",
     "/api/missions",
     "/api/missions/",
     "/api/run-medical",

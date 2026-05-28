@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated": "2026-05-28T15:56:28",
+    "generated": "2026-05-28T15:56:47",
     "generator": "dashboard_builder.py"
   },
   "tasks": {
-    "last_updated": "2026-05-28T15:56:28",
+    "last_updated": "2026-05-28T15:56:47",
     "data": [
       {
         "id": "t001",
@@ -150,7 +150,7 @@
         "id": "t013",
         "title": "Ko-fi + Itch.io links to README",
         "column": "Backlog",
-        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero code.",
+        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero setup.",
         "priority": "low",
         "tool": "AAFL",
         "created": "2026-05-28",
@@ -160,7 +160,7 @@
         "id": "t014",
         "title": "Get Spin Doctor public on GitHub",
         "column": "Backlog",
-        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with v1.0.",
+        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with README.",
         "priority": "low",
         "tool": "AAFL",
         "created": "2026-05-28",
@@ -170,7 +170,7 @@
         "id": "t015",
         "title": "Public release — package as .exe (v1.0)",
         "column": "Backlog",
-        "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install guide.",
+        "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install.",
         "priority": "low",
         "tool": "AAFL",
         "created": "2026-05-28",
@@ -328,14 +328,21 @@
       }
     ],
     "meta": {
-      "updated": "2026-05-28T15:56:28",
+      "updated": "2026-05-28T15:56:47",
       "updated_by": "mcu_optimizer",
       "version": "1.0"
     }
   },
   "activity_feed": {
-    "last_updated": "2026-05-28T15:56:28",
+    "last_updated": "2026-05-28T15:56:47",
     "data": [
+      {
+        "timestamp": "2026-05-28T15:56:32",
+        "type": "session_log",
+        "title": "Session Log -- 2026-05-28-cc5",
+        "detail": "2026-05-28-cc5.md",
+        "file": "2026-05-28-cc5.md"
+      },
       {
         "timestamp": "2026-05-28T15:56:13",
         "type": "session_log",
@@ -363,13 +370,6 @@
         "title": "Session Log -- 2026-05-28-cc1",
         "detail": "2026-05-28-cc1.md",
         "file": "2026-05-28-cc1.md"
-      },
-      {
-        "timestamp": "2026-05-28T02:26:37",
-        "type": "session_log",
-        "title": "SESSION SUMMARY — VKB Spin Doctor / AAFL / AASKC",
-        "detail": "sesum_2026-05-28_combined.md",
-        "file": "sesum_2026-05-28_combined.md"
       },
       {
         "timestamp": "2026-05-27T15:36:00",
@@ -444,7 +444,7 @@
     ]
   },
   "aafl_runs": {
-    "last_updated": "2026-05-28T15:56:28",
+    "last_updated": "2026-05-28T15:56:47",
     "data": [
       {
         "id": 10,
@@ -569,12 +569,12 @@
     ]
   },
   "cost_tracker": {
-    "last_updated": "2026-05-28T15:56:28",
+    "last_updated": "2026-05-28T15:56:47",
     "data": {
-      "total_spent": 0.252651,
-      "avg_per_run": 0.001057,
-      "runs_today": 19,
-      "runs_total": 239
+      "total_spent": 0.257911,
+      "avg_per_run": 0.00107,
+      "runs_today": 21,
+      "runs_total": 241
     }
   }
 }

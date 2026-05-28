@@ -994,3 +994,14 @@
 [2026-05-28 22:46:54] OK   batch    mistral_code         $0.01919  28.29s  'Update STATUS.md for VKB Spin Doctor project.\n\nCURRENT STATU'
 [2026-05-28 23:00:13] START  dry_run=False  allow_paid=False
 [2026-05-28 23:00:26] OK   batch    mistral_code         $0.00950  12.69s  "You are optimising a software project's Mission Control task"
+[2026-05-28 23:22:16] START  dry_run=False  allow_paid=False
+[2026-05-28 23:22:21] OK   batch    mistral_code         $0.00220  4.1s  'You are updating a project handover document after a Claude '
+[2026-05-28 23:22:22] START  dry_run=False  allow_paid=False
+[2026-05-28 23:22:36] OK   batch    mistral_code         $0.00964  14.25s  "You are optimising a software project's Mission Control task"
+[2026-05-29 00:00:08] START  dry_run=False  allow_paid=False
+[2026-05-29 00:00:12] START  dry_run=False  allow_paid=False
+[2026-05-29 00:00:14] OK   batch    mistral_code         $0.00130  2.56s  'Goal: __ep_test__\n\nSources found by parallel scouts:\n1. [ddg'
+[2026-05-29 00:00:17] OK   reason   cerebras             $0.00093  3.36s  'Plan how to achieve this goal step by step: __ep_test__\n\nChi'
+[2026-05-29 00:00:18] OK   code     cerebras             $0.00123  0.92s  'Execute this plan to achieve the goal.\n\nGoal: __ep_test__\n\nP'
+[2026-05-29 00:22:04] START  dry_run=False  allow_paid=False
+[2026-05-29 00:22:19] OK   batch    mistral_code         $0.00974  14.56s  "You are optimising a software project's Mission Control task"

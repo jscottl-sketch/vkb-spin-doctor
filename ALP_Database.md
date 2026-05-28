@@ -55,3 +55,5 @@ Every session: Claude Code reads this file and adds any new savings found. Grow 
 | 2026-05-28 | __medical ALP test entry__ |
 | 2026-05-28 | __medical ALP test entry__ |
 | 18 | **mcc-instructions-keeper saves future re-reading** — 132 plain-English help entries for every MCC element, served via API. Future sessions: instead of re-reading code or asking Claude "what does this button do?", click ? — instant answer, zero Claude tokens. 7 section ? buttons cover every major tab. | High — eliminates lookup cost for every future MCC session | 2026-05-28 |
+| 2026-05-28 | __medical ALP test entry__ |
+| 2026-05-28 | __medical ALP test entry__ |

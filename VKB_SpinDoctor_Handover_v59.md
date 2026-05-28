@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v58 (MASTER)
+# VKB Spin Doctor — Project Handover v59 (MASTER)
 
 **Owner:** Scott (Croydon, England)
 **Status:** OCB-L built — System monitor red fix (grey N/A for unavailable GPU), AI status bar enriched (location/model/VRAM cards), 5 drill-down panels, Help tab with AI-powered search, Settings persistence to disk. 108/108 MOT ALL CLEAR.
-**Last updated:** 2026-05-28
-**Consolidates:** v57
+**Last updated:** 2026-05-28 (WCCS automation)
+**Consolidates:** v58
 
 ---
 
@@ -591,7 +591,7 @@ VKB-SpinDoctor/
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
 ├── Knowledge_Engine_Schema_v1.md      # DB schema reference
 ├── CLAUDE.md                          # Project orientation for Claude Code — architecture, providers, ACCA codes, run commands
-├── VKB_SpinDoctor_Handover_v58.md     # This file — read by sfl_agent on startup
+├── VKB_SpinDoctor_Handover_v59.md     # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
 │   ├── conductor.py                   # Module 04 ✅ 619 lines
@@ -764,7 +764,7 @@ Desktop (C:\Users\jscot\Desktop\):
 | Gemma 4 empty replies | Think mode eating tokens — Think OFF + MAX_TOKENS = 3000 |
 | Model not found (404) | Model string must be `claude-sonnet-4-6` |
 | Credits too low (400) | Top up at console.anthropic.com/settings/billing |
-| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v58.md is present |
+| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v59.md is present |
 | Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
 | Claude Code auth conflict | Detected both claude.ai token + API key — uses API key. Working fine. |
 | Cerebras model fails | Use cerebras/gpt-oss-120b in aafl_core.py — llama-3.3-70b deprecated. Fixed in v33. |
@@ -818,7 +818,6 @@ Desktop (C:\Users\jscot\Desktop\):
 3. Add GROQ + Cloudflare keys to .env (manual — security rule)
 4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai
 5. CLAC session A — migrate v46 to split structure (see handover_split_design.md)
-6. CLAC session B — build aafl_wccs.py to spec (see aafl_wccs_spec.md, DSP required)
 
 ### 5-Project Split Plan
 | Project | What goes in it |
@@ -883,7 +882,7 @@ Pin in each project: ALP_Database.md + latest handover (v46). MCC still reads sa
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v58.md. OCB-L built — 7 phases: (1) OCB-K finish: CLAUDE.md + data/project_awareness.json created. (2) System monitor red fix: dual-source polling, GPU shows grey N/A when unavailable, LM Studio pill added, RAM amber >80% red >95% only. (3) AI status bar enriched: /api/provider-health endpoint with location/model/VRAM, 44px bar, GPU/CPU/CLOUD/PAID badges, click = tooltip, 20s auto-refresh. (4) 5 drill-down panels: CPU/RAM/Disk/GPU/LMStudio expand below dials with 5 new /api/resources/* endpoints. (5) Help tab: /api/help/ask SSE streaming, AI hierarchy selector, Q&A history, saves to data/help_history.json. (6) Settings persistence: data/mcc_settings.json, GET/POST /api/settings, design tab saves to disk, Restore Defaults button, 9+ localStorage calls replaced. 108/108 MOT ALL CLEAR. Next: OCB-B Body Map + Auto-Fix, Star Citizen v0.2 benchmark."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v59.md. OCB-L built — 7 phases: (1) OCB-K finish: CLAUDE.md + data/project_awareness.json created. (2) System monitor red fix: dual-source polling, GPU shows grey N/A when unavailable, LM Studio pill added, RAM amber >80% red >95% only. (3) AI status bar enriched: /api/provider-health endpoint with location/model/VRAM, 44px bar, GPU/CPU/CLOUD/PAID badges, click = tooltip, 20s auto-refresh. (4) 5 drill-down panels: CPU/RAM/Disk/GPU/LMStudio expand below dials with 5 new /api/resources/* endpoints. (5) Help tab: /api/help/ask SSE streaming, AI hierarchy selector, Q&A history, saves to data/help_history.json. (6) Settings persistence: data/mcc_settings.json, GET/POST /api/settings, design tab saves to disk, Restore Defaults button, 9+ localStorage calls replaced. 108/108 MOT ALL CLEAR. Next: OCB-B Body Map + Auto-Fix, Star Citizen v0.2 benchmark."
 
 ---
 
@@ -1311,3 +1310,12 @@ Pin in each project: ALP_Database.md + latest handover (v46). MCC still reads sa
 3. Add GROQ + Cloudflare keys to .env (manual — security rule)
 4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai
 5. CLAC session B — build aafl_wccs.py (aafl_wccs_spec.md, DSP required)
+
+---
+
+### 2026-05-28 (Claude Code session 9)
+**Key decisions:** OCB-L built — 7 phases: (1) OCB-K finish: CLAUDE.md project orientation file created (architecture, providers, ACCA codes, run commands). data/project_awareness.json built from STATUS.md. data/help_history.json + data/mcc_settings.json seeded. (2) System monitor red fix: _refreshSystemMonitor() updated to dual-source polling (/api/system/snapshot + /api/resources/snapshot as fallback). GPU shows grey N/A when no nvidia-smi data — not red crash. LM Studio status pill added (green = online, grey = offline). RAM amber above 80%, red only above 90%. (3) AI status bar enriched with location, model, and VRAM cards. (4) 5 drill-down panels added. (5) Help tab with AI-powered search implemented. (6) Settings persistence to disk added. (7) 108/108 MOT ALL CLEAR.
+**New ACCA codes:** None
+**Ideas discussed:** None
+**Bugs fixed:** None
+**Next priorities:** 1. OCB-B — Body Map visual + Auto-Fix run engine + Real-Time status streaming (Health Suite). 2. Star Citizen v0.2 benchmark via AAFL autonomous run. 3. Add GROQ + Cloudflare keys to .env (manual — security rule). 4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai. 5. CLAC session A — migrate v46 to split structure (see handover_split_design.md).

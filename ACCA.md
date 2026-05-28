@@ -66,4 +66,6 @@
 
 | CLACHR | CLACH Relay — full CLACH → MCC → Labour AI → MCC → CLACH circuit. Delegate labour tasks to free providers, copy results back to Claude Chat. | 2026-05-28 |
 
+| LLC | Loop Law Chain — a sequence of AI LEL nodes on the LLOW canvas connected by arrows, forming an ordered chain where context passes from one AI provider LEL to the next. Each node processes the input and forwards output to the next in the chain. | 2026-05-29 |
+
 <!-- END_OF_FILE -->

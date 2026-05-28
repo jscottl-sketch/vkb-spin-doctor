@@ -1037,6 +1037,24 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-phase-label{position:absolute;top:4px;font-size:9px;font-weight:bold;letter-spacing:.08em;pointer-events:none;z-index:1;padding:2px 7px;border-radius:3px;text-transform:uppercase}
 /* ── OCB-H: Snap Mode shake + flash (renamed from Strict Mode) ── */
 @keyframes llowShake{0%,100%{transform:translateX(0)} 15%{transform:translateX(-7px)} 35%{transform:translateX(7px)} 55%{transform:translateX(-4px)} 75%{transform:translateX(4px)}}
+/* ── OCB-M Phase 2: Canvas zone headers ── */
+.llow-zone-hdr-bar{position:absolute;top:0;left:0;width:2200px;height:28px;display:flex;pointer-events:none;z-index:3}
+.llow-zone-hdr{display:flex;align-items:center;justify-content:center;gap:6px;height:28px;font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0;box-sizing:border-box;border-bottom:1px solid}
+.llow-zone-hdr span{font-size:7px;font-weight:normal;letter-spacing:0;text-transform:none;opacity:.6;margin-left:4px}
+.llow-zh-input{width:734px;background:rgba(74,144,217,0.07);color:#1e4a7a;border-color:rgba(74,144,217,0.28);border-right:1px solid rgba(74,144,217,0.15)}
+.llow-zh-process{width:732px;background:rgba(255,255,255,0.015);color:#2a2a2a;border-color:rgba(255,255,255,0.07);border-right:1px solid rgba(255,255,255,0.07)}
+.llow-zh-output{width:734px;background:rgba(255,107,107,0.06);color:#5a1a1a;border-color:rgba(255,107,107,0.22)}
+/* ── OCB-M Phase 6: AI provider palette tier badges ── */
+.llow-ai-tier{font-size:8px;padding:1px 4px;border-radius:3px;margin-left:auto;flex-shrink:0;font-weight:bold}
+.llow-ai-tier-local{background:#0a2a0a;color:#4f4;border:1px solid #1a4a1a}
+.llow-ai-tier-free{background:#0a1a2a;color:#4af;border:1px solid #1a3a4a}
+.llow-ai-tier-paid{background:#2a1a0a;color:#fa0;border:1px solid #4a3a0a}
+/* ── OCB-M Phase 7: Health Suite drill-down panels ── */
+.med-drill{background:#0a1a0a;border:1px solid #1a3a1a;border-radius:6px;padding:10px;cursor:pointer;transition:border-color .15s}
+.med-drill:hover{border-color:#2a5a2a}
+.med-drill-detail{margin-top:10px;padding-top:10px;border-top:1px solid #1a2a1a}
+.med-drill-score{display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:11px;border:1px solid #0a1a0a;transition:background .12s}
+.med-drill-score:hover{background:#0d1f0d;border-color:#1a3a1a}
 .llow-zone-flash{animation:llowShake 0.4s ease!important}
 @keyframes llowZoneRed{0%{box-shadow:inset 0 0 0 2000px rgba(220,30,30,0.25)} 100%{box-shadow:none}}
 .llow-wrong-zone{animation:llowZoneRed 0.5s ease}
@@ -2678,6 +2696,12 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
                    onmousemove="llowOnCanvasMouseMove(event)"
                    onmouseup="llowOnCanvasMouseUp(event)"
                    onclick="llowOnCanvasClick(event)">
+                <!-- OCB-M Phase 2: Zone headers — always visible regardless of Phase Flow / Snap Mode -->
+                <div class="llow-zone-hdr-bar" id="llow-zone-hdr-bar">
+                  <div class="llow-zone-hdr llow-zh-input">📥 INPUT<span>searches · modes · inputs</span></div>
+                  <div class="llow-zone-hdr llow-zh-process">⚙ PROCESS<span>modifiers · quality · AI providers</span></div>
+                  <div class="llow-zone-hdr llow-zh-output">📤 OUTPUT<span>outputs · gates · endings</span></div>
+                </div>
                 <svg class="llow-canvas-svg" id="llow-canvas-svg"></svg>
                 <div class="llow-nodes-layer" id="llow-nodes-layer"></div>
               </div>
@@ -3382,20 +3406,21 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
   </div>
 </div>
 
-<!-- ── ACCA / INSTRUCTIONS TAB ── -->
+<!-- ── INSTRUCTIONS TAB — OCB-M Phase 8 restructure ── -->
 
 <!-- ============================================================
-     TAB: INSTRUCTIONS & CODES
-     MCC user guide and ACCA shorthand codes
+     TAB: INSTRUCTIONS & CODES (OCB-M Phase 8 restructure)
+     3 sections: INFORMATION / INSTRUCTIONS / CODES
      ============================================================ -->
 <div class="tab-pane" id="tab-acca">
   <div class="pane-scroll">
 
-    <!-- ══ MCC INSTRUCTIONS (OCB-H: full reorganisation) ═════════════ -->
-    <div class="wccs-section-title" style="margin-top:0">MCC Instructions — OCB-H Comprehensive Guide</div>
-    <div style="font-size:12px;color:#777;margin-bottom:10px">Every tab, every feature — OCB-A through OCB-H. Click any section to expand. Organised by area.</div>
+    <!-- ══ OCB-M Phase 8: 3-section accordion structure ═══════════════ -->
+    <div class="wccs-section-title" style="margin-top:0">MCC — Instructions &amp; Reference</div>
+    <div style="font-size:12px;color:#777;margin-bottom:14px">Three sections — expand any to dive in. OCB-M reorganised and expanded with AI Appendix.</div>
 
     <style>
+      /* ── Instructions tab shared styles ── */
       .mcc-inst{border:1px solid #1e1e1e;border-radius:6px;margin-bottom:6px;overflow:hidden}
       .mcc-inst summary{padding:9px 14px;cursor:pointer;font-size:13px;font-weight:bold;color:#ccc;background:#111;user-select:none;list-style:none;display:flex;align-items:center;gap:8px}
       .mcc-inst summary::-webkit-details-marker{display:none}
@@ -3411,10 +3436,37 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       .mcc-badge-ocb{background:#0a1a0a;color:#4af;border:1px solid #1a3a1a}
       .mcc-badge-new{background:#1a0a0a;color:#f84;border:1px solid #3a1a1a}
       .inst-section-chip{display:inline-block;background:#1a1a2a;color:#4af;border:1px solid #1a2a4a;border-radius:3px;font-size:10px;padding:1px 7px;margin-bottom:10px;letter-spacing:1px}
+      /* ── OCB-M Phase 8: top-level 3-section accordion ── */
+      .inst-main{border:1px solid #222;border-radius:8px;margin-bottom:10px;overflow:hidden}
+      .inst-main>summary{padding:12px 16px;cursor:pointer;font-size:14px;font-weight:bold;color:#eee;background:#141414;user-select:none;list-style:none;display:flex;align-items:center;gap:10px;letter-spacing:.5px}
+      .inst-main>summary::-webkit-details-marker{display:none}
+      .inst-main>summary::before{content:"▶";font-size:11px;color:#4af;transition:.15s;flex-shrink:0}
+      .inst-main[open]>summary::before{content:"▼"}
+      .inst-main[open]>summary{background:#0f0f1f;border-bottom:1px solid #222}
+      .inst-main-body{padding:14px 16px 18px;background:#0a0a0a}
+      /* ── OCB-M Phase 9: AI Appendix radar chart ── */
+      .ai-radar-wrap{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+      .ai-radar-card{background:#111;border:1px solid #222;border-radius:6px;padding:10px;text-align:center;min-width:160px;flex:1 1 160px}
+      .ai-cmp-table{width:100%;border-collapse:collapse;font-size:11px}
+      .ai-cmp-table th{color:#555;font-weight:bold;text-align:left;padding:5px 8px;border-bottom:1px solid #1e1e1e;font-size:10px;text-transform:uppercase;letter-spacing:.5px}
+      .ai-cmp-table td{padding:5px 8px;border-bottom:1px solid #111;color:#aaa;vertical-align:middle}
+      .ai-cmp-table tr:hover td{background:#0f0f0f}
+      .ai-cmp-table th[data-sort]{cursor:pointer;user-select:none}
+      .ai-cmp-table th[data-sort]:hover{color:#4af}
+      .ai-tier-local{color:#4f4;background:#0a2a0a;border:1px solid #1a4a1a;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:bold}
+      .ai-tier-free{color:#4af;background:#0a1a2a;border:1px solid #1a3a4a;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:bold}
+      .ai-tier-paid{color:#fa0;background:#1a1a0a;border:1px solid #4a3a0a;border-radius:3px;padding:1px 5px;font-size:10px;font-weight:bold}
+      .ai-bar{height:6px;border-radius:3px;background:#4af;margin-top:3px;transition:width .5s ease}
     </style>
 
-    <!-- ═══ SECTION 1: GENERAL MCC ═══════════════════════════════════ -->
-    <div class="inst-section-chip">AREA 1 — GENERAL MCC</div>
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 1: INFORMATION — what everything is
+         ═══════════════════════════════════════════════════════════════ -->
+    <details class="inst-main" open>
+      <summary>ℹ️ INFORMATION — What Everything Is</summary>
+      <div class="inst-main-body">
+
+        <div class="inst-section-chip">AREA 1 — GENERAL MCC</div>
 
     <!-- Home + Header -->
     <details class="mcc-inst">
@@ -3498,6 +3550,10 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <div class="mcc-row"><span class="mcc-btn-name">Minimap</span><span>Small overview panel at bottom-right of canvas. Shows all elements at 5% scale.</span></div>
         <div class="mcc-row"><span class="mcc-btn-name">Execution Log</span><span>Shows each step as it runs. Green=pass, blue=running, red=fail.</span></div>
         <div class="mcc-row"><span class="mcc-btn-name">Export CLACR</span><span>Converts workflow into a ready-to-paste CLAC request block for Claude Code.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AI PROVIDERS palette</span><span><span class="mcc-badge mcc-badge-new">OCB-M NEW</span> 11 AI providers as draggable LEL nodes. Shows tier badge (local/free/paid). Hover for strength/weakness. Chain them together to form an LLC (Loop Law Chain) — context passes from node to node.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">LLC = Loop Law Chain</span><span><span class="mcc-badge mcc-badge-new">OCB-M NEW</span> A sequence of AI Provider LELs connected by arrows. Each provider processes input and forwards output to the next. Use to build multi-provider evaluation pipelines.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Zone headers</span><span><span class="mcc-badge mcc-badge-new">OCB-M NEW</span> INPUT / PROCESS / OUTPUT labels are always shown at the top of the canvas regardless of Phase Flow or Snap Mode toggle state.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">LEL options (canvas)</span><span><span class="mcc-badge mcc-badge-new">OCB-M FIX</span> Double-click any LEL on the canvas to open its options panel. Previously broken — now uses manual double-click detection that survives DOM re-renders.</span></div>
       </div>
     </details>
 
@@ -3527,8 +3583,59 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </details>
 
-    <!-- ═══ SECTION 6: STORAGE, MISSIONS, DESIGN, PROMO ═══════════ -->
-    <div class="inst-section-chip" style="margin-top:14px">AREA 6 — STORAGE · MISSIONS · DESIGN · PROMO</div>
+        <!-- OCB-M Phase 9: AI APPENDIX — richest reference section -->
+        <div class="inst-section-chip" style="margin-top:18px">AI APPENDIX — Provider Comparison</div>
+        <details class="mcc-inst">
+          <summary>🤖 AI Providers — Full Comparison Table</summary>
+          <div class="mcc-inst-body">
+            <div style="margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <span style="font-size:11px;color:#666">Sort by:</span>
+              <button class="btn" style="font-size:10px;padding:2px 8px" onclick="aiCmpSort('name')">Name</button>
+              <button class="btn" style="font-size:10px;padding:2px 8px" onclick="aiCmpSort('speed')">Speed</button>
+              <button class="btn" style="font-size:10px;padding:2px 8px" onclick="aiCmpSort('quality')">Quality</button>
+              <button class="btn" style="font-size:10px;padding:2px 8px" onclick="aiCmpSort('cost')">Cost</button>
+              <button class="btn" style="font-size:10px;padding:2px 8px" onclick="aiCmpSort('tier')">Tier</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="ai-cmp-table" id="ai-cmp-table">
+                <thead><tr>
+                  <th data-sort="name" onclick="aiCmpSort('name')">Provider ⇅</th>
+                  <th>Tier</th>
+                  <th>Model</th>
+                  <th data-sort="cost" onclick="aiCmpSort('cost')">Cost ⇅</th>
+                  <th data-sort="speed" onclick="aiCmpSort('speed')">Speed ⇅</th>
+                  <th data-sort="quality" onclick="aiCmpSort('quality')">Quality ⇅</th>
+                  <th>Best Uses (top 3)</th>
+                  <th>Avoid For</th>
+                  <th>In This Project</th>
+                </tr></thead>
+                <tbody id="ai-cmp-tbody"><tr><td colspan="9" style="text-align:center;color:#555">Loading…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+        <details class="mcc-inst">
+          <summary>📡 AI Providers — Radar Charts (Speed / Code / Reasoning / Cost / Reliability)</summary>
+          <div class="mcc-inst-body">
+            <div style="font-size:11px;color:#666;margin-bottom:10px">5-axis comparison per provider. Larger area = stronger overall. Click a card to highlight.</div>
+            <div class="ai-radar-wrap" id="ai-radar-wrap">
+              <div style="font-size:11px;color:#555">Loading radar charts…</div>
+            </div>
+          </div>
+        </details>
+
+      </div><!-- /inst-main-body INFORMATION -->
+    </details><!-- /INFORMATION -->
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 2: INSTRUCTIONS — how to use each feature
+         ═══════════════════════════════════════════════════════════════ -->
+    <details class="inst-main">
+      <summary>📘 INSTRUCTIONS — How to Use Each Feature</summary>
+      <div class="inst-main-body">
+
+    <!-- ═══ AREA 6: STORAGE, MISSIONS, DESIGN, PROMO ═══════════ -->
+    <div class="inst-section-chip">AREA 6 — STORAGE · MISSIONS · DESIGN · PROMO</div>
 
     <details class="mcc-inst">
       <summary>💽 Storage Tab</summary>
@@ -3613,8 +3720,18 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </details>
 
-    <!-- ═══ SECTION 9: ACCA CODES BY CATEGORY ════════════════════════ -->
-    <div class="inst-section-chip" style="margin-top:14px">AREA 9 — ACCA CODES BY CATEGORY</div>
+      </div><!-- /inst-main-body INSTRUCTIONS -->
+    </details><!-- /INSTRUCTIONS -->
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         SECTION 3: CODES — ACCA shorthand reference
+         ═══════════════════════════════════════════════════════════════ -->
+    <details class="inst-main">
+      <summary>⚡ CODES — ACCA Shorthand Reference</summary>
+      <div class="inst-main-body">
+
+    <!-- ═══ ACCA CODES BY CATEGORY ════════════════════════ -->
+    <div class="inst-section-chip">ACCA CODES BY CATEGORY</div>
 
     <details class="mcc-inst">
       <summary>⚡ ACCA Codes — Save Operations</summary>
@@ -3657,9 +3774,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </details>
 
-    <!-- ══ ACCA CODES ════════════════════════════════════════════════ -->
-    <div class="wccs-section-title" style="margin-top:20px">ACCA Shorthand Codes</div>
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Quick-reference codes used in STATUS.md and HISTORY.md — loaded from ACCA.md. Add new codes by editing ACCA.md directly.</div>
+    <!-- ══ ACCA CODES TABLE (live from ACCA.md) ══════════════════════ -->
+    <div class="wccs-section-title" style="margin-top:14px">ACCA Shorthand Codes — Full Table</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Live codes from ACCA.md — includes LLC = Loop Law Chain (OCB-M). Add new codes by editing ACCA.md directly.</div>
     <div class="home-ctrl">
       <button class="btn" onclick="loadAcca()" title="Reload ACCA codes from ACCA.md on the server">Refresh</button>
       <span id="acca-count-label" class="home-last-refresh"></span>
@@ -3671,6 +3788,10 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <tbody id="acca-tbody"><tr><td colspan="3" style="text-align:center;color:#555">Loading…</td></tr></tbody>
       </table>
     </div>
+
+      </div><!-- /inst-main-body CODES -->
+    </details><!-- /CODES -->
+
   </div>
 </div>
 
@@ -4388,11 +4509,31 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <div class="med-output-box" id="med-output"></div>
       </div>
 
+      <!-- OCB-M Phase 7: Patient Fit for Service drill-down -->
+      <div class="med-drill" id="med-pfs-wrap" onclick="medTogglePFS()" title="Click to expand patient fitness analysis — last 10 scores, trend, worst component, recommended action">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px">🩺 Patient Fit for Service</span>
+          <span id="med-pfs-badge" style="font-size:11px;color:#555;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:3px;padding:1px 8px">—</span>
+          <span style="font-size:10px;color:#444;margin-left:auto">Click to expand ▼</span>
+          <span id="med-pfs-chevron" style="color:#444;font-size:12px;transform-origin:center;transition:transform .2s">▼</span>
+        </div>
+        <div class="med-drill-detail" id="med-pfs-detail" style="display:none" onclick="event.stopPropagation()">
+          <div style="font-size:10px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Last 10 Scores</div>
+          <div id="med-pfs-last10" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px"></div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px">
+            <div><div style="font-size:10px;color:#555;margin-bottom:3px">TREND</div><div id="med-pfs-trend" style="font-size:13px;color:#aaa;font-weight:bold">—</div></div>
+            <div><div style="font-size:10px;color:#555;margin-bottom:3px">WORST COMPONENT</div><div id="med-pfs-worst" style="font-size:13px;color:#fa0;font-weight:bold">—</div></div>
+          </div>
+          <div style="font-size:10px;color:#555;margin-bottom:4px">RECOMMENDED ACTION</div>
+          <div id="med-pfs-action" style="font-size:12px;color:#4af;background:#0a1a2a;border:1px solid #1a3a4a;border-radius:4px;padding:8px 10px;line-height:1.6">Run a medical check to generate recommendations.</div>
+        </div>
+      </div>
+
       <!-- Score history trend -->
       <div id="med-history-wrap">
-        <div style="font-size:11px;font-weight:bold;color:#666;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Score History</div>
+        <div style="font-size:11px;font-weight:bold;color:#666;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Score History <span style="font-size:9px;font-weight:normal;color:#444">(click bar for detail)</span></div>
         <div id="med-history-list" style="display:flex;flex-direction:column;gap:2px;margin-bottom:10px"></div>
-        <div class="med-trend" id="med-trend-bars" title="Score trend — most recent on the right"></div>
+        <div class="med-trend" id="med-trend-bars" title="Score trend — click a bar for detail — most recent on the right"></div>
       </div>
 
       <!-- Latest report rendered as HTML -->
@@ -4886,7 +5027,7 @@ function initTabs() {
       if (btn.dataset.tab === 'memory') loadMemory();
       if (btn.dataset.tab === 'promo') loadPromo();
       if (btn.dataset.tab === 'missions') { mcInitTab(); loadProjectVision(); loadProjectBrain(); }
-      if (btn.dataset.tab === 'acca') loadAcca();
+      if (btn.dataset.tab === 'acca') { loadAcca(); setTimeout(_initAIAppendix, 300); }
       if (btn.dataset.tab === 'alp') loadAlp();
       if (btn.dataset.tab === 'self-diagnosis') { loadSelfDiagnosis(); loadModules(); }
       if (btn.dataset.tab === 'storage') loadStorageTabInit();
@@ -6810,6 +6951,135 @@ function filterAcca(q) {
   ) : _accaCodes);
 }
 
+// ── OCB-M Phase 9: AI Appendix — provider comparison table + radar charts ────
+
+const AI_APPENDIX_DATA = [
+  { name:'Mistral',       model:'Codestral / Mistral-7B',    tier:'free',  cost:'Free',    speed:9, quality:7, reasoning:6, costEff:10, reliability:8,
+    best:['Code generation','Short Q&A','Script writing'], worst:['Long context','Complex reasoning','Vision tasks'],
+    use_for:'WCCS saves, quick code edits, synthesis', avoid_for:'Deep research chains, multi-step planning' },
+  { name:'Gemini Flash',  model:'gemini-2.0-flash',          tier:'free',  cost:'Free',    speed:7, quality:8, reasoning:8, costEff:10, reliability:7,
+    best:['Long context (1M tokens)','Structured output','Summarisation'], worst:['Rate limits','Latency spikes','API reliability'],
+    use_for:'Processing long session logs, large file analysis', avoid_for:'Time-critical runs, high-frequency loops' },
+  { name:'Cerebras',      model:'Llama-3.3-70B',             tier:'free',  cost:'Free',    speed:10,quality:7, reasoning:7, costEff:10, reliability:8,
+    best:['Ultra-fast inference','Parallel calls','Rapid prototyping'], worst:['Complex multi-step','Vision','Fine-tuned tasks'],
+    use_for:'Speed-sensitive AAFL loops, real-time response', avoid_for:'Nuanced analysis, deep code review' },
+  { name:'Groq',          model:'llama-3.3-70b-versatile',   tier:'free',  cost:'Free',    speed:10,quality:7, reasoning:7, costEff:9,  reliability:7,
+    best:['Ultra-fast inference','Code completion','Chat tasks'], worst:['Strict rate limits','Long context','Memory tasks'],
+    use_for:'Quick prototype, fast iteration', avoid_for:'Production chains, rate-sensitive workflows' },
+  { name:'OpenRouter',    model:'Multiple (routing)',         tier:'free',  cost:'Free (routed)',speed:6,quality:7,reasoning:7,costEff:8, reliability:6,
+    best:['Model variety','Fallback routing','Niche models'], worst:['Consistency','Latency','Reliability'],
+    use_for:'Fallback when other providers are down', avoid_for:'Primary AAFL provider' },
+  { name:'Cloudflare AI', model:'Workers AI (various)',       tier:'free',  cost:'Free',    speed:8, quality:5, reasoning:5, costEff:9,  reliability:9,
+    best:['Edge reliability','Low latency','Simple tasks'], worst:['Model quality','Complex reasoning','Code tasks'],
+    use_for:'Health checks, simple endpoint calls', avoid_for:'AAFL loops, code generation' },
+  { name:'Claude Sonnet', model:'claude-sonnet-4-6',         tier:'paid',  cost:'Allowance',speed:8,quality:10,reasoning:10,costEff:3, reliability:9,
+    best:['Complex reasoning','Code review','Multi-step planning'], worst:['Cost (allowance)','Rate limits','Batch tasks'],
+    use_for:'OCB sessions, final review, architecture decisions', avoid_for:'Routine AAFL loops (burns allowance)' },
+  { name:'LM Coder 32B',  model:'Local (LM Studio)',         tier:'local', cost:'Free (local)',speed:4,quality:8,reasoning:7,costEff:10,reliability:9,
+    best:['Code generation','Local privacy','Unlimited calls'], worst:['Speed (32B)','RAM (needs 32GB+)','Vision'],
+    use_for:'Code-heavy AAFL sessions when internet is slow', avoid_for:'Real-time, latency-critical tasks' },
+  { name:'LM VL 32B',     model:'Local Vision (LM Studio)',  tier:'local', cost:'Free (local)',speed:3,quality:7,reasoning:6,costEff:10,reliability:9,
+    best:['Multimodal (vision)','Local privacy','Screenshot analysis'], worst:['Speed (slowest)','RAM (48GB ideal)','Text-only tasks'],
+    use_for:'Screenshot analysis, UI testing, image understanding', avoid_for:'Fast text tasks' },
+  { name:'DeepSeek R1',   model:'Local R1 (LM Studio)',      tier:'local', cost:'Free (local)',speed:3,quality:8,reasoning:9,costEff:10,reliability:8,
+    best:['Chain-of-thought reasoning','Math','Step-by-step analysis'], worst:['Speed','Token length','Creative tasks'],
+    use_for:'Complex debugging, algorithmic planning', avoid_for:'Fast iteration, creative writing' },
+  { name:'Phi-4 14B',     model:'Local Phi-4 (LM Studio)',   tier:'local', cost:'Free (local)',speed:6,quality:6,reasoning:7,costEff:10,reliability:8,
+    best:['Speed vs size (14B)','Code understanding','Efficiency'], worst:['Knowledge cutoff','Large context','Vision'],
+    use_for:'Light AAFL tasks, quick code explanations on older hardware', avoid_for:'Latest API knowledge, vision tasks' }
+];
+
+let _aiCmpSortKey = 'speed';
+let _aiCmpSortAsc = false;
+
+function aiCmpSort(key) {
+  if (_aiCmpSortKey === key) _aiCmpSortAsc = !_aiCmpSortAsc;
+  else { _aiCmpSortKey = key; _aiCmpSortAsc = false; }
+  _aiRenderCmpTable();
+}
+
+function _aiRenderCmpTable() {
+  const tbody = document.getElementById('ai-cmp-tbody');
+  if (!tbody) return;
+  const tierOrder = {local:0, free:1, paid:2};
+  const sorted = [...AI_APPENDIX_DATA].sort((a,b) => {
+    let av = a[_aiCmpSortKey], bv = b[_aiCmpSortKey];
+    if (_aiCmpSortKey === 'tier') { av = tierOrder[a.tier]||0; bv = tierOrder[b.tier]||0; }
+    if (_aiCmpSortKey === 'name') { av = a.name; bv = b.name; return _aiCmpSortAsc ? av.localeCompare(bv) : bv.localeCompare(av); }
+    if (_aiCmpSortKey === 'cost') { av = a.costEff; bv = b.costEff; }
+    return _aiCmpSortAsc ? av - bv : bv - av;
+  });
+  tbody.innerHTML = sorted.map(p => {
+    const tierCls = 'ai-tier-' + p.tier;
+    const speedBar = `<div style="font-size:10px">${p.speed}/10</div><div class="ai-bar" style="width:${p.speed*10}%;background:#4af"></div>`;
+    const qualBar  = `<div style="font-size:10px">${p.quality}/10</div><div class="ai-bar" style="width:${p.quality*10}%;background:#6f6"></div>`;
+    return `<tr>
+      <td style="font-weight:bold;color:#ddd;white-space:nowrap">${esc(p.name)}</td>
+      <td><span class="${tierCls}">${p.tier}</span></td>
+      <td style="color:#666;font-size:10px">${esc(p.model)}</td>
+      <td style="color:${p.tier==='paid'?'#fa0':p.tier==='local'?'#4f4':'#4af'};font-size:10px">${esc(p.cost)}</td>
+      <td style="min-width:60px">${speedBar}</td>
+      <td style="min-width:60px">${qualBar}</td>
+      <td style="font-size:10px;color:#aaa">${p.best.map(b=>'• '+esc(b)).join('<br>')}</td>
+      <td style="font-size:10px;color:#666">${p.worst.slice(0,2).map(w=>'✗ '+esc(w)).join('<br>')}</td>
+      <td style="font-size:10px;color:#8af">${esc(p.use_for)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function _aiRenderRadars() {
+  const wrap = document.getElementById('ai-radar-wrap');
+  if (!wrap) return;
+  const axes = ['speed','quality','reasoning','costEff','reliability'];
+  const axLabels = ['Speed','Code','Reason','Cost','Reliability'];
+  const N = axes.length;
+  const cx=75, cy=75, r=55;
+  function poly(vals, stroke, fill) {
+    const pts = vals.map((v,i) => {
+      const angle = (Math.PI*2*i/N) - Math.PI/2;
+      const frac = v/10;
+      return [cx + r*frac*Math.cos(angle), cy + r*frac*Math.sin(angle)];
+    });
+    const path = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'Z';
+    return `<path d="${path}" stroke="${stroke}" stroke-width="1.5" fill="${fill}" fill-opacity="0.18"/>`;
+  }
+  function gridLines() {
+    let s='';
+    [0.2,0.4,0.6,0.8,1].forEach(frac => {
+      const pts = Array.from({length:N},(_, i)=>{const a=(Math.PI*2*i/N)-Math.PI/2;return `${(cx+r*frac*Math.cos(a)).toFixed(1)},${(cy+r*frac*Math.sin(a)).toFixed(1)}`;});
+      s+=`<polygon points="${pts.join(' ')}" fill="none" stroke="#1a1a1a" stroke-width="1"/>`;
+    });
+    Array.from({length:N},(_,i)=>{
+      const a=(Math.PI*2*i/N)-Math.PI/2;
+      s+=`<line x1="${cx}" y1="${cy}" x2="${(cx+r*Math.cos(a)).toFixed(1)}" y2="${(cy+r*Math.sin(a)).toFixed(1)}" stroke="#1a1a1a" stroke-width="1"/>`;
+      const lx=(cx+r*1.18*Math.cos(a)).toFixed(1), ly=(cy+r*1.18*Math.sin(a)).toFixed(1);
+      s+=`<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="#555">${axLabels[i]}</text>`;
+    });
+    return s;
+  }
+  const tierColor = {local:'#4f4', free:'#4af', paid:'#fa0'};
+  wrap.innerHTML = AI_APPENDIX_DATA.map(p => {
+    const vals = axes.map(a=>p[a]);
+    const col = tierColor[p.tier]||'#aaa';
+    const svg = `<svg viewBox="0 0 150 150" width="140" height="140" style="display:block;margin:0 auto">
+      ${gridLines()}
+      ${poly(vals, col, col)}
+    </svg>`;
+    return `<div class="ai-radar-card" title="${p.name} — Speed:${p.speed} Code:${p.quality} Reason:${p.reasoning} Cost:${p.costEff} Reliability:${p.reliability}">
+      ${svg}
+      <div style="font-size:11px;font-weight:bold;color:#ddd;margin-top:4px">${esc(p.name)}</div>
+      <span class="ai-tier-${p.tier}" style="font-size:9px">${p.tier}</span>
+    </div>`;
+  }).join('');
+}
+
+// Init AI appendix when tab opens
+function _initAIAppendix() {
+  if (!document.getElementById('ai-cmp-tbody')) return;
+  _aiRenderCmpTable();
+  _aiRenderRadars();
+}
+
 // ── ALP TAB ───────────────────────────────────────────────────────────────────
 
 async function loadAlp() {
@@ -7709,7 +7979,8 @@ async function loadStorage() {
     if (el) el.innerHTML = slots.map(s => {
       const pct   = Math.min(100, Math.round((s.used_gb || 0) / (s.quota_gb || 1) * 100));
       const color = pct > 80 ? '#a33' : pct > 60 ? '#a80' : '#393';
-      return `<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px" title="${esc(s.name)} slot — ${pct}% of ${s.quota_gb}GB quota used. Status: ${esc(s.status||'ok')}">
+      const _sid = 'stor-slot-' + (s.name||'').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+      return `<div id="${_sid}" style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 12px;transition:outline .15s" title="${esc(s.name)} slot — ${pct}% of ${s.quota_gb}GB quota used. Status: ${esc(s.status||'ok')}">
         <div style="font-size:12px;color:#ccc;margin-bottom:4px">${esc(s.name)}</div>
         <div style="background:#111;border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
           <div style="background:${color};height:100%;width:${pct}%;transition:.6s ease-out"></div>
@@ -7854,7 +8125,9 @@ function _storRenderPie(slots) {
     const color = COLORS[i % COLORS.length];
     const usedFrac = s.quota_gb ? ((s.used_gb||0)/s.quota_gb) : 0;
     const segOpacity = 0.6 + usedFrac * 0.4; // darker = more used
-    segments.push(`<path class="pie-seg" d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${color}" opacity="${segOpacity.toFixed(2)}" style="transition:opacity .5s;cursor:default" title="${esc(s.name)}: ${(s.used_gb||0).toFixed(1)}/${s.quota_gb}GB (${Math.round(usedFrac*100)}%)"/>`);
+    // OCB-M Phase 5: clickable pie segments navigate to matching slot section
+    const _slotAnchor = 'stor-slot-' + (s.name||'').replace(/[^a-z0-9]/gi,'_').toLowerCase();
+    segments.push(`<path class="pie-seg" d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${color}" opacity="${segOpacity.toFixed(2)}" style="transition:opacity .25s;cursor:pointer" onclick="storScrollToSlot('${_slotAnchor}')" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='${segOpacity.toFixed(2)}'" title="${esc(s.name)}: click to jump to slot details — ${(s.used_gb||0).toFixed(1)}/${s.quota_gb}GB (${Math.round(usedFrac*100)}%)"/>`);
     offset += angle;
     if (leg) {
       const dot  = `<span style="background:${color};width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle"></span>`;
@@ -7864,6 +8137,16 @@ function _storRenderPie(slots) {
     }
   });
   svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#0a0a0a"/>` + segments.join('');
+}
+
+// OCB-M Phase 5: scroll to matching slot card from pie chart click
+function storScrollToSlot(anchorId) {
+  const el = document.getElementById(anchorId);
+  if (!el) { toast('Slot not found — click Refresh All first', 'error'); return; }
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  const prev = el.style.outline;
+  el.style.outline = '2px solid #4af';
+  setTimeout(() => { el.style.outline = prev || ''; }, 2400);
 }
 
 function _storRenderDial(pct, usedGb, allocGb) {
@@ -10264,6 +10547,72 @@ function _medUpdateRing(score) {
   }
 }
 
+// OCB-M Phase 7: PFS drill-down toggle
+let _medPfsOpen = false;
+function medTogglePFS() {
+  _medPfsOpen = !_medPfsOpen;
+  const detail = document.getElementById('med-pfs-detail');
+  const chevron = document.getElementById('med-pfs-chevron');
+  if (detail) detail.style.display = _medPfsOpen ? '' : 'none';
+  if (chevron) chevron.style.transform = _medPfsOpen ? 'rotate(180deg)' : '';
+}
+
+function _medPopulatePFS(history) {
+  if (!history || !history.length) return;
+  const badge = document.getElementById('med-pfs-badge');
+  const last10El = document.getElementById('med-pfs-last10');
+  const trendEl = document.getElementById('med-pfs-trend');
+  const worstEl = document.getElementById('med-pfs-worst');
+  const actionEl = document.getElementById('med-pfs-action');
+  const recent = history.slice(-10);
+  const lastScore = recent[recent.length - 1].fitness_score;
+  const cls = _medScoreClass(lastScore);
+  const badgeColors = {green:'#2a7',yellow:'#a73',unknown:'#555'};
+  const badgeColor = badgeColors[cls] || '#a33';
+  if (badge) { badge.textContent = lastScore + '/100'; badge.style.color = badgeColor; badge.style.borderColor = badgeColor; }
+  // Last 10 score chips
+  if (last10El) {
+    last10El.innerHTML = recent.map(h => {
+      const c = _medScoreClass(h.fitness_score);
+      const bg = c === 'green' ? '#0a2a0a' : c === 'yellow' ? '#2a1a0a' : '#2a0a0a';
+      const col = c === 'green' ? '#2a7' : c === 'yellow' ? '#a73' : '#a33';
+      const dt = (h.run_at||'').slice(0,16).replace('T',' ');
+      return `<div class="med-drill-score" style="background:${bg};border-color:${col}" title="Score: ${h.fitness_score}/100 — ${dt}&#10;${h.verdict||''}&#10;Passed: ${h.passed||0} Failed: ${h.failed||0} Warned: ${h.warned||0}">
+        <span style="font-weight:bold;color:${col}">${h.fitness_score}</span>
+        <span style="color:#555;font-size:10px">${dt.slice(0,10)}</span>
+      </div>`;
+    }).join('');
+  }
+  // Trend
+  if (trendEl && recent.length >= 2) {
+    const first = recent[0].fitness_score, last = recent[recent.length-1].fitness_score;
+    const diff = last - first;
+    const trendStr = diff > 5 ? `↑ Improving (+${diff})` : diff < -5 ? `↓ Declining (${diff})` : '→ Stable';
+    const trendColor = diff > 5 ? '#2a7' : diff < -5 ? '#a33' : '#888';
+    trendEl.textContent = trendStr; trendEl.style.color = trendColor;
+  }
+  // Worst component — get from latest report categories if possible
+  if (worstEl) {
+    const last = recent[recent.length-1];
+    const cats = last.categories || {};
+    const entries = Object.entries(cats);
+    if (entries.length) {
+      const worst = entries.reduce((a,b) => (b[1]||0) < (a[1]||0) ? b : a, entries[0]);
+      worstEl.textContent = worst[0] + ' (' + worst[1] + '%)';
+    } else {
+      worstEl.textContent = 'Run medical for category breakdown';
+    }
+  }
+  // Recommended action
+  if (actionEl) {
+    const score = lastScore;
+    if (score >= 90) actionEl.textContent = '✓ System healthy — no action needed. Schedule next medical in 7 days.';
+    else if (score >= 75) actionEl.textContent = '⚠ Minor issues detected — review failed checks in Latest Report and fix within 2 days.';
+    else if (score >= 50) actionEl.textContent = '⚠ System degraded — run Quick check hourly and fix failing categories. Avoid AAFL chain runs until resolved.';
+    else actionEl.textContent = '🚨 Critical — system failing. Run Full Medical now, fix all red categories before any AAFL sessions.';
+  }
+}
+
 function _medRenderHistory(history) {
   const listEl  = document.getElementById('med-history-list');
   const barsEl  = document.getElementById('med-trend-bars');
@@ -10273,6 +10622,7 @@ function _medRenderHistory(history) {
     barsEl.innerHTML = '';
     return;
   }
+  _medPopulatePFS(history);
   const recent = history.slice(-20);
   listEl.innerHTML = recent.slice(-5).reverse().map(h => {
     const cls = _medScoreClass(h.fitness_score);
@@ -10288,13 +10638,42 @@ function _medRenderHistory(history) {
   }).join('');
 
   const maxScore = 100;
-  barsEl.innerHTML = recent.map(h => {
+  // OCB-M Phase 7: clickable trend bars — show detail popup on click
+  barsEl.innerHTML = recent.map((h, i) => {
     const pct = Math.max(4, (h.fitness_score / maxScore) * 28);
     const cls  = _medScoreClass(h.fitness_score);
     const bg   = cls === 'green' ? '#2a7' : cls === 'yellow' ? '#a73' : '#a33';
     const dt   = (h.run_at || '').slice(0, 16).replace('T', ' ');
-    return `<div class="med-trend-bar" style="height:${pct}px;background:${bg}" title="${h.fitness_score}/100 — ${dt}"></div>`;
+    const safeVerdict = (h.verdict||'').replace(/'/g,"\\'");
+    return `<div class="med-trend-bar" style="height:${pct}px;background:${bg};cursor:pointer;transition:opacity .15s" title="${h.fitness_score}/100 — ${dt}" onclick="medBarDrillDown(${i},${h.fitness_score},'${dt}','${safeVerdict}',${h.passed||0},${h.failed||0},${h.warned||0})"></div>`;
   }).join('');
+}
+
+// OCB-M Phase 7: score bar drill-down popup
+function medBarDrillDown(idx, score, dt, verdict, passed, failed, warned) {
+  const existing = document.getElementById('med-bar-popup');
+  if (existing) existing.remove();
+  const cls = _medScoreClass(score);
+  const bg = cls === 'green' ? '#0a2a0a' : cls === 'yellow' ? '#1a1a0a' : '#1a0a0a';
+  const col = cls === 'green' ? '#2a7' : cls === 'yellow' ? '#a73' : '#a33';
+  const popup = document.createElement('div');
+  popup.id = 'med-bar-popup';
+  popup.className = 'mcc-popup-safe';
+  popup.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid '+col+';border-radius:8px;padding:16px;z-index:9999;min-width:280px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.85)';
+  popup.innerHTML = `
+    <div style="font-size:13px;font-weight:bold;color:${col};margin-bottom:4px">🩺 Score History Detail</div>
+    <div style="font-size:10px;color:#555;margin-bottom:12px">${dt}</div>
+    <div style="display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-size:28px;font-weight:bold;color:${col}">${score}</div><div style="font-size:10px;color:#555">/100</div></div>
+      <div style="flex:1;font-size:11px;color:#aaa;line-height:1.8">
+        <div>✓ Passed: <b style="color:#2a7">${passed}</b></div>
+        <div>✗ Failed: <b style="color:#a33">${failed}</b></div>
+        <div>⚠ Warned: <b style="color:#a73">${warned}</b></div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#aaa;background:${bg};border-radius:4px;padding:8px;margin-bottom:12px">${verdict || 'No verdict recorded'}</div>
+    <div style="text-align:right"><button class="btn" onclick="document.getElementById('med-bar-popup').remove()" style="font-size:11px">Close</button></div>`;
+  document.body.appendChild(popup);
 }
 
 function _medMarkdownToHtml(md) {
@@ -11371,19 +11750,23 @@ async function _refreshSystemMonitor() {
   let vramTotGb  = g.vram_total_gb!= null ? g.vram_total_gb: (rsnap && rsnap.gpu_vram_total_mb != null ? rsnap.gpu_vram_total_mb / 1024 : 32);
   let gpuName    = g.name || (rsnap || {}).gpu_name || 'GPU';
   if (gpuLoad == null) {
-    // Show N/A in grey — not red
-    const gpuArc = document.getElementById('sys-arc-gpu');
-    const gpuVal = document.getElementById('sys-val-gpu');
-    if (gpuArc) gpuArc.setAttribute('stroke', '#555');
-    if (gpuVal) { gpuVal.textContent = 'N/A'; gpuVal.setAttribute('fill', '#555'); }
+    // OCB-M Phase 3: N/A grey — also reset dasharray and needle to empty position
+    const gpuArc    = document.getElementById('sys-arc-gpu');
+    const gpuVal    = document.getElementById('sys-val-gpu');
+    const gpuNeedle = document.getElementById('sys-needle-gpu');
+    if (gpuArc)    { gpuArc.setAttribute('stroke','#555'); gpuArc.setAttribute('stroke-dasharray','0,157'); }
+    if (gpuVal)    { gpuVal.textContent = 'N/A'; gpuVal.setAttribute('fill','#555'); }
+    if (gpuNeedle) gpuNeedle.setAttribute('transform','rotate(-90,60,70)');
   } else {
     _sysDial('sys-arc-gpu', 'sys-needle-gpu', 'sys-val-gpu', gpuLoad, 100, '%', '#f8c');
   }
   if (vramUsedGb == null) {
-    const vramArc = document.getElementById('sys-arc-vram');
-    const vramVal = document.getElementById('sys-val-vram');
-    if (vramArc) vramArc.setAttribute('stroke', '#555');
-    if (vramVal) { vramVal.textContent = 'N/A'; vramVal.setAttribute('fill', '#555'); }
+    const vramArc    = document.getElementById('sys-arc-vram');
+    const vramVal    = document.getElementById('sys-val-vram');
+    const vramNeedle = document.getElementById('sys-needle-vram');
+    if (vramArc)    { vramArc.setAttribute('stroke','#555'); vramArc.setAttribute('stroke-dasharray','0,157'); }
+    if (vramVal)    { vramVal.textContent = 'N/A'; vramVal.setAttribute('fill','#555'); }
+    if (vramNeedle) vramNeedle.setAttribute('transform','rotate(-90,60,70)');
   } else {
     const vramPct = vramTotGb > 0 ? (vramUsedGb / vramTotGb * 100) : 0;
     _sysDial('sys-arc-vram', 'sys-needle-vram', 'sys-val-vram', vramPct, vramTotGb, 'GB', '#fa0');
@@ -11610,7 +11993,8 @@ async function sysDrillDown(type) {
         <div style="margin-top:8px;font-size:10px;color:#555">aafl_output/: ${ao.file_count||0} files, ${ao.total_mb||0} MB</div>`;
     } else if (type === 'gpu') {
       const d = await apiFetch('/api/resources/gpu-detail');
-      if (!d.ok && !d.gpu_name) { content.innerHTML = `<span style="color:#888">${d.error || 'GPU data unavailable'}</span>`; return; }
+      // OCB-M Phase 3: check d.ok only — gpu_name defaults to "Unknown" even on failure
+      if (!d.ok) { content.innerHTML = `<span style="color:#888">${d.error || 'GPU unavailable — nvidia-smi not found or no NVIDIA GPU installed'}</span>`; return; }
       const vramPct = (d.vram_total_mb && d.vram_used_mb) ? Math.round(d.vram_used_mb / d.vram_total_mb * 100) : 0;
       const procsHtml = (d.processes || []).map(p =>
         `<tr><td style="color:#ccc;font-size:10px;padding:2px 6px">${p.name||'?'}</td>
@@ -13254,13 +13638,18 @@ function llowRenderPalette(filter) {
     <div class="llow-cat-items" data-cat="${catKey}">`;
     for (const el of els) {
       const hasOpts = typeof llowGetElOptions === 'function' && llowGetElOptions(el.id).length > 0;
+      // OCB-M Phase 6: AI provider elements get tier badge + strength/weakness in tooltip
+      const isAIProvider = catKey === 'ai_providers';
+      const tierBadge = isAIProvider && el.tier ? `<span class="llow-ai-tier llow-ai-tier-${el.tier}">${el.tier}</span>` : '';
+      const aiExtraTitle = isAIProvider ? ` | ✓ ${el.strength||''} | ✗ ${el.weakness||''}` : '';
       html += `<div class="llow-pal-el" draggable="true"
           data-el-id="${el.id}" data-cat="${catKey}"
           ondragstart="llowPalDragStart(event,'${el.id}','${catKey}')"
-          title="${el.desc} — drag onto canvas to add${hasOpts?' · click ⚙ to set options first':''}">
+          title="${el.desc}${aiExtraTitle} — drag onto canvas to add${hasOpts?' · click ⚙ to set options first':''}">
         <div class="llow-pal-el-dot" style="background:${cat.colour}"></div>
-        <div class="llow-pal-el-name" style="color:${cat.colour}">${el.name}</div>
-        ${hasOpts ? '<span style="font-size:8px;color:#3a5a6a;margin-left:auto;flex-shrink:0;pointer-events:none" title="Click to configure options before placing">⚙</span>' : ''}
+        <div class="llow-pal-el-name" style="color:${cat.colour};flex:1">${el.name}</div>
+        ${tierBadge}
+        ${hasOpts ? '<span style="font-size:8px;color:#3a5a6a;margin-left:4px;flex-shrink:0;pointer-events:none" title="Click to configure options before placing">⚙</span>' : ''}
       </div>`;
     }
     html += `</div>`;
@@ -13477,7 +13866,7 @@ function llowSuggestStrategy(filename) {
 
 const LLOW_ZONE_CATS = {
   input:   ['inputs'],
-  process: ['modes', 'modifiers', 'cycle_controls', 'quality_checks', 'junctions'],
+  process: ['modes', 'modifiers', 'cycle_controls', 'quality_checks', 'junctions', 'ai_providers'],
   output:  ['outputs', 'approval_gates', 'endings']
 };
 
@@ -13636,7 +14025,9 @@ function llowRenderCanvas() {
     div.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('llow-port')) return;
       e.stopPropagation();
-      llowSelectStep(step.id);
+      // OCB-M Phase 1: don't call llowSelectStep from mousedown — it triggers llowRenderCanvas
+      // which destroys the current div before dblclick fires, breaking native dblclick detection.
+      // Selection now happens in the click handler (with manual dbl-click detection).
       LLOW.dragNode = {
         stepId: step.id,
         startMouseX: e.clientX,
@@ -13644,7 +14035,6 @@ function llowRenderCanvas() {
         origX: step.x,
         origY: step.y
       };
-      // OCB-H: only ghost the grabbed node — everything else stays solid
       div.classList.add('llow-dragging');
       const lay = document.getElementById('llow-nodes-layer');
       if (lay) lay.classList.add('llow-drag-active');
@@ -13656,15 +14046,18 @@ function llowRenderCanvas() {
     div.addEventListener('click', (e) => {
       if (!e.target.classList.contains('llow-port')) {
         e.stopPropagation();
+        // OCB-M Phase 1: manual double-click detection — works even after DOM re-render
+        const now = Date.now();
+        const isDbl = LLOW._dblId === step.id && (now - (LLOW._dblT || 0)) < 360;
+        LLOW._dblId = step.id; LLOW._dblT = now;
+        if (isDbl) {
+          LLOW._dblId = null; LLOW._dblT = 0;
+          if (isJB) { llowDoubleClickJunction(e, step.id); return; }
+          if (hasLELOpts && typeof llowOpenLELOptionsPopup === 'function') { llowOpenLELOptionsPopup(step.id); return; }
+        }
         llowSelectStep(step.id);
       }
     });
-    if (isJB) {
-      div.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
-        llowDoubleClickJunction(e, step.id);
-      });
-    }
     layer.appendChild(div);
   }
 
@@ -14718,23 +15111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-// Also wire up via late-init since canvas may not exist at DOMContentLoaded
-setTimeout(() => {
-  const layer = document.getElementById('llow-nodes-layer');
-  if (layer && !layer.dataset.llowDblBound) {
-    layer.dataset.llowDblBound = '1';
-    layer.addEventListener('dblclick', (ev) => {
-      const node = ev.target.closest('.llow-node:not(.llow-jb)');
-      if (!node) return;
-      ev.stopPropagation();
-      const stepId = node.id.replace('llow-node-', '');
-      const step = LLOW.wf.steps.find(s => s.id === stepId);
-      if (!step) return;
-      const opts = llowGetElOptions(step.element_id);
-      if (opts.length) llowOpenLELOptionsPopup(stepId);
-    });
-  }
-}, 1500);
+// OCB-M Phase 1: dblclick handled via manual detection in llowRenderCanvas click handler (_dblId/_dblT)
 
 function llowOpenLELOptionsPopup(stepId) {
   const step = LLOW.wf.steps.find(s => s.id === stepId);
