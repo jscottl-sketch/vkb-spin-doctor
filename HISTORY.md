@@ -2164,3 +2164,27 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 **New ACCA codes:** None (all existing codes documented in Instructions tab)
 
 **Files changed:** mission_control.html, STATUS.md, HISTORY.md
+
+---
+
+## OCB-I — 2026-05-28
+
+**Summary:** LLOW deep fix + MCC section reorganiser. 11 phases completed.
+
+- Phase 1 (LEL Options): Every LEL has 3-4 configurable options. Palette click → inline options panel with GOEB tooltips. Canvas double-click → full options popup. Options pre-applied when element is dropped. LLOW_EL_OPTIONS covers 20 LEL types.
+- Phase 2 (Junction Boxes): All 8 types fully rebuilt with 4 options each. Decision (condition/yes-no labels/timeout), Merge (wait-mode/timeout/fallback/log), Split (fan-out/run-mode/max-concurrent/label), Gate (condition/fail-action/log/invert), Counter (N/reset/fire-action/log), Logger (level/destination/format/timestamp), Router (rules/fallback/match-mode/log), Delay (seconds/jitter/resume-on-score/log).
+- Phase 3 (AI Master Control): Collapsible section above LLOW canvas. Per-phase AI assignment (INPUT/PROCESS/OUTPUT dropdowns), parallel workers slider, cost cap, temperature control, Smart Auto-Assign button, fallback chain drag-reorder, provider enable/disable toggles.
+- Phase 4 (Snap Mode Fix): Snap Mode now works with Element Mirror (per-category zones) AND Phase Flow (3-zone zones). Snap Glow updated to match whichever strategy is active.
+- Phase 5 (Zone Labels): INPUT/PROCESS/OUTPUT zone headers with subtitle text and GOEB tooltip explaining what belongs in each zone. Colour-coded bottom borders.
+- Phase 6 (LLOW Fullscreen): ↗ button in toolbar. Expands acc-llow to fill viewport via CSS class. Escape or ↙ exits. All LLOW functions work in fullscreen.
+- Phase 7 (Scrollbar Width): LLOW-specific 10px scrollbars on palette, canvas scroll, props panel, settings panel, exec log.
+- Phase 8 (Loop Behaviour → LLOW): Loop Behaviour accordion absorbed into LLOW section. Hidden compatibility fields keep existing JS working. LLOW loop presets saved to localStorage.
+- Phase 9 (Section Reorganiser): ⠿ drag handles + ▲▼ minimise buttons on all .aafl-acc sections. Drag-to-reorder with visual drop indicators. Order persisted per-tab in localStorage.
+- Phase 10 (MOT): 108/108 ALL CLEAR
+- Phase 11 (WCCS): STATUS.md + HISTORY.md updated, committed.
+
+**MOT:** 108/108 ALL CLEAR 2026-05-28
+
+**New ACCA codes:** None
+
+**Files changed:** mission_control.html, STATUS.md, HISTORY.md

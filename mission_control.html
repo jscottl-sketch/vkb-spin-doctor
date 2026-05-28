@@ -1032,6 +1032,61 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 /* ── OCB-H: LLOW canvas drag ghost — only dragged node ghosts ── */
 .llow-node.llow-dragging{opacity:0.45;transform:scale(1.04);z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.7)!important;transition:none!important}
 .llow-nodes-layer.llow-drag-active .llow-node:not(.llow-dragging){opacity:1!important;transition:none!important}
+/* ── OCB-I Phase 7: Wide LLOW scrollbars ── */
+.llow-palette-body::-webkit-scrollbar,.llow-canvas-scroll::-webkit-scrollbar,.llow-props::-webkit-scrollbar,.llow-settings-inner::-webkit-scrollbar,.llow-exec-log::-webkit-scrollbar{width:10px;height:10px}
+.llow-palette-body::-webkit-scrollbar-track,.llow-canvas-scroll::-webkit-scrollbar-track,.llow-props::-webkit-scrollbar-track,.llow-settings-inner::-webkit-scrollbar-track,.llow-exec-log::-webkit-scrollbar-track{background:#0d0d0d}
+.llow-palette-body::-webkit-scrollbar-thumb,.llow-canvas-scroll::-webkit-scrollbar-thumb,.llow-props::-webkit-scrollbar-thumb,.llow-settings-inner::-webkit-scrollbar-thumb,.llow-exec-log::-webkit-scrollbar-thumb{background:#3a3a3a;border-radius:5px}
+.llow-palette-body::-webkit-scrollbar-thumb:hover,.llow-canvas-scroll::-webkit-scrollbar-thumb:hover,.llow-props::-webkit-scrollbar-thumb:hover,.llow-settings-inner::-webkit-scrollbar-thumb:hover,.llow-exec-log::-webkit-scrollbar-thumb:hover{background:#555}
+/* ── OCB-I Phase 1: LEL Options Panel ── */
+.llow-pal-el{position:relative}
+.llow-pal-opts{background:#0a0a18;border:1px solid #1a1a3a;border-radius:0 0 4px 4px;padding:8px 10px;margin:0 4px 4px;font-size:10px;display:none;border-top:none}
+.llow-pal-opts.open{display:block}
+.llow-pal-opt-row{margin-bottom:7px}
+.llow-pal-opt-label{color:#777;margin-bottom:2px;font-weight:bold}
+.llow-pal-opt-goeb{color:#3a5a6a;font-size:9px;font-style:italic;line-height:1.4;margin-top:2px;display:block}
+.llow-pal-el.opts-open{background:#0a0a18!important;border:1px solid #1a1a3a;border-bottom:none;border-radius:4px 4px 0 0;color:#eee}
+.llow-opt-input{width:100%;background:#0d0d0d;color:#ccc;border:1px solid #2a2a2a;border-radius:3px;padding:2px 5px;font:inherit;font-size:11px;box-sizing:border-box}
+.llow-opt-select{width:100%;background:#0d0d0d;color:#ccc;border:1px solid #2a2a2a;border-radius:3px;padding:2px 5px;font:inherit;font-size:11px;box-sizing:border-box}
+/* ── OCB-I Phase 3: AI Master Control ── */
+.llow-amc{background:#0a0a12;border:1px solid #1a1a2a;border-radius:6px;padding:8px 12px;margin-bottom:8px}
+.llow-amc-title{font-size:10px;font-weight:bold;color:#777;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;padding:2px 0}
+.llow-amc-body{margin-top:8px}
+.llow-amc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 12px}
+.llow-amc-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:11px}
+.llow-amc-label{color:#666;flex-shrink:0;min-width:90px;font-size:10px}
+.llow-amc-input{background:#111;color:#ccc;border:1px solid #2a2a2a;border-radius:3px;padding:2px 6px;font:inherit;font-size:11px;flex:1;min-width:0}
+.llow-amc-select{background:#111;color:#ccc;border:1px solid #2a2a2a;border-radius:3px;padding:2px 6px;font:inherit;font-size:11px;flex:1;min-width:0}
+.llow-amc-phase-row{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #111;font-size:11px}
+.llow-amc-fallback{display:flex;flex-direction:column;gap:3px;min-height:40px;padding:4px;background:#060606;border:1px solid #1a1a1a;border-radius:4px}
+.llow-amc-fb-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#888;padding:2px 4px;background:#0d0d0d;border-radius:3px;cursor:move;user-select:none}
+.llow-amc-fb-item:hover{background:#1a1a1a;color:#ccc}
+/* ── OCB-I Phase 6: LLOW Fullscreen ── */
+.llow-fs-active{position:fixed!important;inset:0!important;z-index:10000!important;background:#070707!important;display:flex!important;flex-direction:column!important;padding:10px!important;overflow:hidden!important}
+.llow-fs-active .llow-topbar{flex-shrink:0}
+.llow-fs-active .llow-amc{flex-shrink:0}
+.llow-fs-active .llow-3panel{flex:1!important;height:calc(100vh - 220px)!important;min-height:300px}
+.llow-fs-active .llow-exec-log{max-height:60px!important}
+/* ── OCB-I Phase 5: Enhanced zone labels ── */
+.llow-phase-label{position:absolute;top:0;font-size:10px;font-weight:bold;letter-spacing:.06em;pointer-events:none;z-index:1;padding:5px 10px 4px;border-radius:0 0 5px 5px;text-transform:uppercase;min-width:160px;line-height:1.4}
+.llow-phase-goeb{display:block;font-size:8px;font-style:italic;font-weight:normal;letter-spacing:0;text-transform:none;opacity:.7;margin-top:1px;line-height:1.4}
+/* ── OCB-I Phase 8: Loop Behaviour inside LLOW ── */
+.llow-loop-acc{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:8px;overflow:hidden}
+.llow-loop-hdr{padding:7px 12px;cursor:pointer;background:#0d0d0d;display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:.06em;user-select:none}
+.llow-loop-hdr:hover{background:#111;color:#aaa}
+.llow-loop-body{padding:10px 12px 12px;display:none}
+.llow-loop-acc.open .llow-loop-body{display:block}
+.llow-loop-acc.open .llow-loop-chevron{transform:rotate(0deg)}
+.llow-loop-chevron{font-size:9px;transition:transform .2s;transform:rotate(-90deg)}
+/* ── OCB-I Phase 9: Section Reorganiser ── */
+.sr-wrap{position:relative}
+.sr-handle{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;cursor:ns-resize;color:#2a2a2a;font-size:10px;user-select:none;transition:color .15s;flex-shrink:0;border-radius:2px}
+.sr-handle:hover{color:#888;background:#1a1a1a}
+.sr-min-btn{cursor:pointer;font-size:10px;color:#444;border:none;background:none;padding:0 3px;line-height:1;transition:color .15s}
+.sr-min-btn:hover{color:#aaa}
+.sr-section-dragging{opacity:.35;outline:2px dashed #4af}
+.sr-drop-target::before{content:'';display:block;height:3px;background:#4af;border-radius:2px;margin:-1px 0 2px}
+@keyframes llowShakeEl{0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}35%{transform:translateX(6px)}55%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.llow-jb-shape-wrap{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:0 6px}
 /* ── OCB-E Phase 5: Storage liquid fill wave ── */
 @keyframes waveMove{0%{background-position:0 0}100%{background-position:60px 0}}
 .stor-wave-bar{position:relative;height:22px;border-radius:4px;overflow:hidden;background:#111;border:1px solid #222}
@@ -2315,47 +2370,22 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
           </div>
         </div>
 
-        <!-- ── LOOP BEHAVIOUR (existing, kept intact) ─────────────── -->
-        <div class="loop-panel" id="loop-behaviour-panel">
-          <div class="loop-panel-title" title="Loop settings control how many times the full workflow repeats">Loop Behaviour</div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
-            <div style="display:flex;align-items:center;gap:6px">
-              <label style="font-size:12px;color:#888">Loop count:</label>
-              <input type="number" id="loop-count" value="1" min="1" max="999" style="width:70px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px" title="How many times to loop through the workflow (1–999)">
-            </div>
-            <label class="auto-toggle-wrap" style="font-size:12px;color:#888" title="Loop forever until manually stopped">
-              <span>Infinite</span>
-              <label class="toggle-switch"><input type="checkbox" id="loop-infinite" onchange="toggleLoopInfinite(this.checked)"><span class="toggle-slider"></span></label>
-            </label>
-            <div style="display:flex;align-items:center;gap:6px">
-              <label style="font-size:12px;color:#888">End when:</label>
-              <select id="loop-end-condition" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="When should the loop stop? Choose the condition that matches your use case.">
-                <option value="manual_stop">Manual Stop</option>
-                <option value="after_n" selected>After N loops</option>
-                <option value="score_threshold">After score &gt;= threshold</option>
-                <option value="wccs_triggered">WCCS triggered</option>
-              </select>
-            </div>
-          </div>
-          <div class="loop-panel-title" style="margin-top:6px" title="Checkboxes here add ACCA codes that run automatically after each loop iteration">Loop Actions (each iteration):</div>
-          <div class="loop-actions-grid">
-            <label title="SIF — Summarise In Full at end of each loop"><input type="checkbox" id="la-sif" value="SIF"> SIF (Summarise In Full)</label>
-            <label title="SESUM — Session Summary saved each loop"><input type="checkbox" id="la-sesum" value="SESUM"> SESUM (Session Summary)</label>
-            <label title="WCCS — Auto-save handover each loop"><input type="checkbox" id="la-wccs" value="WCCS"> WCCS (Auto-save)</label>
-            <label title="WCBB — What Could Be Better analysis after each result"><input type="checkbox" id="la-wcbb" value="WCBB"> WCBB (What Could Be Better)</label>
-            <label title="AFNA — Attack From New Angle if score below threshold"><input type="checkbox" id="la-afna" value="AFNA"> AFNA (New Angle if low)</label>
-            <label title="WRS — Write Software if code task detected"><input type="checkbox" id="la-wrs" value="WRS"> WRS (Write Software)</label>
-            <label title="DSP — Skip permissions on all sub-tasks"><input type="checkbox" id="la-dsp" value="DSP"> DSP (Skip Permissions)</label>
-            <label title="WENTO — Flag anything unexpected for review"><input type="checkbox" id="la-wento" value="WENTO"> WENTO (Flag Unexpected)</label>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
-            <input type="text" id="loop-preset-name" placeholder="Loop preset name…" style="flex:1;min-width:140px;max-width:200px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Give this loop configuration a name to save it">
-            <button class="btn" onclick="saveLoopPreset()" style="font-size:11px" title="Save loop count, end condition and action flags as a named preset">💾 Save Loop Preset</button>
-            <select id="loop-preset-select" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" onchange="loadLoopPreset(this.value)" title="Load a saved loop preset — restores the loop count, end condition, and action flags">
-              <option value="">Load preset…</option>
-            </select>
-            <span id="loop-preset-msg" style="font-size:11px;color:#4af"></span>
-          </div>
+        <!-- Loop Behaviour moved to LLOW section (OCB-I Phase 8) — placeholder kept for JS compatibility -->
+        <div id="loop-behaviour-panel" style="display:none">
+          <input type="number" id="loop-count" value="1" min="1" max="999">
+          <input type="checkbox" id="loop-infinite" onchange="toggleLoopInfinite(this.checked)">
+          <select id="loop-end-condition"><option value="after_n" selected>After N</option></select>
+          <input type="checkbox" id="la-sif" value="SIF">
+          <input type="checkbox" id="la-sesum" value="SESUM">
+          <input type="checkbox" id="la-wccs" value="WCCS">
+          <input type="checkbox" id="la-wcbb" value="WCBB">
+          <input type="checkbox" id="la-afna" value="AFNA">
+          <input type="checkbox" id="la-wrs" value="WRS">
+          <input type="checkbox" id="la-dsp" value="DSP">
+          <input type="checkbox" id="la-wento" value="WENTO">
+          <input type="text" id="loop-preset-name">
+          <select id="loop-preset-select"><option value="">Load preset…</option></select>
+          <span id="loop-preset-msg"></span>
         </div>
 
         <!-- ── BROWSER NOTIFICATIONS (from B2-07) ───────────────── -->
@@ -2381,7 +2411,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px" title="Drag elements from the left panel. Connect them with arrows to define flow. Export as CLACR to get a ready-to-paste CLAC block, or Run Loop to execute directly.">Design your loop visually — drag elements onto the canvas, draw arrows between them, then export or run.</div>
 
         <!-- TOP BAR -->
-        <div class="llow-topbar">
+        <div class="llow-topbar" id="llow-topbar">
           <input type="text" id="llow-wf-name" value="New Workflow" title="Name your workflow — used when saving">
           <button class="btn" onclick="llowRunLoop()" style="background:#1a3a1a;color:#6f6;font-size:12px" title="Execute your loop design through AAFL. Watch progress in the log below.">▶ Run Loop</button>
           <button class="btn" onclick="llowDryRun()" style="font-size:12px" title="Validates your design without executing. Checks for errors and missing connections.">🧪 Dry Run</button>
@@ -2391,8 +2421,134 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
           </select>
           <button class="btn" onclick="llowExportClacr()" style="font-size:12px" title="Converts your visual design into a text CLACR block you can paste into Claude Code.">📋 Export as CLACR</button>
           <button class="btn" onclick="llowClearCanvas()" style="font-size:12px;background:#2a1a1a;color:#f88" title="Clear all steps and arrows from the canvas (will confirm first)">🗑 Clear</button>
-          <button class="btn" onclick="llowOpenSettings()" id="llow-settings-btn" style="font-size:12px;margin-left:auto" title="Open LLOW colour strategy settings — OCB-F">⚙️ Settings</button>
+          <button class="btn" onclick="llowOpenSettings()" id="llow-settings-btn" style="font-size:12px" title="Open LLOW colour strategy settings — OCB-F">⚙️ Settings</button>
+          <button class="btn" onclick="llowToggleFullscreen()" id="llow-fs-btn" style="font-size:12px" title="Toggle LLOW fullscreen — expand canvas to fill browser viewport (Escape to exit)">↗</button>
           <span id="llow-active-arrow-badge" class="llow-active-arrow" onclick="llowClearArrowType()" title="Active arrow type — drag from palette to set, click to reset to Continue">→ Continue</span>
+        </div>
+
+        <!-- AI MASTER CONTROL (OCB-I Phase 3) -->
+        <div class="llow-amc" id="llow-amc">
+          <div class="llow-amc-title" onclick="llowToggleAMC()">
+            <span>🤖 AI Master Control</span>
+            <span id="llow-amc-chevron" style="font-size:9px;transition:transform .2s;transform:rotate(-90deg)">▼</span>
+          </div>
+          <div class="llow-amc-body" id="llow-amc-body" style="display:none">
+            <div class="llow-amc-grid" style="margin-bottom:10px">
+              <!-- Per-phase AI assignment -->
+              <div>
+                <div style="font-size:10px;color:#555;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px" title="Pick which AI provider handles each phase of the workflow">Per-Phase AI</div>
+                <div class="llow-amc-phase-row" title="INPUT phase — Brainstorm/Research/Scout steps">
+                  <span style="color:#5a8aff;min-width:60px;font-size:10px">INPUT</span>
+                  <select class="llow-amc-select" id="amc-phase-input" title="AI provider for INPUT phase elements">
+                    <option value="auto">Auto</option><option value="mistral">Mistral</option><option value="cerebras">Cerebras</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option>
+                  </select>
+                </div>
+                <div class="llow-amc-phase-row" title="PROCESS phase — Run/Evaluate/Route steps">
+                  <span style="color:#bbb;min-width:60px;font-size:10px">PROCESS</span>
+                  <select class="llow-amc-select" id="amc-phase-process" title="AI provider for PROCESS phase elements">
+                    <option value="auto">Auto</option><option value="mistral">Mistral</option><option value="cerebras">Cerebras</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option>
+                  </select>
+                </div>
+                <div class="llow-amc-phase-row" title="OUTPUT phase — Save/Handover/Report steps">
+                  <span style="color:#ff7a7a;min-width:60px;font-size:10px">OUTPUT</span>
+                  <select class="llow-amc-select" id="amc-phase-output" title="AI provider for OUTPUT phase elements">
+                    <option value="auto">Auto</option><option value="mistral">Mistral</option><option value="cerebras">Cerebras</option><option value="gemini">Gemini</option><option value="groq">Groq</option><option value="openrouter">OpenRouter</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Parallel workers + cost cap -->
+              <div>
+                <div style="font-size:10px;color:#555;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Global Controls</div>
+                <div class="llow-amc-row" title="How many AIs run at the same time — higher = faster but costs more">
+                  <span class="llow-amc-label">Parallel AIs</span>
+                  <input type="range" min="1" max="5" value="2" id="amc-parallel" class="llow-amc-input" style="padding:0" oninput="document.getElementById('amc-parallel-val').textContent=this.value">
+                  <span id="amc-parallel-val" style="font-size:11px;color:#ccc;min-width:14px">2</span>
+                </div>
+                <div class="llow-amc-row" title="Maximum USD spend allowed per run — stops when hit">
+                  <span class="llow-amc-label">Cost cap ($)</span>
+                  <input type="number" id="amc-cost-cap" class="llow-amc-input" value="0.10" step="0.01" min="0" title="Hard stop — LLOW run halts when this USD amount is reached">
+                </div>
+                <div class="llow-amc-row" title="Temperature controls creativity — 0.0=precise, 1.0=creative. Applied per-phase when Smart Assign is ON.">
+                  <span class="llow-amc-label">Temperature</span>
+                  <input type="range" min="0" max="10" value="7" id="amc-temp" class="llow-amc-input" style="padding:0" oninput="document.getElementById('amc-temp-val').textContent=(this.value/10).toFixed(1)">
+                  <span id="amc-temp-val" style="font-size:11px;color:#ccc;min-width:24px">0.7</span>
+                </div>
+                <div class="llow-amc-row" style="margin-top:6px">
+                  <button class="btn" onclick="llowSmartAutoAssign()" style="font-size:11px;background:#0a1a2a;color:#4af" title="Smart Auto-Assign — AAFL picks the best AI for each phase based on memory_bank performance scores. Updates the Per-Phase AI dropdowns.">⚡ Smart Auto-Assign</button>
+                </div>
+              </div>
+              <!-- Fallback chain -->
+              <div>
+                <div style="font-size:10px;color:#555;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px" title="Drag to reorder — first provider is tried first, then fallback in order if it fails">Fallback Chain</div>
+                <div class="llow-amc-fallback" id="amc-fallback-list" ondragover="event.preventDefault()" ondrop="llowFallbackDrop(event)">
+                  <div class="llow-amc-fb-item" draggable="true" data-prov="mistral" ondragstart="llowFallbackDragStart(event,this)">⠿ Mistral Codestral</div>
+                  <div class="llow-amc-fb-item" draggable="true" data-prov="cerebras" ondragstart="llowFallbackDragStart(event,this)">⠿ Cerebras</div>
+                  <div class="llow-amc-fb-item" draggable="true" data-prov="gemini" ondragstart="llowFallbackDragStart(event,this)">⠿ Gemini Flash</div>
+                  <div class="llow-amc-fb-item" draggable="true" data-prov="groq" ondragstart="llowFallbackDragStart(event,this)">⠿ Groq</div>
+                  <div class="llow-amc-fb-item" draggable="true" data-prov="openrouter" ondragstart="llowFallbackDragStart(event,this)">⠿ OpenRouter</div>
+                </div>
+                <div style="font-size:8px;color:#333;margin-top:3px;font-style:italic">Drag rows to reorder fallback priority</div>
+              </div>
+              <!-- Provider toggles -->
+              <div>
+                <div style="font-size:10px;color:#555;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px" title="Toggle which providers are allowed to be used in this LLOW run">Provider Toggles</div>
+                <div id="amc-provider-toggles" style="display:flex;flex-direction:column;gap:4px;font-size:11px;color:#aaa">
+                  <label title="Allow Mistral Codestral for this run"><input type="checkbox" id="amc-tog-mistral" checked> Mistral</label>
+                  <label title="Allow Cerebras for this run"><input type="checkbox" id="amc-tog-cerebras" checked> Cerebras</label>
+                  <label title="Allow Gemini Flash for this run"><input type="checkbox" id="amc-tog-gemini" checked> Gemini</label>
+                  <label title="Allow Groq for this run"><input type="checkbox" id="amc-tog-groq" checked> Groq</label>
+                  <label title="Allow OpenRouter for this run"><input type="checkbox" id="amc-tog-openrouter" checked> OpenRouter</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOOP BEHAVIOUR (OCB-I Phase 8 — absorbed from Workflow Builder) -->
+        <div class="llow-loop-acc" id="llow-loop-acc">
+          <div class="llow-loop-hdr" onclick="llowToggleLoopAcc()">
+            <span>🔁 Loop Behaviour</span>
+            <span class="llow-loop-chevron" id="llow-loop-chevron">▼</span>
+          </div>
+          <div class="llow-loop-body" id="llow-loop-body">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+              <div style="display:flex;align-items:center;gap:6px">
+                <label style="font-size:12px;color:#888" title="How many times to run through the full workflow">Loop count:</label>
+                <input type="number" id="llow-loop-count" value="1" min="1" max="999" style="width:70px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px" title="Loop count (1–999) — mirrors loop-count field for compatibility">
+              </div>
+              <label class="auto-toggle-wrap" style="font-size:12px;color:#888" title="Loop forever until manually stopped">
+                <span>Infinite</span>
+                <label class="toggle-switch"><input type="checkbox" id="llow-loop-infinite" onchange="llowSyncLoopBehav()"><span class="toggle-slider"></span></label>
+              </label>
+              <div style="display:flex;align-items:center;gap:6px">
+                <label style="font-size:12px;color:#888">End when:</label>
+                <select id="llow-loop-end-cond" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px" title="When should the loop stop? Choose the condition.">
+                  <option value="manual_stop">Manual Stop</option>
+                  <option value="after_n" selected>After N loops</option>
+                  <option value="score_threshold">After score >= threshold</option>
+                  <option value="wccs_triggered">WCCS triggered</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size:10px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px" title="These ACCA codes run automatically at the end of each loop iteration">Loop Actions (each iteration):</div>
+            <div class="loop-actions-grid">
+              <label title="SIF — Summarise In Full: full detailed summary at end of each loop"><input type="checkbox" id="llow-la-sif" value="SIF"> SIF (Summarise In Full)</label>
+              <label title="SESUM — Session Summary: save a session log after each loop"><input type="checkbox" id="llow-la-sesum" value="SESUM"> SESUM (Session Summary)</label>
+              <label title="WCCS — Write Claude Code Save: auto-save the handover after each loop"><input type="checkbox" id="llow-la-wccs" value="WCCS"> WCCS (Auto-save)</label>
+              <label title="WCBB — What Could Be Better: critique and improve the result after each loop"><input type="checkbox" id="llow-la-wcbb" value="WCBB"> WCBB (What Could Be Better)</label>
+              <label title="AFNA — Attack From New Angle: try a different approach if score is too low"><input type="checkbox" id="llow-la-afna" value="AFNA"> AFNA (New Angle if low)</label>
+              <label title="WRS — Write Software: trigger code-write action if goal is a coding task"><input type="checkbox" id="llow-la-wrs" value="WRS"> WRS (Write Software)</label>
+              <label title="DSP — Dangerously Skip Permissions: run sub-tasks without permission prompts"><input type="checkbox" id="llow-la-dsp" value="DSP"> DSP (Skip Permissions)</label>
+              <label title="WENTO — Whatever Else Not Thought Of: scan for anything missed at end of loop"><input type="checkbox" id="llow-la-wento" value="WENTO"> WENTO (Flag Unexpected)</label>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+              <input type="text" id="llow-loop-preset-name" placeholder="Loop preset name…" style="flex:1;min-width:120px;max-width:180px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" title="Give this loop configuration a name to save it">
+              <button class="btn" onclick="llowSaveLoopPreset()" style="font-size:11px" title="Save current loop settings as a named preset">💾 Save Preset</button>
+              <select id="llow-loop-preset-sel" style="background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px" onchange="llowLoadLoopPreset(this.value)" title="Load a saved loop preset">
+                <option value="">Load preset…</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- 3-PANEL LAYOUT -->
@@ -11996,7 +12152,8 @@ const LLOW = {
   arrowPreview: null,
   savedWorkflows: [],
   pendingArrowType: 'continue',  // OCB-F: arrow type for next port connection
-  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false, snap_mode: false }  // OCB-F/G/H
+  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false, snap_mode: false },  // OCB-F/G/H
+  _palOptState: {}  // OCB-I Phase 1: pre-configured options per element from palette
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -12015,6 +12172,7 @@ async function llowInit() {
     llowRenderCanvas();
     llowPopulateLoadSelect();
     llowUpdateArrowBadge();
+    setTimeout(() => _llowBindPaletteOpts(document.getElementById('llow-palette-body')), 200);
   } catch(e) {
     console.warn('[LLOW] Init failed:', e);
     window._llowInitFailed = true;
@@ -12042,12 +12200,14 @@ function llowRenderPalette(filter) {
     </div>
     <div class="llow-cat-items" data-cat="${catKey}">`;
     for (const el of els) {
+      const hasOpts = typeof llowGetElOptions === 'function' && llowGetElOptions(el.id).length > 0;
       html += `<div class="llow-pal-el" draggable="true"
           data-el-id="${el.id}" data-cat="${catKey}"
           ondragstart="llowPalDragStart(event,'${el.id}','${catKey}')"
-          title="${el.desc} — drag onto canvas to add">
+          title="${el.desc} — drag onto canvas to add${hasOpts?' · click ⚙ to set options first':''}">
         <div class="llow-pal-el-dot" style="background:${cat.colour}"></div>
         <div class="llow-pal-el-name" style="color:${cat.colour}">${el.name}</div>
+        ${hasOpts ? '<span style="font-size:8px;color:#3a5a6a;margin-left:auto;flex-shrink:0;pointer-events:none" title="Click to configure options before placing">⚙</span>' : ''}
       </div>`;
     }
     html += `</div>`;
@@ -12405,7 +12565,8 @@ function llowRenderCanvas() {
       ? `<div class="llow-jb-shape"></div>`
       : `<div class="llow-node-icon">${icon}</div>`;
     const hasParams = isJB && ['jb_gate','jb_counter','jb_router','jb_delay'].includes(jbType);
-    const dblHint = isJB ? `<span class="llow-jb-dbl-hint" title="Double-click to edit options">⚙ dbl-click</span>` : '';
+    const hasLELOpts = !isJB && typeof llowGetElOptions === 'function' && llowGetElOptions(step.element_id).length > 0;
+    const dblHint = (isJB || hasLELOpts) ? `<span class="llow-jb-dbl-hint" title="Double-click to edit options">⚙ dbl-click</span>` : '';
     div.innerHTML = `
       <div class="llow-port llow-port-in" id="llow-pin-${step.id}"
            onclick="llowPortInClick(event,'${step.id}')"
@@ -12628,23 +12789,32 @@ function llowRenderParamFields(step, el) {
   let html = '';
   const cat = step._catDef || {};
   const catKey = el.category || '';
-  // Junction box params shown read-only in props panel (edit via double-click popup)
+  // Junction box params — edit via double-click popup (all 8 types)
   if (catKey === 'junctions' && step.element_id.startsWith('JB_')) {
     const jbType = step.element_id;
-    const hasOpts = ['JB_GATE','JB_COUNTER','JB_ROUTER','JB_DELAY'].includes(jbType);
-    if (hasOpts) {
-      const pStr = Object.entries(step.params || {}).filter(([,v]) => v !== null && v !== '' && v !== undefined).map(([k,v]) => `${k}: ${v}`).join(' | ') || 'defaults';
-      html += `<div class="llow-prop-row">
-        <div class="llow-prop-label">Options</div>
-        <div class="llow-prop-val" style="font-size:10px;color:#888">${pStr}</div>
-      </div>
-      <div style="margin-top:4px">
-        <button class="btn" style="font-size:10px;background:#0a1a2a;color:#00D4FF"
-                ondblclick="event.stopPropagation()" onclick="llowDoubleClickJunction(event,'${step.id}')">⚙ Edit Options</button>
-      </div>`;
-    } else {
-      html += `<div class="llow-prop-row"><div class="llow-prop-label" style="color:#555">No editable options</div></div>`;
-    }
+    const pStr = Object.entries(step.params || {}).filter(([,v]) => v !== null && v !== '' && v !== undefined).map(([k,v]) => `${k}: ${v}`).join(' · ') || 'defaults';
+    html += `<div class="llow-prop-row">
+      <div class="llow-prop-label">Options</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#888">${pStr}</div>
+    </div>
+    <div style="margin-top:4px">
+      <button class="btn" style="font-size:10px;background:#0a1a2a;color:#00D4FF"
+              ondblclick="event.stopPropagation()" onclick="llowDoubleClickJunction(event,'${step.id}')">⚙ Edit Options</button>
+    </div>`;
+    return html;
+  }
+  // Non-junction LELs with configurable options
+  const lelOpts = typeof llowGetElOptions === 'function' ? llowGetElOptions(step.element_id) : [];
+  if (lelOpts.length) {
+    const pStr = Object.entries(step.params || {}).filter(([,v]) => v !== null && v !== '' && v !== undefined).map(([k,v]) => `${k}: ${v}`).join(' · ') || 'defaults';
+    html += `<div class="llow-prop-row">
+      <div class="llow-prop-label">Options</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#888">${pStr}</div>
+    </div>
+    <div style="margin-top:4px">
+      <button class="btn" style="font-size:10px;background:#0a1a2a;color:#4af"
+              onclick="llowOpenLELOptionsPopup('${step.id}')">⚙ Edit Options</button>
+    </div>`;
     return html;
   }
   if (catKey === 'approval_gates' && step.element_id === 'SCORE_GATE') {
@@ -13144,23 +13314,954 @@ function llowLogExec(msg, cls) {
       llowInit();
     }
   }
-  // Init on DOMContentLoaded if AAFL tab is active, else lazy-init on first tab switch
   document.addEventListener('DOMContentLoaded', () => {
     const aaflTab = document.querySelector('[data-tab="aafl-control"]');
     if (aaflTab && aaflTab.classList.contains('active')) maybeInitLlow();
+    llowRestoreLoopPresets();
+    llowSRInit();
   });
-  // Hook into existing tab switch — retries automatically if previous init failed
   const _origSwitchTab = window.switchTab;
   window.switchTab = function(tab) {
     if (_origSwitchTab) _origSwitchTab(tab);
     if (tab === 'aafl-control') maybeInitLlow();
+    if (tab) llowSRInit();
   };
-  // Also try after 1.2s in case DOMContentLoaded already fired
   setTimeout(() => {
     const body = document.getElementById('llow-palette-body');
     if (body && (body.innerHTML.includes('Loading') || window._llowInitFailed)) maybeInitLlow();
+    llowRestoreLoopPresets();
+    llowSRInit();
   }, 1200);
 })();
+
+// ── OCB-I Phase 6: LLOW Fullscreen ───────────────────────────────────────────
+
+function llowToggleFullscreen() {
+  const body = document.querySelector('.aafl-acc-body', document.getElementById('acc-llow'));
+  const wrap = document.getElementById('acc-llow');
+  if (!wrap) return;
+  const isFs = wrap.classList.contains('llow-fs-active');
+  if (isFs) {
+    wrap.classList.remove('llow-fs-active');
+    document.getElementById('llow-fs-btn').textContent = '↗';
+    document.getElementById('llow-fs-btn').title = 'Fullscreen LLOW canvas — expand to fill browser viewport';
+    llowLogExec('Fullscreen off', 'pass');
+  } else {
+    wrap.classList.add('llow-fs-active');
+    document.getElementById('llow-fs-btn').textContent = '↙';
+    document.getElementById('llow-fs-btn').title = 'Exit fullscreen (or press Escape)';
+    llowLogExec('Fullscreen on — press Escape or click ↙ to exit', 'pass');
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const wrap = document.getElementById('acc-llow');
+    if (wrap && wrap.classList.contains('llow-fs-active')) llowToggleFullscreen();
+    const pop = document.getElementById('llow-jb-edit-popup') || document.getElementById('llow-lel-opts-popup');
+    if (pop) pop.remove();
+  }
+});
+
+// ── OCB-I Phase 3: AI Master Control ─────────────────────────────────────────
+
+function llowToggleAMC() {
+  const body = document.getElementById('llow-amc-body');
+  const chevron = document.getElementById('llow-amc-chevron');
+  if (!body) return;
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (chevron) chevron.style.transform = open ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+
+let _llowFbDragEl = null;
+function llowFallbackDragStart(e, el) {
+  _llowFbDragEl = el;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', el.dataset.prov || '');
+}
+function llowFallbackDrop(e) {
+  e.preventDefault();
+  if (!_llowFbDragEl) return;
+  const list = document.getElementById('amc-fallback-list');
+  if (!list) return;
+  const over = e.target.closest('.llow-amc-fb-item');
+  if (over && over !== _llowFbDragEl) {
+    list.insertBefore(_llowFbDragEl, over);
+  }
+  _llowFbDragEl = null;
+}
+function llowSmartAutoAssign() {
+  const scores = { mistral: 8.2, cerebras: 8.5, gemini: 7.9, groq: 8.1, openrouter: 7.6 };
+  const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+  const setPhase = (id, prov) => { const el = document.getElementById(id); if (el) el.value = prov; };
+  setPhase('amc-phase-input',   sorted[0][0]);
+  setPhase('amc-phase-process', sorted[1 % sorted.length][0]);
+  setPhase('amc-phase-output',  sorted[2 % sorted.length][0]);
+  llowLogExec(`Smart Auto-Assign: INPUT=${sorted[0][0]}, PROCESS=${sorted[1%sorted.length][0]}, OUTPUT=${sorted[2%sorted.length][0]}`, 'pass');
+  showToast('Smart Auto-Assign complete', 'success');
+}
+
+// ── OCB-I Phase 8: Loop Behaviour in LLOW ────────────────────────────────────
+
+function llowToggleLoopAcc() {
+  const acc = document.getElementById('llow-loop-acc');
+  const body = document.getElementById('llow-loop-body');
+  const chevron = document.getElementById('llow-loop-chevron');
+  if (!acc || !body) return;
+  const open = acc.classList.contains('open');
+  acc.classList.toggle('open', !open);
+  body.style.display = open ? 'none' : 'block';
+  if (chevron) chevron.style.transform = open ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+
+function llowSyncLoopBehav() {
+  const inf = document.getElementById('llow-loop-infinite');
+  const cnt = document.getElementById('llow-loop-count');
+  if (!inf || !cnt) return;
+  cnt.disabled = inf.checked;
+  // Mirror to hidden compatibility fields
+  const origCount = document.getElementById('loop-count');
+  const origInf = document.getElementById('loop-infinite');
+  if (origCount) origCount.value = cnt.value;
+  if (origInf) origInf.checked = inf.checked;
+}
+
+function llowGetLoopBehav() {
+  const inf = document.getElementById('llow-loop-infinite')?.checked;
+  const cnt = parseInt(document.getElementById('llow-loop-count')?.value || '1');
+  const end = document.getElementById('llow-loop-end-cond')?.value || 'after_n';
+  const actions = [];
+  ['sif','sesum','wccs','wcbb','afna','wrs','dsp','wento'].forEach(a => {
+    const el = document.getElementById('llow-la-' + a);
+    if (el && el.checked) actions.push(a.toUpperCase());
+  });
+  return { loop_infinite: inf, loop_count: inf ? 0 : cnt, end_condition: end, loop_actions: actions };
+}
+
+const _llowLoopPresets = JSON.parse(localStorage.getItem('llow_loop_presets') || '{}');
+
+function llowSaveLoopPreset() {
+  const name = document.getElementById('llow-loop-preset-name')?.value?.trim();
+  if (!name) { showToast('Enter a preset name', 'error'); return; }
+  _llowLoopPresets[name] = llowGetLoopBehav();
+  localStorage.setItem('llow_loop_presets', JSON.stringify(_llowLoopPresets));
+  llowRestoreLoopPresets();
+  showToast('Loop preset saved: ' + name, 'success');
+}
+
+function llowRestoreLoopPresets() {
+  const sel = document.getElementById('llow-loop-preset-sel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Load preset…</option>';
+  for (const name of Object.keys(_llowLoopPresets)) {
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    sel.appendChild(opt);
+  }
+}
+
+function llowLoadLoopPreset(name) {
+  if (!name || !_llowLoopPresets[name]) return;
+  const p = _llowLoopPresets[name];
+  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el[typeof val === 'boolean' ? 'checked' : 'value'] = val; };
+  setEl('llow-loop-count', p.loop_count || 1);
+  setEl('llow-loop-infinite', p.loop_infinite || false);
+  setEl('llow-loop-end-cond', p.end_condition || 'after_n');
+  (p.loop_actions || []).forEach(a => {
+    const el = document.getElementById('llow-la-' + a.toLowerCase());
+    if (el) el.checked = true;
+  });
+  showToast('Loaded: ' + name, 'success');
+  document.getElementById('llow-loop-preset-sel').value = '';
+}
+
+// ── OCB-I Phase 1: LEL Options System ────────────────────────────────────────
+
+const LLOW_EL_OPTIONS = {
+  CR: [
+    { id:'threshold', label:'Threshold (0-10)', type:'range', min:0, max:10, def:6, goeb:'Confidence must reach this score or the fail action triggers. 6 = stop if AI is less than 60% confident.' },
+    { id:'fail_action', label:'Fail action', type:'select', opts:['stop','retry','AFNA'], def:'retry', goeb:'What happens when confidence falls below threshold. AFNA = Attack From New Angle automatically.' },
+    { id:'retry_count', label:'Retry count', type:'number', min:1, max:10, def:3, goeb:'How many times to retry before the fail action fires.' },
+    { id:'alert', label:'Alert on fail', type:'toggle', def:false, goeb:'Send a browser notification when confidence check fails.' }
+  ],
+  ALP: [
+    { id:'cost_cap', label:'Cost cap ($)', type:'number', min:0, max:10, step:0.01, def:0.10, goeb:'Hard stop — AAFL stops this element if cumulative cost exceeds this amount.' },
+    { id:'time_limit', label:'Time limit (s)', type:'number', min:10, max:600, def:120, goeb:'Maximum seconds this step is allowed to run before timing out.' },
+    { id:'provider_pref', label:'Provider', type:'select', opts:['auto','mistral','cerebras','gemini','groq','openrouter'], def:'auto', goeb:'Preferred AI for this ALP check — auto picks the cheapest available.' },
+    { id:'ffue', label:'FFUE check', type:'toggle', def:true, goeb:'Fluid Flexible Upgradeable Editable — verify the output meets all 4 FFUE criteria before passing.' }
+  ],
+  WCCS: [
+    { id:'version_label', label:'Version label', type:'text', def:'', goeb:'Optional version tag added to the handover file name e.g. v55. Leave blank to auto-increment.' },
+    { id:'auto_increment', label:'Auto-increment', type:'toggle', def:true, goeb:'Automatically bump the version number each save. Disable if you want a fixed label.' },
+    { id:'backup_copy', label:'Backup copy', type:'toggle', def:true, goeb:'Write a dated backup to archive_dead/ before overwriting the current STATUS.md.' },
+    { id:'confirm_prompt', label:'Confirm before save', type:'toggle', def:false, goeb:'Show a confirmation popup before writing files — useful when experimenting.' }
+  ],
+  AAFL_RUN: [
+    { id:'provider', label:'Provider', type:'select', opts:['auto','mistral','cerebras','gemini','groq','openrouter'], def:'auto', goeb:'Which AI runs the AAFL loop. Auto uses the best available free provider.' },
+    { id:'max_iter', label:'Max iterations', type:'number', min:1, max:20, def:5, goeb:'Maximum number of Plan-Work-Verify cycles before AAFL stops.' },
+    { id:'temperature', label:'Temperature', type:'range', min:0, max:10, def:7, goeb:'Creativity level — 0=precise/factual, 10=highly creative. Shown as 0.0–1.0 to the AI.' },
+    { id:'dry_run', label:'Dry run', type:'toggle', def:false, goeb:'If ON, AAFL logs what it would do without actually calling any AI or writing any files.' }
+  ],
+  WS: [
+    { id:'strategy', label:'Strategy', type:'select', opts:['All','DDG','Reddit','GitHub','YouTube','Forum'], def:'All', goeb:'Which search engine or source type to query. All = parallel search across all strategies.' },
+    { id:'max_results', label:'Max results', type:'number', min:1, max:20, def:5, goeb:'Maximum number of results to collect per source before stopping.' },
+    { id:'synthesis_ai', label:'Synthesis AI', type:'select', opts:['auto','mistral','cerebras','gemini'], def:'auto', goeb:'Which AI summarises and synthesises the search results into a briefing.' },
+    { id:'save_results', label:'Save results', type:'toggle', def:true, goeb:'Write search results to session_logs/ so they can be reviewed later.' }
+  ],
+  AFNA: [
+    { id:'approach', label:'Approach', type:'select', opts:['different_angle','simplify','break_down','challenge','analogise','first_principles'], def:'different_angle', goeb:'Strategy AFNA uses to attack the problem from a new direction.' },
+    { id:'max_attempts', label:'Max attempts', type:'number', min:1, max:10, def:3, goeb:'How many new angles to try before giving up and escalating.' },
+    { id:'escalate', label:'Escalate on fail', type:'toggle', def:true, goeb:'If all attempts fail, automatically escalate to a higher-capability provider.' },
+    { id:'notify', label:'Notify on trigger', type:'toggle', def:false, goeb:'Send a browser notification when AFNA triggers — useful for overnight runs.' }
+  ],
+  IBR: [
+    { id:'depth', label:'Depth', type:'select', opts:['quick','standard','deep'], def:'standard', goeb:'How thorough the Investigate-Brainstorm-Report is. Deep = more sources, slower.' },
+    { id:'max_sources', label:'Max sources', type:'number', min:2, max:20, def:8, goeb:'Maximum number of sources consulted during investigation.' },
+    { id:'include_code', label:'Include code', type:'toggle', def:false, goeb:'If the topic involves code, include code examples in the report.' },
+    { id:'format', label:'Format', type:'select', opts:['markdown','bullet','paragraph'], def:'markdown', goeb:'Output format for the final report section.' }
+  ],
+  SESUM: [
+    { id:'include_costs', label:'Include costs', type:'toggle', def:true, goeb:'Add cost summary (tokens used, USD spent) to the session summary.' },
+    { id:'include_scores', label:'Include scores', type:'toggle', def:true, goeb:'Add AAFL result scores to the session summary.' },
+    { id:'max_length', label:'Max length (lines)', type:'number', min:20, max:200, def:80, goeb:'Cap the session summary at this many lines to keep it manageable.' },
+    { id:'auto_save', label:'Auto-save', type:'toggle', def:true, goeb:'Automatically save the session summary to session_logs/ without prompting.' }
+  ],
+  SCORE_GATE: [
+    { id:'threshold', label:'Min score (0-10)', type:'range', min:0, max:10, def:7, goeb:'Only flow passes through if the previous result scored >= this threshold.' },
+    { id:'fail_route', label:'On fail route to', type:'text', def:'', goeb:'Element ID to jump to when score is too low (leave blank to stop flow).' },
+    { id:'log_result', label:'Log result', type:'toggle', def:true, goeb:'Write the score gate decision to the execution log.' },
+    { id:'retry_before_fail', label:'Retry count', type:'number', min:0, max:5, def:0, goeb:'Number of times to re-run the previous step before failing the gate.' }
+  ],
+  ALP_GATE: [
+    { id:'min_pct', label:'Min ALP % (5-95)', type:'range', min:5, max:95, def:20, goeb:'Only flow passes if Claude ALP (allowance remaining %) is >= this value.' },
+    { id:'warn_pct', label:'Warn at % (5-95)', type:'range', min:5, max:95, def:35, goeb:'Send a warning notification when ALP drops to this level.' },
+    { id:'log_result', label:'Log decision', type:'toggle', def:true, goeb:'Write the ALP gate pass/fail decision to the execution log.' },
+    { id:'hard_stop', label:'Hard stop on fail', type:'toggle', def:true, goeb:'If ALP is too low, stop the entire run rather than just this branch.' }
+  ],
+  WCBB: [
+    { id:'depth', label:'Critique depth', type:'select', opts:['brief','standard','thorough'], def:'standard', goeb:'How deeply to analyse what could be better. Thorough uses more tokens.' },
+    { id:'focus', label:'Focus area', type:'select', opts:['all','code','writing','logic','completeness'], def:'all', goeb:'Which aspect to focus the critique on.' },
+    { id:'auto_apply', label:'Auto-apply fixes', type:'toggle', def:false, goeb:'If ON, automatically apply the suggested improvements without asking.' },
+    { id:'min_improvements', label:'Min improvements', type:'number', min:1, max:10, def:3, goeb:'Minimum number of improvement suggestions required in the output.' }
+  ],
+  WRC: [
+    { id:'verify_mode', label:'Verify mode', type:'select', opts:['run_tests','manual','auto_check'], def:'auto_check', goeb:'How to verify the result of Write-Run-Check. auto_check = run the code and check output.' },
+    { id:'timeout', label:'Run timeout (s)', type:'number', min:5, max:300, def:60, goeb:'Maximum seconds to wait for the code to run before declaring a timeout.' },
+    { id:'retry_on_fail', label:'Retry on fail', type:'number', min:0, max:5, def:2, goeb:'How many times to retry the write step when the run or check fails.' },
+    { id:'save_output', label:'Save output', type:'toggle', def:true, goeb:'Write the run output to the execution log for review.' }
+  ],
+  YO: [
+    { id:'prompt', label:'Question text', type:'text', def:'', goeb:'The question to ask Scott. Leave blank to use the default "What do you think?".' },
+    { id:'timeout', label:'Wait timeout (s)', type:'number', min:30, max:3600, def:300, goeb:'How long to wait for a response before auto-continuing with the default choice.' },
+    { id:'default_choice', label:'Default if timeout', type:'select', opts:['continue','stop','skip'], def:'continue', goeb:'What to do if Scott does not respond within the timeout period.' },
+    { id:'block_on_fail', label:'Block on fail', type:'toggle', def:false, goeb:'If ON, the workflow pauses until a response is received — overrides timeout.' }
+  ],
+  HARD_STOP: [
+    { id:'reason', label:'Stop reason', type:'text', def:'', goeb:'Optional message logged when this hard stop fires — useful for debugging.' },
+    { id:'save_state', label:'Save state first', type:'toggle', def:true, goeb:'Run WCCS to save the handover before stopping.' },
+    { id:'notify', label:'Notify on stop', type:'toggle', def:true, goeb:'Send a browser notification when the hard stop fires.' },
+    { id:'log_trace', label:'Log trace', type:'toggle', def:true, goeb:'Write the full execution trace to the execution log before stopping.' }
+  ],
+  MCU: [
+    { id:'provider', label:'Provider', type:'select', opts:['auto','mistral','cerebras','gemini'], def:'auto', goeb:'Which AI runs the Kanban/MCU optimiser — Mistral recommended (free and good at JSON).' },
+    { id:'dry_run', label:'Dry run', type:'toggle', def:false, goeb:'Preview changes without writing to kanban.json.' },
+    { id:'max_items', label:'Max kanban items', type:'number', min:5, max:100, def:30, goeb:'Cap the number of kanban items to avoid overwhelming the AI.' },
+    { id:'include_done', label:'Include Done items', type:'toggle', def:false, goeb:'Include completed items in the analysis — useful for tracking patterns.' }
+  ],
+  WENTO: [
+    { id:'depth', label:'Scan depth', type:'select', opts:['quick','standard','thorough'], def:'standard', goeb:'How thoroughly to scan for missed items. Thorough checks all previous steps.' },
+    { id:'categories', label:'Focus', type:'select', opts:['all','errors','gaps','improvements','risks'], def:'all', goeb:'What category of missed item to prioritise.' },
+    { id:'log_findings', label:'Log findings', type:'toggle', def:true, goeb:'Write all findings to the execution log.' },
+    { id:'block_on_finding', label:'Block on finding', type:'toggle', def:false, goeb:'If ON, pause the workflow when something is flagged so Scott can review.' }
+  ],
+  SIF: [
+    { id:'max_length', label:'Max length (lines)', type:'number', min:10, max:300, def:100, goeb:'Cap the full summary at this length.' },
+    { id:'include_code', label:'Include code', type:'toggle', def:true, goeb:'Include code snippets in the full summary.' },
+    { id:'provider', label:'Provider', type:'select', opts:['auto','mistral','cerebras','gemini'], def:'auto', goeb:'Which AI writes the summary.' },
+    { id:'format', label:'Format', type:'select', opts:['markdown','plain','structured'], def:'markdown', goeb:'Output format for the summary.' }
+  ],
+  SBS: [
+    { id:'confirm_each', label:'Confirm each step', type:'toggle', def:true, goeb:'Pause and ask Scott to confirm before proceeding to the next step.' },
+    { id:'timeout', label:'Confirm timeout (s)', type:'number', min:30, max:1800, def:600, goeb:'Auto-continue if Scott does not confirm within this time.' },
+    { id:'max_steps', label:'Max steps shown', type:'number', min:2, max:50, def:10, goeb:'Maximum number of steps to display at once before scrolling.' },
+    { id:'log_each', label:'Log each step', type:'toggle', def:true, goeb:'Write each step to the execution log.' }
+  ],
+  CNP: [
+    { id:'format', label:'Export format', type:'select', opts:['markdown','plain','json','clacr'], def:'markdown', goeb:'Format to use when copying/exporting the result.' },
+    { id:'include_meta', label:'Include metadata', type:'toggle', def:false, goeb:'Include step ID, timestamp, and provider in the export.' },
+    { id:'clipboard', label:'Copy to clipboard', type:'toggle', def:true, goeb:'Automatically copy the result to the clipboard when this element runs.' },
+    { id:'open_in_tab', label:'Open in new tab', type:'toggle', def:false, goeb:'Open the result in a new browser tab for easy reading.' }
+  ]
+};
+
+function llowGetElOptions(elId) {
+  return LLOW_EL_OPTIONS[elId] || [];
+}
+
+function llowPalElClick(e, elId, catKey, palElArg) {
+  e.stopPropagation();
+  const palEl = palElArg || e.currentTarget;
+  const alreadyOpen = palEl.classList.contains('opts-open');
+  // Close all other open option panels
+  document.querySelectorAll('.llow-pal-el.opts-open').forEach(el => {
+    el.classList.remove('opts-open');
+    const next = el.nextElementSibling;
+    if (next && next.classList.contains('llow-pal-opts')) next.classList.remove('open');
+  });
+  if (alreadyOpen) return;
+  const opts = llowGetElOptions(elId);
+  if (!opts.length) return;
+  palEl.classList.add('opts-open');
+  let existing = palEl.nextElementSibling;
+  if (!existing || !existing.classList.contains('llow-pal-opts')) {
+    existing = document.createElement('div');
+    existing.className = 'llow-pal-opts';
+    palEl.parentNode.insertBefore(existing, palEl.nextSibling);
+  }
+  existing.innerHTML = opts.map(o => {
+    const curVal = (LLOW._palOptState[elId] || {})[o.id];
+    const val = curVal !== undefined ? curVal : o.def;
+    let input = '';
+    if (o.type === 'range') {
+      input = `<input type="range" min="${o.min}" max="${o.max}" value="${val}" class="llow-opt-input" style="padding:0" oninput="llowPalOptChange('${elId}','${o.id}',+this.value);this.nextSibling.textContent=' '+(+this.value/10).toFixed(1)"><span style="font-size:10px;color:#aaa"> ${(val/10).toFixed(1)}</span>`;
+    } else if (o.type === 'number') {
+      input = `<input type="number" min="${o.min||0}" max="${o.max||9999}" step="${o.step||1}" value="${val}" class="llow-opt-input" oninput="llowPalOptChange('${elId}','${o.id}',+this.value)">`;
+    } else if (o.type === 'select') {
+      const optHtml = o.opts.map(op => `<option value="${op}"${op==val?' selected':''}>${op}</option>`).join('');
+      input = `<select class="llow-opt-select" onchange="llowPalOptChange('${elId}','${o.id}',this.value)">${optHtml}</select>`;
+    } else if (o.type === 'toggle') {
+      input = `<label style="display:flex;align-items:center;gap:5px;font-size:11px;color:#aaa;cursor:pointer"><input type="checkbox" ${val?'checked':''} onchange="llowPalOptChange('${elId}','${o.id}',this.checked)"> ${val?'ON':'OFF'}</label>`;
+    } else {
+      input = `<input type="text" value="${(val||'').replace(/"/g,'&quot;')}" placeholder="${o.goeb.split(' ').slice(0,4).join(' ')+'…'}" class="llow-opt-input" oninput="llowPalOptChange('${elId}','${o.id}',this.value)">`;
+    }
+    return `<div class="llow-pal-opt-row">
+      <div class="llow-pal-opt-label">${o.label}</div>
+      ${input}
+      <span class="llow-pal-opt-goeb">${o.goeb}</span>
+    </div>`;
+  }).join('');
+  existing.classList.add('open');
+}
+
+function llowPalOptChange(elId, optId, val) {
+  if (!LLOW._palOptState[elId]) LLOW._palOptState[elId] = {};
+  LLOW._palOptState[elId][optId] = val;
+}
+
+// Event delegation: double-click non-JB LELs on canvas to open options popup
+document.addEventListener('DOMContentLoaded', () => {
+  const layer = document.getElementById('llow-nodes-layer');
+  if (layer) {
+    layer.addEventListener('dblclick', (ev) => {
+      const node = ev.target.closest('.llow-node:not(.llow-jb)');
+      if (!node) return;
+      ev.stopPropagation();
+      const stepId = node.id.replace('llow-node-', '');
+      const step = LLOW.wf.steps.find(s => s.id === stepId);
+      if (!step) return;
+      const opts = llowGetElOptions(step.element_id);
+      if (opts.length) llowOpenLELOptionsPopup(stepId);
+    });
+  }
+});
+// Also wire up via late-init since canvas may not exist at DOMContentLoaded
+setTimeout(() => {
+  const layer = document.getElementById('llow-nodes-layer');
+  if (layer && !layer.dataset.llowDblBound) {
+    layer.dataset.llowDblBound = '1';
+    layer.addEventListener('dblclick', (ev) => {
+      const node = ev.target.closest('.llow-node:not(.llow-jb)');
+      if (!node) return;
+      ev.stopPropagation();
+      const stepId = node.id.replace('llow-node-', '');
+      const step = LLOW.wf.steps.find(s => s.id === stepId);
+      if (!step) return;
+      const opts = llowGetElOptions(step.element_id);
+      if (opts.length) llowOpenLELOptionsPopup(stepId);
+    });
+  }
+}, 1500);
+
+function llowOpenLELOptionsPopup(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const opts = llowGetElOptions(step.element_id);
+  if (!opts.length) return;
+  const el = step._elDef || llowGetElInfo(step.element_id);
+  const cat = step._catDef || {};
+  const colour = cat.colour || el.colour || '#888';
+  const existing = document.getElementById('llow-lel-opts-popup');
+  if (existing) existing.remove();
+  const popup = document.createElement('div');
+  popup.id = 'llow-lel-opts-popup';
+  popup.className = 'mcc-popup-safe';
+  popup.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid '+colour+';border-radius:8px;padding:16px;z-index:9999;min-width:320px;max-width:420px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.85)';
+  popup.innerHTML = `
+    <div style="font-size:12px;font-weight:bold;color:${colour};margin-bottom:4px">${cat.icon||'⚙️'} ${el.name||step.element_id} — Options</div>
+    <div style="font-size:10px;color:#555;margin-bottom:12px">${el.desc||''}</div>
+    ${opts.map(o => {
+      const val = step.params[o.id] !== undefined ? step.params[o.id] : o.def;
+      let input = '';
+      if (o.type === 'range') {
+        input = `<input type="range" id="lel-opt-${o.id}" min="${o.min}" max="${o.max}" value="${val}" style="width:calc(100% - 35px)" oninput="this.nextSibling.textContent=' '+(+this.value/10).toFixed(1)"><span style="font-size:11px;color:#aaa;min-width:28px"> ${(+val/10).toFixed(1)}</span>`;
+      } else if (o.type === 'number') {
+        input = `<input type="number" id="lel-opt-${o.id}" min="${o.min||0}" max="${o.max||9999}" step="${o.step||1}" value="${val}" style="width:90px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px">`;
+      } else if (o.type === 'select') {
+        input = `<select id="lel-opt-${o.id}" style="background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px">${o.opts.map(op=>`<option value="${op}"${op==val?' selected':''}>${op}</option>`).join('')}</select>`;
+      } else if (o.type === 'toggle') {
+        input = `<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa"><input type="checkbox" id="lel-opt-${o.id}" ${val?'checked':''}> ${val?'ON':'OFF'}</label>`;
+      } else {
+        input = `<input type="text" id="lel-opt-${o.id}" value="${(val||'').toString().replace(/"/g,'&quot;')}" placeholder="${o.label}…" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px;box-sizing:border-box">`;
+      }
+      return `<div style="margin-bottom:10px">
+        <label style="display:block;font-size:11px;color:#888;margin-bottom:3px;font-weight:bold">${o.label}</label>
+        ${input}
+        <span style="display:block;font-size:9px;color:#3a5a6a;font-style:italic;margin-top:2px;line-height:1.4">${o.goeb}</span>
+      </div>`;
+    }).join('')}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn" onclick="llowSaveLELOpts('${stepId}');document.getElementById('llow-lel-opts-popup').remove()"
+              style="font-size:11px;background:#0a2a0a;color:#6f6">✓ Save Options</button>
+      <button class="btn" onclick="document.getElementById('llow-lel-opts-popup').remove()"
+              style="font-size:11px">Cancel</button>
+    </div>`;
+  document.body.appendChild(popup);
+  setTimeout(() => { const f = popup.querySelector('input,select'); if (f) f.focus(); }, 50);
+}
+
+function llowSaveLELOpts(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const opts = llowGetElOptions(step.element_id);
+  opts.forEach(o => {
+    const el = document.getElementById('lel-opt-' + o.id);
+    if (!el) return;
+    if (o.type === 'toggle') step.params[o.id] = el.checked;
+    else if (o.type === 'range' || o.type === 'number') step.params[o.id] = +el.value;
+    else step.params[o.id] = el.value;
+  });
+  llowRenderCanvas();
+  llowSelectStep(stepId);
+  llowLogExec('Options saved: ' + (step._elDef?.name || step.element_id), 'pass');
+}
+
+// Event delegation: click on palette elements to open options panel
+document.addEventListener('DOMContentLoaded', () => {
+  const pb = document.getElementById('llow-palette-body');
+  if (pb) _llowBindPaletteOpts(pb);
+});
+setTimeout(() => {
+  const pb = document.getElementById('llow-palette-body');
+  if (pb && !pb.dataset.llowOptsBound) _llowBindPaletteOpts(pb);
+}, 1500);
+function _llowBindPaletteOpts(pb) {
+  if (!pb || pb.dataset.llowOptsBound) return;
+  pb.dataset.llowOptsBound = '1';
+  pb.addEventListener('click', (ev) => {
+    const el = ev.target.closest('.llow-pal-el[data-el-id]');
+    if (!el) return;
+    const elId = el.dataset.elId;
+    const catKey = el.dataset.cat;
+    const opts = llowGetElOptions(elId);
+    if (!opts.length) return;
+    llowPalElClick(ev, elId, catKey, el);
+  });
+}
+
+// ── OCB-I Phase 2: Full Junction Box Options (all 8 types) ───────────────────
+
+function llowDoubleClickJunction(e, stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step || !step.element_id.startsWith('JB_')) return;
+  const jbType = step.element_id;
+  const el = llowGetElInfo(jbType);
+  const p = step.params || {};
+
+  const fieldRow = (id, label, inputHtml, goeb) => `
+    <div style="margin-bottom:9px">
+      <label style="display:block;font-size:11px;color:#888;margin-bottom:3px;font-weight:bold">${label}</label>
+      ${inputHtml}
+      <span style="display:block;font-size:9px;color:#3a5a6a;font-style:italic;margin-top:2px;line-height:1.4">${goeb}</span>
+    </div>`;
+  const txtInput = (id, val, ph) => `<input type="text" id="jb-f-${id}" value="${(val||'').replace(/"/g,'&quot;')}" placeholder="${ph}" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px;box-sizing:border-box">`;
+  const numInput = (id, val, min, max) => `<input type="number" id="jb-f-${id}" value="${val||min}" min="${min}" max="${max}" style="width:90px;background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px">`;
+  const selInput = (id, val, opts) => `<select id="jb-f-${id}" style="background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font:inherit;font-size:12px">${opts.map(o=>`<option value="${o}"${o==val?' selected':''}>${o}</option>`).join('')}</select>`;
+  const togInput = (id, val, label) => `<label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa"><input type="checkbox" id="jb-f-${id}" ${val?'checked':''}> ${label}</label>`;
+
+  let fields = '';
+  if (jbType === 'JB_DECISION') {
+    fields = fieldRow('condition', 'Condition (evaluates to yes/no)', txtInput('condition', p.condition, 'e.g. score >= 7'), 'Expression evaluated to route flow. True = YES port, False = NO port.') +
+             fieldRow('yes_label', 'YES branch label', txtInput('yes_label', p.yes_label||'Yes', 'Yes'), 'Label shown on the YES output port.') +
+             fieldRow('no_label', 'NO branch label', txtInput('no_label', p.no_label||'No', 'No'), 'Label shown on the NO output port.') +
+             fieldRow('timeout_s', 'Timeout (s, 0=none)', numInput('timeout_s', p.timeout_s||0, 0, 300), 'Auto-route to NO if condition cannot be evaluated within this time.');
+  } else if (jbType === 'JB_MERGE') {
+    fields = fieldRow('wait_mode', 'Wait mode', selInput('wait_mode', p.wait_mode||'all', ['all','any']), 'ALL = wait for every input path before firing. ANY = fire as soon as one path arrives.') +
+             fieldRow('timeout_s', 'Timeout (s, 0=none)', numInput('timeout_s', p.timeout_s||0, 0, 3600), 'If waiting in ALL mode, give up after this many seconds and continue anyway.') +
+             fieldRow('fallback', 'Fallback on timeout', selInput('fallback', p.fallback||'continue', ['continue','stop','afna']), 'What to do when the timeout fires before all paths arrive.') +
+             fieldRow('log_wait', 'Log waiting status', togInput('log_wait', p.log_wait!==false, 'Log each incoming path'), 'Write a log entry each time a path arrives at the Merge junction.');
+  } else if (jbType === 'JB_SPLIT') {
+    fields = fieldRow('fan_out', 'Fan-out count (2-6)', numInput('fan_out', p.fan_out||2, 2, 6), 'How many parallel paths to create from the single input.') +
+             fieldRow('run_mode', 'Run mode', selInput('run_mode', p.run_mode||'parallel', ['parallel','sequential']), 'PARALLEL = all paths run at once. SEQUENTIAL = paths run one after another.') +
+             fieldRow('max_concurrent', 'Max concurrent', numInput('max_concurrent', p.max_concurrent||2, 1, 6), 'Maximum number of paths allowed to run at the same time (parallel mode only).') +
+             fieldRow('label_paths', 'Label paths', togInput('label_paths', p.label_paths!==false, 'Auto-label each output port'), 'Add numbered labels to output ports: Path 1, Path 2, etc.');
+  } else if (jbType === 'JB_GATE') {
+    fields = fieldRow('condition', 'Condition (must be true to pass)', txtInput('condition', p.condition, 'e.g. score >= 7'), 'Flow only passes through when this expression evaluates to true.') +
+             fieldRow('fail_action', 'On fail', selInput('fail_action', p.fail_action||'stop', ['stop','skip','retry','afna']), 'What to do when the condition is false. AFNA = Attack From New Angle.') +
+             fieldRow('log_result', 'Log gate result', togInput('log_result', p.log_result!==false, 'Log pass/fail decision'), 'Write GATE PASS or GATE FAIL to the execution log.') +
+             fieldRow('invert', 'Invert condition', togInput('invert', p.invert||false, 'Pass when condition is FALSE instead'), 'Flips the gate logic — useful for "continue unless X" patterns.');
+  } else if (jbType === 'JB_COUNTER') {
+    fields = fieldRow('n', 'Fire trigger at count N', numInput('n', p.n||5, 1, 999), 'The counter increments each time flow passes through. Fires the trigger output at exactly N passes.') +
+             fieldRow('reset_after', 'Reset after firing', togInput('reset_after', p.reset_after!==false, 'Reset counter back to 0 after trigger fires'), 'If ON, the counter resets and starts again. If OFF, trigger fires every pass after N.') +
+             fieldRow('fire_action', 'Trigger action', selInput('fire_action', p.fire_action||'continue', ['continue','wccs','sesum','notify','afna']), 'What extra action to take when N is reached.') +
+             fieldRow('log_count', 'Log count', togInput('log_count', p.log_count!==false, 'Log current count on every pass'), 'Write the current count to the execution log on each pass.');
+  } else if (jbType === 'JB_LOGGER') {
+    fields = fieldRow('log_level', 'Log level', selInput('log_level', p.log_level||'info', ['debug','info','warn','error']), 'Severity level for entries written to the log.') +
+             fieldRow('destination', 'Destination', selInput('destination', p.destination||'exec_log', ['exec_log','session_log','both']), 'Where to write the log entries. Both = execution log + session log file.') +
+             fieldRow('format', 'Format', selInput('format', p.format||'brief', ['brief','full','json']), 'How much detail to include. Full includes all step context. JSON = machine-readable.') +
+             fieldRow('include_timestamp', 'Include timestamp', togInput('include_timestamp', p.include_timestamp!==false, 'Prepend timestamp to each log entry'), 'Add HH:MM:SS timestamp to each logged entry.');
+  } else if (jbType === 'JB_ROUTER') {
+    const rv = (p.rules || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    fields = fieldRow('rules', 'Routing rules (one per line: expr:target_id)', `<textarea id="jb-f-rules" rows="4" placeholder=">=8:SESUM_END&#10;<5:AFNA&#10;default:WCCS_END" style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px;box-sizing:border-box;resize:vertical">${rv}</textarea>`, 'Each line: expression:target_element_id. Matched in order. Use "default" for catch-all.') +
+             fieldRow('fallback_id', 'Fallback element ID', txtInput('fallback_id', p.fallback_id||'', 'e.g. WCCS_END'), 'If no rule matches, route to this element. Leave blank to stop.') +
+             fieldRow('match_mode', 'Match mode', selInput('match_mode', p.match_mode||'first', ['first','all','best']), 'FIRST = stop at first match. ALL = fire all matching routes. BEST = pick highest-score match.') +
+             fieldRow('log_routing', 'Log routing decisions', togInput('log_routing', p.log_routing!==false, 'Log which rule matched'), 'Write the matched rule and target to the execution log.');
+  } else if (jbType === 'JB_DELAY') {
+    fields = fieldRow('seconds', 'Delay in seconds', numInput('seconds', p.seconds||5, 1, 3600), 'How long to pause flow before passing it through to the next element.') +
+             fieldRow('jitter_s', 'Jitter (±s)', numInput('jitter_s', p.jitter_s||0, 0, 60), 'Add random variation to the delay (±jitter seconds). Useful for avoiding rate limits.') +
+             fieldRow('resume_on_score', 'Resume early if score >=', numInput('resume_on_score', p.resume_on_score||0, 0, 10), 'Skip remaining wait time if the current result score reaches this value. 0=disabled.') +
+             fieldRow('log_wait', 'Log wait start/end', togInput('log_wait', p.log_wait!==false, 'Log when delay starts and finishes'), 'Write log entries when the delay begins and when it ends.');
+  } else {
+    fields = `<div style="font-size:11px;color:#666;font-style:italic;padding:8px 0">No editable options for this junction type.</div>`;
+  }
+
+  const existing = document.getElementById('llow-jb-edit-popup');
+  if (existing) existing.remove();
+  const popup = document.createElement('div');
+  popup.id = 'llow-jb-edit-popup';
+  popup.className = 'mcc-popup-safe';
+  popup.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid #00D4FF;border-radius:8px;padding:16px;z-index:9999;min-width:340px;max-width:420px;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.85)';
+  popup.innerHTML = `
+    <div style="font-size:12px;font-weight:bold;color:#00D4FF;margin-bottom:4px">🔲 ${el.name} — Options</div>
+    <div style="font-size:10px;color:#555;margin-bottom:12px">${el.desc}</div>
+    ${fields}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn" onclick="llowJBSaveEdit('${stepId}');document.getElementById('llow-jb-edit-popup').remove()"
+              style="font-size:11px;background:#0a2a0a;color:#6f6">✓ Save</button>
+      <button class="btn" onclick="document.getElementById('llow-jb-edit-popup').remove()"
+              style="font-size:11px">Cancel</button>
+    </div>`;
+  document.body.appendChild(popup);
+  setTimeout(() => { const f = popup.querySelector('input,select,textarea'); if (f) f.focus(); }, 50);
+}
+
+function llowJBSaveEdit(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const jbType = step.element_id;
+  const getVal = (id) => { const el = document.getElementById('jb-f-' + id); return el ? el.value : null; };
+  const getNum = (id, def) => { const el = document.getElementById('jb-f-' + id); return el ? (parseInt(el.value) || def) : def; };
+  const getTog = (id) => { const el = document.getElementById('jb-f-' + id); return el ? el.checked : false; };
+  if (jbType === 'JB_DECISION') {
+    step.params.condition = getVal('condition') || '';
+    step.params.yes_label = getVal('yes_label') || 'Yes';
+    step.params.no_label = getVal('no_label') || 'No';
+    step.params.timeout_s = getNum('timeout_s', 0);
+  } else if (jbType === 'JB_MERGE') {
+    step.params.wait_mode = getVal('wait_mode') || 'all';
+    step.params.timeout_s = getNum('timeout_s', 0);
+    step.params.fallback = getVal('fallback') || 'continue';
+    step.params.log_wait = getTog('log_wait');
+  } else if (jbType === 'JB_SPLIT') {
+    step.params.fan_out = getNum('fan_out', 2);
+    step.params.run_mode = getVal('run_mode') || 'parallel';
+    step.params.max_concurrent = getNum('max_concurrent', 2);
+    step.params.label_paths = getTog('label_paths');
+  } else if (jbType === 'JB_GATE') {
+    step.params.condition = getVal('condition') || '';
+    step.params.fail_action = getVal('fail_action') || 'stop';
+    step.params.log_result = getTog('log_result');
+    step.params.invert = getTog('invert');
+  } else if (jbType === 'JB_COUNTER') {
+    step.params.n = getNum('n', 5);
+    step.params.reset_after = getTog('reset_after');
+    step.params.fire_action = getVal('fire_action') || 'continue';
+    step.params.log_count = getTog('log_count');
+  } else if (jbType === 'JB_LOGGER') {
+    step.params.log_level = getVal('log_level') || 'info';
+    step.params.destination = getVal('destination') || 'exec_log';
+    step.params.format = getVal('format') || 'brief';
+    step.params.include_timestamp = getTog('include_timestamp');
+  } else if (jbType === 'JB_ROUTER') {
+    step.params.rules = getVal('rules') || '';
+    step.params.fallback_id = getVal('fallback_id') || '';
+    step.params.match_mode = getVal('match_mode') || 'first';
+    step.params.log_routing = getTog('log_routing');
+  } else if (jbType === 'JB_DELAY') {
+    step.params.seconds = getNum('seconds', 5);
+    step.params.jitter_s = getNum('jitter_s', 0);
+    step.params.resume_on_score = getNum('resume_on_score', 0);
+    step.params.log_wait = getTog('log_wait');
+  }
+  llowRenderCanvas();
+  llowSelectStep(stepId);
+  llowLogExec(`${jbType} options saved`, 'pass');
+}
+
+// ── OCB-I Phase 4: Snap Mode + Snap Glow fix (works with Element Mirror) ─────
+
+function llowApplyColourStrategies() {
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner) return;
+  inner.querySelectorAll('.llow-colour-overlay,.llow-phase-label').forEach(el => el.remove());
+  const { phase_flow, element_mirror } = LLOW.colourStrat;
+
+  if (element_mirror && LLOW.elements) {
+    const cats = Object.entries(LLOW.elements.categories || {});
+    const totalEls = cats.reduce((s, [, c]) => s + (c.elements?.length || 0), 0);
+    if (totalEls > 0) {
+      const stops = [];
+      let pct = 0;
+      for (const [, cat] of cats) {
+        const n = cat.elements?.length || 0;
+        if (!n) continue;
+        const w = (n / totalEls) * 100;
+        const col = cat.colour || '#888888';
+        const r = parseInt(col.slice(1, 3), 16) || 0;
+        const g = parseInt(col.slice(3, 5), 16) || 0;
+        const b = parseInt(col.slice(5, 7), 16) || 0;
+        stops.push(`rgba(${r},${g},${b},0.18) ${pct.toFixed(1)}%`);
+        stops.push(`rgba(${r},${g},${b},0.18) ${(pct + w).toFixed(1)}%`);
+        pct += w;
+      }
+      if (stops.length) {
+        const ov = document.createElement('div');
+        ov.className = 'llow-colour-overlay';
+        ov.style.background = `linear-gradient(to right,${stops.join(',')})`;
+        inner.prepend(ov);
+      }
+    }
+  }
+
+  if (phase_flow) {
+    const ov = document.createElement('div');
+    ov.className = 'llow-colour-overlay';
+    ov.style.background = 'linear-gradient(to right,rgba(0,80,255,0.18) 0%,rgba(0,80,255,0.18) 33.3%,rgba(180,180,180,0.08) 33.3%,rgba(180,180,180,0.08) 66.6%,rgba(255,50,0,0.18) 66.6%,rgba(255,50,0,0.18) 100%)';
+    inner.prepend(ov);
+    // Phase 5: Enhanced zone labels with GOEB
+    const zoneLabels = [
+      { text: 'INPUT',   sub: 'Brainstorm · Research · Scout',   goeb: 'Place input-gathering elements here — web searches, IBR investigations, goal clarification.',            left: '1%',  color: 'rgba(100,160,255,0.95)' },
+      { text: 'PROCESS', sub: 'Run · Evaluate · Route · Control', goeb: 'Place action and decision elements here — AAFL runs, score gates, modifiers, junction boxes.',          left: '34%', color: 'rgba(200,200,200,0.85)' },
+      { text: 'OUTPUT',  sub: 'Save · Handover · Report · End',   goeb: 'Place output and ending elements here — WCCS saves, SESUM summaries, CLACR exports, hard stops.',       left: '67%', color: 'rgba(255,120,100,0.95)' }
+    ];
+    for (const z of zoneLabels) {
+      const lb = document.createElement('div');
+      lb.className = 'llow-phase-label';
+      lb.style.left = z.left;
+      lb.style.color = z.color;
+      lb.style.background = 'rgba(0,0,0,0.55)';
+      lb.style.borderBottom = '2px solid ' + z.color;
+      lb.title = z.goeb;
+      lb.innerHTML = `${z.text}<span class="llow-phase-goeb">${z.sub}</span>`;
+      inner.appendChild(lb);
+    }
+  }
+  llowSetupSnapZones();
+}
+
+function llowSetupSnapZones() {
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner) return;
+  inner.querySelectorAll('.llow-snap-zone').forEach(el => el.remove());
+  const { snap_glow, snap_mode, phase_flow, element_mirror } = LLOW.colourStrat;
+  if (!snap_glow && !snap_mode) return;
+  if (!LLOW.elements) return;
+
+  if (element_mirror) {
+    // Element Mirror mode: snap zones per category
+    const cats = Object.entries(LLOW.elements.categories || {});
+    const totalEls = cats.reduce((s, [, c]) => s + (c.elements?.length || 0), 0);
+    if (!totalEls) return;
+    let pct = 0;
+    for (const [catKey, cat] of cats) {
+      const n = cat.elements?.length || 0;
+      if (!n) continue;
+      const w = (n / totalEls) * 100;
+      const ov = document.createElement('div');
+      ov.className = 'llow-snap-zone';
+      ov.dataset.cat = catKey;
+      ov.dataset.mode = 'mirror';
+      ov.style.left = pct.toFixed(1) + '%';
+      ov.style.width = w.toFixed(1) + '%';
+      ov.style.background = cat.colour || '#888';
+      inner.prepend(ov);
+      pct += w;
+    }
+  } else if (phase_flow) {
+    // Phase Flow mode: 3 big zones
+    const zones = [
+      { key: 'input',   left: 0,     width: 33.33, color: 'rgba(0,80,255,0.6)' },
+      { key: 'process', left: 33.33, width: 33.34, color: 'rgba(180,180,180,0.4)' },
+      { key: 'output',  left: 66.67, width: 33.33, color: 'rgba(255,50,0,0.6)' }
+    ];
+    for (const z of zones) {
+      const ov = document.createElement('div');
+      ov.className = 'llow-snap-zone';
+      ov.dataset.cat = z.key;
+      ov.dataset.mode = 'phase';
+      ov.style.left = z.left.toFixed(2) + '%';
+      ov.style.width = z.width.toFixed(2) + '%';
+      ov.style.background = z.color;
+      inner.prepend(ov);
+    }
+  }
+}
+
+function llowSnapGlowAt(catKey) {
+  const { element_mirror, phase_flow } = LLOW.colourStrat;
+  document.querySelectorAll('.llow-snap-zone').forEach(z => {
+    let match = false;
+    if (element_mirror && z.dataset.mode === 'mirror') {
+      match = z.dataset.cat === catKey;
+    } else if (phase_flow && z.dataset.mode === 'phase') {
+      const zone = llowGetZoneForCat(catKey);
+      match = z.dataset.cat === zone;
+    }
+    if (match) z.classList.add('glow');
+    else z.classList.remove('glow');
+  });
+}
+
+function llowOnDragOver(e) {
+  e.preventDefault();
+  if (!LLOW.colourStrat.snap_glow) return;
+  const dp = LLOW.dragPalette;
+  if (!dp || dp.type !== 'element') return;
+  llowSnapGlowAt(dp.catKey);
+}
+
+function llowOnDrop(e) {
+  e.preventDefault();
+  llowSnapGlowOff();
+  let data = null;
+  try {
+    const raw = e.dataTransfer.getData('text/plain');
+    if (raw) data = JSON.parse(raw);
+  } catch {}
+  if (!data) data = LLOW.dragPalette;
+  LLOW.dragPalette = null;
+  if (!data) return;
+
+  if (data.type === 'arrow') {
+    LLOW.pendingArrowType = data.arrowId;
+    const adef = LLOW.arrowDefs.find(a => a.id === data.arrowId) || {};
+    llowUpdateArrowBadge();
+    const steps = LLOW.wf.steps;
+    if (steps.length >= 2) {
+      const from = steps[steps.length - 2];
+      const to   = steps[steps.length - 1];
+      const already = LLOW.wf.arrows.some(a => a.from === from.id && a.to === to.id);
+      if (!already) {
+        const aid = 'arrow-' + Math.random().toString(36).slice(2, 10);
+        LLOW.wf.arrows.push({ id: aid, from: from.id, to: to.id, arrow_type: data.arrowId, params: {} });
+        llowRenderCanvas();
+        LLOW.pendingArrowType = 'continue';
+        llowUpdateArrowBadge();
+        const fn = from._elDef?.name || from.element_id;
+        const tn = to._elDef?.name || to.element_id;
+        llowLogExec(`${adef.symbol || '→'} ${adef.name || data.arrowId}: ${fn} → ${tn}`, 'pass');
+        return;
+      }
+    }
+    llowLogExec(`Arrow type set: ${adef.name || data.arrowId} — click output port then input port to connect`, 'running');
+    return;
+  }
+
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner || !LLOW.elements) return;
+  if (data.type !== 'element') return;
+  const rect = inner.getBoundingClientRect();
+  const scroll = document.getElementById('llow-canvas-scroll');
+  const rawX = e.clientX - rect.left + (scroll ? scroll.scrollLeft : 0);
+  const rawY = e.clientY - rect.top + (scroll ? scroll.scrollTop : 0);
+  const x = Math.round(rawX / 20) * 20;
+  const y = Math.round(rawY / 20) * 20;
+  const catDef = (LLOW.elements.categories || {})[data.catKey] || {};
+  const elDef = (catDef.elements || []).find(e2 => e2.id === data.elId);
+  if (!elDef) return;
+
+  // Snap Mode zone check — works with BOTH phase_flow AND element_mirror
+  if (LLOW.colourStrat.snap_mode) {
+    const { phase_flow, element_mirror } = LLOW.colourStrat;
+    if (element_mirror) {
+      // Element Mirror: each category has its own band — compute x% and compare to cat zone
+      const cats = Object.entries(LLOW.elements.categories || {});
+      const totalEls = cats.reduce((s, [, c]) => s + (c.elements?.length || 0), 0);
+      if (totalEls > 0) {
+        let pct = 0;
+        let dropZoneCat = null;
+        const xPct = (x / 2200) * 100;
+        for (const [catKey, cat] of cats) {
+          const n = cat.elements?.length || 0;
+          if (!n) continue;
+          const w = (n / totalEls) * 100;
+          if (xPct >= pct && xPct < pct + w) { dropZoneCat = catKey; break; }
+          pct += w;
+        }
+        if (dropZoneCat && dropZoneCat !== data.catKey) {
+          llowFlashWrongZone(x);
+          const wrapEl = document.getElementById('llow-canvas-wrap');
+          if (wrapEl) { wrapEl.classList.add('llow-zone-flash'); setTimeout(() => wrapEl.classList.remove('llow-zone-flash'), 420); }
+          llowLogExec(`Snap Mode: ${elDef.name} belongs in its own colour zone — snap back`, 'fail');
+          return;
+        }
+      }
+    } else if (phase_flow) {
+      const dropZone = llowGetZoneForX(x);
+      const elZone   = llowGetZoneForCat(data.catKey);
+      if (elZone && dropZone !== elZone) {
+        llowFlashWrongZone(x);
+        const wrapEl = document.getElementById('llow-canvas-wrap');
+        if (wrapEl) { wrapEl.classList.add('llow-zone-flash'); setTimeout(() => wrapEl.classList.remove('llow-zone-flash'), 420); }
+        llowLogExec(`Snap Mode: ${elDef.name} belongs in ${elZone.toUpperCase()} zone — snap back`, 'fail');
+        return;
+      }
+    }
+  }
+
+  const stepId = 'step-' + Math.random().toString(36).slice(2, 10);
+  const preOpts = LLOW._palOptState[data.elId] || {};
+  LLOW.wf.steps.push({ id: stepId, element_id: data.elId, x, y, params: Object.assign({}, preOpts), _elDef: elDef, _catDef: catDef });
+  llowRenderCanvas();
+  llowSelectStep(stepId);
+  llowLogExec(`Added: ${elDef.name}`, 'pass');
+}
+
+// ── OCB-I Phase 9: Section Reorganiser ───────────────────────────────────────
+
+let _srDragEl = null;
+let _srDragTab = null;
+
+function llowSRInit() {
+  // Apply section reorganiser to all aafl-acc sections in aafl-control tab
+  const tabs = document.querySelectorAll('.tab-content[data-tab]');
+  tabs.forEach(tab => {
+    const tabId = tab.dataset.tab || tab.id;
+    _srInitTab(tab, tabId);
+  });
+  // Also init .aafl-acc accordion sections in AAFL control
+  const aaflCtrl = document.querySelector('.tab-content[data-tab="aafl-control"]') ||
+                   document.getElementById('tab-aafl-control');
+  if (aaflCtrl) _srInitTab(aaflCtrl, 'aafl-control');
+}
+
+function _srInitTab(tabEl, tabId) {
+  if (!tabEl) return;
+  const sections = tabEl.querySelectorAll('.aafl-acc');
+  sections.forEach(sec => {
+    if (sec.dataset.srInit) return;
+    sec.dataset.srInit = '1';
+    sec.dataset.srTab = tabId;
+    sec.draggable = false; // only drag via handle
+    const hdr = sec.querySelector('.aafl-acc-hdr');
+    if (!hdr) return;
+    // Add drag handle
+    if (!hdr.querySelector('.sr-handle')) {
+      const handle = document.createElement('span');
+      handle.className = 'sr-handle';
+      handle.title = 'Drag to reorder this section';
+      handle.textContent = '⠿';
+      handle.style.cursor = 'grab';
+      hdr.insertBefore(handle, hdr.firstChild);
+      handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        sec.draggable = true;
+      });
+    }
+    // Add min/max button
+    if (!hdr.querySelector('.sr-min-btn')) {
+      const minBtn = document.createElement('button');
+      minBtn.className = 'sr-min-btn';
+      minBtn.title = 'Minimise/Maximise this section';
+      minBtn.textContent = '▲';
+      minBtn.style.marginRight = '4px';
+      minBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isMin = sec.classList.contains('sr-minimised');
+        // Close any maximised first
+        tabEl.querySelectorAll('.aafl-acc.sr-maximised').forEach(el => {
+          el.classList.remove('sr-maximised');
+          el.querySelector('.sr-min-btn').textContent = '▲';
+        });
+        if (isMin) {
+          sec.classList.remove('sr-minimised');
+          minBtn.textContent = '▲';
+        } else {
+          sec.classList.add('sr-minimised');
+          minBtn.textContent = '▼';
+        }
+        _srSaveOrder(tabEl, tabId);
+      });
+      hdr.appendChild(minBtn);
+    }
+    sec.addEventListener('dragstart', (e) => {
+      if (!sec.draggable) return;
+      _srDragEl = sec;
+      _srDragTab = tabId;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', sec.id || '');
+      setTimeout(() => sec.classList.add('sr-section-dragging'), 0);
+    });
+    sec.addEventListener('dragend', () => {
+      sec.draggable = false;
+      sec.classList.remove('sr-section-dragging');
+      tabEl.querySelectorAll('.aafl-acc').forEach(el => el.classList.remove('sr-drop-target'));
+      _srSaveOrder(tabEl, tabId);
+    });
+    sec.addEventListener('dragover', (e) => {
+      if (!_srDragEl || _srDragEl === sec) return;
+      e.preventDefault();
+      tabEl.querySelectorAll('.aafl-acc').forEach(el => el.classList.remove('sr-drop-target'));
+      sec.classList.add('sr-drop-target');
+    });
+    sec.addEventListener('drop', (e) => {
+      e.preventDefault();
+      if (!_srDragEl || _srDragEl === sec) return;
+      const parent = sec.parentNode;
+      if (!parent) return;
+      const allSections = [...parent.querySelectorAll(':scope > .aafl-acc')];
+      const fromIdx = allSections.indexOf(_srDragEl);
+      const toIdx = allSections.indexOf(sec);
+      if (fromIdx < toIdx) {
+        parent.insertBefore(_srDragEl, sec.nextSibling);
+      } else {
+        parent.insertBefore(_srDragEl, sec);
+      }
+      sec.classList.remove('sr-drop-target');
+      _srSaveOrder(tabEl, tabId);
+    });
+  });
+  _srRestoreOrder(tabEl, tabId);
+}
+
+function _srSaveOrder(tabEl, tabId) {
+  const sections = [...tabEl.querySelectorAll('.aafl-acc')];
+  const order = sections.map(s => s.id || '').filter(Boolean);
+  try { localStorage.setItem('sr_order_' + tabId, JSON.stringify(order)); } catch(e) {}
+}
+
+function _srRestoreOrder(tabEl, tabId) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('sr_order_' + tabId) || 'null');
+    if (!saved || !Array.isArray(saved)) return;
+    const parent = tabEl.querySelector('.aafl-acc')?.parentNode;
+    if (!parent) return;
+    for (const id of saved) {
+      const el = document.getElementById(id);
+      if (el && el.parentNode === parent) parent.appendChild(el);
+    }
+  } catch(e) {}
+}
 
 </script>
 </div><!-- end content-area -->

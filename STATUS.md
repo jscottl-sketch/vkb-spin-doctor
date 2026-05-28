@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (OCB-H) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-28 (OCB-I) | **Updated by:** Claude Code
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -160,7 +160,16 @@
 | OCB-H Phase 9 (Promo Tab) | Project story + description, stat counters (14 providers/108 MOT/9.33 score), competitive comparison table (AAFL vs LangGraph/CrewAI/AutoGPT), links section (Ko-fi/Itch.io/GitHub/r/LocalLLaMA). |
 | OCB-H Phase 10 (Missions) | Progress overview panel: 6 animated progress bars per mission, AAFL score trend SVG chart, milestone markers (done/pending/planned). |
 | OCB-H Phase 11 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
-| OCB-H Phase 7
+| OCB-I Phase 1 (LEL Options) | Every LEL has 3-4 configurable options. Palette click → options panel below. Canvas double-click → popup. GOEB tooltips on all options. |
+| OCB-I Phase 2 (Junction Boxes) | All 8 JB types fully rebuilt with 4 options each: Decision/Merge/Split/Gate/Counter/Logger/Router/Delay. Full double-click popup for all. |
+| OCB-I Phase 3 (AI Master Control) | Collapsible panel above LLOW canvas: per-phase AI dropdowns, parallel workers slider, cost cap, temperature, Smart Auto-Assign, fallback chain drag-reorder, provider toggles. |
+| OCB-I Phase 4 (Snap Mode Fix) | Snap Mode now works with BOTH Phase Flow AND Element Mirror. Element Mirror: each LEL snaps to its own colour zone. Phase Flow: 3-zone INPUT/PROCESS/OUTPUT enforcement. |
+| OCB-I Phase 5 (Zone Labels) | All 3 zones (INPUT/PROCESS/OUTPUT) have visible headers with subtitle text, GOEB tooltip, colour-coded borders. |
+| OCB-I Phase 6 (LLOW Fullscreen) | ↗ button in LLOW toolbar expands canvas to fill viewport. Escape or ↙ exits. Works in fullscreen for all LLOW functions. |
+| OCB-I Phase 7 (Scrollbar Width) | All LLOW scrollbars widened to 10px: palette, canvas, props panel, settings, exec log. |
+| OCB-I Phase 8 (Loop Behaviour → LLOW) | Loop Behaviour absorbed into LLOW section as collapsible accordion. All 8 loop action LELs present. Loop presets saved to localStorage. |
+| OCB-I Phase 9 (Section Reorganiser) | All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab. |
+| OCB-I Phase 10 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
