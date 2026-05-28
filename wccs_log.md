@@ -27,3 +27,13 @@
 | 19 | 2026-05-19 | v43 -> v44 | aafl_wccs.py: Mistral wrote handover from chat_latest.txt. Cost $0.00000. | None |
 | 20 | 2026-05-20 | v43 -> v45 | v44 confirmed truncated (499 lines). v45 written from v43. Sections changed: Header/Status, ACCA codes (CAP added), CURRENT PROJECT STATUS (split design + aafl_wccs_spec added, NEVER-DELETE rule), NEXT PRIORITIES (session A/B build order), WCCS Protocol (NEVER-DELETE rule + aafl_wccs spec note), WHAT NOT TO DO (2 rules added), TROUBLESHOOTING (2 rows added), RESUME COMMAND, CHAT LOG (2026-05-20 entry). Files archived: v43 + v44 to archive_dead/. | CAP = Copy and Paste |
 | 21 | 2026-05-20 | v42 -> v43 | SESSION: 20 May 2026 — aafl_watchdog.py built, Star Citizen 8.33/10 autonomous, | None |
+| WATCHDOG | 2026-05-27 15:31 | - | Capture: none | FAIL |
+| WATCHDOG | 2026-05-27 15:34 | - | Capture: none | FAIL |
+| WATCHDOG | 2026-05-27 15:37 | - | Capture: none | FAIL |
+| 22 | 2026-05-27 | v46 -> v47 | test chat text for recovery check | None |
+| 23 | 2026-05-27 | v47 -> v48 | {} | None |
+| 24 | 2026-05-27 | v48 -> v49 | test chat text for recovery check | None |
+| 25 | 2026-05-27 | v49 -> v50 | test chat text for recovery check | None |
+| 26 | 2026-05-28 | v50 -> v51 | {} | None |
+| 27 | 2026-05-28 | v51 -> v52 | test chat text for recovery check | None |
+| 28 | 2026-05-28 | v52 -> v53 | OCB-G: LLOW arrow drop fix (llowOnDrop restructured + auto-connect) + colour strategy opacity visible (0.05→0.20 / 0.07→0.18 / 0.15-0.40). 108/108 MOT. | None |
