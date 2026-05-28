@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (mcc-instructions-keeper) | **Updated by:** Claude Code WCCS
+**Last updated:** 2026-05-28 (aafl_wccs.py) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -171,6 +171,7 @@
 | OCB-I Phase 9 (Section Reorganiser) | All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab. |
 | OCB-I Phase 10 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
 | mcc-instructions-keeper | data/instructions_db.json (132 entries) + /api/instructions endpoints + 7 ? help buttons in MCC headers + showInstructions() JS. Skill file uploaded to Project Files 2026-05-28. |
+| OCB-H Phase 7 (
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

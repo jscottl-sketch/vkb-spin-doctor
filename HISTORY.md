@@ -874,6 +874,48 @@ SESSION: mcc-instructions-keeper build
 - Manual step done: skill file uploaded to Project Files on claude.ai
 - Git committed: 1f6fad pushed to master
 
+
+---
+
+### 2026-05-28
+
+# Session Log — 2026-05-28
+
+## Status
+OCB-J + OCB-K + OCB-L designed and run — safety, health, AI bar, mega test, help tab
+
+## What was done
+- HC-01 to HC-10 health checks added to self_health.py, system_monitor.py, work_checker.py
+- OCB-J: Safety Shield (red/green panel on MCC Home) + CLACHR Relay (full task dispatch circuit) built
+- OCB-K: Tooltip z-index global fix, MOT live feed, visual progress spectacular (radar/diamond chart, timeline, build velocity), Project Brain self-awareness, dropdown audit, mega test suite, AAFL error DB, resource monitor, CLAUDE.md — hit CLAC rate limit mid-run
+- OCB-L: System monitor red errors fixed, AI status bar rebuilt (shows GPU/CPU/CLOUD/PAID + model + VRAM), click drill-downs on all dials, Help search tab with AI hierarchy protocol, settings persistence to disk (replaces localStorage)
+- New ACCA code: CLACHR = CLACH Relay circuit
+
+## What broke / gaps found
+- CLAC hit rate limit during OCB-K Phase 7 — OCB-L block resumes missing work
+- GPU/CPU/RAM section was showing red errors — fixed in OCB-L Phase 2
+- AI status bar was empty — fixed in OCB-L Phase 3
+- Settings wiped on every MCC update — fixed in OCB-L Phase 6
+
+## Decisions made
+- Settings persist to disk via /api/settings, not localStorage — survives every future OCB
+- Help tab uses AI hierarchy: local first, cascade to cloud if offline
+- Drill-down panels expand inline below dials (not popups) to avoid z-index issues
+
+## Next priorities (pick up here)
+1. Confirm OCB-L ran clean — check MOT score + mega test pass rate
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Add GROQ_API_KEY + Cloudflare keys to .env (manual — security rule)
+
+## Provider / component status changes
+No changes.
+
+## ALP notes
+None new.
+
+## Files changed
+self_health.py, system_monitor.py, work_checker.py, mission_control.html, mcc_server.py, aafl_core.py, CLAUDE.md (new), data/project_awareness.json (new), data/mcc_settings.json (new), tests/mega_test.py (new)
+
 <!-- END_OF_FILE -->
 
 
