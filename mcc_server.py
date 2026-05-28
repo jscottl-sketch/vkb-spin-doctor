@@ -414,6 +414,14 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_storage_stats()
             elif path == "/api/storage/largest":
                 self._handle_storage_largest()
+            elif path == "/api/storage/detailed":
+                self._handle_storage_detailed()
+            elif path == "/api/storage/forecast":
+                self._handle_storage_forecast()
+            elif path == "/api/storage/treemap":
+                self._handle_storage_treemap()
+            elif path == "/api/storage/archive-history":
+                self._handle_storage_archive_history()
             # ── Build 1 Step B: WCCS Drill-Down ────────────────────────────────
             elif path == "/wccs/save-log":
                 self._handle_wccs_save_log()
@@ -547,6 +555,12 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/llow/workflow/"):
                 name = urllib.parse.unquote(path[len("/api/llow/workflow/"):])
                 self._handle_llow_get_workflow(name)
+            # ── Instructions keeper ────────────────────────────────────────────
+            elif path == "/api/instructions":
+                self._handle_api_instructions()
+            elif path.startswith("/api/instructions/"):
+                element_id = path[len("/api/instructions/"):]
+                self._handle_api_instructions_element(element_id)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -5047,6 +5061,142 @@ def _handle_storage_reallocate(self):
         self._send_json({"ok": False, "error": str(exc)}, 500)
 
 
+def _handle_storage_detailed(self):
+    """GET /api/storage/detailed — per-slot breakdown with top 20 files each."""
+    try:
+        from storage_manager import _load_config, _resolve_folder
+        cfg = _load_config()
+        result = []
+        for slot in cfg.get("slots", []):
+            folder = _resolve_folder(slot)
+            files = []
+            if folder.exists():
+                for f in folder.rglob("*"):
+                    if not f.is_file():
+                        continue
+                    try:
+                        st = f.stat()
+                        files.append({
+                            "name": f.name,
+                            "path": str(f.relative_to(folder)),
+                            "size_kb": round(st.st_size / 1024, 1),
+                            "age_days": int((datetime.datetime.now().timestamp() - st.st_mtime) / 86400),
+                        })
+                    except Exception:
+                        pass
+            files.sort(key=lambda x: x["size_kb"], reverse=True)
+            total_size = sum(f["size_kb"] for f in files)
+            result.append({
+                "name": slot.get("name", ""),
+                "quota_gb": slot.get("quota_gb", 0),
+                "used_kb": round(total_size, 1),
+                "used_gb": round(total_size / (1024 * 1024), 4),
+                "file_count": len(files),
+                "top_files": files[:20],
+            })
+        self._send_json({"ok": True, "slots": result})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_storage_forecast(self):
+    """GET /api/storage/forecast — growth prediction per slot."""
+    try:
+        from storage_manager import _load_config, _resolve_folder
+        cfg = _load_config()
+        forecasts = []
+        for slot in cfg.get("slots", []):
+            folder = _resolve_folder(slot)
+            if not folder.exists():
+                continue
+            files = list(folder.rglob("*"))
+            files = [f for f in files if f.is_file()]
+            if not files:
+                continue
+            total_bytes = sum(f.stat().st_size for f in files if f.exists())
+            quota_bytes = slot.get("quota_gb", 1) * 1024**3
+            used_pct = (total_bytes / quota_bytes * 100) if quota_bytes > 0 else 0
+            # Simple linear growth: estimate based on files added in last 7 days
+            now = datetime.datetime.now().timestamp()
+            week_ago = now - 7 * 86400
+            recent_bytes = sum(f.stat().st_size for f in files if f.stat().st_mtime > week_ago)
+            daily_growth = recent_bytes / 7 if recent_bytes > 0 else total_bytes * 0.01
+            remaining = quota_bytes - total_bytes
+            days_to_full = int(remaining / daily_growth) if daily_growth > 0 else 9999
+            forecasts.append({
+                "name": slot.get("name", ""),
+                "used_pct": round(used_pct, 1),
+                "daily_growth_kb": round(daily_growth / 1024, 1),
+                "days_to_full": min(days_to_full, 9999),
+                "status": "red" if days_to_full < 30 else "amber" if days_to_full < 90 else "green",
+            })
+        self._send_json({"ok": True, "forecasts": forecasts})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_storage_treemap(self):
+    """GET /api/storage/treemap — file type breakdown across all slots."""
+    try:
+        from storage_manager import _load_config, _resolve_folder
+        cfg = _load_config()
+        ext_map: dict = {}
+        for slot in cfg.get("slots", []):
+            folder = _resolve_folder(slot)
+            if not folder.exists():
+                continue
+            for f in folder.rglob("*"):
+                if not f.is_file():
+                    continue
+                try:
+                    ext = f.suffix.lower() or ".other"
+                    size = f.stat().st_size
+                    if ext not in ext_map:
+                        ext_map[ext] = {"count": 0, "size_bytes": 0}
+                    ext_map[ext]["count"] += 1
+                    ext_map[ext]["size_bytes"] += size
+                except Exception:
+                    pass
+        colours = {".py": "#4A90D9", ".json": "#50C878", ".html": "#FF6B6B",
+                   ".md": "#8B5CF6", ".txt": "#FFD700", ".db": "#FF9500",
+                   ".bat": "#EC4899", ".csv": "#10B981"}
+        items = sorted([
+            {"ext": ext, "count": v["count"],
+             "size_kb": round(v["size_bytes"] / 1024, 1),
+             "colour": colours.get(ext, "#555555")}
+            for ext, v in ext_map.items()
+        ], key=lambda x: x["size_kb"], reverse=True)
+        self._send_json({"ok": True, "items": items[:30]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_storage_archive_history(self):
+    """GET /api/storage/archive-history — archive timeline data (last 90 days)."""
+    try:
+        archive_log_path = HERE / "archive_logs.json"
+        history: dict = {}
+        if archive_log_path.exists():
+            log = json.loads(archive_log_path.read_text(encoding="utf-8"))
+            for entry in (log if isinstance(log, list) else log.get("entries", [])):
+                day = str(entry.get("date", ""))[:10]
+                if day:
+                    history[day] = history.get(day, 0) + 1
+        # Also scan archive_dead folder
+        dead_dir = HERE / "archive_dead"
+        if dead_dir.exists():
+            for f in dead_dir.iterdir():
+                if f.is_file():
+                    try:
+                        day = datetime.datetime.fromtimestamp(f.stat().st_mtime).strftime("%Y-%m-%d")
+                        history[day] = history.get(day, 0) + 1
+                    except Exception:
+                        pass
+        self._send_json({"ok": True, "history": history})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
 def _handle_launch_spindoctor(self):
     """POST /api/launch-spindoctor — launch spin_doctor.py GUI."""
     try:
@@ -5076,9 +5226,13 @@ def _handle_health_latest(self):
         self._send_json({"ok": False, "error": str(exc)}, 500)
 
 
-MCCHandler._handle_storage_stats      = _handle_storage_stats       # type: ignore[attr-defined]
-MCCHandler._handle_storage_largest    = _handle_storage_largest      # type: ignore[attr-defined]
-MCCHandler._handle_storage_reallocate = _handle_storage_reallocate   # type: ignore[attr-defined]
+MCCHandler._handle_storage_stats          = _handle_storage_stats           # type: ignore[attr-defined]
+MCCHandler._handle_storage_largest        = _handle_storage_largest          # type: ignore[attr-defined]
+MCCHandler._handle_storage_reallocate     = _handle_storage_reallocate       # type: ignore[attr-defined]
+MCCHandler._handle_storage_detailed       = _handle_storage_detailed         # type: ignore[attr-defined]
+MCCHandler._handle_storage_forecast       = _handle_storage_forecast         # type: ignore[attr-defined]
+MCCHandler._handle_storage_treemap        = _handle_storage_treemap          # type: ignore[attr-defined]
+MCCHandler._handle_storage_archive_history= _handle_storage_archive_history  # type: ignore[attr-defined]
 MCCHandler._handle_launch_spindoctor  = _handle_launch_spindoctor    # type: ignore[attr-defined]
 MCCHandler._handle_health_latest      = _handle_health_latest        # type: ignore[attr-defined]
 
@@ -5311,6 +5465,41 @@ MCCHandler._handle_system_cpu           = _handle_system_cpu            # type: 
 MCCHandler._handle_system_ram           = _handle_system_ram            # type: ignore[attr-defined]
 MCCHandler._handle_system_gpu           = _handle_system_gpu            # type: ignore[attr-defined]
 MCCHandler._handle_system_ai_allocation = _handle_system_ai_allocation  # type: ignore[attr-defined]
+
+
+INSTRUCTIONS_DB = HERE / "data" / "instructions_db.json"
+
+
+def _handle_api_instructions(self):
+    """GET /api/instructions — return full instructions_db.json."""
+    try:
+        if not INSTRUCTIONS_DB.exists():
+            self._send_json({"error": "instructions_db.json not found"}, 404)
+            return
+        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8"))
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_api_instructions_element(self, element_id: str):
+    """GET /api/instructions/<element_id> — return one element entry."""
+    try:
+        if not INSTRUCTIONS_DB.exists():
+            self._send_json({"error": "instructions_db.json not found"}, 404)
+            return
+        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8"))
+        elements = data.get("elements", {})
+        if element_id not in elements:
+            self._send_json({"error": "not found", "element_id": element_id}, 404)
+            return
+        self._send_json(elements[element_id])
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_api_instructions         = _handle_api_instructions          # type: ignore[attr-defined]
+MCCHandler._handle_api_instructions_element = _handle_api_instructions_element  # type: ignore[attr-defined]
 
 
 def main():

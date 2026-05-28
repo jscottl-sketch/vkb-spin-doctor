@@ -37,3 +37,6 @@
 | 26 | 2026-05-28 | v50 -> v51 | {} | None |
 | 27 | 2026-05-28 | v51 -> v52 | test chat text for recovery check | None |
 | 28 | 2026-05-28 | v52 -> v53 | OCB-G: LLOW arrow drop fix (llowOnDrop restructured + auto-connect) + colour strategy opacity visible (0.05→0.20 / 0.07→0.18 / 0.15-0.40). 108/108 MOT. | None |
+| 29 | 2026-05-28 | v53 -> v54 | {} | None |
+| 30 | 2026-05-28 | v54 -> v55 | test chat text for recovery check | None |
+| 31 | 2026-05-28 | v55 -> v56 | mcc-instructions-keeper: instructions_db.json (132 entries), /api/instructions endpoints, 7 ? help buttons, showInstructions() JS, skill file. 108/108 MOT. | None |

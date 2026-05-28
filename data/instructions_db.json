@@ -1,0 +1,863 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-05-28",
+  "elements": {
+
+    "home_copy_status_btn": {
+      "short_description": "Copies STATUS.md to your clipboard",
+      "full_explanation": "Fetches the full text of STATUS.md — your master project state file — and copies it to your clipboard. Use this before uploading to Claude.ai Project Files so Claude has the latest project context. Nothing is saved or changed, it just copies.",
+      "nested_topics": [
+        {"title": "What is STATUS.md?", "content": "STATUS.md is the master document for this project. It lists everything that has been built, what is pending, and the priority rules Claude must follow. It is the first thing Claude reads at the start of every session.", "nested_topics": []},
+        {"title": "When to use this", "content": "Copy and upload STATUS.md to Claude Project Files at the start of each session, or after any build that changes the BUILT section.", "nested_topics": []}
+      ]
+    },
+
+    "home_copy_history_btn": {
+      "short_description": "Copies HISTORY.md to your clipboard",
+      "full_explanation": "Fetches the full text of HISTORY.md and copies it to your clipboard. HISTORY.md is the running log of all past build sessions — useful for context when starting a new session or writing a handover note.",
+      "nested_topics": [
+        {"title": "What is HISTORY.md?", "content": "HISTORY.md records every OCB (One Claude Build) session — what was planned, what was built, and any problems encountered. It is the project diary.", "nested_topics": []}
+      ]
+    },
+
+    "home_run_mot_btn": {
+      "short_description": "Runs the full 108-check MOT test",
+      "full_explanation": "Triggers mcc_full_mot.py, which runs 108 automated checks across every component in the system. MOT stands for Ministry Of Transport — borrowed from the UK car test. A PASS result means every element in element_registry.json is reachable and healthy. Results appear in health_results/latest_health.json.",
+      "nested_topics": [
+        {"title": "What does the MOT check?", "content": "It checks every endpoint in element_registry.json — 108 items covering buttons, data fields, toggles, and API endpoints. Each is tested for a 200 response and a non-empty payload.", "nested_topics": []},
+        {"title": "What does PASS mean?", "content": "All 108 checks returned healthy results. If any fail, the count drops below 108 and the failing elements are listed in the report.", "nested_topics": []}
+      ]
+    },
+
+    "home_health_check_btn": {
+      "short_description": "Runs a quick system health check",
+      "full_explanation": "Runs a faster health check — not the full 108-test MOT, but a targeted check of providers, core files, and key endpoints. Results update the Health Status display. Use this for a quick sanity check during a session.",
+      "nested_topics": []
+    },
+
+    "home_health_field": {
+      "short_description": "Shows current system health status",
+      "full_explanation": "Displays the most recent health check result as a colour-coded summary — green for healthy, amber for warnings, red for failures. Updated each time you run a health check or MOT. Pulls data from /health-status on the server.",
+      "nested_topics": []
+    },
+
+    "home_self_diagnosis_field": {
+      "short_description": "Lists files and flags missing ones",
+      "full_explanation": "Shows a self-diagnosis table — one row per key project file. Each row shows whether the file exists, its size, and whether it looks healthy. Missing or empty files are highlighted. Useful for spotting problems after a session.",
+      "nested_topics": []
+    },
+
+    "home_system_health_field": {
+      "short_description": "Live CPU, RAM, and GPU usage gauges",
+      "full_explanation": "Shows six animated gauges — CPU usage, RAM usage, GPU usage, GPU temperature, disk read/write speed, and a thermal prediction. Values update every few seconds by polling /health/system on the server. Turns orange above 60%, red above 80%.",
+      "nested_topics": []
+    },
+
+    "wccs_save_btn": {
+      "short_description": "Saves your session to STATUS.md now",
+      "full_explanation": "The main save button. Runs aafl_wccs.py in the background via Mistral (free — no Claude allowance used). This updates STATUS.md and HISTORY.md with everything from your current session notes. WCCS stands for Write Claude Code Save.",
+      "nested_topics": [
+        {"title": "What does WCCS do exactly?", "content": "It runs aafl_wccs.py which reads your chat_latest.txt, compresses the session into a concise update, then appends that update to HISTORY.md and rewrites the CURRENT STATUS section of STATUS.md.", "nested_topics": []},
+        {"title": "Does it use my Claude allowance?", "content": "No. WCCS uses the free Mistral Codestral provider. It is specifically designed to preserve your Claude allowance (ALP rule).", "nested_topics": []}
+      ]
+    },
+
+    "wccs_auto_toggle": {
+      "short_description": "Turns automatic periodic WCCS saves on/off",
+      "full_explanation": "When enabled, WCCS fires automatically every N minutes without you having to click the button. The interval is set by the number in the minutes box next to the toggle. Useful during long sessions to make sure work is never lost.",
+      "nested_topics": [
+        {"title": "Setting the interval", "content": "Type a number between 15 and 60 in the interval box, then toggle Auto-WCCS on. The default is 30 minutes.", "nested_topics": []}
+      ]
+    },
+
+    "wccs_auto_status_field": {
+      "short_description": "Shows Auto-WCCS state and next save time",
+      "full_explanation": "Displays whether Auto-WCCS is currently ON or OFF, the interval setting, and a countdown to the next automatic save. Also shows the last 5 save results with timestamps.",
+      "nested_topics": []
+    },
+
+    "wccs_timeline_field": {
+      "short_description": "Timeline dots of every past save",
+      "full_explanation": "Shows a horizontal dot chart — one dot per STATUS.md backup. Click a dot to preview what STATUS.md looked like at that point in time. Useful for seeing how the project has grown over time, or finding a version before something went wrong.",
+      "nested_topics": []
+    },
+
+    "wccs_save_log_field": {
+      "short_description": "Log of recent save attempts",
+      "full_explanation": "Shows a table of recent WCCS save events — timestamp, whether it succeeded or failed, and what triggered it (manual button, Auto-WCCS, or the Save Now shortcut). Useful for confirming your last save actually worked.",
+      "nested_topics": []
+    },
+
+    "wccs_session_logs_field": {
+      "short_description": "List of saved session log files",
+      "full_explanation": "Lists every file in the session_logs folder. Each file is one saved Claude session. You can click a file to view its contents. The logs are automatically merged on Sundays into a combined summary.",
+      "nested_topics": []
+    },
+
+    "wccs_versions_field": {
+      "short_description": "List of STATUS.md backup versions",
+      "full_explanation": "Shows every saved backup of STATUS.md as a dropdown. Used together with the Diff viewer — pick two versions and click Compare to see what changed between them. Backups are created automatically each time WCCS runs.",
+      "nested_topics": []
+    },
+
+    "wccs_diff_field": {
+      "short_description": "Line-by-line comparison of two saves",
+      "full_explanation": "Shows a diff — a side-by-side line comparison between two STATUS.md versions you select. Green lines were added, red lines were removed. Helps you see exactly what changed between two sessions.",
+      "nested_topics": []
+    },
+
+    "wccs_capture_btn": {
+      "short_description": "Captures text to chat_latest.txt",
+      "full_explanation": "Takes whatever is in the capture text box and appends it to chat_latest.txt with a timestamp. Use this to capture important snippets from your Claude Chat session throughout the day — WCCS will include them in the next save.",
+      "nested_topics": []
+    },
+
+    "wccs_captures_field": {
+      "short_description": "Shows current chat_latest.txt contents",
+      "full_explanation": "Displays the full current contents of chat_latest.txt — everything captured in this session. This is what gets included in the next WCCS save. You can also paste a full chat summary directly into the textarea above and save.",
+      "nested_topics": []
+    },
+
+    "kanban_board_field": {
+      "short_description": "Project task board with three columns",
+      "full_explanation": "Displays the Kanban project board with three columns: To Do, Doing, and Done. Each card shows a task title, description, and priority. Cards are stored in the server's kanban data. Drag or click to move cards between columns.",
+      "nested_topics": [
+        {"title": "What is Kanban?", "content": "Kanban is a simple task management method. To Do = planned work. Doing = work in progress. Done = completed. It gives a quick visual overview of where the project stands.", "nested_topics": []}
+      ]
+    },
+
+    "kanban_add_card_btn": {
+      "short_description": "Adds a new task card to the board",
+      "full_explanation": "Opens a form to create a new Kanban card. Fill in the title, description, priority (low/medium/high/critical), and which column to start in. The card is saved immediately to the server.",
+      "nested_topics": []
+    },
+
+    "kanban_activity_field": {
+      "short_description": "Chronological log of all project events",
+      "full_explanation": "Shows the Activity Log — every AAFL run, save, scout, error, and manual action logged in one feed. You can filter by type (AAFL, WCCS, Scout, Kanban, Costs, Errors) or by time period (Today, This Week, This Month).",
+      "nested_topics": []
+    },
+
+    "aafl_run_now_btn": {
+      "short_description": "Starts an AAFL run with the current goal",
+      "full_explanation": "Launches an AAFL (Autonomous AI Feedback Loop) session immediately. AAFL takes the goal in the queue, plans a set of steps, executes them using the selected AI provider, and scores the result. The run plays out in the Live Output window.",
+      "nested_topics": [
+        {"title": "What is AAFL?", "content": "AAFL is the core AI engine. It works in a Plan → Work → Verify → Store loop. It picks an AI provider, sends your goal, evaluates the result on a 0-10 scale, and saves everything to memory for future sessions.", "nested_topics": []},
+        {"title": "Which provider does it use?", "content": "By default it uses the best free provider available. You can override this in AAFL Settings. The Suggest Provider button picks the optimal one for your goal automatically.", "nested_topics": []}
+      ]
+    },
+
+    "aafl_stop_btn": {
+      "short_description": "Stops the running AAFL session",
+      "full_explanation": "Sends a stop signal to the running AAFL process. The current step may finish before the loop halts — AAFL does not cut off mid-sentence. Any work completed so far is preserved in the run history.",
+      "nested_topics": []
+    },
+
+    "aafl_live_output_field": {
+      "short_description": "Live output from the current AAFL run",
+      "full_explanation": "Shows the streaming output from the AAFL process as it runs — provider responses, step transitions, and evaluation scores. Updated every second by polling /aafl/live on the server. Blank when no run is active.",
+      "nested_topics": []
+    },
+
+    "aafl_status_field": {
+      "short_description": "Shows AAFL running, idle, or error state",
+      "full_explanation": "Displays a status badge — Running (green), Idle (grey), or Error (red). Also shows the current goal being worked on. Updated by polling /aafl-status. If it shows Error, check the Live Output window for the reason.",
+      "nested_topics": []
+    },
+
+    "aafl_queue_field": {
+      "short_description": "List of goals waiting to run",
+      "full_explanation": "Shows the goal queue — all goals waiting to be processed by AAFL. Goals are read from goal_queue.txt. You can add a goal by typing in the text box and clicking Add, or run them all as a chain using Run Chain.",
+      "nested_topics": []
+    },
+
+    "aafl_suggest_provider_btn": {
+      "short_description": "Recommends the best AI provider for your goal",
+      "full_explanation": "Analyses your current goal and recommends the best available provider based on the goal type, provider health, and recent performance. The recommendation appears in a popup with a short explanation.",
+      "nested_topics": []
+    },
+
+    "aafl_settings_field": {
+      "short_description": "Shows current AAFL configuration settings",
+      "full_explanation": "Displays the settings from aafl_config.json — confidence threshold (minimum score to accept a result), cost cap (maximum USD per run), retry count, default provider, and whether step mode is on. Edit the fields and click Save Settings to apply changes.",
+      "nested_topics": [
+        {"title": "Confidence threshold", "content": "AAFL scores every result 0-10. If the score is below the confidence threshold, it retries with a different provider. Default is 7.0.", "nested_topics": []},
+        {"title": "Cost cap", "content": "Hard limit in USD. AAFL will not start a run if it would exceed this limit. The watchdog (aafl_watchdog.py) also enforces this as a safety net.", "nested_topics": []}
+      ]
+    },
+
+    "aafl_settings_save_btn": {
+      "short_description": "Saves AAFL settings to aafl_config.json",
+      "full_explanation": "Writes the current values from the settings form back to aafl_config.json on disk. Changes take effect immediately on the next AAFL run. The previous settings are not backed up automatically — note down anything you change.",
+      "nested_topics": []
+    },
+
+    "aafl_run_chain_btn": {
+      "short_description": "Runs all queued goals as a sequential chain",
+      "full_explanation": "Starts the chain runner — processes every goal in the queue one after another, pausing between each to store results. Useful for running a batch of related goals overnight. Progress shows in the Chain Status display.",
+      "nested_topics": []
+    },
+
+    "aafl_chain_status_field": {
+      "short_description": "Shows chain progress — current goal and remaining count",
+      "full_explanation": "Displays which goal in the chain is currently running, how many goals are left, and the running total cost. Updated live during a chain run. Shows COMPLETED when all goals are done.",
+      "nested_topics": []
+    },
+
+    "aafl_chain_log_field": {
+      "short_description": "Log of all chain run results",
+      "full_explanation": "Shows the log from the latest chain run — one entry per goal with score, provider used, cost, and duration. Useful for comparing which goals performed well and which need to be retried.",
+      "nested_topics": []
+    },
+
+    "aafl_step_mode_toggle": {
+      "short_description": "Pauses AAFL after each phase for approval",
+      "full_explanation": "When Step Mode is on, AAFL pauses after completing each phase (Plan, Work, Verify) and waits for you to click Continue before moving to the next phase. Useful for debugging or watching a sensitive run closely.",
+      "nested_topics": []
+    },
+
+    "aafl_pause_btn": {
+      "short_description": "Pauses AAFL between phases",
+      "full_explanation": "Sends a pause signal. AAFL will finish the current phase, then wait. Click Run Now or Continue to resume. Only works between phases — not mid-execution.",
+      "nested_topics": []
+    },
+
+    "aafl_benchmark_btn": {
+      "short_description": "Runs a standard benchmark test goal",
+      "full_explanation": "Sends a fixed benchmark goal to AAFL and measures response quality, speed, and cost across providers. Results are saved to benchmark_results.json and displayed in a table. Useful for comparing providers after configuration changes.",
+      "nested_topics": []
+    },
+
+    "aafl_second_opinion_btn": {
+      "short_description": "Sends goal to second provider for comparison",
+      "full_explanation": "Takes the current goal and sends it to a different AI provider from the one AAFL normally uses. The two responses are shown side by side so you can compare quality. Does not count as an AAFL run in the history.",
+      "nested_topics": []
+    },
+
+    "aafl_stuck_inbox_field": {
+      "short_description": "Goals AAFL could not complete",
+      "full_explanation": "Shows the Stuck Inbox — goals or tasks that failed, timed out, or could not be resolved automatically. Each entry shows the goal, failure reason, severity, and suggested fix (AFNA = AI-suggested next action). You can resolve items individually or use Bulk Resolve.",
+      "nested_topics": [
+        {"title": "What does AFNA mean?", "content": "AFNA stands for AI-suggested Next Action. When a goal gets stuck, AAFL tries to suggest what you should do next to unblock it.", "nested_topics": []}
+      ]
+    },
+
+    "aafl_bulk_resolve_btn": {
+      "short_description": "Marks all stuck inbox items as resolved",
+      "full_explanation": "Clears the entire stuck inbox in one click — marks every item as resolved without individually reviewing them. Use when you want a fresh start after a problem batch. Items are archived, not deleted.",
+      "nested_topics": []
+    },
+
+    "aafl_run_history_field": {
+      "short_description": "History of all past AAFL runs",
+      "full_explanation": "Shows every AAFL run ever recorded — date, goal, score (0-10), provider used, cost in USD, and duration. Sorted newest first. Use this to see which goals scored best, which providers perform well, and what things have cost over time.",
+      "nested_topics": []
+    },
+
+    "aafl_retry_log_field": {
+      "short_description": "Record of all auto-retried tasks",
+      "full_explanation": "Shows the retry log from retry_log.json — every time AAFL automatically retried a failed step, with the reason and outcome. Useful for spotting recurring failures that the retry manager keeps hitting.",
+      "nested_topics": []
+    },
+
+    "aafl_workflow_presets_field": {
+      "short_description": "Saved AAFL workflow configuration presets",
+      "full_explanation": "Shows named workflow presets — saved combinations of goal, provider, settings, and step count. Load a preset to instantly configure AAFL for a specific type of task without re-entering settings manually.",
+      "nested_topics": []
+    },
+
+    "aafl_loop_presets_field": {
+      "short_description": "LLOW canvas preset workflows",
+      "full_explanation": "Shows saved LLOW (Loop Law Organiser Window) visual workflow presets. Load one to populate the LLOW canvas with a pre-built loop design — useful as starting points for new workflow designs.",
+      "nested_topics": []
+    },
+
+    "aafl_quick_ask_btn": {
+      "short_description": "Sends a one-off question to AI",
+      "full_explanation": "Sends whatever you have typed in the quick ask box to an AI provider and shows the answer inline. This does NOT start a full AAFL loop — it is a quick, single-turn question. Uses no Claude allowance if you choose a free provider.",
+      "nested_topics": []
+    },
+
+    "scout_run_btn": {
+      "short_description": "Starts a Scout Swarm research run",
+      "full_explanation": "Launches a Scout Swarm — runs multiple parallel web searches across up to 5 research strategies simultaneously. Results are collected, deduplicated, and synthesised into a plain-English AI summary. Scout uses free providers — no Claude allowance.",
+      "nested_topics": [
+        {"title": "What is Scout Swarm?", "content": "Scout Swarm sends the same research goal to multiple search strategies at the same time (parallel, not sequential). Each strategy looks at a different angle of the topic. Mistral synthesises all the results into one digest.", "nested_topics": []},
+        {"title": "How long does it take?", "content": "Typically 30-90 seconds depending on the goal and provider response times. The results appear in the Scout Result panel when complete.", "nested_topics": []}
+      ]
+    },
+
+    "scout_stop_btn": {
+      "short_description": "Stops the running Scout session",
+      "full_explanation": "Sends a stop signal to the Scout process. Any results already collected are preserved and shown in the result panel. The AI summary will only cover whatever was found before stopping.",
+      "nested_topics": []
+    },
+
+    "scout_result_field": {
+      "short_description": "Latest Scout results — links and AI summary",
+      "full_explanation": "Shows the full output from the last Scout run. The top section is the AI-generated plain-English digest. Below that are the individual web links found, grouped by source. Click any link to open it in your browser.",
+      "nested_topics": []
+    },
+
+    "scout_results_json_field": {
+      "short_description": "Raw JSON data from last Scout run",
+      "full_explanation": "Shows the unprocessed JSON array returned by the Scout engine. Each entry has a source URL, title, snippet, and reliability score. Useful if you want to inspect the raw data that the AI summary was built from.",
+      "nested_topics": []
+    },
+
+    "scout_ai_summary_field": {
+      "short_description": "AI-written plain English summary of Scout results",
+      "full_explanation": "Shows only the AI synthesis section of the Scout result — a 2-5 paragraph digest written by Mistral. This is the most readable version of the research. It answers your original question based on everything Scout found.",
+      "nested_topics": []
+    },
+
+    "scout_config_field": {
+      "short_description": "Current Scout configuration settings",
+      "full_explanation": "Shows the Scout configuration from chief_scout_config.json — number of parallel strategies, which providers to use for synthesis, search depth, and result count. Edit and save to change how Scout behaves.",
+      "nested_topics": []
+    },
+
+    "scout_source_health_field": {
+      "short_description": "Health check for each research source",
+      "full_explanation": "Shows a status card for each source in the sources library — whether it responded in the last test, response time, and reliability score. Red sources are unreachable and will be skipped in the next run.",
+      "nested_topics": []
+    },
+
+    "scout_block_source_btn": {
+      "short_description": "Blocks a source from future Scout runs",
+      "full_explanation": "Marks a specific source as blocked. Blocked sources are skipped in all future Scout runs. Use this if a source keeps returning irrelevant results or errors. You can unblock it later from the Sources Library.",
+      "nested_topics": []
+    },
+
+    "scout_timer_start_btn": {
+      "short_description": "Starts automatic repeated Scout runs",
+      "full_explanation": "Starts the Scout Timer — runs Scout automatically at the interval you set (in minutes). Useful for monitoring a topic over time, like checking provider status or tracking a news topic throughout a session.",
+      "nested_topics": []
+    },
+
+    "scout_timer_stop_btn": {
+      "short_description": "Stops the Scout Timer",
+      "full_explanation": "Stops the Scout Timer so no more automatic runs are triggered. Any run currently in progress will finish. Results from previous timer runs remain visible in the result panel.",
+      "nested_topics": []
+    },
+
+    "scout_timer_status_field": {
+      "short_description": "Shows Scout Timer state and next fire time",
+      "full_explanation": "Displays whether the Scout Timer is active, the interval setting, and when the next automatic run will trigger. Also shows how many runs have been completed in the current timer session.",
+      "nested_topics": []
+    },
+
+    "scout_sources_field": {
+      "short_description": "List of all research sources Scout can use",
+      "full_explanation": "Shows the full sources library from sources_library.json. Each source has a name, URL pattern, category, and reliability score. You can add new sources or edit existing ones. Scout uses these sources to direct its web search strategies.",
+      "nested_topics": []
+    },
+
+    "scout_add_source_btn": {
+      "short_description": "Adds a new source to the library",
+      "full_explanation": "Opens a form to add a new research source. Fill in the name, URL, and category. The source is saved to sources_library.json and will be available in future Scout runs immediately.",
+      "nested_topics": []
+    },
+
+    "scout_search_btn": {
+      "short_description": "Starts a quick web search with your query",
+      "full_explanation": "Takes the text in the search box and runs a web search using the selected provider. Faster than a full Scout Swarm — uses a single strategy rather than five in parallel. Good for a quick lookup when you do not need full research depth.",
+      "nested_topics": []
+    },
+
+    "memory_knowledge_field": {
+      "short_description": "Shows the AI knowledge bank entries",
+      "full_explanation": "Displays the contents of the Knowledge Bank — facts, summaries, and findings that AAFL has stored from past runs. Stored in data/knowledge_engine.db. These entries are reused in future runs to avoid repeating research.",
+      "nested_topics": []
+    },
+
+    "memory_solutions_field": {
+      "short_description": "Log of proven fixes that worked",
+      "full_explanation": "Shows the Solution Log — every time AAFL found a solution that scored above the confidence threshold, it is stored here. Future runs can retrieve relevant solutions to avoid re-solving the same problems.",
+      "nested_topics": []
+    },
+
+    "memory_sources_field": {
+      "short_description": "Reputation scores for each research source",
+      "full_explanation": "Shows how reliable each Scout source has been over time — based on how often its results were used in high-scoring AAFL runs. High-reputation sources are prioritised in future Scout runs.",
+      "nested_topics": []
+    },
+
+    "memory_status_field": {
+      "short_description": "Counts of stored knowledge, solutions, sources",
+      "full_explanation": "Shows three headline numbers — how many entries are in the Knowledge Bank, how many are in the Solution Log, and how many sources have reputation scores. A growing count means AAFL is learning.",
+      "nested_topics": []
+    },
+
+    "costs_data_field": {
+      "short_description": "Full AI spending breakdown by period",
+      "full_explanation": "Shows daily, weekly, and monthly spending summaries pulled from data/cost_log.txt. Each row shows date, provider, number of calls, total tokens, and cost in GBP or USD depending on your currency toggle setting.",
+      "nested_topics": []
+    },
+
+    "costs_trend_graph": {
+      "short_description": "Line graph of AI spending over time",
+      "full_explanation": "A line graph showing your running AI cost over the past 30 days. Each point is one day's total. Helps you spot patterns — like spending spikes during active build sessions. Data comes from /b2/costs.",
+      "nested_topics": []
+    },
+
+    "costs_provider_graph": {
+      "short_description": "Bar graph of spending by provider",
+      "full_explanation": "Shows which AI providers are costing you the most as a bar chart. Each bar is one provider — height = total spend. Useful for deciding whether to shift workloads to cheaper providers. Free providers show as £0.",
+      "nested_topics": []
+    },
+
+    "costs_budget_caps_field": {
+      "short_description": "Daily and monthly spending limits",
+      "full_explanation": "Shows the current budget caps from budget_caps.json. There is a daily cap and a monthly cap in GBP. AAFL will refuse to start a run if it would push you above either cap. The watchdog also enforces these as a safety net.",
+      "nested_topics": [
+        {"title": "ALP Rule No.1", "content": "ALP stands for Allowance Preservation. Rule No.1 is the most important rule: never spend more than your Claude allowance allows. The budget caps are how this rule is enforced automatically.", "nested_topics": []}
+      ]
+    },
+
+    "costs_save_caps_btn": {
+      "short_description": "Saves updated budget caps to disk",
+      "full_explanation": "Writes the values in the budget cap inputs to budget_caps.json. Changes take effect immediately. The previous caps are not backed up automatically — note your old values before changing them.",
+      "nested_topics": []
+    },
+
+    "costs_alp_data_field": {
+      "short_description": "ALP savings log — time and money saved by AAFL",
+      "full_explanation": "Shows the ALP (Allowance Preservation) table — a log of every time AAFL saved you time or money compared to doing the task manually or with paid Claude. Each entry records what was done, how much time was saved, and the estimated GBP value.",
+      "nested_topics": [
+        {"title": "Why log ALP entries?", "content": "Every ALP entry extends how much you can justify spending on Claude allowance. It is the evidence that AAFL is paying for itself. More entries = stronger case for more usage.", "nested_topics": []}
+      ]
+    },
+
+    "costs_alp_add_btn": {
+      "short_description": "Adds a new ALP savings entry",
+      "full_explanation": "Opens a form to log a new ALP entry — describe what AAFL did for you, estimate the time saved in hours, and the approximate GBP value. The entry is appended to ALP_Database.md and shown in the table.",
+      "nested_topics": []
+    },
+
+    "costs_currency_toggle": {
+      "short_description": "Switches between GBP and USD display",
+      "full_explanation": "Toggles all cost figures between British pounds (GBP) and US dollars (USD). The conversion rate is fixed in prefs. Preference is saved so it persists between page refreshes.",
+      "nested_topics": []
+    },
+
+    "storage_report_field": {
+      "short_description": "Storage slot usage versus quota",
+      "full_explanation": "Shows a visual report for each storage slot defined in storage_config.json — how much is used versus how much is allocated, as an animated fill bar. Green = under 60%, amber = 60-80%, red = over 80%. Click Refresh All to update.",
+      "nested_topics": []
+    },
+
+    "storage_status_field": {
+      "short_description": "Total storage overview across all slots",
+      "full_explanation": "Shows headline numbers — total space allocated across all slots, total used, and total free. Also shows a warning if any single slot is over its quota. Data comes from the server's storage scan.",
+      "nested_topics": []
+    },
+
+    "hs_refresh_providers_btn": {
+      "short_description": "Re-tests all AI providers right now",
+      "full_explanation": "Triggers a fresh health check of every AI provider — sends a test ping to each one and updates the provider cards. Use this at the start of a session to see which providers are available before starting AAFL.",
+      "nested_topics": []
+    },
+
+    "hs_provider_cards_field": {
+      "short_description": "Colour-coded cards for each AI provider",
+      "full_explanation": "Shows a card for every configured AI provider. Green dot = responding normally. Amber = slow or intermittent. Red = offline. Each card shows last response time and recent reliability. Click a card to see more detail.",
+      "nested_topics": []
+    },
+
+    "hs_mot_score_field": {
+      "short_description": "Latest MOT pass count and score",
+      "full_explanation": "Shows the result of the most recent MOT test — how many of the 108 checks passed, the pass percentage, and when it was last run. A score below 108 means something is broken — click Run Full MOT to find out what.",
+      "nested_topics": []
+    },
+
+    "hs_run_mot_btn": {
+      "short_description": "Runs the full 108-check MOT test",
+      "full_explanation": "Same as the Run Full MOT button on the Home tab. Runs mcc_full_mot.py and updates the MOT score. Takes 15-30 seconds. Results appear in health_results/latest_health.json and in the MOT Score display.",
+      "nested_topics": []
+    },
+
+    "hs_modules_field": {
+      "short_description": "List of installed AAFL modules with on/off state",
+      "full_explanation": "Shows all modules registered in module_registry.json — each module adds a specific capability to AAFL (like a retry manager or a chain runner). You can toggle modules on or off here without editing files directly.",
+      "nested_topics": []
+    },
+
+    "hs_toggle_module_btn": {
+      "short_description": "Enables or disables a module",
+      "full_explanation": "Clicks the toggle next to a module to enable or disable it. Disabled modules are loaded but not called during AAFL runs. Takes effect immediately on the next run — no restart needed.",
+      "nested_topics": []
+    },
+
+    "hs_known_issues_field": {
+      "short_description": "Manually logged issues that need fixing",
+      "full_explanation": "Shows the Known Issues list — problems you have spotted and logged so they are not forgotten between sessions. Each issue has a title, description, severity, and date added. Resolved issues can be marked done.",
+      "nested_topics": []
+    },
+
+    "hs_add_issue_btn": {
+      "short_description": "Adds a new entry to Known Issues",
+      "full_explanation": "Opens a form to log a new known issue. Give it a title, a short description, and a severity rating (low/medium/high/critical). The issue is saved and will appear in future sessions until you mark it resolved.",
+      "nested_topics": []
+    },
+
+    "hs_sysinfo_field": {
+      "short_description": "System info — Python version, disk space, OS",
+      "full_explanation": "Shows a snapshot of the system — Python version, operating system, total disk space, free disk space, project folder size, and count of .py and .json files in the project. Updated each time you open Health Suite.",
+      "nested_topics": []
+    },
+
+    "hs_files_field": {
+      "short_description": "File health table — present and non-empty check",
+      "full_explanation": "Shows a table of every key project file with three columns: Present (exists on disk), Non-empty (has content), and Last modified (how recently it was updated). Red cells mean the file is missing or empty.",
+      "nested_topics": []
+    },
+
+    "hs_aaflruns_field": {
+      "short_description": "AAFL run history shown inside Health Suite",
+      "full_explanation": "Same run history data as in the AAFL Control tab, but displayed here within Health Suite. Useful when you want to check run scores at the same time as viewing provider health. Shows score, provider, goal, cost, and duration.",
+      "nested_topics": []
+    },
+
+    "hs_medical_run_btn": {
+      "short_description": "Runs the full 285-point Medical check",
+      "full_explanation": "Triggers mcc_medical.py — a comprehensive 285-item health audit that checks everything from file integrity and endpoint availability to cost trends and memory health. Returns a score out of 100. Separate from the 108-check MOT.",
+      "nested_topics": [
+        {"title": "Medical vs MOT", "content": "MOT checks 108 elements for basic availability. Medical checks 285 items including content quality, data freshness, and configuration correctness — it is a deeper audit.", "nested_topics": []}
+      ]
+    },
+
+    "hs_medical_report_field": {
+      "short_description": "Latest Medical Report — score and breakdown",
+      "full_explanation": "Shows the full medical report — overall score out of 100, individual category scores, and a list of every check with pass/fail result. A score of 80+ is healthy. Below 70 means attention needed.",
+      "nested_topics": []
+    },
+
+    "hs_medical_history_field": {
+      "short_description": "Timeline of past Medical Report scores",
+      "full_explanation": "Shows a chart of previous medical scores over time. Each point is one run. Helps you see whether system health is improving or declining over time. Useful for spotting regressions after a big build session.",
+      "nested_topics": []
+    },
+
+    "hs_system_gauges_field": {
+      "short_description": "Live CPU, GPU, and RAM usage gauges",
+      "full_explanation": "Shows six animated gauges updated every 2 seconds — CPU percentage, RAM percentage, GPU percentage, GPU temperature, disk read speed, and disk write speed. Orange above 60%, red above 80%. Also shows a thermal trend prediction.",
+      "nested_topics": []
+    },
+
+    "hs_wc_report_field": {
+      "short_description": "Work Checker — flags incomplete planned work",
+      "full_explanation": "Shows the Work Checker report — items that appeared as INCOMPLETE in past session logs but have no matching BUILT entry in STATUS.md. These are tasks that were planned but never confirmed as done. Each item can be re-queued for the next session.",
+      "nested_topics": [
+        {"title": "Lost work vs stuck work", "content": "Lost work means the task was discussed and planned but never queued for Claude Code. Stuck work means it was queued but AAFL could not complete it. The Work Checker catches lost work.", "nested_topics": []}
+      ]
+    },
+
+    "hs_wc_refresh_btn": {
+      "short_description": "Refreshes the Work Checker report",
+      "full_explanation": "Re-runs the Work Checker scan — re-reads all session logs, compares them against STATUS.md, and updates the report. Takes a few seconds. Use this at the start of each session to catch anything that slipped through.",
+      "nested_topics": []
+    },
+
+    "hs_wc_requeue_field": {
+      "short_description": "Ready-to-paste CLACR block for lost work",
+      "full_explanation": "Shows a CLACR (Claude Code Action Request) block pre-filled with all the lost and stuck items found by the Work Checker. Copy this block and paste it into Claude Code to re-queue everything in one step.",
+      "nested_topics": []
+    },
+
+    "acca_codes_field": {
+      "short_description": "Full ACCA shorthand code reference",
+      "full_explanation": "Shows the full ACCA (shorthand code system) table. ACCA codes are short commands you type in Claude Chat to trigger specific AAFL or project actions without typing out full instructions. Each code has a trigger phrase and a description of what it does.",
+      "nested_topics": [
+        {"title": "What is ACCA?", "content": "ACCA stands for the shorthand code system used in this project. Codes like OCB, CLAC, WCCS, and DSP are all ACCA codes. They let you give Claude complex instructions in a single short phrase.", "nested_topics": []}
+      ]
+    },
+
+    "acca_search_field": {
+      "short_description": "Search through saved session logs",
+      "full_explanation": "A keyword search box that searches across all saved session logs and HISTORY.md. Type a word or phrase and press Enter to find every session that mentions it. Useful for finding when a specific feature was built or a problem was solved.",
+      "nested_topics": []
+    },
+
+    "kbp_profiles_field": {
+      "short_description": "List of saved keyboard binding profiles",
+      "full_explanation": "Shows all saved keyboard profiles for the supported games — War Thunder, Elite Dangerous, and Star Citizen. Each profile has a name, game, control device (VKB joystick), and a star rating. Load a profile to restore those bindings.",
+      "nested_topics": []
+    },
+
+    "kbp_save_btn": {
+      "short_description": "Saves current keyboard bindings as a named profile",
+      "full_explanation": "Takes the currently active keyboard bindings and saves them as a named profile. Give the profile a meaningful name so you can find it later. Profiles are stored in the server and can be reloaded at any time.",
+      "nested_topics": []
+    },
+
+    "kbp_rate_btn": {
+      "short_description": "Rates a keyboard profile with a star score",
+      "full_explanation": "Assigns a star rating (1-5) to a keyboard profile — helps you remember which profiles feel best. Ratings are stored alongside the profile and shown in the profile list.",
+      "nested_topics": []
+    },
+
+    "kbp_delete_btn": {
+      "short_description": "Deletes a keyboard profile permanently",
+      "full_explanation": "Removes a keyboard profile from the server. This cannot be undone — make sure you do not need the profile before deleting it. The current bindings in your game are not affected, only the stored profile is removed.",
+      "nested_topics": []
+    },
+
+    "design_presets_field": {
+      "short_description": "Saved dashboard colour and font presets",
+      "full_explanation": "Shows all saved design presets for the MCC dashboard — each preset stores the colour scheme, font size, border radius, and other visual settings. Load a preset to instantly change how the dashboard looks.",
+      "nested_topics": []
+    },
+
+    "design_save_preset_btn": {
+      "short_description": "Saves current design settings as a preset",
+      "full_explanation": "Takes the current dashboard visual settings and saves them as a named design preset. Give it a name like 'Dark Blue' or 'High Contrast'. Presets are stored on the server and survive page refreshes.",
+      "nested_topics": []
+    },
+
+    "promo_queue_field": {
+      "short_description": "High-scoring AAFL results awaiting approval",
+      "full_explanation": "Shows the Promo Queue — AAFL results that scored 9.0 or above. These are candidates for promotion: sharing, archiving as reference material, or adding to the Knowledge Bank as verified solutions. Each entry shows the goal, score, provider, and result summary.",
+      "nested_topics": []
+    },
+
+    "promo_approve_btn": {
+      "short_description": "Approves a promo entry for archiving",
+      "full_explanation": "Marks a promo entry as approved. The result is archived to the promo archive folder and removed from the queue. Use this for results that are genuinely useful and worth keeping as reference.",
+      "nested_topics": []
+    },
+
+    "promo_reject_btn": {
+      "short_description": "Rejects a promo entry and removes it",
+      "full_explanation": "Marks a promo entry as rejected and removes it from the queue. Use this for results that scored high but are not actually useful. Rejected entries are not archived.",
+      "nested_topics": []
+    },
+
+    "missions_data_field": {
+      "short_description": "All active projects with status and tags",
+      "full_explanation": "Shows the Missions list — each mission is an active AAFL project with a name, description, status (active/paused/complete), priority tags, and progress notes. Click a mission card to expand details and see the full notes.",
+      "nested_topics": [
+        {"title": "What is a Mission?", "content": "A Mission is a named project that AAFL is working on over multiple sessions. Think of it as a container for a set of related AAFL goals. The VKB Spin Doctor is a mission. AAFL itself is a mission.", "nested_topics": []}
+      ]
+    },
+
+    "missions_add_btn": {
+      "short_description": "Opens form to add a new Mission",
+      "full_explanation": "Opens the Mission Launcher form — fill in the name, description, priority, and tags for a new mission. Once saved, the mission appears in the list and you can add AAFL goals to it.",
+      "nested_topics": []
+    },
+
+    "ep_api_status": {
+      "short_description": "Serves STATUS.md as plain text",
+      "full_explanation": "The /api/status endpoint returns the full contents of STATUS.md as plain text. This is used by Claude Chat web_fetch to let Claude read the current project state without needing a file upload. Also used by the Copy STATUS.md button.",
+      "nested_topics": []
+    },
+
+    "ep_api_history": {
+      "short_description": "Serves HISTORY.md as plain text",
+      "full_explanation": "The /api/history endpoint returns the full contents of HISTORY.md as plain text. Used by Claude Chat web_fetch for context, and by the Copy HISTORY.md button.",
+      "nested_topics": []
+    },
+
+    "ep_api_acca": {
+      "short_description": "Serves ACCA.md as plain text",
+      "full_explanation": "The /api/acca endpoint returns the full contents of ACCA.md as plain text. ACCA.md contains the shorthand code reference used in this project.",
+      "nested_topics": []
+    },
+
+    "ep_api_health": {
+      "short_description": "Returns JSON health summary",
+      "full_explanation": "The /api/health endpoint returns a JSON object summarising system health — provider status, last MOT score, and any critical failures. Used by Claude Chat web_fetch for health context.",
+      "nested_topics": []
+    },
+
+    "ep_health_status": {
+      "short_description": "Returns full health status JSON",
+      "full_explanation": "The /health-status endpoint returns the complete health status object — including MOT score, medical score, file health counts, and provider availability. Used by the Health Status display on the Home tab.",
+      "nested_topics": []
+    },
+
+    "ep_self_diagnosis": {
+      "short_description": "Returns file list and system info JSON",
+      "full_explanation": "The /self-diagnosis endpoint returns a JSON object with two sections: files (list of key project files with exists/size/modified) and sys_info (Python version, OS, disk space). Used by the Self-Diagnosis display.",
+      "nested_topics": []
+    },
+
+    "ep_stuck_inbox": {
+      "short_description": "Returns the stuck inbox array",
+      "full_explanation": "The /stuck-inbox endpoint returns the array of stuck items from stuck_inbox.json. Each item has a goal, failure reason, severity, and suggested fix. Used by the Stuck Inbox panel in AAFL Control.",
+      "nested_topics": []
+    },
+
+    "ep_alp_data": {
+      "short_description": "Returns ALP log entries",
+      "full_explanation": "The /alp-data endpoint returns the list of ALP (Allowance Preservation) entries from ALP_Database.md as a JSON array. Used by the ALP table in the Costs tab.",
+      "nested_topics": []
+    },
+
+    "ep_promo_queue": {
+      "short_description": "Returns the promo queue array",
+      "full_explanation": "The /promo-queue endpoint returns all pending promo queue entries from promo_queue.json. Each entry has a goal, score, provider, result, and timestamp. Used by the Promo tab.",
+      "nested_topics": []
+    },
+
+    "ep_storage_report": {
+      "short_description": "Returns storage slot data",
+      "full_explanation": "The /storage/report endpoint returns the storage slot breakdown from storage_config.json — each slot's name, quota, used space, and percentage. Used by the Storage tab fill bars.",
+      "nested_topics": []
+    },
+
+    "ep_b2_costs": {
+      "short_description": "Returns cost data for the Costs tab",
+      "full_explanation": "The /b2/costs endpoint returns cost log data — daily totals, provider breakdown, and budget cap status. Used by the Costs tab graphs and tables.",
+      "nested_topics": []
+    },
+
+    "ep_b2_kanban": {
+      "short_description": "Returns the Kanban board data",
+      "full_explanation": "The /b2/kanban endpoint returns the full Kanban board as a JSON array of cards, each with title, description, column, priority, and timestamps. Used by the Kanban tab.",
+      "nested_topics": []
+    },
+
+    "ep_b2_activity": {
+      "short_description": "Returns the activity log array",
+      "full_explanation": "The /b2/activity endpoint returns the activity_log.json array — all logged project events in reverse chronological order. Used by the Activity Feed in WCCS and Kanban tabs.",
+      "nested_topics": []
+    },
+
+    "ep_b2_aafl_runs": {
+      "short_description": "Returns AAFL run history array",
+      "full_explanation": "The /b2/aafl-runs endpoint returns the list of all AAFL run records — each with goal, score, provider, cost, duration, and timestamp. Used by the AAFL Run History display.",
+      "nested_topics": []
+    },
+
+    "ep_api_run_medical": {
+      "short_description": "Triggers the Medical check",
+      "full_explanation": "The POST /api/run-medical endpoint starts mcc_medical.py in a background thread. Returns immediately with started:true. The report becomes available via /api/medical-report once the run completes.",
+      "nested_topics": []
+    },
+
+    "ep_api_medical_report": {
+      "short_description": "Returns the latest Medical Report JSON",
+      "full_explanation": "The /api/medical-report endpoint returns the most recent medical report from health_results/full_mot_report.json — includes the overall score, category breakdown, and individual check results.",
+      "nested_topics": []
+    },
+
+    "ep_api_processes": {
+      "short_description": "Returns list of running AI processes",
+      "full_explanation": "The /api/processes endpoint returns a list of currently running processes that match known AAFL and MCC scripts — useful for confirming whether AAFL, Scout, or the watchdog is actually running.",
+      "nested_topics": []
+    },
+
+    "ep_api_task_inbox": {
+      "short_description": "Returns the task inbox array",
+      "full_explanation": "The /api/task-inbox endpoint returns the task inbox — queued tasks from automated sources like the Work Checker or the chain runner. Used by the Task Inbox display in Health Suite.",
+      "nested_topics": []
+    },
+
+    "ep_api_missions": {
+      "short_description": "Returns all missions as JSON array",
+      "full_explanation": "The /api/missions endpoint returns all mission entries from the missions store. Supports GET (list all), POST (add new), PUT (update), and DELETE. Used by the Missions tab.",
+      "nested_topics": []
+    },
+
+    "ep_b2_source_health": {
+      "short_description": "Returns source health scores",
+      "full_explanation": "The /b2/source-health endpoint returns health data for all research sources in the sources library — whether each source responded in the last check, response time, and reliability score.",
+      "nested_topics": []
+    },
+
+    "ep_health_system": {
+      "short_description": "Returns provider health and system gauges",
+      "full_explanation": "The /health/system endpoint returns a combined JSON object — provider statuses from provider_health.py and live system metrics (CPU, RAM, GPU) from system_monitor.py. Used by the Health Suite provider cards and gauge displays.",
+      "nested_topics": []
+    },
+
+    "ep_wc_report": {
+      "short_description": "Returns the Work Checker report",
+      "full_explanation": "The /api/work-checker/report endpoint returns the current Work Checker analysis — lost items, recurring stuck items, and orphaned ideas from past sessions. Used by the Work Checker panel in Health Suite.",
+      "nested_topics": []
+    },
+
+    "ep_run_mot": {
+      "short_description": "Triggers the 108-check MOT test",
+      "full_explanation": "The POST /run-mot endpoint starts mcc_full_mot.py in a background thread and returns the result as JSON with a pass_rate field. Used by both Run Full MOT buttons (Home and Health Suite).",
+      "nested_topics": []
+    },
+
+    "ep_modules": {
+      "short_description": "Returns installed module list",
+      "full_explanation": "The /modules endpoint returns the list of all modules from module_registry.json — name, description, enabled state, and file path. Used by the Module Manager display in Health Suite.",
+      "nested_topics": []
+    },
+
+    "section_wccs": {
+      "short_description": "The WCCS tab — session saving and history",
+      "full_explanation": "WCCS stands for Write Claude Code Save. This tab is your session save centre — paste notes from your Claude Chat session, click Save Session Now, and WCCS uses free Mistral AI to update STATUS.md and HISTORY.md. It also shows your save timeline, diff viewer, and auto-save controls.",
+      "nested_topics": [
+        {"title": "Why WCCS is important", "content": "Without WCCS, every session's work is lost when the chat window closes. WCCS preserves everything into STATUS.md so the next session picks up exactly where you left off.", "nested_topics": []},
+        {"title": "Does it cost anything?", "content": "No — WCCS uses Mistral Codestral which is free. It is specifically designed to preserve your Claude allowance (ALP Rule No.1).", "nested_topics": []},
+        {"title": "Auto-Save", "content": "Turn on Auto-WCCS to save automatically every 15-60 minutes. Useful during long sessions so work is never lost if something goes wrong.", "nested_topics": []}
+      ]
+    },
+
+    "section_scout_swarm": {
+      "short_description": "Scout Swarm tab — parallel web research",
+      "full_explanation": "Scout Swarm runs multiple web searches in parallel across up to 5 research strategies simultaneously, then uses Mistral AI to synthesise everything into a plain-English digest. It is the research engine for this project — use it to investigate anything before coding.",
+      "nested_topics": [
+        {"title": "How parallel search works", "content": "Scout sends your query to 5 different search strategies at once (not one after another). Each strategy looks at a different angle. Mistral reads all results and writes a combined answer.", "nested_topics": []},
+        {"title": "Cost", "content": "Scout uses free providers — no Claude allowance is used for Scout runs.", "nested_topics": []},
+        {"title": "Scout Timer", "content": "The Scout Timer runs Scout automatically at a set interval. Useful for monitoring a topic throughout a session without clicking manually.", "nested_topics": []}
+      ]
+    },
+
+    "section_aafl_control": {
+      "short_description": "AAFL Control tab — run and manage AI loops",
+      "full_explanation": "AAFL stands for Autonomous AI Feedback Loop. This tab is mission control for the AI engine — start and stop runs, manage the goal queue, configure settings, view live output, and see the full run history. AAFL is the core of the project.",
+      "nested_topics": [
+        {"title": "What is the Plan-Work-Verify-Store loop?", "content": "AAFL works in four phases per run: Plan (decides how to approach the goal), Work (executes the plan using an AI provider), Verify (scores the result 0-10), and Store (saves findings to memory). Repeat until the score hits the threshold.", "nested_topics": []},
+        {"title": "Goal Queue", "content": "Goals sit in the queue (goal_queue.txt) until AAFL runs them. You can queue multiple goals and run them as a chain. Each goal is processed one at a time.", "nested_topics": []},
+        {"title": "Step Mode", "content": "Step Mode pauses AAFL after each phase so you can review what it did before it continues. Useful for sensitive goals or when debugging a new workflow.", "nested_topics": []}
+      ]
+    },
+
+    "section_health_suite": {
+      "short_description": "Health Suite tab — all system checks in one place",
+      "full_explanation": "Health Suite brings together seven health dashboards: Provider Health (AI provider status), Self-Diagnosis (file and module health), AAFL Runs (run history), GPU/CPU/RAM (live system gauges), Medical (285-point audit), Work Checker (lost work finder), and Self-Health (automated element testing).",
+      "nested_topics": [
+        {"title": "Provider Health", "content": "Shows colour-coded cards for every AI provider. Green = online, Red = offline. Run Refresh Providers to re-test all of them right now.", "nested_topics": []},
+        {"title": "Medical vs MOT", "content": "MOT = 108 quick checks (pass/fail). Medical = 285 deeper checks with a scored report out of 100. Run both to get a complete picture.", "nested_topics": []},
+        {"title": "Work Checker", "content": "Scans past session logs and flags tasks that were planned but never confirmed as built. Use it at the start of each session to rescue lost work.", "nested_topics": []}
+      ]
+    },
+
+    "section_storage": {
+      "short_description": "Storage tab — disk quota monitor",
+      "full_explanation": "Shows how much disk space each project storage slot is using versus its allocated quota. Slots are defined in storage_config.json — things like session_logs, backups, archive_dead, and data. Animated fill bars go green/amber/red based on how full each slot is.",
+      "nested_topics": [
+        {"title": "Storage slots", "content": "Each slot is a folder with a quota in gigabytes. The storage manager tracks how much is used and warns when a slot exceeds 80% of its quota.", "nested_topics": []},
+        {"title": "Reallocation", "content": "If a slot is consistently over quota, you can increase its allocation here rather than deleting files. Changes are written to storage_config.json.", "nested_topics": []}
+      ]
+    },
+
+    "section_missions": {
+      "short_description": "Missions tab — register and track active projects",
+      "full_explanation": "Missions are named projects that AAFL works on over multiple sessions. Each mission has a name, description, status (active/paused/complete), priority tags, and running notes. The Missions tab is where you register new projects and track progress across sessions.",
+      "nested_topics": [
+        {"title": "VKB Spin Doctor mission", "content": "The Spin Doctor is itself a mission — fixing the mouse-spin bug in War Thunder, Elite Dangerous, and Star Citizen using the VKB joystick. It is the primary test case for AAFL.", "nested_topics": []},
+        {"title": "Mission vs Goal", "content": "A Mission is a long-running project (weeks/months). A Goal is one AAFL run within a mission (minutes). Many goals make up one mission.", "nested_topics": []}
+      ]
+    },
+
+    "section_llow_canvas": {
+      "short_description": "LLOW — visual drag-and-drop loop designer",
+      "full_explanation": "LLOW stands for Loop Law Organiser Window. It is a drag-and-drop visual canvas where you design AAFL workflow loops. Drag elements from the left palette onto the canvas, connect them with arrows to define flow, then click Export as CLACR to get a ready-to-paste code block, or click Run Loop to execute directly.",
+      "nested_topics": [
+        {"title": "Elements and connectors", "content": "Elements are the blocks — things like Research, Plan, Execute, Verify. Connectors are the arrows between them — Continue (happy path), OnFail (error path), OnTimeout (slow path). Junction Boxes let you merge or branch flows.", "nested_topics": []},
+        {"title": "Preset Load", "content": "Preset Load lets you load a pre-built workflow onto the canvas as a starting point. Three starter workflows are included: Simple Loop, Research-Then-Build, and Quality Gate Loop.", "nested_topics": []},
+        {"title": "Export as CLACR", "content": "CLACR stands for Claude Code Action Request — a structured text block that tells Claude Code exactly what to do. Export as CLACR converts your visual design into this block so you can paste it straight into Claude Code.", "nested_topics": []}
+      ]
+    }
+
+  }
+}

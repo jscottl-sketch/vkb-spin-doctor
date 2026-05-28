@@ -170,6 +170,7 @@
 | OCB-I Phase 8 (Loop Behaviour → LLOW) | Loop Behaviour absorbed into LLOW section as collapsible accordion. All 8 loop action LELs present. Loop presets saved to localStorage. |
 | OCB-I Phase 9 (Section Reorganiser) | All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab. |
 | OCB-I Phase 10 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
+| mcc-instructions-keeper | data/instructions_db.json + 2 endpoints (/api/instructions + /api/instructions/<id>) + ? popups in MCC. Skill file at skills/mcc-instructions-keeper/SKILL.md — upload to Project Files manually. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

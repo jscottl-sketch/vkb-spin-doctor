@@ -1578,6 +1578,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()" data-tip="Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.">💾 Save Session Now</button>
       <button id="copyStatusBtn" onclick="copyStatusForClaude()" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;" data-tip="Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context">📋 Copy STATUS.md for Claude</button>
       <span id="copyStatusMsg" style="margin-left:12px; font-weight:bold;"></span>
+      <button class="tip-btn mcc-popup-safe" data-instruction-id="section_wccs" onclick="showInstructions('section_wccs',this)" title="What is the WCCS tab?">?</button>
       <div class="wccs-auto-status">
         <span>Auto-WCCS: <span id="wccs-auto-label" class="auto-badge auto-off">OFF</span></span>
         <span class="wccs-next-label">Next save: <strong id="wccs-next-save">—</strong></span>
@@ -1785,6 +1786,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
   <div class="pane-scroll">
 
     <!-- ⚡ UNIFIED QUERY BAR — Ask or Search (Scout) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:#555">Scout Swarm — parallel web research</span><button class="tip-btn mcc-popup-safe" data-instruction-id="section_scout_swarm" onclick="showInstructions('section_scout_swarm',this)" title="What is Scout Swarm?">?</button></div>
     <div class="uq-bar" id="scout-uq-bar">
       <div class="uq-input-row">
         <input type="text" id="scout-uq-input" class="uq-input"
@@ -2122,6 +2124,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
   <div class="pane-scroll">
 
     <!-- ⚡ UNIFIED QUERY BAR — Ask or Search (AAFL Control) -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:#555">AAFL Control — Autonomous AI Feedback Loop</span><button class="tip-btn mcc-popup-safe" data-instruction-id="section_aafl_control" onclick="showInstructions('section_aafl_control',this)" title="What is AAFL Control?">?</button></div>
     <div class="uq-bar" id="aafl-uq-bar">
       <div class="uq-input-row">
         <input type="text" id="aafl-uq-input" class="uq-input"
@@ -2405,6 +2408,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
     <div class="aafl-acc open" id="acc-llow">
       <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-llow')">🔄 Loop Law Organiser Window (LLOW)
         <span style="font-size:10px;background:#1a2a3a;color:#4af;border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle" title="Design visual loop workflows. Drag elements from the palette, connect with arrows, then Export as CLACR or Run directly via AAFL.">OCB-D</span>
+        <button class="tip-btn mcc-popup-safe" data-instruction-id="section_llow_canvas" onclick="event.stopPropagation();showInstructions('section_llow_canvas',this)" title="What is LLOW Canvas?" style="margin-left:6px;vertical-align:middle">?</button>
         <span class="acc-arrow">▼</span>
       </div>
       <div class="aafl-acc-body">
@@ -2880,6 +2884,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <button class="btn" onclick="showAddMissionForm()" title="Add a custom mission to your registry — give it a name, icon, description, and a linked tab">➕ Add New Mission</button>
         <button class="btn" onclick="loadMissions()" style="font-size:11px" title="Reload custom missions from the server">↻ Refresh</button>
         <span id="missions-count-label" style="font-size:11px;color:#555;align-self:center"></span>
+        <button class="tip-btn mcc-popup-safe" data-instruction-id="section_missions" onclick="showInstructions('section_missions',this)" title="What are Missions?">?</button>
       </div>
     </div>
 
@@ -3470,6 +3475,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       <button class="btn" onclick="loadStorageFull()" title="Reload all storage data — slot sizes, trends, and largest files — from the server">↻ Refresh All</button>
       <button class="btn" onclick="loadStorageReport()" style="font-size:11px" title="Generate a summary report: total allocated, total used, and any warnings">📋 Weekly Report</button>
       <span class="home-last-refresh" id="storage-ts"></span>
+      <button class="tip-btn mcc-popup-safe" data-instruction-id="section_storage" onclick="showInstructions('section_storage',this)" title="What is the Storage tab?">?</button>
     </div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:12px" title="All visuals update when you click Refresh All — data comes from storage_config.json and actual disk scans">Disk quota monitor — animated visuals. Green &lt;60%, amber 60–80%, red &gt;80% used.</div>
 
@@ -3713,6 +3719,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       <span id="urg-health-suite-val" style="font-size:11px;color:#4af;min-width:20px;text-align:center">5</span>
     </div>
     <!-- Sub-tab bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:#555">Health Suite — all system checks in one place</span><button class="tip-btn mcc-popup-safe" data-instruction-id="section_health_suite" onclick="showInstructions('section_health_suite',this)" title="What is Health Suite?">?</button></div>
     <div class="hs-tab-bar" style="gap:6px;margin-bottom:14px">
       <button class="hs-tab-btn active" onclick="hsTabSwitch('provider')" title="Check which AI providers are online right now">🏥 Provider Health</button>
       <button class="hs-tab-btn" onclick="hsTabSwitch('selfdiag')" title="Internal health checks — MOT runner, module manager, known issues, file health">🔧 Self-Diagnosis</button>
@@ -14261,6 +14268,54 @@ function _srRestoreOrder(tabEl, tabId) {
       if (el && el.parentNode === parent) parent.appendChild(el);
     }
   } catch(e) {}
+}
+
+// ── mcc-instructions-keeper: ? button handler ─────────────────────────────
+function showInstructions(elementId, btn) {
+  const existing = document.getElementById('instr-popup');
+  if (existing) { existing.remove(); return; }
+  fetch('/api/instructions/' + encodeURIComponent(elementId))
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) return;
+      function buildTopics(topics) {
+        if (!topics || !topics.length) return '';
+        return topics.map(t =>
+          '<details style="margin-top:6px;border:1px solid #2a3a4a;border-radius:4px;padding:4px 10px">' +
+          '<summary style="cursor:pointer;color:#4af;font-size:12px;user-select:none">' + t.title + '</summary>' +
+          '<div style="padding:6px 0;font-size:12px;color:#bbb;line-height:1.5">' + t.content + buildTopics(t.nested_topics) + '</div>' +
+          '</details>'
+        ).join('');
+      }
+      const popup = document.createElement('div');
+      popup.id = 'instr-popup';
+      popup.style.cssText = 'position:fixed;z-index:9999;max-width:440px;min-width:280px;background:#141414;border:1px solid #4af;border-radius:8px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.85);pointer-events:auto;font-family:inherit';
+      popup.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">' +
+          '<div style="font-weight:bold;color:#fff;font-size:14px;line-height:1.3;flex:1">' + (data.short_description || '') + '</div>' +
+          '<button onclick="document.getElementById(\'instr-popup\').remove()" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px;line-height:1;padding:0 0 0 10px;flex-shrink:0" title="Close">✕</button>' +
+        '</div>' +
+        '<div style="color:#bbb;font-size:13px;line-height:1.5;margin-bottom:8px">' + (data.full_explanation || '') + '</div>' +
+        buildTopics(data.nested_topics || []);
+      document.body.appendChild(popup);
+      if (btn) {
+        const r = btn.getBoundingClientRect();
+        let top = r.bottom + 8, left = r.left;
+        if (top + 320 > window.innerHeight) top = Math.max(8, r.top - 330);
+        if (left + 450 > window.innerWidth)  left = Math.max(8, window.innerWidth - 454);
+        popup.style.top = top + 'px'; popup.style.left = left + 'px';
+      } else {
+        popup.style.top = '50%'; popup.style.left = '50%'; popup.style.transform = 'translate(-50%,-50%)';
+      }
+      setTimeout(() => {
+        const dismiss = e => {
+          const p = document.getElementById('instr-popup');
+          if (p && !p.contains(e.target) && e.target !== btn) { p.remove(); document.removeEventListener('click', dismiss); }
+        };
+        document.addEventListener('click', dismiss);
+      }, 60);
+    })
+    .catch(() => {});
 }
 
 </script>
