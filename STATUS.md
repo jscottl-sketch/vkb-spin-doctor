@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 | **Updated by:** Claude Code (OCB-D complete)
+**Last updated:** 2026-05-28 | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---

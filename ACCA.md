@@ -56,4 +56,7 @@
 | AXO | Accident (acca) | 2026-05-27 |
 | CLACR | CLAC Request | 2026-05-27 |
 
+
+| NEXT | Bug fix OCB, then visual overhaul (Layout 2+3 mix), WENTO additions, Storage upgrades | 2026-05-28 |
+
 <!-- END_OF_FILE -->
