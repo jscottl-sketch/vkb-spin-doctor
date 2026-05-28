@@ -59,4 +59,9 @@
 
 | NEXT | Bug fix OCB, then visual overhaul (Layout 2+3 mix), WENTO additions, Storage upgrades | 2026-05-28 |
 
+| WRC | Write-Run-Check — mini dev cycle: write code, run it, check the output | 2026-05-28 |
+| LLOW | Loop Law Organiser Window — visual canvas for building AAFL loop sequences | 2026-05-28 |
+| STORM | Summary To Output Results Memory — dedup engine for avoiding repeat work | 2026-05-28 |
+| AASKC | Autonomous AI Simultaneous Knowledge Connection — the product name for the full platform (AAFL + MCC + LLOW + Scout) | 2026-05-28 |
+
 <!-- END_OF_FILE -->

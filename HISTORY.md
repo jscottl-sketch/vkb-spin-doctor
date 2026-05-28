@@ -811,6 +811,49 @@ KNOWN BUGS: LLOW empty (no elements/arrows loaded), dials/gauges dead, timeline 
 NEW_ACCA: CLACR, WRC, LLOW, STORM, AASKC
 NEXT: Bug fix OCB, then visual overhaul (Layout 2+3 mix), WENTO additions, Storage upgrades
 
+
+---
+
+### 2026-05-28
+
+# Session Log — 2026-05-28
+
+## Status
+LLOW canvas major build sprint — OCB-F through OCB-I written/run
+
+## What was done
+- OCB-F: Arrow drag-drop fix + colour strategy settings (PASS but visual bugs found)
+- OCB-G: LLOW full rebuild — connectors, junction boxes, preset load, snap mode, colour zones
+- OCB-H: MCC full revamp — AI status bar, Health Suite, Scout Swarm rename, Storage, all tabs
+- OCB-I: Written — LEL options, junction boxes, AI Master Control, snap mode fix, fullscreen, section reorganiser, loop behaviour absorbed into LLOW
+- New ACCA codes: BOBWAYF, LEL, GOEB, TCB
+
+## What broke / gaps found
+- OCB-F claimed PASS but colour strategies and arrows not working visually
+- Snap Mode not working, Snap Glow does nothing
+- LEL options never built, junction boxes never built
+- Grid colour zones missing labels/GOEBs
+
+## Decisions made
+- Arrows = drag/drop connection LINES not boxes
+- Arrow Types section renamed CONNECTORS
+- Junction Boxes = separate droppable grid nodes (8 types)
+- Loop Behaviour absorbed into LLOW permanently
+
+## Next priorities (pick up here)
+1. Run OCB-I (block already written — just paste and go)
+2. Test LLOW live after OCB-I completes
+3. OCB-H run if not already done (MCC revamp block)
+
+## Provider / component status changes
+No changes.
+
+## ALP notes
+TCB = Two CLAC Block — ALP violation. Never repeat CLAC block twice in one message.
+
+## Files changed
+mission_control.html, llow_engine.py, mcc_server.py
+
 <!-- END_OF_FILE -->
 
 
