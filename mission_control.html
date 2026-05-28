@@ -33,6 +33,24 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 
 /* HEADER */
 .header{background:#111;border-bottom:1px solid #222;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+
+/* ── OCB-H: AI STATUS BAR (persistent across all tabs) ── */
+#ai-status-bar{background:linear-gradient(90deg,#070d07 0%,#0a0f0a 100%);border-bottom:1px solid #0e1e0e;height:32px;display:flex;align-items:center;flex-shrink:0;overflow:hidden;position:relative}
+#ai-status-bar::before{content:"AI STATUS";position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding:0 10px;font-size:9px;color:#1a4a1a;letter-spacing:2px;font-weight:bold;background:#070d07;border-right:1px solid #0e2a0e;z-index:2;white-space:nowrap}
+#ai-status-scroll{flex:1;overflow:hidden;margin-left:90px;position:relative;height:100%}
+#ai-status-inner{display:flex;gap:18px;white-space:nowrap;font-size:10px;padding:0 12px;line-height:32px;animation:aiStatusTicker 40s linear infinite}
+@keyframes aiStatusTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ai-prov-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:10px;font-size:10px;background:rgba(255,255,255,0.04);border:1px solid #1a2a1a;cursor:default;transition:border-color .2s}
+.ai-prov-chip.online{border-color:#1a3a1a;color:#4f4}
+.ai-prov-chip.offline{border-color:#3a1a1a;color:#666}
+.ai-prov-chip.rl{border-color:#2a1a3a;color:#8b5cf6}
+.ai-prov-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ai-prov-chip.online .ai-prov-pulse{background:#4f4;animation:aiPulse 2s ease-in-out infinite}
+.ai-prov-chip.offline .ai-prov-pulse{background:#444}
+.ai-prov-chip.rl .ai-prov-pulse{background:#8b5cf6;animation:aiPulse 1s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+#ai-status-model{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:center;padding:0 12px;font-size:10px;color:#2a4a2a;border-left:1px solid #0e2a0e;background:#070d07;white-space:nowrap;z-index:2}
+#ai-status-model span{color:#4af;margin-left:4px}
 .header-title{font-size:17px;font-weight:bold;color:#fff;letter-spacing:1px}
 .header-spacer{flex:1}
 .auto-toggle-wrap{display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa}
@@ -621,6 +639,23 @@ body.tutorial-on [data-tutorial]{position:relative}
 .skeleton{background:linear-gradient(90deg,#111 25%,#1a1a1a 50%,#111 75%);background-size:200% 100%;animation:skeleton-shimmer 1.4s infinite;border-radius:3px;color:transparent!important}
 @keyframes skeleton-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
+/* ── OCB-H: Tab animation improvements ── */
+@keyframes cardSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes countUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(74,170,255,.0)}50%{box-shadow:0 0 8px 2px rgba(74,170,255,.2)}}
+.anim-card-in{animation:cardSlideIn 0.3s ease both}
+.anim-fade-up{animation:fadeInUp 0.25s ease both}
+.scout-result-card{transition:background .15s,border-color .15s;animation:cardSlideIn .3s ease both}
+.scout-result-card:hover{background:#141414!important;border-color:#2a2a2a!important}
+.mem-card{transition:box-shadow .15s;animation:cardSlideIn .3s ease both}
+.mem-card:hover{box-shadow:0 0 0 1px #333,0 2px 8px rgba(0,0,0,.4)}
+.cost-counter-anim{animation:countUp .5s ease both}
+/* Savings counter bounce */
+.cost-savings-counter{background:linear-gradient(135deg,#071207,#0a170a);border:1px solid #1a3a1a;border-radius:8px;padding:10px 16px;margin-bottom:10px;text-align:center;animation:pulseGlow 3s ease-in-out infinite}
+.cost-savings-val{font-size:28px;font-weight:bold;color:#4f4;letter-spacing:2px;animation:countUp .8s ease both}
+.cost-savings-label{font-size:10px;color:#2a5a2a;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
 /* ═══════════════════════════════════════════════════════════════
    BUILD 3 — NEW STYLES
    ═══════════════════════════════════════════════════════════════ */
@@ -989,11 +1024,14 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-jb-dbl-hint{font-size:8px;color:#00D4FF;opacity:0.5;text-align:center;display:block;margin-top:1px}
 /* ── OCB-G: Phase Flow zone labels ── */
 .llow-phase-label{position:absolute;top:4px;font-size:9px;font-weight:bold;letter-spacing:.08em;pointer-events:none;z-index:1;padding:2px 7px;border-radius:3px;text-transform:uppercase}
-/* ── OCB-G: Strict Mode shake + flash ── */
+/* ── OCB-H: Snap Mode shake + flash (renamed from Strict Mode) ── */
 @keyframes llowShake{0%,100%{transform:translateX(0)} 15%{transform:translateX(-7px)} 35%{transform:translateX(7px)} 55%{transform:translateX(-4px)} 75%{transform:translateX(4px)}}
 .llow-zone-flash{animation:llowShake 0.4s ease!important}
 @keyframes llowZoneRed{0%{box-shadow:inset 0 0 0 2000px rgba(220,30,30,0.25)} 100%{box-shadow:none}}
 .llow-wrong-zone{animation:llowZoneRed 0.5s ease}
+/* ── OCB-H: LLOW canvas drag ghost — only dragged node ghosts ── */
+.llow-node.llow-dragging{opacity:0.45;transform:scale(1.04);z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.7)!important;transition:none!important}
+.llow-nodes-layer.llow-drag-active .llow-node:not(.llow-dragging){opacity:1!important;transition:none!important}
 /* ── OCB-E Phase 5: Storage liquid fill wave ── */
 @keyframes waveMove{0%{background-position:0 0}100%{background-position:60px 0}}
 .stor-wave-bar{position:relative;height:22px;border-radius:4px;overflow:hidden;background:#111;border:1px solid #222}
@@ -1053,6 +1091,16 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
     <span id="last-updated-lbl" data-tip="Time of last successful data sync from the MCC server">not synced</span>
     <button class="btn-refresh" onclick="manualRefresh()" data-tip="Refresh status, history, ACCA and health data from the MCC server right now">↻ Refresh</button>
   </div>
+</div>
+
+<!-- ── OCB-H: AI STATUS BAR — persistent across all tabs ── -->
+<div id="ai-status-bar">
+  <div id="ai-status-scroll">
+    <div id="ai-status-inner">
+      <span class="ai-prov-chip offline"><span class="ai-prov-pulse"></span>Loading providers…</span>
+    </div>
+  </div>
+  <div id="ai-status-model">Model: <span id="ai-model-chip">claude-sonnet-4-6</span></div>
 </div>
 
 <!-- PRESET BAR (Feature 2) -->
@@ -1184,7 +1232,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
   <button class="tab-btn active" data-tab="wccs" data-tip="Save your session — paste chat notes here and click Save Session Now">💾 WCCS</button>
   <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
   <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
-  <button class="tab-btn" data-tab="scout" data-tip="Web research tool — enter a question and Scout searches multiple sources in parallel">🔭 Scout</button>
+  <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis">🔭 Scout Swarm</button>
   <button class="tab-btn" data-tab="aafl-control" data-tip="Run and configure the AAFL AI engine — set goals, pick providers, run workflows">⚙️ AAFL Control</button>
   <button class="tab-btn" data-tab="memory" data-tip="Knowledge Bank and Solution Log — read-only view of what the AI has learned over time">🧠 Memory</button>
   <span class="tab-sep" data-tip="AI Tools ↑ | Resources ↓"></span>
@@ -1194,7 +1242,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
   <button class="tab-btn" data-tab="health-suite" data-tip="Health Suite — Provider Health, Self-Diagnosis, Medical, and GPU/CPU/RAM all in one place">💊 Health Suite</button>
   <span class="tab-sep" data-tip="Monitoring ↑ | Config ↓"></span>
   <button class="tab-btn" data-tab="acca" data-tip="MCC user guide, ACCA shorthand code reference, and all keyboard shortcuts">⚡ Instructions &amp; Codes</button>
-  <button class="tab-btn" data-tab="keybind-profiles" data-tip="Save and load VKB joystick keybinding profiles for War Thunder, Elite Dangerous, Star Citizen">🎮 KB Profiles</button>
+  <!-- KB Profiles moved into Missions tab — OCB-H Phase 2 -->
   <button class="tab-btn" data-tab="design" data-tip="Design tab — customise fonts, colours, borders, and save design presets for this dashboard">🎨 Design</button>
   <button class="tab-btn" data-tab="promo" data-tip="High-scoring AI results (≥9.0) waiting for your approval or rejection before archiving">⭐ Promo</button>
   <button class="tab-btn" data-tab="missions" data-tip="Mission registry — all active AAFL projects with status, tags, and progress notes">🎯 Missions</button>
@@ -2415,8 +2463,8 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
               </div>
               <div style="height:1px;background:#222;margin:6px 0"></div>
               <div class="llow-strat-row">
-                <input type="checkbox" id="llow-strat-strict" onchange="llowToggleStrategy('strict_mode')" style="flex-shrink:0;margin-top:2px">
-                <label for="llow-strat-strict" title="GOEB: When ON, elements can only be placed in their matching colour zone. Wrong zone = shake animation + snap back to palette."><b style="color:#f84">Strict Mode</b><br><span style="font-size:9px;color:#555">LELs snap to matching zone only — wrong zone = shake + reject</span><span style="font-size:8px;color:#f84;display:block;margin-top:2px">⚠ requires Phase Flow ON</span></label>
+                <input type="checkbox" id="llow-strat-snap-mode" onchange="llowToggleStrategy('snap_mode')" style="flex-shrink:0;margin-top:2px">
+                <label for="llow-strat-snap-mode" title="When ON, elements can only be placed in their matching colour zone. Wrong zone = shake animation + snap back to palette."><b style="color:#f84">Snap Mode</b><br><span style="font-size:9px;color:#555">LELs snap to matching zone only — wrong zone = shake + reject</span><span style="font-size:8px;color:#f84;display:block;margin-top:2px">⚠ requires Phase Flow ON</span></label>
               </div>
               <div class="llow-strat-hint" id="llow-strat-hint"></div>
             </div>
@@ -2577,8 +2625,79 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
      ============================================================ -->
 <div class="tab-pane" id="tab-promo">
   <div class="pane-scroll">
+
+    <!-- ── OCB-H: Project Story + Comparison + Links ── -->
+    <div style="background:linear-gradient(135deg,#0a0f0a,#0d1a0d);border:1px solid #1a3a1a;border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="font-size:20px;font-weight:bold;color:#fff;margin-bottom:6px">🚀 AASKC — Autonomous AI Simultaneous Knowledge Connection</div>
+      <div style="font-size:13px;color:#6f6;margin-bottom:12px;font-style:italic">Beginner with brain injury builds self-improving AI agent from scratch. No shortcuts.</div>
+      <div style="font-size:13px;color:#aaa;line-height:1.8;margin-bottom:16px">
+        <b style="color:#eee">The problem:</b> Joystick spin bug affects millions of War Thunder / Elite Dangerous / Star Citizen players. One unchecked box in Steam Generic Gamepad Config silently breaks joysticks. No one talks about it.<br><br>
+        <b style="color:#eee">The solution:</b> VKB Spin Doctor — a Python GUI that detects and fixes the issue across 4 games. Built by an AI agent (AAFL) autonomously.<br><br>
+        <b style="color:#eee">The twist:</b> The AI that built the fix also improves itself. AAFL (Autonomous AI Feedback Loop) runs goals, scores results, retries with different providers, and logs everything. 14 free AI providers. Zero paid API calls for most runs.
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+        <div style="background:#111;border:1px solid #1e3e1e;border-radius:6px;padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:22px;font-weight:bold;color:#4f4">14</div>
+          <div style="font-size:10px;color:#555">AI Providers</div>
+        </div>
+        <div style="background:#111;border:1px solid #1e3e1e;border-radius:6px;padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:22px;font-weight:bold;color:#4af">108</div>
+          <div style="font-size:10px;color:#555">MOT Tests Pass</div>
+        </div>
+        <div style="background:#111;border:1px solid #1e3e1e;border-radius:6px;padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:22px;font-weight:bold;color:#fa0">9.33</div>
+          <div style="font-size:10px;color:#555">Best AAFL Score</div>
+        </div>
+        <div style="background:#111;border:1px solid #1e3e1e;border-radius:6px;padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:22px;font-weight:bold;color:#a8f">4</div>
+          <div style="font-size:10px;color:#555">Games Supported</div>
+        </div>
+        <div style="background:#111;border:1px solid #1e3e1e;border-radius:6px;padding:10px 16px;text-align:center;min-width:90px">
+          <div style="font-size:22px;font-weight:bold;color:#f8c">£0</div>
+          <div style="font-size:10px;color:#555">Typical API Cost</div>
+        </div>
+      </div>
+
+      <!-- Competitive comparison -->
+      <div style="font-size:12px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">How AAFL compares</div>
+      <div style="overflow-x:auto;margin-bottom:16px">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:560px">
+          <thead>
+            <tr style="border-bottom:1px solid #2a2a2a">
+              <th style="padding:6px 10px;text-align:left;color:#666;font-weight:normal">Feature</th>
+              <th style="padding:6px 10px;text-align:center;color:#4f4;font-weight:bold">AAFL (this project)</th>
+              <th style="padding:6px 10px;text-align:center;color:#888;font-weight:normal">LangGraph</th>
+              <th style="padding:6px 10px;text-align:center;color:#888;font-weight:normal">CrewAI</th>
+              <th style="padding:6px 10px;text-align:center;color:#888;font-weight:normal">AutoGPT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">14+ free AI providers</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">partial</td></tr>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">Self-improving meta-loop</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">partial</td></tr>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">Visual workflow canvas (LLOW)</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td></tr>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">Built by a beginner</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td></tr>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">Works offline (LM Studio)</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">partial</td><td style="text-align:center;color:#555">partial</td><td style="text-align:center;color:#555">✗</td></tr>
+            <tr style="border-bottom:1px solid #1a1a1a"><td style="padding:5px 10px;color:#aaa">Zero-cost typical run</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td></tr>
+            <tr><td style="padding:5px 10px;color:#aaa">Mission Control dashboard</td><td style="text-align:center;color:#4f4">✓</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">✗</td><td style="text-align:center;color:#555">partial</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Links -->
+      <div style="font-size:12px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Links</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a href="https://ko-fi.com" target="_blank" style="background:#0a1a0a;border:1px solid #1a4a1a;color:#4f4;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold;transition:background .15s" onmouseover="this.style.background='#112211'" onmouseout="this.style.background='#0a1a0a'">☕ Ko-fi — Support</a>
+        <a href="https://itch.io" target="_blank" style="background:#1a0a0a;border:1px solid #4a1a1a;color:#f84;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold;transition:background .15s" onmouseover="this.style.background='#221111'" onmouseout="this.style.background='#1a0a0a'">🎮 Itch.io — Download</a>
+        <a href="https://github.com/jscottl-sketch/vkb-spin-doctor" target="_blank" style="background:#0a0a1a;border:1px solid #1a1a4a;color:#4af;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold;transition:background .15s" onmouseover="this.style.background='#111122'" onmouseout="this.style.background='#0a0a1a'">⬡ GitHub — Source</a>
+        <a href="https://reddit.com/r/LocalLLaMA" target="_blank" style="background:#1a0d0a;border:1px solid #4a2a1a;color:#fa0;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:12px;font-weight:bold;transition:background .15s" onmouseover="this.style.background='#221811'" onmouseout="this.style.background='#1a0d0a'">🤖 r/LocalLLaMA — Post</a>
+      </div>
+    </div>
+
+    <!-- Promo queue -->
     <div class="home-ctrl">
-      <button class="btn" onclick="loadPromo()" title="Reload the promotion queue from the server">Refresh</button>
+      <button class="btn" onclick="loadPromo()" title="Reload the promotion queue from the server">↻ Refresh Queue</button>
       <span id="promo-count-label" class="home-last-refresh"></span>
     </div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">High-scoring AI results (≥9.0) waiting for your approval — Approve to save them, Reject to discard</div>
@@ -2605,6 +2724,33 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <button class="btn" onclick="showAddMissionForm()" title="Add a custom mission to your registry — give it a name, icon, description, and a linked tab">➕ Add New Mission</button>
         <button class="btn" onclick="loadMissions()" style="font-size:11px" title="Reload custom missions from the server">↻ Refresh</button>
         <span id="missions-count-label" style="font-size:11px;color:#555;align-self:center"></span>
+      </div>
+    </div>
+
+    <!-- ── OCB-H: Mission Progress Overview ─────────────────────────── -->
+    <div style="background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;padding:14px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Mission Progress Overview</div>
+      <div id="mission-progress-bars" style="display:flex;flex-direction:column;gap:10px">
+        <!-- Populated by mcRenderProgressBars() -->
+        <div style="font-size:11px;color:#555">Click a mission card to expand — progress bars auto-populate from card status tags.</div>
+      </div>
+      <!-- AAFL score trend mini-chart -->
+      <div style="margin-top:12px">
+        <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">AAFL Run Scores (recent)</div>
+        <svg id="mission-score-svg" viewBox="0 0 500 40" width="100%" height="40" style="background:#090909;border-radius:3px">
+          <text x="250" y="24" text-anchor="middle" fill="#2a2a2a" font-size="10">Run AAFL goals to see score trend here</text>
+        </svg>
+      </div>
+      <!-- Milestone markers -->
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap" id="mission-milestones">
+        <span style="background:#0a2a0a;border:1px solid #1a4a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#4f4">✓ WT spin fix</span>
+        <span style="background:#0a2a0a;border:1px solid #1a4a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#4f4">✓ MOT 108/108</span>
+        <span style="background:#0a2a0a;border:1px solid #1a4a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#4f4">✓ LLOW Canvas</span>
+        <span style="background:#0a2a0a;border:1px solid #1a4a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#4f4">✓ OCB-H Complete</span>
+        <span style="background:#1a1a0a;border:1px solid #3a3a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#fa0">⏳ Star Citizen v0.2</span>
+        <span style="background:#1a1a0a;border:1px solid #3a3a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#fa0">⏳ r/LocalLLaMA post</span>
+        <span style="background:#1a0a0a;border:1px solid #3a1a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#888">◯ 5-project split</span>
+        <span style="background:#1a0a0a;border:1px solid #3a1a1a;border-radius:10px;padding:2px 10px;font-size:10px;color:#888">◯ Electron wrapper</span>
       </div>
     </div>
 
@@ -2869,9 +3015,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 <div class="tab-pane" id="tab-acca">
   <div class="pane-scroll">
 
-    <!-- ══ MCC INSTRUCTIONS ══════════════════════════════════════════ -->
-    <div class="wccs-section-title" style="margin-top:0">MCC Instructions</div>
-    <div style="font-size:12px;color:#777;margin-bottom:10px">Plain-English guide to every tab and button. Click a section to expand it.</div>
+    <!-- ══ MCC INSTRUCTIONS (OCB-H: full reorganisation) ═════════════ -->
+    <div class="wccs-section-title" style="margin-top:0">MCC Instructions — OCB-H Comprehensive Guide</div>
+    <div style="font-size:12px;color:#777;margin-bottom:10px">Every tab, every feature — OCB-A through OCB-H. Click any section to expand. Organised by area.</div>
 
     <style>
       .mcc-inst{border:1px solid #1e1e1e;border-radius:6px;margin-bottom:6px;overflow:hidden}
@@ -2885,156 +3031,253 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       .mcc-inst-body .mcc-row{display:flex;gap:10px;margin-bottom:4px;border-bottom:1px solid #111;padding-bottom:4px}
       .mcc-inst-body .mcc-btn-name{color:#fc8;font-weight:bold;min-width:200px;flex-shrink:0}
       .mcc-inst-body .mcc-ep{color:#555;font-size:10px}
+      .mcc-inst-body .mcc-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:bold;margin-right:4px;vertical-align:middle}
+      .mcc-badge-ocb{background:#0a1a0a;color:#4af;border:1px solid #1a3a1a}
+      .mcc-badge-new{background:#1a0a0a;color:#f84;border:1px solid #3a1a1a}
+      .inst-section-chip{display:inline-block;background:#1a1a2a;color:#4af;border:1px solid #1a2a4a;border-radius:3px;font-size:10px;padding:1px 7px;margin-bottom:10px;letter-spacing:1px}
     </style>
 
-    <!-- Home -->
+    <!-- ═══ SECTION 1: GENERAL MCC ═══════════════════════════════════ -->
+    <div class="inst-section-chip">AREA 1 — GENERAL MCC</div>
+
+    <!-- Home + Header -->
     <details class="mcc-inst">
-      <summary>🏠 Home Tab</summary>
+      <summary>🏠 Home · Header · Sidebar · AI Status Bar</summary>
       <div class="mcc-inst-body">
-        <b>What it is:</b> The overview screen. Shows all system areas in cards. Refreshes every 30 seconds automatically.<br><br>
-        <div class="mcc-row"><span class="mcc-btn-name">🏥 Run Health Check</span><span>Runs provider_health.py in background. Takes ~30s. Refreshes the health gauge after.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">🔭 Start Scout</span><span>Starts a recurring web-research run for the default VKB goal. Runs every 30 min.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">🔄 Run AAFL Goal</span><span>Prompts you to type a goal, then queues it in goal_queue.txt for the AI to process.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">💾 Save WCCS</span><span>Same as Save Session Now on the WCCS tab. Saves STATUS.md right now.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Provider Health gauge</span><span>Circle shows % of green AI providers. Click Show Details to see each one.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">AAFL Score gauge</span><span>Last AI run score out of 10. Green=good, red=needs attention.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Costs chart</span><span>Response-time bars for active providers. Fastest provider = shortest bar.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Scout Activity sparkline</span><span>7-day line showing scout activity. Flat = not running.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">ALP Savings bar</span><span>How many savings you have logged vs a target of 30.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">System Status lights</span><span>Green=OK, yellow=uncertain, red=problem. MCC Server / AAFL Engine / Scout.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Refresh Cards</span><span>Force-reload all home cards from server.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md</span><span>Copies full STATUS.md text to your clipboard.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy HISTORY.md</span><span>Copies full HISTORY.md text to your clipboard.</span></div>
+        <span class="mcc-badge mcc-badge-ocb">ALWAYS ON</span><b>AI Status Bar</b> — <span class="mcc-badge mcc-badge-new">OCB-H NEW</span> Persistent bar at the very top of every tab. Shows all AI providers with live pulse dots, latency, and score. Scrolls automatically.<br><br>
+        <b>Header:</b> MCC title + server dot (green=live, red=server off) + Connect Data button + Medical score badge.<br><br>
+        <b>Sidebar (left):</b> Navigation tree · Quick Stats · Quick Actions · Provider Health gauge · Live Processes.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Connect Data</span><span>Connects to mcc_server.py and loads all tab data. Must click before any data shows.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">↻ Refresh</span><span>Re-polls server. Updates status, health, ACCA, and costs.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">🏥 Run Health Check</span><span>Runs provider_health.py (~30s). Updates provider cards and AI Status Bar.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md</span><span>Copies full STATUS.md to clipboard. Paste into Claude.ai Project Files after every WCCS save.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Preset Bar</span><span>Save your current tab as a named quick-jump button. Click preset to return to that tab.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Keyboard shortcuts</span><span>1–9: jump to tab · R: refresh · C: connect · Esc: close dialog · Shift+?: shortcut help · Ctrl+S: WCCS save.</span></div>
       </div>
     </details>
 
-    <!-- WCCS -->
+    <!-- ═══ SECTION 2: WCCS / SAVING ════════════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 2 — WCCS / SAVING</div>
+
     <details class="mcc-inst">
-      <summary>💾 WCCS Tab (Save Session)</summary>
+      <summary>💾 WCCS — Write Claude Code Save</summary>
       <div class="mcc-inst-body">
-        <b>What it is:</b> The main save button lives here. Every save backs up STATUS.md and logs what happened.<br><br>
-        <div class="mcc-row"><span class="mcc-btn-name">💾 Save Session Now</span><span>The big button. Runs aafl_wccs.py which updates STATUS.md + HISTORY.md. After saving, a flashing reminder tells you to copy and upload STATUS.md to Claude Project Files.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md for Claude</span><span>Copies STATUS.md to clipboard. Do this after every save, then paste into Claude.ai Project Files.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Chat Summary textarea</span><span>Paste your Claude chat notes here before clicking Save. Optional but records context.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Auto-WCCS toggle (header)</span><span>Saves automatically every N minutes in the background. Set the interval with the number input next to it.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Auto-Save Log pill</span><span>Shows the last 20 saves from wccs_log.md. Date, version, focus, ALP.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">History Search pill</span><span>Type anything to search HISTORY.md and ACCA.md. Results highlight your search term.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Session Logs pill</span><span>Browse archived session log files. Click one to read its contents.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Rewind + Edit pill</span><span>Pick an old STATUS.md backup from the dropdown, edit its text, then click Restore to make it the live STATUS.md again. Current STATUS.md is backed up first.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Diff Viewer pill</span><span>Pick two backup versions A and B, click Compare. Shows added (green), removed (red), changed (amber) lines.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Sunday Auto-Merge card</span><span>Runs merge_sessions.py which combines old session logs.</span></div>
+        <b>What it is:</b> The core save system. Every save backs up STATUS.md, appends HISTORY.md, and optionally pushes to git.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">💾 Save Session Now</span><span>The big green button. Runs aafl_wccs.py via Mistral (free) — no Claude allowance used. Updates STATUS.md + HISTORY.md. After saving, copy STATUS.md and upload to Claude Project Files.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">📋 Copy STATUS.md for Claude</span><span>Copies STATUS.md to clipboard. Paste into Claude.ai Project Files after every save.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Chat Summary textarea</span><span>Paste Claude chat notes here before saving. Optional but records what happened in this session.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Auto-Save Log</span><span>Last 20 saves from wccs_log.md — date, version, focus area, ALP count.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">History Search</span><span>Search HISTORY.md and ACCA.md. Results highlight your term.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Session Logs</span><span>Browse archived session log files. Click one to read contents.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Rewind + Edit</span><span>Pick an old STATUS.md backup, edit it, click Restore. Current STATUS.md is backed up first.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Diff Viewer</span><span>Pick versions A and B, click Compare. Shows added (green), removed (red), changed (amber) lines side by side.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">IBR Scan</span><span>Scans session logs for Investigate Brainstorm Reports — shows what was researched but never acted on.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Line Count Warning</span><span>Highlights when STATUS.md exceeds 250 lines — a reminder to archive or trim.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">NEVER-DELETE rule</span><span>Old files always go to archive_dead/ — never deleted. aafl_wccs.py enforces atomic write + read-back verify + 90% sanity check.</span></div>
       </div>
     </details>
 
-    <!-- Kanban / AAFL Runs / Scout / Costs -->
+    <!-- ═══ SECTION 3: SCOUT SWARM ═══════════════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 3 — SCOUT SWARM</div>
+
     <details class="mcc-inst">
-      <summary>📋 Kanban · 🔄 AAFL Runs · 🔭 Scout · 💰 Costs</summary>
+      <summary>🔭 Scout Swarm — Web Research</summary>
       <div class="mcc-inst-body">
-        <b>Kanban</b> — Project board from dashboard_data/kanban.json. Refresh to reload.<br><br>
-        <b>AAFL Runs</b> — History of completed AI goal runs. Refresh to reload. The Retry Log section loads the last 20 retries.<br><br>
-        <b>Scout</b> — Web research runner.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">Timed Scout: Start</span><span>Set a goal + interval + hours limit, click Start. Scout runs repeatedly in background.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Timed Scout: Stop</span><span>Writes a stop flag file. Scout finishes its current run then stops.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Source Library: Load</span><span>Shows saved URLs. Filter by topic.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Source Library: Discover</span><span>Runs scout in discovery mode to find new relevant URLs.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">+ Add Source</span><span>Manually add a URL + description to the library.</span></div>
-        <br><b>Costs</b> — Cost data from dashboard_data/costs.json. Refresh to reload.
+        <span class="mcc-badge mcc-badge-ocb">OCB-H</span> Tab renamed to <b>Scout Swarm</b>. Same functionality, clearer name.<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">DDG Search</span><span>DuckDuckGo web results for your research question. Fast general-purpose search.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Reddit</span><span>Searches Reddit posts and threads for community advice.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">GitHub</span><span>Searches GitHub repos and issues — useful for code, configs, tools.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">YouTube</span><span>Searches YouTube titles — useful for tutorials and reviews.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Forum</span><span>Searches flight sim and gaming forums for niche hardware advice.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">All Parallel</span><span>Runs all 5 strategies simultaneously — most complete but slowest.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">🤖 AI Summary</span><span>Sends results through Mistral for a plain-English digest.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Timed Scout</span><span>Runs Scout repeatedly on a schedule (every N minutes for N hours). Useful for monitoring a topic.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Source Library</span><span>Trusted URLs Scout prioritises. Add manually or click Discover to find new ones.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Blocked Sources</span><span>URLs Scout skips even in All Parallel mode.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AI Comparison Mode</span><span>Send the same query to two AI providers and compare answers side by side.</span></div>
       </div>
     </details>
 
-    <!-- AAFL Control -->
+    <!-- ═══ SECTION 4: LLOW CANVAS ════════════════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 4 — LLOW CANVAS</div>
+
     <details class="mcc-inst">
-      <summary>⚙️ AAFL Control Tab</summary>
+      <summary>🔀 LLOW — Loop Law Organiser Window</summary>
       <div class="mcc-inst-body">
-        <b>What it is:</b> Run AI goals, set engine settings, manage stuck/failed goals.<br><br>
-        <div class="mcc-row"><span class="mcc-btn-name">Goal input</span><span>Type the goal for the AI to work on.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Provider dropdown</span><span>Choose which AI provider to use, or Auto to pick the best free one.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">▶ Run Now</span><span>Adds goal to goal_queue.txt. The AAFL engine picks it up next run.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Cost preview</span><span>Appears when you type a goal. Shows estimated tokens, cost, and time for the chosen provider.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Suggest Provider</span><span>Analyses your goal text and suggests the best provider. Also auto-selects it in the dropdown.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Run Chain</span><span>Runs chain_runner.py which processes goals in sequence through multiple providers.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Confidence Threshold</span><span>Score (0–10) the AI must beat to accept a result. Below this = retry.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Cost Cap (USD)</span><span>Max spend per goal before stopping. Free providers ignore this.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Max Retries</span><span>How many times to retry a failing goal before moving to Stuck Inbox.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Stuck Inbox</span><span>Goals that failed too many times. High/Med/Low severity pills shown. Resolve individually or click Bulk Resolve All.</span></div>
+        <span class="mcc-badge mcc-badge-ocb">OCB-D through OCB-H</span> Visual workflow builder inside the AAFL Control tab.<br><br>
+        <b>How to use:</b><br>
+        1. Drag an element from the left palette onto the canvas<br>
+        2. Click the output port (right side) of one element, then the input port (left side) of another to connect<br>
+        3. Drag a CONNECTOR from the palette before connecting to set the arrow type<br>
+        4. Click ▶ Run Loop to execute the workflow<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Palette elements</span><span>35+ elements: inputs, modes, modifiers, cycle controls, quality checks, outputs, approval gates, endings, junctions.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">CONNECTORS</span><span><span class="mcc-badge mcc-badge-ocb">OCB-G</span> 15 arrow types: Continue, Jump Back, Branch, Trigger, Repeat, ALP Gate, Timer, Scheduled, etc. Each has a unique line style.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Junction Boxes</span><span><span class="mcc-badge mcc-badge-ocb">OCB-G</span> 8 special nodes: Decision (diamond), Merge (trapezoid), Split, Gate, Counter, Logger, Router, Delay. Double-click Gate/Counter/Router/Delay to set parameters.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Preset Load</span><span><span class="mcc-badge mcc-badge-ocb">OCB-G</span> 11 ready-made workflows: Tutorial, Bug Hunt, ALP Audit, Scout Deep Dive, Morning Report, Meta Improve, New Project Bootstrap, Star Citizen Benchmark, and 3 original starters.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Strategy 1: Phase Flow</span><span>Divides canvas into INPUT/PROCESS/OUTPUT colour bands with zone labels at top.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Strategy 2: Element Mirror</span><span>Canvas columns wash with each category's colour. Helps spot which category dominates.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Strategy 3: Snap Glow</span><span>Zone pulse-glows when you drag a matching element — guides correct placement.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Snap Mode</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> (was Strict Mode). Wrong zone = canvas shake + red flash + snap back. Requires Phase Flow ON.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Ghost bug fix</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> Only the grabbed element ghosts while moving. All other elements stay solid.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Minimap</span><span>Small overview panel at bottom-right of canvas. Shows all elements at 5% scale.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Execution Log</span><span>Shows each step as it runs. Green=pass, blue=running, red=fail.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Export CLACR</span><span>Converts workflow into a ready-to-paste CLAC request block for Claude Code.</span></div>
       </div>
     </details>
 
-    <!-- Memory / Promo -->
+    <!-- ═══ SECTION 5: HEALTH SUITE ══════════════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 5 — HEALTH SUITE</div>
+
     <details class="mcc-inst">
-      <summary>🧠 Memory · ⭐ Promo</summary>
+      <summary>💊 Health Suite — All Monitoring in One Place</summary>
       <div class="mcc-inst-body">
-        <b>Memory</b> — Read-only view of the knowledge database.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">Knowledge Bank</span><span>Facts and pages the AI has learnt. Searchable.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Solution Log</span><span>Past AI solutions with scores and which provider gave them. Searchable.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Source Reputation</span><span>URLs used as sources, with trust scores based on how reliable they were.</span></div>
-        <br>
-        <b>Promo</b> — High-scoring results (≥9.0) auto-queue here for you to approve or reject.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">✓ Approve</span><span>Marks the result approved. Can Undo within 10 seconds.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">✗ Reject</span><span>Marks the result rejected. Can Undo within 10 seconds.</span></div>
+        <span class="mcc-badge mcc-badge-ocb">OCB-B through OCB-H</span> 7 sub-tabs accessible via the pill buttons at the top.<br><br>
+        <b>Provider Health:</b><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Provider cards</span><span>Each AI provider shown as a card with status dot, latency, calls today, avg score, and a sparkline of response times.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AI Leaderboard</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> Ranks providers by composite score (speed×0.3 + quality×0.5 + uptime×2). Animated score bars. Crown/medals for top 3.</span></div>
+        <br><b>GPU / CPU / RAM:</b><br>
+        <div class="mcc-row"><span class="mcc-btn-name">4 needle dials</span><span>CPU load · RAM used (48GB) · GPU load · VRAM used (32GB). Colour: green→amber→red as load rises.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">System Score bar</span><span>Composite 0–100. 100=fully idle, 0=fully loaded.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Alerts panel</span><span>GPU Temp + thermal prediction · Bottleneck type · Game/AI conflict flag · Disk I/O.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AI Processes + Table</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> Cards with mini CPU/RAM bars + a detailed table showing every AI process, CPU%, RAM, PID, and Kill button for idle ones.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Timeline</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> CPU/GPU/RAM graph from when MCC was opened. No more 60-reading cap — full session history with grid lines and elapsed time label.</span></div>
+        <br><b>Self-Diagnosis:</b><br>
+        <div class="mcc-row"><span class="mcc-btn-name">🔍 Run Full MOT</span><span>Runs mcc_full_mot.py (~30s). Shows 108/108 pass rate and list of failures.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Module Manager</span><span>Enable/disable individual AAFL modules. Disabled = skipped on next run.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">File Health</span><span>All .py files. Sortable by name/lines/modified/import. Import ✓/✗ shows which files load cleanly.</span></div>
+        <br><b>Medical:</b> Full AI-powered health check of MCC — 285+ checks across 14 categories. Score 0–100. Full written report.<br><br>
+        <b>Work Checker:</b> Tracks incomplete CLAC runs across sessions. Shows Lost Work, Stuck Items, and ALP waste estimate. Re-Queue generates a CLACR block.<br><br>
+        <b>Self-Health (OCB-A):</b> Configure automatic UI testing — MCC tests its own buttons, data fields, and API endpoints on a schedule.
       </div>
     </details>
 
-    <!-- ALP / Storage / Self-Diagnosis -->
+    <!-- ═══ SECTION 6: STORAGE, MISSIONS, DESIGN, PROMO ═══════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 6 — STORAGE · MISSIONS · DESIGN · PROMO</div>
+
     <details class="mcc-inst">
-      <summary>🛡️ ALP · 💽 Storage · 🔧 Self-Diagnosis</summary>
+      <summary>💽 Storage Tab</summary>
       <div class="mcc-inst-body">
-        <b>ALP (Accrued Learning Points)</b> — Tracks money and time savings from this project.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">Entry input</span><span>Describe the saving or lesson learned (e.g. "Saved 2hrs: used WCCS instead of manual copy").</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">+ Add Entry</span><span>Appends the saving as a new row in ALP_Database.md with today's date.</span></div>
-        <br>
-        <b>Storage</b> — Monitors disk quota slots from storage_config.json.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">Progress bars</span><span>Green = under 70%, amber = 70–90%, red = over 90% of quota used.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Weekly Report</span><span>Shows total allocated, total used, and any warning messages.</span></div>
-        <br>
-        <b>Self-Diagnosis</b> — Internal health cockpit.<br>
-        <div class="mcc-row"><span class="mcc-btn-name">🔍 Run Full MOT</span><span>Runs mcc_full_mot.py. Takes ~30 seconds. Shows pass rate and which tests failed.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Module Manager</span><span>Enable/disable project modules with checkboxes.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Known Issues + Add</span><span>Log bugs or problems. Set severity. Mark fixed when done. Delete when closed.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">System Info cards</span><span>Python version, project path, file count, lines of code, disk usage, last git commit. Auto-loaded on tab open.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">File Health table</span><span>All .py files. Click column headers to sort. Import ✓/✗ shows which files import successfully.</span></div>
+        <span class="mcc-badge mcc-badge-ocb">OCB-C + OCB-E + OCB-H</span><br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Pulse Dial</span><span>Half-arc gauge showing total used % of your 1TB allocation. Needle animates on load.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Pie Chart</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> Bigger (160px), animated segments. Darker segment = more of that slot used. Centre shows overall % used. Legend shows per-slot % and colour.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Slot Usage Bars</span><span>One wave-fill bar per slot. Green under 60%, amber 60–80%, red over 80%.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Forecast</span><span>Days until each slot fills based on current growth rate.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Growth Trend</span><span>30-day line graph per slot.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Quota Sliders</span><span>Drag to reallocate space between slots. Save writes to storage_config.json.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">File Type Treemap</span><span>Rectangles sized by total disk usage per file extension. Hover for counts.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Archive Timeline</span><span>GitHub-style heatmap of archive activity. Darker = more files archived that day.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Clean-Up Suggestions</span><span>Files older than 30 days or larger than 10MB flagged for optional archiving.</span></div>
       </div>
     </details>
 
-    <!-- Global controls -->
     <details class="mcc-inst">
-      <summary>⌨ Global Controls (work on every tab)</summary>
+      <summary>🎯 Missions Tab</summary>
       <div class="mcc-inst-body">
-        <div class="mcc-row"><span class="mcc-btn-name">Keys 1–9</span><span>Jump to that tab number.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">R key</span><span>Refresh the current tab's data.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">C key</span><span>Connect Data (same as the Connect Data button).</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Esc key</span><span>Close any open dialog or overlay.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Shift+?</span><span>Show the keyboard shortcut overlay.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Preset bar</span><span>Save your current tab as a named preset. Click a preset button to jump back to it.</span></div>
-        <div class="mcc-row"><span class="mcc-btn-name">Undo toast</span><span>After adding an ALP entry or approving/rejecting a promo item, a 10-second undo button appears in the bottom-right corner.</span></div>
+        <span class="mcc-badge mcc-badge-ocb">OCB-C + OCB-H</span><br><br>
+        Shows all active projects (Spin Doctor, AAFL Engine, MCC, Scout, Promo, ACCA).<br><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Mission cards</span><span>Click a card header to expand. Each card shows status tags, sub-components, and action buttons.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Progress bars</span><span><span class="mcc-badge mcc-badge-ocb">OCB-H</span> Visual fill bars showing completion % per mission. Animated on load.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">🎯 KB Profile Library</span><span>Keybinding profiles for WT/ED/SC/Arma. Import/export JSON. Star ratings. Moved from main tab bar into Missions (OCB-H).</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">➕ Add New Mission</span><span>Creates a custom mission entry with name, status, description, tags, start date, and notes.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">▶ Launch GUI</span><span>Opens spin_doctor.py — the joystick fix GUI.</span></div>
       </div>
     </details>
 
-    <!-- How Updates Work -->
-    <details class="mcc-inst" style="border-color:#2a3a2a">
-      <summary style="background:#0d1a0d">📡 How Updates Work (Data Flow)</summary>
+    <details class="mcc-inst">
+      <summary>🎨 Design Tab · ⭐ Promo Tab · 🧠 Memory Tab · 💰 Costs Tab</summary>
       <div class="mcc-inst-body">
-        <b>Saving a session:</b><br>
+        <b>Design Tab:</b> <span class="mcc-badge mcc-badge-ocb">OCB-H</span> Live theme customiser. Font family + size · Text/Background/Accent colours · Border radius · Button style (Filled/Outline/Ghost) · Animation speed slider · Sidebar density · Design presets (save/load/reset).<br><br>
+        <b>Promo Tab:</b> <span class="mcc-badge mcc-badge-ocb">OCB-H</span> High-scoring results (≥9.0) awaiting your approval. Includes project story, competitive comparison, and links to Ko-fi / Itch.io / GitHub / r/LocalLLaMA.<br><br>
+        <b>Memory Tab:</b> Read-only view of knowledge.db — Knowledge Bank (web facts), Solution Log (AI results), Source Reputation (URL trust scores). All searchable.<br><br>
+        <b>Costs Tab:</b> AI API spending tracker. Budget Caps (daily/weekly/monthly) · Savings Tracker (manual hours) · ROI Tracker · 30-day trend graph · Cost by Provider · ALP (Allowance Preservation) section.
+      </div>
+    </details>
+
+    <!-- ═══ SECTION 7: AAFL ENGINE ════════════════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 7 — AAFL ENGINE + CONTROL</div>
+
+    <details class="mcc-inst">
+      <summary>⚙️ AAFL Control · 📋 Kanban · 🔄 AAFL Runs</summary>
+      <div class="mcc-inst-body">
+        <b>AAFL Control — Run AI goals:</b><br>
+        <div class="mcc-row"><span class="mcc-btn-name">Goal input + ▶ Run Now</span><span>Adds goal to goal_queue.txt. AAFL engine picks it up on next loop.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Provider dropdown</span><span>Auto = pick best free provider. Or manually select Cerebras, Mistral, Gemini, LM Studio, etc.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Suggest Provider</span><span>Analyses your goal text and auto-selects the optimal provider.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Unified Query Bar</span><span>Type once — runs against AAFL or Scout depending which tab you're on.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AAFL ↔ Scout Bridge</span><span>Trigger Scout research for the current AAFL goal. Results feed back to the results panel.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Workflow Builder</span><span>Build a multi-step provider sequence (add/remove steps). Save as named workflow preset.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">LLOW Canvas</span><span>Visual drag-drop workflow builder. See Area 4 above for full details.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Confidence Threshold</span><span>Score 0–10 that AI must beat to accept a result. Below = auto-retry.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">Stuck Inbox</span><span>Goals that failed N times. High/Med/Low severity. AFNA suggestions auto-generated. Bulk Resolve clears all.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AAFL Live Output</span><span>Streaming output during an AAFL run — phase badges + provider badges appear in real time.</span></div>
+        <br><b>Kanban:</b> Project board (To Do / Doing / Done). Cards support subtasks, dependencies, priority tags, and auto-archive when done.<br><br>
+        <b>AAFL Runs:</b> Full history of every AI goal run. Score, provider, timing, cost. Retry Log shows auto-retry events.
+      </div>
+    </details>
+
+    <!-- ═══ SECTION 8: DATA FLOW / HOW UPDATES WORK ═══════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 8 — DATA FLOW</div>
+
+    <details class="mcc-inst">
+      <summary>📡 Memory · ⭐ Promo · How Updates Work</summary>
+      <div class="mcc-inst-body">
+        <b>Saving a session (step by step):</b><br>
         1. Paste chat notes into WCCS tab textarea<br>
         2. Click Save Session Now<br>
-        3. Server writes your notes to chat_latest.txt<br>
-        4. Server runs aafl_wccs.py → updates STATUS.md + HISTORY.md<br>
-        5. Server copies STATUS.md → archive_dead/STATUS_timestamp.md<br>
-        6. MCC shows PASS + flashing reminder banner<br>
-        7. Click "Copy STATUS.md for Claude" button<br>
-        8. Go to Claude.ai → Project Files → delete old STATUS.md → click + → paste new one<br><br>
+        3. Server writes notes to chat_latest.txt<br>
+        4. Server runs aafl_wccs.py → updates STATUS.md + HISTORY.md via free Mistral (no Claude burn)<br>
+        5. STATUS.md archived to archive_dead/STATUS_timestamp.md<br>
+        6. MCC shows PASS + reminder banner<br>
+        7. Click Copy STATUS.md → paste into Claude.ai Project Files<br><br>
+        <b>What auto-updates:</b> Server dot (10s) · Home cards (30s) · Auto-WCCS countdown (1s tick) · AI Status Bar (on provider refresh)<br><br>
+        <b>What needs manual action:</b> Paste chat summary · Click Save · Copy STATUS.md · Upload to Claude Files · Add ALP entries · Run Full MOT<br><br>
+        <b>ACCA codes:</b> Edited directly in ACCA.md (pipe-table format). Appear here on next Refresh. Never rewrite — only append.<br><br>
+        <b>STORM deduplication:</b> storage_manager.py deduplicates STATUS.md, SESUM files, and HISTORY.md automatically to keep files clean.<br><br>
+        <b>ALP rule:</b> Rule No.1 — log every time AAFL saves you time or money. Every entry in ALP_Database.md extends how much you can do with your Claude allowance.
+      </div>
+    </details>
 
-        <b>Auto-WCCS:</b><br>
-        Toggle ON in the header → server fires every N minutes automatically → same save process, no action needed from you.<br><br>
+    <!-- ═══ SECTION 9: ACCA CODES BY CATEGORY ════════════════════════ -->
+    <div class="inst-section-chip" style="margin-top:14px">AREA 9 — ACCA CODES BY CATEGORY</div>
 
-        <b>What auto-populates:</b><br>
-        • Server status dot (every 10s) · Home cards and instruments (every 30s) · Auto-WCCS countdown (1s tick) · ACCA codes (from ACCA.md file) · ALP count · MOT score (after you run it)<br><br>
-
-        <b>What needs manual action:</b><br>
-        • Pasting chat summary before save · Clicking Save Session Now · Clicking Copy STATUS.md after save · Uploading STATUS.md to Claude Project Files · Adding new ACCA codes to ACCA.md directly · Adding ALP entries · Running Full MOT<br><br>
-
-        <b>ACCA codes:</b><br>
-        Codes are read from ACCA.md as a pipe-table. To add a new code, edit ACCA.md directly and add a row: | CODE | meaning | date |. They appear here on next Refresh.
+    <details class="mcc-inst">
+      <summary>⚡ ACCA Codes — Save Operations</summary>
+      <div class="mcc-inst-body">
+        <div class="mcc-row"><span class="mcc-btn-name">WCCS</span><span>Write Claude Code Save — the full save protocol.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">SESUM</span><span>Session Summary — structured summary of a Claude Code session.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">SBS</span><span>Session Backup Save — immediate backup of current session.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">STORM</span><span>Storage/Status/SESUM deduplication run — removes duplicate entries.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">CLAC</span><span>Claude Code — CLAC block is a ready-to-paste Claude Code command.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">CLACR</span><span>CLAC Request — a CLAC block that explicitly re-queues work.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">DSP</span><span>Dangerously Skip Permissions — prefix for CLAC blocks that need elevated access.</span></div>
+      </div>
+    </details>
+    <details class="mcc-inst">
+      <summary>⚡ ACCA Codes — AI Operations</summary>
+      <div class="mcc-inst-body">
+        <div class="mcc-row"><span class="mcc-btn-name">AAFL</span><span>Autonomous AI Feedback Loop — the core AI engine.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AASKC</span><span>Autonomous AI Simultaneous Knowledge Connection — the product brand name.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">ALP</span><span>Allowance Preservation — preserving your Claude message budget. Rule No.1.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">ACP</span><span>Autonomous Continuation Protocol — how AAFL continues between sessions.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">AFNA</span><span>Attack From New Angle — alternative strategy when stuck on a goal.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">LLOW</span><span>Loop Law Organiser Window — the visual AAFL workflow builder.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">LEL</span><span>LLOW Element — an individual node on the LLOW canvas.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">WRC</span><span>Workflow Run Complete — LLOW canvas workflow finished executing.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">WENTO</span><span>Workflow ENds To Output — final output node of an LLOW workflow.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">GOEB</span><span>Guard On Element Boundary — enforcement rule for zone placement.</span></div>
+      </div>
+    </details>
+    <details class="mcc-inst">
+      <summary>⚡ ACCA Codes — Project + Build</summary>
+      <div class="mcc-inst-body">
+        <div class="mcc-row"><span class="mcc-btn-name">OCB</span><span>One-Block — a single-session major build (e.g. OCB-H = Build H, 12 phases).</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">MCC</span><span>Mission Control Center — this dashboard (mission_control.html).</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">MOT</span><span>Ministry Of Tests — mcc_full_mot.py test suite (108 checks).</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">CNP</span><span>Cannot Proceed — blocker flag. Used in STATUS.md for items stuck on external dependency.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">RIBS</span><span>Rolled Into Bigger Session — item merged into a larger build block.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">IBR</span><span>Investigate Brainstorm Report — ideas discussed but not yet actioned.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">FFUE</span><span>Fluid Flexible Upgradeable Editable — the AAFL design philosophy.</span></div>
+        <div class="mcc-row"><span class="mcc-btn-name">WS+CA</span><span>Workstation + Cloud API — dual mode for all MCC components.</span></div>
       </div>
     </details>
 
@@ -3097,15 +3340,21 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <div style="font-size:10px;color:#555;margin-top:4px" id="storage-dial-sub">— GB used</div>
       </div>
 
-      <!-- Animated Pie Chart — per-slot allocation -->
-      <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:14px;flex:1;min-width:220px" title="Pie chart showing how storage is split between AAFL, Scout, MCC, models, health, and general slots. Segments animate on load.">
+      <!-- Animated Pie Chart — per-slot allocation (OCB-H: bigger + animated) -->
+      <div style="background:#111;border:1px solid #1e1e1e;border-radius:8px;padding:14px;flex:2;min-width:280px" title="Pie chart showing how storage is split between slots. Segments animate on load and data change.">
         <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Allocation by Slot</div>
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-          <svg id="storage-pie-svg" viewBox="0 0 100 100" width="100" height="100">
-            <circle cx="50" cy="50" r="48" fill="#0a0a0a"/>
-            <!-- Segments inserted by JS -->
-          </svg>
-          <div id="storage-pie-legend" style="font-size:11px;color:#aaa;line-height:1.8"></div>
+        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <div style="position:relative;flex-shrink:0">
+            <svg id="storage-pie-svg" viewBox="0 0 140 140" width="160" height="160" style="filter:drop-shadow(0 0 12px rgba(0,0,0,.5))">
+              <circle cx="70" cy="70" r="68" fill="#0a0a0a"/>
+              <!-- Segments inserted by JS -->
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none">
+              <div id="storage-pie-center-val" style="font-size:18px;font-weight:bold;color:#eee">—%</div>
+              <div style="font-size:9px;color:#555;letter-spacing:1px">USED</div>
+            </div>
+          </div>
+          <div id="storage-pie-legend" style="font-size:11px;color:#aaa;line-height:2"></div>
         </div>
       </div>
 
@@ -3665,21 +3914,38 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         </div>
       </div>
 
-      <!-- ROW 2: AI Process Cards -->
+      <!-- ROW 2: AI Process Cards + Breakdown Table (OCB-H) -->
       <div style="margin-bottom:10px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">AI Processes</span>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">AI Processes — Resource Breakdown</span>
           <button class="btn" onclick="_sysFreeUpIdle()" style="font-size:10px;padding:2px 8px" title="Kill all AI processes using under 1% CPU and under 50 MB RAM">Free Up Idle</button>
         </div>
-        <div id="sys-ai-cards" style="display:flex;gap:5px;flex-wrap:wrap">
+        <div id="sys-ai-cards" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
           <div style="font-size:11px;color:#333">No AI processes detected</div>
+        </div>
+        <!-- Detailed process table -->
+        <div style="background:#090909;border:1px solid #1a1a1a;border-radius:4px;overflow:hidden">
+          <table style="width:100%;border-collapse:collapse;font-size:10px">
+            <thead>
+              <tr style="border-bottom:1px solid #1a1a1a">
+                <th style="padding:4px 8px;text-align:left;color:#444;font-weight:normal;letter-spacing:1px;text-transform:uppercase">Process</th>
+                <th style="padding:4px 8px;text-align:right;color:#444;font-weight:normal">CPU</th>
+                <th style="padding:4px 8px;text-align:right;color:#444;font-weight:normal">RAM</th>
+                <th style="padding:4px 8px;text-align:right;color:#444;font-weight:normal">PID</th>
+                <th style="padding:4px 8px"></th>
+              </tr>
+            </thead>
+            <tbody id="sys-process-table">
+              <tr><td colspan="5" style="color:#333;text-align:center;padding:8px">Waiting for data…</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- ROW 5: Timeline -->
+      <!-- ROW 5: Timeline — session-length, no cap (OCB-H) -->
       <div>
-        <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px" title="CPU (blue), GPU (pink), RAM % (green) over the last 60 readings at 2-second intervals (~2 min window)">Timeline — last 60 readings</div>
-        <svg id="sys-timeline-svg" viewBox="0 0 600 55" width="100%" height="55" style="background:#0a0a0a;border-radius:4px;border:1px solid #1a1a1a">
+        <div id="sys-timeline-lbl" style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px" title="CPU (blue), GPU (pink), RAM % (green) — full session from when MCC was opened, no 60-reading cap">Timeline — session history</div>
+        <svg id="sys-timeline-svg" viewBox="0 0 600 60" width="100%" height="60" style="background:#0a0a0a;border-radius:4px;border:1px solid #1a1a1a">
           <text x="300" y="31" text-anchor="middle" fill="#2a2a2a" font-size="11">Collecting data…</text>
         </svg>
         <div style="display:flex;gap:14px;margin-top:3px">
@@ -4054,6 +4320,50 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <button onclick="b3SetBtnStyle('ghost')"
                 style="background:transparent;color:#888;border:none;text-decoration:underline;padding:5px 14px;cursor:pointer;font:inherit;font-size:12px"
                 title="Ghost text-link buttons">Ghost</button>
+      </div>
+    </div>
+
+    <!-- ── OCB-H: Animation Speed + Sidebar Density + Layout Density ── -->
+    <div style="background:#111;border:1px solid #222;border-radius:6px;padding:12px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Animation &amp; Density</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+        <label style="font-size:12px;color:#aaa;min-width:140px">Animation Speed: <span id="d-anim-val">Normal</span></label>
+        <input type="range" id="d-anim-speed" min="0" max="3" step="1" value="1"
+               oninput="b3ApplyAnimSpeed(this.value)"
+               style="flex:1;min-width:120px" title="0=off, 1=normal, 2=fast, 3=instant">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+        <label style="font-size:12px;color:#aaa;min-width:140px">Layout Density</label>
+        <div style="display:flex;gap:6px">
+          <button onclick="b3SetDensity('comfortable')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="Standard spacing — default MCC layout">Comfortable</button>
+          <button onclick="b3SetDensity('compact')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="Tighter spacing — fit more on screen">Compact</button>
+          <button onclick="b3SetDensity('spacious')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="More breathing room — easier on eyes">Spacious</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <label style="font-size:12px;color:#aaa;min-width:140px">Tab Bar Style</label>
+        <div style="display:flex;gap:6px">
+          <button onclick="b3SetTabStyle('default')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="Standard tab bar">Default</button>
+          <button onclick="b3SetTabStyle('pill')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="Pill-shaped tabs">Pills</button>
+          <button onclick="b3SetTabStyle('minimal')" style="background:#1a1a1a;border:1px solid #333;color:#aaa;padding:4px 12px;border-radius:4px;cursor:pointer;font:inherit;font-size:11px" title="Minimal underline only">Minimal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar colour override -->
+    <div style="background:#111;border:1px solid #222;border-radius:6px;padding:12px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Sidebar Accent</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:12px;color:#aaa;flex:1">Sidebar background</label>
+          <input type="color" id="d-sidebar-bg" value="#0d0d0d" onchange="b3ApplySidebarColor()"
+                 style="width:36px;height:26px;border:none;background:none;cursor:pointer;padding:0" title="Left sidebar background colour">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:12px;color:#aaa;flex:1">Tab bar accent</label>
+          <input type="color" id="d-tabbar-accent" value="#44aaff" onchange="b3ApplyTabbarAccent()"
+                 style="width:36px;height:26px;border:none;background:none;cursor:pointer;padding:0" title="Active tab underline colour">
+        </div>
       </div>
     </div>
 
@@ -5615,6 +5925,9 @@ function mcInitTab() {
   mcLoadMccScore();
   mcLoadAccaPreview();
   mcLoadPromoCount();
+  // OCB-H: render progress bars + score trend
+  mcRenderProgressBars();
+  mcRenderScoreTrend();
   // Populate AAFL state from live output if available
   const aaflRunning = document.getElementById('aafl-running-badge');
   const mcState = document.getElementById('mc-aafl-state');
@@ -5690,6 +6003,63 @@ async function exportIbrReport() {
       URL.revokeObjectURL(url);
     }
   } catch(e) { toast('Export error: '+e,'error'); }
+}
+
+// ── OCB-H: Mission Progress Bars + Score Trend ──────────────────────────────
+function mcRenderProgressBars() {
+  const container = document.getElementById('mission-progress-bars');
+  if (!container) return;
+  const MISSIONS = [
+    { name: 'Spin Doctor', pct: 72, color: '#2a7', note: 'WT done, Star Citizen pending' },
+    { name: 'AAFL Engine', pct: 85, color: '#4af', note: '14 providers, LLOW canvas, OCB-H done' },
+    { name: 'Mission Control', pct: 90, color: '#a8f', note: '108/108 MOT, OCB-H complete' },
+    { name: 'Scout / Research', pct: 70, color: '#fa0', note: 'Swarm rename, strategies working' },
+    { name: 'Promo / Ship', pct: 25, color: '#f84', note: 'Story written, r/LocalLLaMA pending' },
+    { name: 'ACCA Codes', pct: 80, color: '#4ff', note: 'Organised by category OCB-H' },
+  ];
+  container.innerHTML = MISSIONS.map(m => {
+    const col = m.pct > 80 ? m.color : m.pct > 50 ? '#fa0' : '#a33';
+    return `<div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="font-size:11px;color:#ccc;min-width:140px">${m.name}</span>
+        <div style="flex:1;height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:0%;background:${m.color};border-radius:4px;transition:width 1s ease;box-shadow:0 0 6px ${m.color}44"
+               data-target="${m.pct}" class="mission-progress-fill"></div>
+        </div>
+        <span style="font-size:11px;color:${col};min-width:32px;text-align:right;font-weight:bold">${m.pct}%</span>
+      </div>
+      <div style="font-size:10px;color:#444;padding-left:148px">${m.note}</div>
+    </div>`;
+  }).join('');
+  // Animate bars after DOM is ready
+  setTimeout(() => {
+    container.querySelectorAll('.mission-progress-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 100);
+}
+
+async function mcRenderScoreTrend() {
+  try {
+    const d = await apiFetch('/api/aafl/runs');
+    const runs = (d.runs || d.results || []).slice(-20);
+    if (runs.length < 2) return;
+    const svg = document.getElementById('mission-score-svg');
+    if (!svg) return;
+    const W = 500, H = 40, PX = 10, PY = 4;
+    const scores = runs.map(r => parseFloat(r.score || r.result_score || 0));
+    const maxS = Math.max(...scores, 10);
+    const pts = scores.map((s, i) => {
+      const x = PX + (i / (scores.length - 1)) * (W - PX * 2);
+      const y = H - PY - (s / maxS) * (H - PY * 2);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    const area = `${PX},${H-PY} ` + pts.join(' ') + ` ${W-PX},${H-PY}`;
+    svg.innerHTML = `<polygon points="${area}" fill="#4af" opacity="0.1"/>
+      <polyline points="${pts.join(' ')}" fill="none" stroke="#4af" stroke-width="1.4" stroke-linejoin="round"/>
+      <text x="${PX}" y="${H-PY-2}" fill="#2a2a2a" font-size="8">0</text>
+      <text x="${PX}" y="${PY+4}" fill="#2a2a2a" font-size="8">10</text>`;
+  } catch(e) {}
 }
 
 async function loadMissions() {
@@ -6830,31 +7200,41 @@ function _storRenderBars(slots) {
 function _storRenderPie(slots) {
   const svg = document.getElementById('storage-pie-svg');
   const leg = document.getElementById('storage-pie-legend');
+  const centerVal = document.getElementById('storage-pie-center-val');
   if (!svg || !slots.length) return;
-  const COLORS = ['#4af','#6f6','#fa0','#a8f','#f84','#4ff','#f4a','#8f8'];
-  const total  = slots.reduce((a,s) => a + (s.quota_gb||0), 0) || 1;
-  let offset   = 0;
+  const COLORS = ['#4af','#6f6','#fa0','#a8f','#f84','#4ff','#f4a','#8f8','#8af','#fa8'];
+  const totalQuota = slots.reduce((a,s) => a + (s.quota_gb||0), 0) || 1;
+  const totalUsed  = slots.reduce((a,s) => a + (s.used_gb||0), 0);
+  const usedPct    = Math.round((totalUsed / totalQuota) * 100);
+  if (centerVal) centerVal.textContent = usedPct + '%';
+  let offset = 0;
   const segments = [];
-  const R = 48, cx = 50, cy = 50;
+  const R = 66, cx = 70, cy = 70; // bigger: viewBox 140×140
+  if (leg) leg.innerHTML = '';
 
   slots.forEach((s, i) => {
-    const frac = (s.quota_gb||0) / total;
+    const frac  = (s.quota_gb||0) / totalQuota;
     const angle = frac * 360;
-    const rad   = deg => deg * Math.PI / 180;
-    const x1 = cx + R * Math.sin(rad(offset));
-    const y1 = cy - R * Math.cos(rad(offset));
-    const x2 = cx + R * Math.sin(rad(offset + angle));
-    const y2 = cy - R * Math.cos(rad(offset + angle));
+    if (angle < 0.5) return; // skip tiny slices
+    const rad = deg => deg * Math.PI / 180;
+    const x1  = cx + R * Math.sin(rad(offset));
+    const y1  = cy - R * Math.cos(rad(offset));
+    const x2  = cx + R * Math.sin(rad(offset + angle));
+    const y2  = cy - R * Math.cos(rad(offset + angle));
     const large = angle > 180 ? 1 : 0;
     const color = COLORS[i % COLORS.length];
-    segments.push(`<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${color}" opacity="0.85" title="${esc(s.name)} ${(s.quota_gb||0)}GB"/>`);
+    const usedFrac = s.quota_gb ? ((s.used_gb||0)/s.quota_gb) : 0;
+    const segOpacity = 0.6 + usedFrac * 0.4; // darker = more used
+    segments.push(`<path class="pie-seg" d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${large},1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${color}" opacity="${segOpacity.toFixed(2)}" style="transition:opacity .5s;cursor:default" title="${esc(s.name)}: ${(s.used_gb||0).toFixed(1)}/${s.quota_gb}GB (${Math.round(usedFrac*100)}%)"/>`);
     offset += angle;
     if (leg) {
-      const dot = `<span style="background:${color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle"></span>`;
-      leg.innerHTML = (leg.innerHTML||'') + `<div>${dot}${esc(s.name)} ${s.quota_gb}GB</div>`;
+      const dot  = `<span style="background:${color};width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle"></span>`;
+      const uPct = Math.round(usedFrac * 100);
+      const uCol = uPct > 80 ? '#f44' : uPct > 60 ? '#fa0' : '#aaa';
+      leg.innerHTML += `<div style="display:flex;align-items:center;gap:4px">${dot}<span>${esc(s.name)}</span><span style="color:#555;margin-left:auto;font-size:10px">${s.quota_gb}GB</span><span style="color:${uCol};font-size:10px;margin-left:4px">${uPct}%</span></div>`;
     }
   });
-  svg.innerHTML = `<circle cx="50" cy="50" r="48" fill="#0a0a0a"/>` + segments.join('');
+  svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#0a0a0a"/>` + segments.join('');
 }
 
 function _storRenderDial(pct, usedGb, allocGb) {
@@ -9877,6 +10257,7 @@ async function hsLoadProviderCards() {
     hsRenderProviderCards();
     hsRenderLeaderboard();
     hsUpdateTicker();
+    updateAiStatusBar();
     hsCalcSavings();
   } catch(e) {
     if (wrap) wrap.innerHTML = '<div style="font-size:11px;color:#555">Provider data unavailable</div>';
@@ -9932,20 +10313,56 @@ function hsRenderLeaderboard() {
     const speed   = p.latency_ms ? (1000/(p.latency_ms||1000)) : 0.5;
     const quality = p.avg_score || 5;
     const uptime  = (p.ok||p.online||p.reachable) ? 1 : 0;
-    return {...p, composite: ((speed*0.3 + quality*0.5 + uptime*2)*10).toFixed(1)};
+    return {...p, composite: parseFloat(((speed*0.3 + quality*0.5 + uptime*2)*10).toFixed(1))};
   }).sort((a,b) => b.composite - a.composite);
+  const topScore = scored[0]?.composite || 1;
   lb.innerHTML = scored.slice(0,8).map((p,i) => {
-    const crown = i===0 ? '👑 ' : '';
-    const medal = i===0 ? '#ffd700' : i===1 ? '#aaa' : i===2 ? '#cd7f32' : '#555';
-    return `<div class="hs-lb-row">
-      <span class="hs-lb-rank" style="color:${medal}">${crown}${i+1}</span>
-      <span class="hs-lb-name">${p.name||p.provider||'?'}</span>
-      <span class="hs-lb-score">${p.composite}</span>
+    const crown = i===0 ? '👑 ' : i===1 ? '🥈 ' : i===2 ? '🥉 ' : '';
+    const medal = i===0 ? '#ffd700' : i===1 ? '#c0c0c0' : i===2 ? '#cd7f32' : '#555';
+    const barW  = Math.round((p.composite / topScore) * 100);
+    const ok    = p.ok||p.online||p.reachable;
+    const barCol = ok ? '#2a6a2a' : '#3a1a1a';
+    const lat   = p.latency_ms ? (p.latency_ms/1000).toFixed(2)+'s' : '—';
+    return `<div class="hs-lb-row" style="flex-direction:column;align-items:flex-start;padding:5px 10px;gap:3px">
+      <div style="display:flex;align-items:center;gap:6px;width:100%">
+        <span class="hs-lb-rank" style="color:${medal};min-width:22px">${crown}${i+1}</span>
+        <span class="hs-lb-name" style="flex:1">${p.name||p.provider||'?'}</span>
+        <span style="font-size:9px;color:#555">${lat}</span>
+        <span class="hs-lb-score" style="font-size:11px;font-weight:bold;color:${ok?'#4f4':'#555'};min-width:32px;text-align:right">${p.composite}</span>
+      </div>
+      <div style="width:100%;height:4px;background:#111;border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${barW}%;background:${barCol};border-radius:2px;transition:width 0.8s ease"></div>
+      </div>
     </div>`;
   }).join('');
 }
 
 function hsSortProviders(key) { hsRenderProviderCards(key); }
+
+// ── OCB-H: Persistent AI Status Bar (top of MCC) ────────────────────────────
+function updateAiStatusBar() {
+  const inner = document.getElementById('ai-status-inner');
+  if (!inner || !_hsProviders.length) return;
+  const chips = _hsProviders.map(p => {
+    const ok = p.ok || p.status === 'ok' || p.online || p.reachable;
+    const rl = p.rate_limited;
+    const cls = ok ? 'online' : rl ? 'rl' : 'offline';
+    const lat = p.latency_ms ? (p.latency_ms/1000).toFixed(2)+'s' : '';
+    const sc  = p.avg_score ? ' ★'+p.avg_score.toFixed(1) : '';
+    return `<span class="ai-prov-chip ${cls}"><span class="ai-prov-pulse"></span>${(p.name||'?').toUpperCase()}${lat?'  '+lat:''}${sc}</span>`;
+  });
+  const all = chips.concat(chips); // seamless loop
+  inner.innerHTML = all.join('<span style="color:#1a2a1a;padding:0 6px">·</span>');
+  const totalW = inner.scrollWidth / 2;
+  inner.style.animation = 'none';
+  const ks = document.getElementById('ai-status-keyframes') || document.createElement('style');
+  ks.id = 'ai-status-keyframes';
+  ks.textContent = `@keyframes aiStatusTicker{0%{transform:translateX(0)}100%{transform:translateX(-${totalW}px)}}`;
+  if (!ks.parentNode) document.head.appendChild(ks);
+  requestAnimationFrame(() => {
+    inner.style.animation = `aiStatusTicker ${Math.max(20, _hsProviders.length * 5)}s linear infinite`;
+  });
+}
 
 function hsUpdateTicker() {
   const inner = document.getElementById('hs-ticker-inner');
@@ -10039,7 +10456,8 @@ async function loadHsAaflRuns() {
 
 // ── OCB-C Phase 4: System Monitor ─────────────────────────────────────────
 let _sysPollerTimer = null;
-const _sysSnapHistory = []; // {cpu, gpu, ram} up to 60 entries
+const _sysSnapHistory = []; // {cpu, gpu, ram, ts} — no cap, full session
+const _sysMccOpenTime = Date.now();
 
 function _sysDial(arcId, needleId, valId, pct, maxVal, unit, baseColor) {
   const arcLen = 157;
@@ -10128,9 +10546,8 @@ async function _refreshSystemMonitor() {
     // AI process cards
     _sysRenderAiCards((snap.ai_allocation || {}).processes || []);
 
-    // Timeline
-    _sysSnapHistory.push({ cpu: cpu.overall_pct || 0, gpu: g.load_pct || 0, ram: ramPct });
-    if (_sysSnapHistory.length > 60) _sysSnapHistory.shift();
+    // Timeline — session-length, no cap (OCB-H)
+    _sysSnapHistory.push({ cpu: cpu.overall_pct || 0, gpu: g.load_pct || 0, ram: ramPct, ts: Date.now() });
     _sysRenderTimeline();
 
   } catch(e) {
@@ -10140,39 +10557,82 @@ async function _refreshSystemMonitor() {
 
 function _sysRenderAiCards(procs) {
   const el = document.getElementById('sys-ai-cards');
+  const tbl = document.getElementById('sys-process-table');
   if (!el) return;
-  if (!procs.length) { el.innerHTML = '<div style="font-size:11px;color:#333">No AI processes detected</div>'; return; }
+  if (!procs.length) {
+    el.innerHTML = '<div style="font-size:11px;color:#333">No AI processes detected</div>';
+    if (tbl) tbl.innerHTML = '<tr><td colspan="5" style="color:#333;text-align:center;padding:8px">No processes</td></tr>';
+    return;
+  }
   el.innerHTML = procs.map(p => {
     const cpuHi = (p.cpu_pct || 0) > 20;
     const ramHi = (p.ram_mb || 0) > 500;
     const col = cpuHi ? '#fa0' : ramHi ? '#f8c' : '#4f4';
     const idle = (p.cpu_pct || 0) < 1 && (p.ram_mb || 0) < 50;
     const shortName = (p.name || 'proc').slice(0, 14);
-    return `<div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:5px;padding:5px 9px;min-width:108px" title="PID ${p.pid} — ${p.name}&#10;CPU: ${p.cpu_pct}%  RAM: ${p.ram_mb} MB">
-      <div style="color:${col};font-weight:bold;font-size:10px;white-space:nowrap">${shortName}</div>
-      <div style="color:#444;font-size:9px">CPU ${p.cpu_pct||0}% · ${p.ram_mb||0} MB</div>
-      ${idle ? `<button class="btn" onclick="sysFreeUp(${p.pid})" style="font-size:9px;padding:1px 5px;margin-top:3px" title="Kill idle process PID ${p.pid}">Kill</button>` : ''}
+    const cpuBar = Math.min(100, p.cpu_pct || 0);
+    const ramBar = Math.min(100, ((p.ram_mb || 0) / 20480) * 100); // normalise to 20GB
+    return `<div style="background:#0f0f0f;border:1px solid #1e1e1e;border-radius:5px;padding:6px 10px;min-width:120px" title="PID ${p.pid} — ${p.name}&#10;CPU: ${p.cpu_pct}%  RAM: ${p.ram_mb} MB">
+      <div style="color:${col};font-weight:bold;font-size:10px;white-space:nowrap;margin-bottom:3px">${shortName}</div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">
+        <span style="font-size:8px;color:#444;width:28px">CPU</span>
+        <div style="flex:1;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;width:${cpuBar}%;background:${cpuHi?'#fa0':'#4af'};border-radius:2px;transition:width .6s"></div></div>
+        <span style="font-size:8px;color:#555;min-width:28px;text-align:right">${p.cpu_pct||0}%</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px">
+        <span style="font-size:8px;color:#444;width:28px">RAM</span>
+        <div style="flex:1;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;width:${ramBar.toFixed(0)}%;background:${ramHi?'#f8c':'#6f6'};border-radius:2px;transition:width .6s"></div></div>
+        <span style="font-size:8px;color:#555;min-width:28px;text-align:right">${p.ram_mb||0}M</span>
+      </div>
+      ${idle ? `<button class="btn" onclick="sysFreeUp(${p.pid})" style="font-size:9px;padding:1px 5px" title="Kill idle PID ${p.pid}">Kill</button>` : ''}
     </div>`;
   }).join('');
+  // Resource breakdown table
+  if (tbl) {
+    tbl.innerHTML = procs.map(p => {
+      const cpuHi = (p.cpu_pct||0)>20, ramHi=(p.ram_mb||0)>500;
+      return `<tr>
+        <td style="color:#ccc;font-size:10px">${p.name||'?'}</td>
+        <td style="color:${cpuHi?'#fa0':'#888'};font-size:10px">${p.cpu_pct||0}%</td>
+        <td style="color:${ramHi?'#f8c':'#888'};font-size:10px">${p.ram_mb||0} MB</td>
+        <td style="color:#555;font-size:9px">${p.pid||'—'}</td>
+        <td style="font-size:9px">${(p.cpu_pct||0)<1&&(p.ram_mb||0)<50?`<button class="btn" onclick="sysFreeUp(${p.pid})" style="font-size:9px;padding:1px 4px">Kill</button>`:''}</td>
+      </tr>`;
+    }).join('');
+  }
 }
 
 function _sysRenderTimeline() {
   const svg = document.getElementById('sys-timeline-svg');
+  const lbl = document.getElementById('sys-timeline-lbl');
   if (!svg || _sysSnapHistory.length < 2) return;
-  const W = 600, H = 55, PX = 2, PY = 3;
+  const W = 600, H = 60, PX = 2, PY = 4;
   const n = _sysSnapHistory.length;
+  // elapsed time label
+  const elapsedMs = Date.now() - _sysMccOpenTime;
+  const em = Math.floor(elapsedMs / 60000);
+  const es = Math.floor((elapsedMs % 60000) / 1000);
+  const elapsedStr = em > 0 ? `${em}m ${es}s` : `${es}s`;
+  if (lbl) lbl.textContent = `Timeline — ${n} readings over ${elapsedStr}`;
+  // Render grid lines at 25/50/75%
+  let grid = '';
+  [25,50,75].forEach(pct => {
+    const y = H - PY - (pct/100)*(H-PY*2);
+    grid += `<line x1="${PX}" y1="${y.toFixed(1)}" x2="${W-PX}" y2="${y.toFixed(1)}" stroke="#1a1a1a" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="${W-PX-2}" y="${(y-2).toFixed(1)}" fill="#2a2a2a" font-size="8" text-anchor="end">${pct}%</text>`;
+  });
   const mkPoly = (key, stroke, fill) => {
     const pts = _sysSnapHistory.map((d, i) => {
       const x = PX + (i / (n - 1)) * (W - PX * 2);
       const y = H - PY - (d[key] / 100) * (H - PY * 2);
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     });
-    const first = PX + ',';
-    const last  = ',' + (H - PY);
-    const area  = `${PX},${H - PY} ` + pts.join(' ') + ` ${W - PX},${H - PY}`;
-    return `<polygon points="${area}" fill="${fill}" opacity="0.12"/><polyline points="${pts.join(' ')}" fill="none" stroke="${stroke}" stroke-width="1.3" stroke-linejoin="round"/>`;
+    const area = `${PX},${H - PY} ` + pts.join(' ') + ` ${W - PX},${H - PY}`;
+    return `<polygon points="${area}" fill="${fill}" opacity="0.10"/><polyline points="${pts.join(' ')}" fill="none" stroke="${stroke}" stroke-width="1.4" stroke-linejoin="round"/>`;
   };
-  svg.innerHTML = mkPoly('ram', '#6f6', '#6f6') + mkPoly('gpu', '#f8c', '#f8c') + mkPoly('cpu', '#4af', '#4af');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('height', H);
+  svg.innerHTML = grid + mkPoly('ram', '#6f6', '#6f6') + mkPoly('gpu', '#f8c', '#f8c') + mkPoly('cpu', '#4af', '#4af');
 }
 
 function _startSystemPoller() {
@@ -10348,6 +10808,51 @@ function b3LoadDesignState() {
   const btnStyle = localStorage.getItem('b3_btn_style') || 'filled';
   document.body.setAttribute('data-btn-style', btnStyle);
   b3LoadDesignPresets();
+}
+
+// ── OCB-H: Design Tab extra controls ─────────────────────────────────────────
+function b3ApplyAnimSpeed(v) {
+  const labels = ['Off','Normal','Fast','Instant'];
+  const speeds = ['0s','0.3s','0.12s','0s'];
+  const lbl = document.getElementById('d-anim-val');
+  if (lbl) lbl.textContent = labels[v] || 'Normal';
+  document.documentElement.style.setProperty('--anim-duration', speeds[v] || '0.3s');
+  localStorage.setItem('b3_anim_speed', v);
+}
+function b3SetDensity(mode) {
+  const pad = mode==='compact' ? '4px 10px' : mode==='spacious' ? '16px 20px' : '8px 16px';
+  document.querySelectorAll('.pane-scroll').forEach(el => el.style.padding = pad);
+  localStorage.setItem('b3_density', mode);
+  toast('Density: ' + mode, 'ok', 1500);
+}
+function b3SetTabStyle(mode) {
+  const tb = document.querySelector('.tab-bar');
+  const btns = document.querySelectorAll('.tab-btn');
+  if (mode==='pill') {
+    if (tb) { tb.style.gap='4px'; tb.style.padding='4px 8px'; }
+    btns.forEach(b => { b.style.borderRadius='20px'; b.style.border='1px solid #333'; b.style.padding='5px 14px'; });
+  } else if (mode==='minimal') {
+    if (tb) { tb.style.gap='0'; }
+    btns.forEach(b => { b.style.borderRadius='0'; b.style.border='none'; b.style.borderBottom='2px solid transparent'; });
+  } else {
+    if (tb) { tb.style.gap='2px'; tb.style.padding='0 8px'; }
+    btns.forEach(b => { b.style.borderRadius=''; b.style.border=''; b.style.padding='9px 16px'; });
+  }
+  localStorage.setItem('b3_tab_style', mode);
+  toast('Tab style: ' + mode, 'ok', 1500);
+}
+function b3ApplySidebarColor() {
+  const bg = document.getElementById('d-sidebar-bg');
+  const sb = document.querySelector('.sidebar');
+  if (bg && sb) { sb.style.background = bg.value; sb.style.borderRight = '1px solid ' + bg.value; }
+  localStorage.setItem('b3_sidebar_bg', bg?.value || '#0d0d0d');
+}
+function b3ApplyTabbarAccent() {
+  const acc = document.getElementById('d-tabbar-accent');
+  if (!acc) return;
+  document.documentElement.style.setProperty('--tab-accent', acc.value);
+  document.querySelectorAll('.tab-btn.active').forEach(b => b.style.borderBottomColor = acc.value);
+  localStorage.setItem('b3_tabbar_accent', acc.value);
 }
 
 async function b3SaveDesignPreset() {
@@ -11491,7 +11996,7 @@ const LLOW = {
   arrowPreview: null,
   savedWorkflows: [],
   pendingArrowType: 'continue',  // OCB-F: arrow type for next port connection
-  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false, strict_mode: false }  // OCB-F/G
+  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false, snap_mode: false }  // OCB-F/G/H
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -11582,6 +12087,12 @@ function llowPalDragStart(e, elId, catKey) {
   LLOW.dragPalette = { type: 'element', elId, catKey };
   e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'element', elId, catKey }));
   e.dataTransfer.effectAllowed = 'copy';
+  // OCB-H: custom ghost image — only the dragged element, not the whole palette
+  const ghost = e.currentTarget.cloneNode(true);
+  ghost.style.cssText = 'position:absolute;top:-1000px;left:-1000px;opacity:0.85;background:#1a1a2a;border:1px solid #4af;border-radius:4px;padding:4px 10px;font-size:11px;color:#ccc;white-space:nowrap;pointer-events:none;z-index:-1';
+  document.body.appendChild(ghost);
+  e.dataTransfer.setDragImage(ghost, 60, 14);
+  setTimeout(() => { if (ghost.parentNode) ghost.parentNode.removeChild(ghost); }, 0);
 }
 
 function llowArrowDragStart(e, arrowId) {
@@ -11624,8 +12135,8 @@ function llowToggleStrategy(name) {
   document.getElementById('llow-strat-phase').checked = LLOW.colourStrat.phase_flow;
   document.getElementById('llow-strat-mirror').checked = LLOW.colourStrat.element_mirror;
   document.getElementById('llow-strat-snap').checked = LLOW.colourStrat.snap_glow;
-  const strictEl = document.getElementById('llow-strat-strict');
-  if (strictEl) strictEl.checked = LLOW.colourStrat.strict_mode;
+  const snapModeEl = document.getElementById('llow-strat-snap-mode');
+  if (snapModeEl) snapModeEl.checked = LLOW.colourStrat.snap_mode;
   llowApplyColourStrategies();
 }
 
@@ -11749,7 +12260,7 @@ function llowSuggestStrategy(filename) {
   hint.textContent = key ? map[key] : '';
 }
 
-// ── OCB-G: Strict Mode zone helpers ──────────────────────────────────────────
+// ── OCB-H: Snap Mode zone helpers (renamed from Strict Mode) ──────────────────
 
 const LLOW_ZONE_CATS = {
   input:   ['inputs'],
@@ -11837,8 +12348,8 @@ function llowOnDrop(e) {
   const elDef = (catDef.elements || []).find(e2 => e2.id === data.elId);
   if (!elDef) return;
 
-  // Strict Mode zone check (OCB-G)
-  if (LLOW.colourStrat.strict_mode && LLOW.colourStrat.phase_flow) {
+  // Snap Mode zone check (OCB-H)
+  if (LLOW.colourStrat.snap_mode && LLOW.colourStrat.phase_flow) {
     const dropZone = llowGetZoneForX(x);
     const elZone   = llowGetZoneForCat(data.catKey);
     if (elZone && dropZone !== elZone) {
@@ -11848,7 +12359,7 @@ function llowOnDrop(e) {
         wrapEl.classList.add('llow-zone-flash');
         setTimeout(() => wrapEl.classList.remove('llow-zone-flash'), 420);
       }
-      llowLogExec(`Strict Mode: ${elDef.name} belongs in ${elZone.toUpperCase()} zone — snap back`, 'fail');
+      llowLogExec(`Snap Mode: ${elDef.name} belongs in ${elZone.toUpperCase()} zone — snap back`, 'fail');
       return;
     }
   }
@@ -11919,6 +12430,10 @@ function llowRenderCanvas() {
         origX: step.x,
         origY: step.y
       };
+      // OCB-H: only ghost the grabbed node — everything else stays solid
+      div.classList.add('llow-dragging');
+      const lay = document.getElementById('llow-nodes-layer');
+      if (lay) lay.classList.add('llow-drag-active');
     });
     div.addEventListener('contextmenu', (e) => {
       e.preventDefault();
@@ -12371,6 +12886,11 @@ function llowOnCanvasMouseMove(e) {
 
 function llowOnCanvasMouseUp(e) {
   if (LLOW.dragNode) {
+    // OCB-H: remove ghost styling from dragged node
+    const draggedNode = document.getElementById('llow-node-' + LLOW.dragNode.stepId);
+    if (draggedNode) draggedNode.classList.remove('llow-dragging');
+    const lay = document.getElementById('llow-nodes-layer');
+    if (lay) lay.classList.remove('llow-drag-active');
     LLOW.dragNode = null;
     if (LLOW.sel && LLOW.selType === 'step') llowSelectStep(LLOW.sel);
   }

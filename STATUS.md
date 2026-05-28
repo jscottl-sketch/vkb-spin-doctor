@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (OCB-G) | **Updated by:** Claude Code
+**Last updated:** 2026-05-28 (OCB-H) | **Updated by:** Claude Code
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -149,6 +149,17 @@
 | OCB-G Phase 2 (Junction Boxes) | 8 new junction types in junctions category (llow_elements.json): Decision/Merge/Split/Gate/Counter/Logger/Router/Delay. CSS clip-path shapes per type. Double-click popup for Gate/Counter/Router/Delay editable params. Props panel "Edit Options" button. |
 | OCB-G Phase 3 (Preset Load) | Dropdown renamed "Preset Load…". 8 new workflow presets: Tutorial Load, Bug Hunt, ALP Audit Run, Scout Deep Dive, Morning Report, Meta Improve, New Project Bootstrap, Star Citizen Benchmark. Strategy auto-suggest extended to all 11 presets. |
 | OCB-G Phase 4 (Colour Strategy) | Phase Flow now renders visible zone header labels at canvas top: "INPUT", "PROCESS", "OUTPUT" with full subtitles. Strict Mode 4th toggle: wrong-zone drop = canvas shake + red zone flash + snap-back + log message. Requires Phase Flow ON. |
+| OCB-H Phase 1 (Snap Mode) | "Strict Mode" renamed to "Snap Mode" everywhere in code, CSS, JS, and UI label. Ghost bug fixed: only grabbed LEL ghosts/moves, all others stay solid. Custom drag image for palette elements. 108/108 MOT. |
+| OCB-H Phase 2 (Tab Renames) | "Scout" → "Scout Swarm" in tab bar. KB Profiles tab button hidden from main tab bar — already lives in Missions tab as sub-section. |
+| OCB-H Phase 3 (AI Status Bar) | Persistent bar across top of all MCC tabs. Shows all AI providers with live pulse dots, latency, score. Scrolling ticker. Updates on every provider health refresh. |
+| OCB-H Phase 4 (Health Suite) | Timeline: 60-reading cap removed — full session history with grid lines + elapsed time label. AI Process Table: per-process CPU/RAM bars + detailed table with Kill buttons. Leaderboard: animated score bars + crown/medal icons. |
+| OCB-H Phase 5 (Storage) | Pie chart: 160px, animated segments, darker=more used, centre shows % used. Legend shows per-slot % with colour coding. |
+| OCB-H Phase 6 (Animations) | Scout card hover, memory card hover, cost savings counter pulse glow, cardSlideIn/fadeInUp/countUp CSS keyframes added. |
+| OCB-H Phase 7 (Instructions) | Full reorganisation into 9 areas: General MCC, WCCS/Saving, Scout Swarm, LLOW Canvas, Health Suite, Storage/Missions/Design/Promo, AAFL Engine, Data Flow, ACCA Codes by category. Documents all OCB-A through OCB-H features. |
+| OCB-H Phase 8 (Design Tab) | Animation speed slider, Layout density (comfortable/compact/spacious), Tab bar style (default/pills/minimal), Sidebar accent colour, Tab bar accent colour picker. |
+| OCB-H Phase 9 (Promo Tab) | Project story + description, stat counters (14 providers/108 MOT/9.33 score), competitive comparison table (AAFL vs LangGraph/CrewAI/AutoGPT), links section (Ko-fi/Itch.io/GitHub/r/LocalLLaMA). |
+| OCB-H Phase 10 (Missions) | Progress overview panel: 6 animated progress bars per mission, AAFL score trend SVG chart, milestone markers (done/pending/planned). |
+| OCB-H Phase 11 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

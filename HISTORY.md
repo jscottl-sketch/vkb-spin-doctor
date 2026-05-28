@@ -2083,3 +2083,41 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 **MOT:** 108/108 ALL CLEAR
 
 **Files changed:** mission_control.html, data/llow_elements.json, data/llow_workflows/ (+8 files)
+
+### 2026-05-28 — OCB-G Complete
+
+**Session:** OCB-G — LLOW full rebuild
+
+**Built:**
+- OCB-G Phase 1: CONNECTORS rename (was "Arrow Types"). Per-type line styles for all 15 connector types.
+- OCB-G Phase 2: 8 Junction Box types (Decision/Merge/Split/Gate/Counter/Logger/Router/Delay). CSS clip-path shapes. Double-click config popup for Gate/Counter/Router/Delay.
+- OCB-G Phase 3: Preset Load dropdown. 8 new workflow presets + strategy auto-suggest for all 11 presets.
+- OCB-G Phase 4: Phase Flow zone header labels (INPUT/PROCESS/OUTPUT). Strict Mode (4th toggle): wrong zone = shake + red flash + snap-back.
+
+**MOT:** 108/108 ALL CLEAR
+
+**Files changed:** mission_control.html, data/llow_elements.json, data/llow_workflows/ (+8 files)
+
+### 2026-05-28 — OCB-H Complete
+
+**Session:** OCB-H — MCC Full Revamp (12 phases, one block)
+
+**Built:**
+- Phase 1 (Snap Mode): "Strict Mode" renamed to "Snap Mode" everywhere. Ghost bug fixed — only grabbed LEL ghosts/moves. Custom drag image for palette drag.
+- Phase 2 (Tab Renames): Scout → Scout Swarm. KB Profiles removed from main tab bar (already in Missions).
+- Phase 3 (AI Status Bar): Persistent scrolling provider bar across top of ALL tabs. Live pulse dots, latency, score per provider.
+- Phase 4 (Health Suite): Timeline: removed 60-reading cap, full session history with grid lines and elapsed time. AI Process Table with per-process CPU/RAM bars. Leaderboard with animated score bars and medals.
+- Phase 5 (Storage): Pie chart now 160px, animated segments, centre shows % used, legend with per-slot usage %.
+- Phase 6 (Animations): cardSlideIn/fadeInUp/countUp CSS keyframes. Scout/Memory card hover. Cost savings counter pulse glow.
+- Phase 7 (Instructions): Full 9-area reorganisation covering all OCB-A through OCB-H features. 4+ organised dropdown menus.
+- Phase 8 (Design Tab): Animation speed, layout density, tab style, sidebar accent, tab bar accent colour.
+- Phase 9 (Promo Tab): Project story, stat counters, AAFL vs LangGraph/CrewAI/AutoGPT comparison table, Ko-fi/Itch.io/GitHub/r/LocalLLaMA links.
+- Phase 10 (Missions): Progress overview panel with 6 animated mission bars, AAFL score trend chart, milestone markers.
+- Phase 11 (MOT): 108/108 ALL CLEAR
+- Phase 12 (WCCS): STATUS.md + HISTORY.md updated, committed.
+
+**MOT:** 108/108 ALL CLEAR 2026-05-28
+
+**New ACCA codes:** None (all existing codes documented in Instructions tab)
+
+**Files changed:** mission_control.html, STATUS.md, HISTORY.md
