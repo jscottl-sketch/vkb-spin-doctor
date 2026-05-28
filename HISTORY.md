@@ -854,6 +854,26 @@ TCB = Two CLAC Block — ALP violation. Never repeat CLAC block twice in one mes
 ## Files changed
 mission_control.html, llow_engine.py, mcc_server.py
 
+
+---
+
+### 2026-05-28
+
+DATE: 2026-05-28
+SESSION: mcc-instructions-keeper build
+
+- Compared two STATUS.md files (222 vs 247 lines) — new one confirmed better, old one had truncated OCB-H Phase 7
+- One item flagged missing from new STATUS.md NEXT PRIORITIES: mcc-instructions-keeper skill
+- Scott chose to build it immediately (option 1)
+- CLAC block ran — 16m 10s
+- PART 1: instructions_db.json — 132 entries written (125 registry + 7 section IDs), zero missing
+- PART 2: two endpoints added to mcc_server.py (/api/instructions + /api/instructions/<element_id>)
+- PART 3: 7 x ? buttons added to MCC (WCCS, Scout Swarm, AAFL Control, LLOW Canvas, Missions, Storage, Health Suite)
+- PART 4: skill file created at skills/mcc-instructions-keeper/SKILL.md
+- MOT: 108/108 ALL CLEAR
+- Manual step done: skill file uploaded to Project Files on claude.ai
+- Git committed: 1f6fad pushed to master
+
 <!-- END_OF_FILE -->
 
 
