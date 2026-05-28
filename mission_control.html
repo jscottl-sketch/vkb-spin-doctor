@@ -35,7 +35,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .header{background:#111;border-bottom:1px solid #222;padding:8px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
 
 /* ── OCB-H: AI STATUS BAR (persistent across all tabs) ── */
-#ai-status-bar{background:linear-gradient(90deg,#070d07 0%,#0a0f0a 100%);border-bottom:1px solid #0e1e0e;height:32px;display:flex;align-items:center;flex-shrink:0;overflow:hidden;position:relative}
+#ai-status-bar{background:linear-gradient(90deg,#070d07 0%,#0a0f0a 100%);border-bottom:1px solid #0e1e0e;min-height:44px;display:flex;align-items:center;flex-shrink:0;overflow:hidden;position:relative}
+#ai-prov-tooltip{position:fixed;top:50px;left:0;z-index:9999;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:10px 14px;font-size:11px;min-width:220px;max-width:300px;display:none;box-shadow:0 4px 20px rgba(0,0,0,0.8)}
 #ai-status-bar::before{content:"AI STATUS";position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding:0 10px;font-size:9px;color:#1a4a1a;letter-spacing:2px;font-weight:bold;background:#070d07;border-right:1px solid #0e2a0e;z-index:2;white-space:nowrap}
 #ai-status-scroll{flex:1;overflow:hidden;margin-left:90px;position:relative;height:100%}
 #ai-status-inner{display:flex;gap:18px;white-space:nowrap;font-size:10px;padding:0 12px;line-height:32px;animation:aiStatusTicker 40s linear infinite}
@@ -686,7 +687,8 @@ body{font-size:var(--b3-font-size);color:var(--b3-text-color)}
 .tip-btn:hover{background:#222;border-color:#4af;color:#4af}
 .tip-box{position:absolute;z-index:9999;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;pointer-events:none;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%)}
 /* ── OCB-A: Self-health popup safety — applied globally ── */
-.mcc-popup-safe,[class*="tooltip"],[class*="popup"]{z-index:9999!important;position:absolute;max-width:320px}
+.mcc-popup-safe{z-index:9999!important;position:fixed!important;max-width:320px}
+[class*="tooltip"],[class*="popup"]{z-index:9999!important;position:absolute;max-width:320px}
 /* Self-health grey popup */
 .sh-popup{position:absolute;z-index:9999;background:rgba(40,40,40,0.95);color:#fff;font-size:14px;padding:12px 16px;border-radius:8px;max-width:320px;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none;white-space:normal;line-height:1.5}
 body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9)}
@@ -1130,9 +1132,13 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-lb-name{flex:1;color:#bbb}
 .hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
 /* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
-.mcc-tooltip,[class*="tooltip"],[class*="popup"],.mcc-popup-safe,[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
+.mcc-tooltip,[class*="tooltip"],[class*="popup"],[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
+/* mcc-popup-safe: fixed so it always renders above panels — OCB-K z-index fix */
+.mcc-popup-safe{z-index:9999!important;position:fixed!important}
 /* tip-btn tooltip containers — ensure they sit above all other elements */
 .tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
+/* Panel/drawer/accordion open state — always below tooltips (9999) — OCB-K */
+.aafl-acc[open],.llow-settings-panel.open,.ai-master-panel,.bm-drill-panel.open{z-index:8000}
 </style>
 </head>
 <body>
@@ -1293,6 +1299,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 
 <!-- TAB BAR (Home removed — now in sidebar) -->
 <div class="tab-bar">
+  <button class="tab-btn" data-tab="help" data-tip="Ask any question about the project — AI answers using your local or free providers">🔍 Help</button>
   <button class="tab-btn active" data-tab="wccs" data-tip="Save your session — paste chat notes here and click Save Session Now">💾 WCCS</button>
   <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
   <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
@@ -1316,20 +1323,69 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 <!-- ── HOME TAB (content moved to sidebar — kept as fallback pane) ── -->
 
 <!-- ============================================================
+     TAB: HELP (OCB-L Phase 5)
+     ============================================================ -->
+<div class="tab-pane" id="tab-help" data-tab="help" style="display:none">
+  <div class="pane-scroll">
+    <div class="aafl-acc">
+      <div style="font-size:13px;font-weight:bold;color:#ccc;letter-spacing:1px;margin-bottom:12px">🔍 Help — Ask Anything</div>
+
+      <!-- Search bar -->
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="help-query" type="text" placeholder="Ask anything about this project…"
+          style="flex:1;background:#111;border:1px solid #2a2a2a;border-radius:4px;color:#ccc;padding:8px 12px;font:inherit;font-size:13px"
+          onkeydown="if(event.ctrlKey&&event.key==='Enter')helpAsk()"/>
+        <button class="btn" onclick="helpAsk()" style="padding:8px 18px;font-size:13px" title="Ask (Ctrl+Enter)">Ask</button>
+        <button class="btn" onclick="helpLoadHistory()" style="padding:8px 12px;font-size:11px" title="Reload history">↻</button>
+      </div>
+      <div style="font-size:10px;color:#444;margin-bottom:12px">Ctrl+Enter to ask · Uses your AI hierarchy below · Answered by the first live provider</div>
+
+      <!-- AI Hierarchy selector -->
+      <div style="background:#111;border:1px solid #1a1a1a;border-radius:5px;padding:10px 12px;margin-bottom:12px">
+        <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">AI Provider Hierarchy (drag to reorder)</div>
+        <div id="help-hierarchy" style="display:flex;flex-wrap:wrap;gap:6px">
+          <div style="font-size:11px;color:#444">Loading providers…</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:#444">Green = LIVE · Grey = offline · Amber = no key</div>
+      </div>
+
+      <!-- Results area -->
+      <div id="help-results-wrap" style="display:none;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">Response</span>
+          <span id="help-source-badge" style="background:#1a2a1a;color:#4f4;font-size:9px;padding:2px 7px;border-radius:3px;border:1px solid #2a4a2a"></span>
+          <div id="help-streaming-indicator" style="display:none;width:8px;height:8px;border-radius:50%;background:#4af;animation:sysLivePulse 0.8s ease-in-out infinite"></div>
+        </div>
+        <div id="help-response" style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:5px;padding:12px;font-size:12px;color:#ccc;line-height:1.6;min-height:60px;white-space:pre-wrap;word-break:break-word"></div>
+      </div>
+
+      <!-- History accordion -->
+      <div>
+        <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;cursor:pointer" onclick="helpToggleHistory()" title="Toggle history">
+          Q&amp;A History ▾ <span id="help-hist-count" style="color:#444"></span>
+        </div>
+        <div id="help-history-list" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      TAB: HOME
      Hidden startup pane (not in tab bar)
      ============================================================ -->
 <div class="tab-pane" id="tab-home" data-tab="home" style="display:none!important">
   <div class="pane-scroll">
 
-    <!-- ── SAFETY SHIELD (OCB-J Task 2) ── -->
+    <!-- ── SAFETY SHIELD (OCB-J Task 2 / OCB-K Phase 5 accordion) ── -->
     <div id="safety-shield" style="background:#0a0a12;border:1px solid #333;border-radius:8px;padding:14px 16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <div id="safety-badge" style="font-size:1.2em;font-weight:bold;padding:6px 18px;border-radius:20px;min-width:200px;text-align:center;background:#0d1f0d;border:1px solid #2a7;color:#4f4">🟢 SAFE TO RUN</div>
         <button class="btn" onclick="runSafetyCheck()" style="font-size:11px;padding:4px 12px" title="Immediately re-runs all safety checks against the server">Run Check Now</button>
         <span id="safety-last-check" style="font-size:10px;color:#555;margin-left:auto"></span>
+        <button onclick="this.closest('[id=safety-shield]').querySelector('#safety-pills').style.display=(this.closest('[id=safety-shield]').querySelector('#safety-pills').style.display==='none'?'flex':'none');this.textContent=this.textContent.includes('▼')?'▲ Checks':'▼ Checks';" style="background:none;border:none;color:#555;cursor:pointer;font-size:11px;padding:2px 6px" title="Show/hide individual check pills">▼ Checks</button>
       </div>
-      <div id="safety-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <div id="safety-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;transition:opacity .2s">
         <span class="safety-pill" data-check="Watchdog">Watchdog ⬜</span>
         <span class="safety-pill" data-check="Cost Guard">Cost Guard ⬜</span>
         <span class="safety-pill" data-check="Cost Cap">Cost Cap ⬜</span>
@@ -1474,22 +1530,27 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <span id="task-inbox-msg" style="font-size:11px;color:#4af"></span>
       </div>
 
-      <!-- Live Queue / Progress -->
-      <div class="wccs-section-title" style="margin-top:4px;font-size:11px">Current Queue</div>
-      <div style="font-size:0.8em;opacity:0.6;margin-top:-6px;margin-bottom:4px">Goals waiting to run — polls every 5s</div>
-      <div id="task-inbox-queue" style="background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:8px;font-size:12px;min-height:36px;max-height:140px;overflow-y:auto">
-        <span style="color:#555">Loading…</span>
-      </div>
+      <!-- Live Queue / Progress — OCB-K accordion -->
+      <details id="clachr-queue-acc" open style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:6px 10px;margin-top:4px">
+        <summary style="cursor:pointer;font-size:11px;color:#4af;font-weight:bold;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>Current Queue</span><span id="clachr-queue-badge" style="background:#1a1a1a;border-radius:8px;padding:0 7px;font-size:10px;color:#888">0</span>
+          <span style="font-size:10px;color:#555;font-weight:normal;margin-left:4px">polls every 5s</span>
+        </summary>
+        <div id="task-inbox-queue" style="background:#050505;border:1px solid #111;border-radius:4px;padding:8px;font-size:12px;min-height:36px;max-height:140px;overflow-y:auto;margin-top:6px">
+          <span style="color:#555">Loading…</span>
+        </div>
+      </details>
 
-      <!-- CLACHR Results -->
-      <div class="wccs-section-title" style="margin-top:10px;font-size:11px">Results</div>
-      <div style="font-size:0.8em;opacity:0.6;margin-top:-6px;margin-bottom:4px">Completed task outputs — polls every 10s</div>
-      <div style="display:flex;gap:8px;margin-bottom:6px">
-        <button class="btn" onclick="copyClachrResults()" style="font-size:11px;padding:3px 10px" title="Copies all results formatted as TASK/RESULT blocks — paste back into Claude Chat">📋 Copy Results</button>
-      </div>
-      <div id="clachr-results" style="background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:8px;font-size:12px;min-height:40px;max-height:200px;overflow-y:auto">
-        <span style="color:#555">No results yet</span>
-      </div>
+      <!-- CLACHR Results — OCB-K accordion -->
+      <details id="clachr-results-acc" open style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:6px 10px;margin-top:6px">
+        <summary style="cursor:pointer;font-size:11px;color:#4af;font-weight:bold;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>Results</span><span style="font-size:10px;color:#555;font-weight:normal">polls every 10s</span>
+          <button class="btn" onclick="event.stopPropagation();copyClachrResults()" style="font-size:10px;padding:1px 8px;margin-left:auto" title="Copies all results formatted as TASK/RESULT blocks — paste back into Claude Chat">📋 Copy</button>
+        </summary>
+        <div id="clachr-results" style="background:#050505;border:1px solid #111;border-radius:4px;padding:8px;font-size:12px;min-height:40px;max-height:200px;overflow-y:auto;margin-top:6px">
+          <span style="color:#555">No results yet</span>
+        </div>
+      </details>
     </div>
   </div>
 </div>
@@ -2955,6 +3016,120 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       </div>
     </div>
 
+    <!-- ══ OCB-K: PROJECT VISION ══════════════════════════════════════════ -->
+    <div style="background:#070f14;border:1px solid #1a2a3a;border-radius:8px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="font-size:13px;font-weight:bold;color:#4af;text-transform:uppercase;letter-spacing:1px">🔭 Project Vision</div>
+        <!-- PROJECT HEALTH SCORE -->
+        <div style="margin-left:auto;text-align:center">
+          <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">Project Health</div>
+          <div id="pv-health-score" style="font-size:28px;font-weight:bold;color:#4af;line-height:1;transition:color .5s">—</div>
+          <div style="font-size:9px;color:#555">/100</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex-wrap:wrap">
+        <!-- RADAR CHART -->
+        <div>
+          <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Capability Radar</div>
+          <svg id="pv-radar" viewBox="-120 -120 240 240" width="100%" style="max-height:220px" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid rings -->
+            <circle cx="0" cy="0" r="100" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            <circle cx="0" cy="0" r="75" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            <circle cx="0" cy="0" r="50" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            <circle cx="0" cy="0" r="25" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+            <!-- Axes — 6 at 60° each: top, top-right, bottom-right, bottom, bottom-left, top-left -->
+            <line x1="0" y1="-100" x2="0" y2="100" stroke="#1e1e1e" stroke-width="1"/>
+            <line x1="-87" y1="-50" x2="87" y2="50" stroke="#1e1e1e" stroke-width="1"/>
+            <line x1="-87" y1="50" x2="87" y2="-50" stroke="#1e1e1e" stroke-width="1"/>
+            <!-- Filled polygon — updated by JS -->
+            <polygon id="pv-radar-poly" points="0,-85 73,-42 54,63 0,70 -63,35 -63,-45" fill="rgba(74,170,255,0.15)" stroke="#4af" stroke-width="1.5"/>
+            <!-- Labels -->
+            <text x="0" y="-108" text-anchor="middle" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-0">AAFL Engine</text>
+            <text x="96" y="-48" text-anchor="start" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-1">MCC Cockpit</text>
+            <text x="96" y="58" text-anchor="start" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-2">Spin Doctor</text>
+            <text x="0" y="116" text-anchor="middle" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-3">Scout Swarm</text>
+            <text x="-96" y="58" text-anchor="end" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-4">Safety Systems</text>
+            <text x="-96" y="-48" text-anchor="end" fill="#7af" font-size="8" font-weight="bold" id="pv-lbl-5">ALP Efficiency</text>
+            <!-- Score dots -->
+            <circle id="pv-dot-0" cx="0" cy="-85" r="3" fill="#4af"/>
+            <circle id="pv-dot-1" cx="70" cy="-40" r="3" fill="#4af"/>
+            <circle id="pv-dot-2" cx="52" cy="60" r="3" fill="#4af"/>
+            <circle id="pv-dot-3" cx="0" cy="70" r="3" fill="#4af"/>
+            <circle id="pv-dot-4" cx="-60" cy="34" r="3" fill="#4af"/>
+            <circle id="pv-dot-5" cx="-60" cy="-43" r="3" fill="#4af"/>
+          </svg>
+          <div id="pv-radar-legend" style="display:flex;flex-direction:column;gap:3px;font-size:10px;color:#666;margin-top:4px"></div>
+        </div>
+        <!-- BUILD HISTORY BAR CHART -->
+        <div>
+          <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">OCB Build Velocity</div>
+          <svg id="pv-bars" viewBox="0 0 220 140" width="100%" style="max-height:220px" xmlns="http://www.w3.org/2000/svg">
+            <text x="110" y="75" text-anchor="middle" fill="#2a2a2a" font-size="10">Loading…</text>
+          </svg>
+          <div style="font-size:9px;color:#444;text-align:center;margin-top:2px">Each bar = one OCB — height = features added</div>
+        </div>
+      </div>
+      <!-- MILESTONE TIMELINE -->
+      <div style="margin-top:14px">
+        <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Project Timeline</div>
+        <div style="overflow-x:auto">
+          <svg id="pv-timeline" viewBox="0 0 800 80" width="100%" style="min-width:500px;max-height:90px" xmlns="http://www.w3.org/2000/svg">
+            <text x="400" y="40" text-anchor="middle" fill="#2a2a2a" font-size="10">Loading…</text>
+          </svg>
+        </div>
+        <div style="display:flex;gap:12px;font-size:9px;color:#555;margin-top:4px;flex-wrap:wrap">
+          <span><span style="color:#4f4">✅</span> Completed</span>
+          <span><span style="color:#4af">●</span> You are here</span>
+          <span><span style="color:#fa0">⭕</span> Planned</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ OCB-K: PROJECT BRAIN ════════════════════════════════════════════ -->
+    <div style="background:#0a080a;border:1px solid #1a1a2a;border-radius:8px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="font-size:13px;font-weight:bold;color:#af4fff;text-transform:uppercase;letter-spacing:1px">🧠 Project Brain</div>
+        <button class="btn" onclick="loadProjectBrain()" style="font-size:11px;margin-left:auto" title="Reload project awareness from server">↻ Refresh</button>
+        <span id="pb-jobs-badge" style="display:none;background:#2a0a2a;border:1px solid #4a1a4a;border-radius:10px;padding:2px 10px;font-size:11px;color:#cf8fff;cursor:pointer" onclick="document.getElementById('pb-acc-next').open=true">0 jobs remaining</span>
+      </div>
+      <!-- What's Built accordion -->
+      <details id="pb-acc-built" style="background:#0d0a0d;border:1px solid #1a1a2a;border-radius:5px;padding:8px 12px;margin-bottom:6px">
+        <summary style="cursor:pointer;font-size:12px;font-weight:bold;color:#cf8fff;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>⚙️ What's Built</span><span id="pb-built-badge" style="background:#1a1a2a;border-radius:8px;padding:0 7px;font-size:10px;color:#888">0</span>
+        </summary>
+        <div id="pb-built-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:11px;color:#555">Loading…</div>
+        </div>
+      </details>
+      <!-- What's Next accordion -->
+      <details id="pb-acc-next" style="background:#0d0a0d;border:1px solid #1a1a2a;border-radius:5px;padding:8px 12px;margin-bottom:6px">
+        <summary style="cursor:pointer;font-size:12px;font-weight:bold;color:#cf8fff;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>📋 What's Next</span><span id="pb-next-badge" style="background:#1a1a2a;border-radius:8px;padding:0 7px;font-size:10px;color:#888">0</span>
+        </summary>
+        <div id="pb-next-list" style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
+          <div style="font-size:11px;color:#555">Loading…</div>
+        </div>
+      </details>
+      <!-- Evolution Log accordion -->
+      <details id="pb-acc-evo" style="background:#0d0a0d;border:1px solid #1a1a2a;border-radius:5px;padding:8px 12px;margin-bottom:6px">
+        <summary style="cursor:pointer;font-size:12px;font-weight:bold;color:#cf8fff;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>🔀 Evolution Log</span>
+        </summary>
+        <div id="pb-evo-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;font-size:11px;color:#999;line-height:1.6">
+          <div style="color:#555">Loading…</div>
+        </div>
+      </details>
+      <!-- Forks in the Road accordion -->
+      <details id="pb-acc-forks" style="background:#0d0a0d;border:1px solid #1a1a2a;border-radius:5px;padding:8px 12px;margin-bottom:6px">
+        <summary style="cursor:pointer;font-size:12px;font-weight:bold;color:#cf8fff;user-select:none;list-style:none;display:flex;align-items:center;gap:8px">
+          <span>🔱 Forks in the Road</span>
+        </summary>
+        <div id="pb-forks-list" style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:11px;color:#555">Loading…</div>
+        </div>
+      </details>
+    </div>
+
     <!-- ══ FIXED PROJECT CARDS ═══════════════════════════════════ -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-bottom:18px">
 
@@ -3925,11 +4100,26 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <div class="sd-mot-sub" id="sd-mot-sub">No MOT run yet</div>
           </div>
           <button class="btn" id="btn-run-mot" onclick="sdRunMot()" title="Run mcc_full_mot.py — tests all MCC modules and returns a pass rate and list of failures (~30 seconds)">🔍 Run Full MOT</button>
+          <button class="btn" id="btn-run-mot-live" onclick="motRunLive()" style="background:#0a1a2a;border-color:#4af" title="Stream each MOT check live — see every test as it runs with its description and result">▶ Run MOT Live</button>
         </div>
         <div class="sd-bar-wrap" id="sd-bar-wrap" style="display:none">
           <div class="sd-bar-fill" id="sd-bar-fill" style="width:0%"></div>
         </div>
         <div id="sd-mot-failures"></div>
+        <!-- MOT Live Feed (Phase 2 OCB-K) -->
+        <div id="mot-live-panel" style="display:none;margin-top:12px;border:1px solid #1a2a3a;border-radius:6px;padding:12px;background:#050d14">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <span style="font-size:11px;color:#4af;font-weight:bold">LIVE MOT FEED</span>
+            <span id="mot-live-progress-label" style="font-size:11px;color:#777">0/108 checks</span>
+            <span id="mot-live-status" style="font-size:11px;color:#888;margin-left:auto"></span>
+          </div>
+          <div style="background:#0a0a0a;border:1px solid #111;border-radius:4px;height:6px;margin-bottom:10px;overflow:hidden">
+            <div id="mot-live-bar" style="height:100%;background:linear-gradient(90deg,#1a4a8a,#4af);width:0%;transition:width .3s"></div>
+          </div>
+          <div id="mot-live-current" style="font-size:14px;color:#ccc;margin-bottom:8px;min-height:20px;font-style:italic"></div>
+          <div id="mot-live-feed" style="max-height:300px;overflow-y:auto;font-size:11px;font-family:'Consolas','Courier New',monospace;line-height:1.6"></div>
+          <div id="mot-live-summary" style="display:none;margin-top:10px;padding:10px;background:#0a0f0a;border:1px solid #1a3a1a;border-radius:4px"></div>
+        </div>
       </div>
 
       <!-- Module Manager -->
@@ -4048,9 +4238,14 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <span id="sys-bottleneck-chip" style="font-size:10px;color:#666;border:1px solid #333;border-radius:3px;padding:1px 7px;min-width:64px;text-align:center" title="Which resource is currently the bottleneck">balanced</span>
       </div>
 
-      <!-- ROW 1: 4 Needle Dials -->
+      <!-- LM Studio status pill -->
+      <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px">
+        <span id="sys-lm-status" style="font-size:11px;color:#888;cursor:pointer" onclick="sysDrillDown('lmstudio')" title="Click for LM Studio details">LM Studio: checking…</span>
+      </div>
+
+      <!-- ROW 1: 4 Needle Dials (click = drill-down) -->
       <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
-        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="CPU utilisation across all logical cores. Above 80% = cpu-bound.">
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px;cursor:pointer" onclick="sysDrillDown('cpu')" title="Click for CPU detail — per-core, top processes">
           <svg viewBox="0 0 120 80" width="118" height="78">
             <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
             <path id="sys-arc-cpu" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#4af" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
@@ -4058,9 +4253,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <circle cx="60" cy="70" r="4" fill="#222" stroke="#4af" stroke-width="1.5"/>
             <text id="sys-val-cpu" x="60" y="60" text-anchor="middle" fill="#4af" font-size="12" font-weight="bold">—%</text>
           </svg>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">CPU Load</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">CPU Load ▾</div>
         </div>
-        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="System RAM used. Total installed: 48 GB DDR5. Above 80% = ram-bound.">
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px;cursor:pointer" onclick="sysDrillDown('ram')" title="Click for RAM detail — consumers, trend">
           <svg viewBox="0 0 120 80" width="118" height="78">
             <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
             <path id="sys-arc-ram" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#6f6" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
@@ -4068,9 +4263,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <circle cx="60" cy="70" r="4" fill="#222" stroke="#6f6" stroke-width="1.5"/>
             <text id="sys-val-ram" x="60" y="60" text-anchor="middle" fill="#6f6" font-size="11" font-weight="bold">— GB</text>
           </svg>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">RAM (48 GB)</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">RAM (48 GB) ▾</div>
         </div>
-        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="GPU shader utilisation — RTX 5090. Above 80% = gpu-bound.">
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px;cursor:pointer" onclick="sysDrillDown('gpu')" title="Click for GPU detail — VRAM, temp, processes">
           <svg viewBox="0 0 120 80" width="118" height="78">
             <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
             <path id="sys-arc-gpu" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#f8c" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
@@ -4078,9 +4273,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <circle cx="60" cy="70" r="4" fill="#222" stroke="#f8c" stroke-width="1.5"/>
             <text id="sys-val-gpu" x="60" y="60" text-anchor="middle" fill="#f8c" font-size="12" font-weight="bold">—%</text>
           </svg>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">GPU Load</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">GPU Load ▾</div>
         </div>
-        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px" title="GPU VRAM used. Total: 32 GB (RTX 5090). Above 28 GB = vram pressure.">
+        <div style="text-align:center;background:#111;border-radius:7px;padding:8px 12px;cursor:pointer" onclick="sysDrillDown('disk')" title="Click for Disk detail — C: D: usage, top folders">
           <svg viewBox="0 0 120 80" width="118" height="78">
             <path d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#1e1e1e" stroke-width="8" stroke-linecap="round"/>
             <path id="sys-arc-vram" d="M10,72 A50,50 0 0,1 110,72" fill="none" stroke="#fa0" stroke-width="8" stroke-linecap="round" stroke-dasharray="0,157"/>
@@ -4088,8 +4283,14 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <circle cx="60" cy="70" r="4" fill="#222" stroke="#fa0" stroke-width="1.5"/>
             <text id="sys-val-vram" x="60" y="60" text-anchor="middle" fill="#fa0" font-size="11" font-weight="bold">— GB</text>
           </svg>
-          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">VRAM (32 GB)</div>
+          <div style="font-size:10px;color:#666;letter-spacing:1px;text-transform:uppercase">VRAM (32 GB) ▾</div>
         </div>
+      </div>
+
+      <!-- Phase 4: Drill-Down Panel (collapses, only one open at a time) -->
+      <div id="sys-drilldown-panel" style="display:none;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:12px;margin-bottom:10px;position:relative">
+        <button onclick="sysDrillClose()" style="position:absolute;top:8px;right:10px;background:none;border:none;color:#555;font-size:14px;cursor:pointer" title="Close">✕</button>
+        <div id="sys-drilldown-content"><div style="color:#555;font-size:11px">Loading…</div></div>
       </div>
 
       <!-- ROW 3: Spec Banner -->
@@ -4581,6 +4782,9 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         <button class="btn" onclick="b3LoadDesignPreset('__reset__')"
                 style="font-size:12px;background:#1a0a0a;border-color:#4a1a1a;color:#f88"
                 title="Reset all design settings back to MCC defaults">Reset to Default</button>
+        <button class="btn" onclick="mccRestoreDefaults()"
+                style="font-size:12px;background:#0a0a1a;border-color:#1a1a4a;color:#88f"
+                title="Restore ALL MCC settings to defaults (saves to disk)">🔄 Restore All Defaults</button>
       </div>
       <div id="d-presets-list" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
     </div>
@@ -4681,13 +4885,14 @@ function initTabs() {
       if (btn.dataset.tab === 'aafl-control') { loadStuckInbox(); updateCostPreview(); const _llowPb=document.getElementById('llow-palette-body'); if(_llowPb&&(_llowPb.innerHTML.includes('Loading')||window._llowInitFailed)){window._llowInitFailed=false;if(typeof llowInit==='function')llowInit();} }
       if (btn.dataset.tab === 'memory') loadMemory();
       if (btn.dataset.tab === 'promo') loadPromo();
-      if (btn.dataset.tab === 'missions') mcInitTab();
+      if (btn.dataset.tab === 'missions') { mcInitTab(); loadProjectVision(); loadProjectBrain(); }
       if (btn.dataset.tab === 'acca') loadAcca();
       if (btn.dataset.tab === 'alp') loadAlp();
       if (btn.dataset.tab === 'self-diagnosis') { loadSelfDiagnosis(); loadModules(); }
       if (btn.dataset.tab === 'storage') loadStorageTabInit();
       if (btn.dataset.tab === 'aafl-control') { loadStuckSummary(); }
       if (btn.dataset.tab === 'medical') loadMedical();
+      if (btn.dataset.tab === 'help') helpInitTab();
     });
   });
 }
@@ -6265,6 +6470,145 @@ async function mcRenderScoreTrend() {
   } catch(e) {}
 }
 
+// ── Phase 3 OCB-K: Project Vision charts ──────────────────────────────────────
+async function loadProjectVision() {
+  try {
+    const d = await apiFetch('/api/project-vision');
+    // Health score
+    const hs = document.getElementById('pv-health-score');
+    if (hs) {
+      hs.textContent = d.health_score || '—';
+      hs.style.color = d.health_score >= 80 ? '#4f4' : d.health_score >= 60 ? '#fa0' : '#f66';
+    }
+    // Radar chart
+    _pvRenderRadar(d.radar || {});
+    // Build history bar chart
+    _pvRenderBars(d.build_history || []);
+    // Timeline
+    _pvRenderTimeline(d.milestones_past || [], d.milestones_future || []);
+  } catch(e) {}
+}
+
+function _pvRenderRadar(radar) {
+  const keys = ['aafl_engine','mcc_cockpit','spin_doctor','scout_swarm','safety_systems','alp_efficiency'];
+  const angles = [270, 330, 30, 90, 150, 210]; // degrees
+  const R = 100;
+  const points = keys.map((k, i) => {
+    const score = (radar[k]?.score || 0) / 100;
+    const ang = angles[i] * Math.PI / 180;
+    return [Math.cos(ang) * R * score, Math.sin(ang) * R * score];
+  });
+  const poly = document.getElementById('pv-radar-poly');
+  if (poly) poly.setAttribute('points', points.map(p => p[0].toFixed(1)+','+p[1].toFixed(1)).join(' '));
+  const dots = [0,1,2,3,4,5];
+  dots.forEach((_, i) => {
+    const dot = document.getElementById('pv-dot-'+i);
+    if (dot) { dot.setAttribute('cx', points[i][0].toFixed(1)); dot.setAttribute('cy', points[i][1].toFixed(1)); }
+  });
+  // Legend
+  const leg = document.getElementById('pv-radar-legend');
+  if (leg) {
+    leg.innerHTML = keys.map((k,i) => {
+      const v = radar[k];
+      if (!v) return '';
+      return `<div style="display:flex;justify-content:space-between"><span>${v.label}</span><span style="color:#4af">${v.score}%</span></div>`;
+    }).join('');
+  }
+}
+
+function _pvRenderBars(history) {
+  const svg = document.getElementById('pv-bars');
+  if (!svg || !history.length) return;
+  const W=220, H=140, PX=16, PY=16;
+  const maxF = Math.max(...history.map(h=>h.features), 1);
+  const bw = Math.floor((W - PX*2) / history.length) - 2;
+  let html = '';
+  history.forEach((h, i) => {
+    const bh = Math.round((h.features / maxF) * (H - PY*2 - 20));
+    const x  = PX + i * ((W - PX*2) / history.length);
+    const y  = H - PY - bh - 14;
+    const col = i === history.length-1 ? '#4af' : '#2a4a6a';
+    html += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${Math.max(bw,2)}" height="${bh}" fill="${col}" rx="1" title="OCB-${h.label}: ${h.features} features"/>
+    <text x="${(x + bw/2).toFixed(1)}" y="${H-PY-2}" text-anchor="middle" fill="#555" font-size="7">${h.label}</text>
+    <text x="${(x + bw/2).toFixed(1)}" y="${(y-2).toFixed(1)}" text-anchor="middle" fill="#666" font-size="7">${h.features}</text>`;
+  });
+  svg.innerHTML = html;
+}
+
+function _pvRenderTimeline(past, future) {
+  const svg = document.getElementById('pv-timeline');
+  if (!svg) return;
+  const W = 800, H = 80;
+  const total = past.length + 1 + future.length;
+  const step  = (W - 40) / (total - 1 || 1);
+  let html = `<line x1="20" y1="${H/2}" x2="${W-20}" y2="${H/2}" stroke="#1a1a1a" stroke-width="2"/>`;
+  past.forEach((m, i) => {
+    const x = 20 + i * step;
+    html += `<circle cx="${x.toFixed(0)}" cy="${H/2}" r="4" fill="#2a6a2a" title="${m}"/>
+    <text x="${x.toFixed(0)}" y="${H/2-10}" text-anchor="middle" fill="#3a6a3a" font-size="6" title="${m}">${m.length>14?m.slice(0,12)+'…':m}</text>`;
+  });
+  const hereX = 20 + past.length * step;
+  html += `<circle cx="${hereX.toFixed(0)}" cy="${H/2}" r="6" fill="#4af" stroke="#fff" stroke-width="1.5"/>
+  <text x="${hereX.toFixed(0)}" y="${H/2+18}" text-anchor="middle" fill="#4af" font-size="7" font-weight="bold">YOU ARE HERE</text>`;
+  future.forEach((m, i) => {
+    const x = 20 + (past.length + 1 + i) * step;
+    html += `<circle cx="${x.toFixed(0)}" cy="${H/2}" r="4" fill="none" stroke="#4a4a1a" stroke-width="1.5" stroke-dasharray="2"/>
+    <text x="${x.toFixed(0)}" y="${H/2-10}" text-anchor="middle" fill="#555" font-size="6">${m.length>14?m.slice(0,12)+'…':m}</text>`;
+  });
+  svg.innerHTML = html;
+}
+
+// ── Phase 4 OCB-K: Project Brain ──────────────────────────────────────────────
+async function loadProjectBrain() {
+  try {
+    const d = await apiFetch('/api/project-awareness');
+    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    // What's Built
+    const builtList = document.getElementById('pb-built-list');
+    const builtBadge = document.getElementById('pb-built-badge');
+    if (d.what_is_built && builtList) {
+      if (builtBadge) builtBadge.textContent = d.what_is_built.length;
+      builtList.innerHTML = d.what_is_built.map(b => {
+        const col = b.status === 'ACTIVE' ? '#4f4' : b.status === 'BLOCKED' ? '#f84' : '#888';
+        return `<div style="display:flex;gap:8px;align-items:flex-start;padding:4px 6px;background:#0a0d0a;border-radius:4px">
+          <span style="color:${col};font-size:10px;white-space:nowrap;margin-top:1px">${esc(b.status)}</span>
+          <div><div style="font-size:12px;color:#ccc;font-weight:bold">${esc(b.name)}</div><div style="font-size:11px;color:#666">${esc(b.desc)}</div></div>
+        </div>`;
+      }).join('');
+    }
+    // What's Next
+    const nextList = document.getElementById('pb-next-list');
+    const nextBadge = document.getElementById('pb-next-badge');
+    const jobsBadge = document.getElementById('pb-jobs-badge');
+    if (d.what_is_next && nextList) {
+      if (nextBadge) nextBadge.textContent = d.what_is_next.length;
+      if (jobsBadge) { jobsBadge.textContent = d.what_is_next.length + ' jobs remaining'; jobsBadge.style.display='inline-block'; }
+      nextList.innerHTML = d.what_is_next.map((n, i) => {
+        const col = n.status === 'IN PROGRESS' ? '#4af' : n.status === 'BLOCKED' ? '#f84' : '#666';
+        return `<div style="display:flex;gap:8px;align-items:center;font-size:11px">
+          <span style="color:#444;min-width:18px">${i+1}.</span>
+          <span style="flex:1;color:#aaa">${esc(n.item)}</span>
+          <span style="color:${col};font-size:10px;white-space:nowrap">${esc(n.status)}</span>
+        </div>`;
+      }).join('');
+    }
+    // Evolution Log
+    const evoList = document.getElementById('pb-evo-list');
+    if (d.evolution_log && evoList) {
+      evoList.innerHTML = d.evolution_log.map(e => `<div style="padding:3px 0;border-left:2px solid #2a1a4a;padding-left:10px">${esc(e)}</div>`).join('');
+    }
+    // Forks in the Road
+    const forksList = document.getElementById('pb-forks-list');
+    if (d.forks_taken && forksList) {
+      forksList.innerHTML = d.forks_taken.map(f => `<div style="background:#0d0a0d;border:1px solid #1a1a2a;border-radius:4px;padding:8px">
+        <div style="font-size:11px;color:#cf8fff;font-weight:bold;margin-bottom:4px">🔱 ${esc(f.decision)}</div>
+        <div style="font-size:11px;color:#6f6">✓ Chosen: ${esc(f.chosen)}</div>
+        <div style="font-size:11px;color:#666">✗ Alternative: ${esc(f.alternative)}</div>
+      </div>`).join('');
+    }
+  } catch(e) { console.warn('Project Brain load failed:', e); }
+}
+
 async function loadMissions() {
   const list  = document.getElementById('missions-list');
   const label = document.getElementById('missions-count-label');
@@ -6754,6 +7098,88 @@ async function sdRunMot() {
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '🔍 Run Full MOT'; }
   }
+}
+
+// ── Phase 2 OCB-K: MOT Live Feed ──────────────────────────────────────────────
+let _motLiveRunning = false;
+function motRunLive() {
+  if (_motLiveRunning) return;
+  _motLiveRunning = true;
+  const panel   = document.getElementById('mot-live-panel');
+  const feed    = document.getElementById('mot-live-feed');
+  const bar     = document.getElementById('mot-live-bar');
+  const label   = document.getElementById('mot-live-progress-label');
+  const current = document.getElementById('mot-live-current');
+  const status  = document.getElementById('mot-live-status');
+  const summary = document.getElementById('mot-live-summary');
+  const livebtn = document.getElementById('btn-run-mot-live');
+  if (panel)   panel.style.display = 'block';
+  if (feed)    feed.innerHTML = '';
+  if (bar)     bar.style.width = '0%';
+  if (label)   label.textContent = '0/108 checks';
+  if (current) current.textContent = 'Starting…';
+  if (status)  status.textContent = '⏳ Running';
+  if (summary) summary.style.display = 'none';
+  if (livebtn) { livebtn.disabled = true; livebtn.textContent = '⏳ Running…'; }
+
+  const TOTAL = 108;
+  let passed = 0, failed = 0, checked = 0;
+  const fails = [];
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  const evtSource = new EventSource('/api/mot/live');
+  evtSource.onmessage = e => {
+    try {
+      const d = JSON.parse(e.data);
+      if (d.done) {
+        evtSource.close();
+        _motLiveRunning = false;
+        if (livebtn) { livebtn.disabled = false; livebtn.textContent = '▶ Run MOT Live'; }
+        if (status) status.textContent = '✅ Complete';
+        if (current) current.textContent = '';
+        // Final summary
+        if (summary) {
+          const pct = TOTAL > 0 ? Math.round(passed / TOTAL * 100) : 0;
+          const col = pct >= 99 ? '#6f6' : pct >= 80 ? '#fa0' : '#f66';
+          summary.style.display = 'block';
+          summary.innerHTML = `<div style="font-size:18px;font-weight:bold;color:${col}">${passed}/${TOTAL} PASS (${pct}%)</div>` +
+            (fails.length ? `<div style="margin-top:6px;font-size:12px;color:#f88">FAILURES (${fails.length}):<br>${fails.map(f=>'• '+esc(f)).join('<br>')}</div>` : '<div style="color:#6f6;font-size:12px;margin-top:4px">No failures — ALL CLEAR</div>');
+        }
+        return;
+      }
+      const line = d.line || '';
+      if (line.startsWith('Checking ')) {
+        const name = line.replace(/^Checking /, '').split(':')[0];
+        if (current) current.textContent = name;
+      } else if (line.startsWith('  ✅') || line.startsWith('  ❌')) {
+        checked++;
+        const isPas = line.startsWith('  ✅');
+        if (isPas) passed++; else { failed++; }
+        if (!isPas && current) fails.push(current.textContent + ': ' + line.replace(/^\s*[✅❌]\s*(PASS|FAIL):\s*/,''));
+        const pct = Math.round(checked / TOTAL * 100);
+        if (bar)   bar.style.width = pct + '%';
+        if (label) label.textContent = `${checked}/${TOTAL} checks`;
+        if (feed) {
+          const row = document.createElement('div');
+          row.style.color = isPas ? '#4a8a4a' : '#a84a4a';
+          row.textContent = line.trim();
+          feed.appendChild(row);
+          feed.scrollTop = feed.scrollHeight;
+        }
+      } else if (line && feed) {
+        const row = document.createElement('div');
+        row.style.color = '#555';
+        row.textContent = line;
+        feed.appendChild(row);
+      }
+    } catch(err) {}
+  };
+  evtSource.onerror = () => {
+    evtSource.close();
+    _motLiveRunning = false;
+    if (livebtn) { livebtn.disabled = false; livebtn.textContent = '▶ Run MOT Live'; }
+    if (status) status.textContent = '❌ Error';
+  };
 }
 
 function sdRenderSysInfo(data) {
@@ -10679,20 +11105,64 @@ function hsRenderLeaderboard() {
 
 function hsSortProviders(key) { hsRenderProviderCards(key); }
 
-// ── OCB-H: Persistent AI Status Bar (top of MCC) ────────────────────────────
-function updateAiStatusBar() {
+// ── OCB-L Phase 3: Enriched AI Status Bar ────────────────────────────────────
+let _aiBarProviders = [];
+let _aiBarTimer = null;
+
+const _LOC_BADGE = {
+  LOCAL_GPU: ['GPU', '#0d2a0d', '#4f4'],
+  LOCAL_CPU: ['CPU', '#0a1a2a', '#4af'],
+  CLOUD_FREE: ['CLOUD', '#1a0a2a', '#a8f'],
+  CLOUD_PAID: ['PAID', '#2a0a0a', '#f66'],
+};
+
+function _aiBarLocBadge(loc) {
+  const [label, bg, col] = _LOC_BADGE[loc] || ['?', '#1a1a1a', '#888'];
+  return `<span style="background:${bg};color:${col};font-size:8px;padding:1px 4px;border-radius:2px;margin-left:4px;vertical-align:middle">${label}</span>`;
+}
+
+async function updateAiStatusBar() {
   const inner = document.getElementById('ai-status-inner');
-  if (!inner || !_hsProviders.length) return;
-  const chips = _hsProviders.map(p => {
-    const ok = p.ok || p.status === 'ok' || p.online || p.reachable;
-    const rl = p.rate_limited;
-    const cls = ok ? 'online' : rl ? 'rl' : 'offline';
-    const lat = p.latency_ms ? (p.latency_ms/1000).toFixed(2)+'s' : '';
-    const sc  = p.avg_score ? ' ★'+p.avg_score.toFixed(1) : '';
-    return `<span class="ai-prov-chip ${cls}"><span class="ai-prov-pulse"></span>${(p.name||'?').toUpperCase()}${lat?'  '+lat:''}${sc}</span>`;
+  if (!inner) return;
+  try {
+    const d = await apiFetch('/api/provider-health');
+    _aiBarProviders = d.providers || [];
+  } catch(e) {
+    // Fallback to _hsProviders if enriched endpoint fails
+    if (_hsProviders.length && !_aiBarProviders.length) {
+      _aiBarProviders = _hsProviders.map(p => ({
+        id: p.id || p.name, name: p.name || p.id || '?',
+        status: (p.ok || p.reachable) ? 'LIVE' : 'OFFLINE',
+        latency_ms: p.latency_ms || 0, location: 'CLOUD_FREE',
+        model_loaded: '', vram_mb: null, tier: 2,
+      }));
+    }
+  }
+  if (!_aiBarProviders.length) return;
+
+  const cards = _aiBarProviders.map((p, idx) => {
+    const st = p.status || 'UNKNOWN';
+    const dotCol = st === 'LIVE' ? '#4f4' : st === 'NO_KEY' ? '#fa0' : '#555';
+    const pulse   = st === 'LIVE' ? `<span class="ai-prov-pulse" style="background:${dotCol}"></span>` : `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${dotCol};margin-right:5px;vertical-align:middle"></span>`;
+    const lat = p.latency_ms ? p.latency_ms + 'ms' : '';
+    const modelShort = (p.model_loaded || '').replace(/^[^/]+\//, '').slice(0, 20);
+    const locBadge = _aiBarLocBadge(p.location || 'CLOUD_FREE');
+    const vramBar  = (p.location === 'LOCAL_GPU' && p.vram_mb != null)
+      ? `<div style="height:3px;background:#1a1a1a;border-radius:1px;width:60px;margin-top:2px"><div style="height:100%;width:${Math.min(100, p.vram_mb/32768*100).toFixed(0)}%;background:#fa0;border-radius:1px"></div></div>`
+      : '';
+    return `<span class="ai-prov-chip" onclick="aiBarCardClick(${idx}, event)"
+      style="display:inline-flex;flex-direction:column;justify-content:center;padding:3px 8px;min-height:38px;cursor:pointer;opacity:${st==='OFFLINE'?0.5:1}"
+      title="${p.name} — ${st}">
+      <div style="display:flex;align-items:center;gap:3px;white-space:nowrap">
+        ${pulse}<strong style="font-size:10px">${(p.name||'?').split(' ').slice(-1)[0].toUpperCase()}</strong>${locBadge}${lat ? `<span style="font-size:9px;color:#555;margin-left:4px">${lat}</span>` : ''}
+      </div>
+      ${modelShort ? `<div style="font-size:9px;color:#555;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${modelShort}</div>` : ''}
+      ${vramBar}
+    </span>`;
   });
-  const all = chips.concat(chips); // seamless loop
-  inner.innerHTML = all.join('<span style="color:#1a2a1a;padding:0 6px">·</span>');
+
+  const all = cards.concat(cards);
+  inner.innerHTML = all.join('<span style="color:#1a2a1a;padding:0 4px;line-height:44px">·</span>');
   const totalW = inner.scrollWidth / 2;
   inner.style.animation = 'none';
   const ks = document.getElementById('ai-status-keyframes') || document.createElement('style');
@@ -10700,9 +11170,48 @@ function updateAiStatusBar() {
   ks.textContent = `@keyframes aiStatusTicker{0%{transform:translateX(0)}100%{transform:translateX(-${totalW}px)}}`;
   if (!ks.parentNode) document.head.appendChild(ks);
   requestAnimationFrame(() => {
-    inner.style.animation = `aiStatusTicker ${Math.max(20, _hsProviders.length * 5)}s linear infinite`;
+    inner.style.animation = `aiStatusTicker ${Math.max(30, _aiBarProviders.length * 6)}s linear infinite`;
   });
 }
+
+function aiBarCardClick(idx, ev) {
+  if (ev) ev.stopPropagation();
+  const p = _aiBarProviders[idx % _aiBarProviders.length];
+  if (!p) return;
+  let tip = document.getElementById('ai-prov-tooltip');
+  if (!tip) {
+    tip = document.createElement('div');
+    tip.id = 'ai-prov-tooltip';
+    document.body.appendChild(tip);
+  }
+  const st = p.status || 'UNKNOWN';
+  const dotCol = st === 'LIVE' ? '#4f4' : st === 'NO_KEY' ? '#fa0' : '#555';
+  const tierDesc = {1: 'Local (no cost)', 2: 'Free cloud', 3: 'Online fallback', 99: 'Paid'}[p.tier] || '';
+  const vramLine = p.vram_mb != null ? `<div>VRAM: ${p.vram_mb} MB used</div>` : '';
+  tip.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <strong style="color:#ccc">${p.name || '?'}</strong>
+      <button onclick="document.getElementById('ai-prov-tooltip').style.display='none'" style="background:none;border:none;color:#555;cursor:pointer;font-size:12px">✕</button>
+    </div>
+    <div style="color:${dotCol};margin-bottom:4px">● ${st}</div>
+    <div style="color:#888;font-size:10px;margin-bottom:2px">Tier ${p.tier} — ${tierDesc}</div>
+    <div style="color:#888;font-size:10px;margin-bottom:2px">Location: ${p.location || '?'}</div>
+    <div style="color:#888;font-size:10px;margin-bottom:2px">Model: ${p.model_loaded || '(none loaded)'}</div>
+    <div style="color:#888;font-size:10px;margin-bottom:2px">Latency: ${p.latency_ms ? p.latency_ms + 'ms' : '—'}</div>
+    ${vramLine}
+  `;
+  const rect = ev.target.getBoundingClientRect();
+  tip.style.cssText += `;display:block;top:${rect.bottom + 4}px;left:${Math.min(rect.left, window.innerWidth - 310)}px`;
+}
+
+document.addEventListener('click', () => {
+  const tip = document.getElementById('ai-prov-tooltip');
+  if (tip) tip.style.display = 'none';
+});
+
+// Auto-refresh AI bar every 20s
+setInterval(updateAiStatusBar, 20000);
+setTimeout(updateAiStatusBar, 2000);  // initial load after page ready
 
 function hsUpdateTicker() {
   const inner = document.getElementById('hs-ticker-inner');
@@ -10820,79 +11329,110 @@ function _sysDial(arcId, needleId, valId, pct, maxVal, unit, baseColor) {
 
 async function _refreshSystemMonitor() {
   const badge = document.getElementById('sys-live-badge');
-  try {
-    const snap = await apiFetch('/api/system/snapshot');
-    if (!snap || !snap.ok) throw new Error('bad snap');
+  // Phase 2: dual-source — system/snapshot for full detail, resources/snapshot for GPU fallback
+  let snap = null, rsnap = null;
+  try { snap  = await apiFetch('/api/system/snapshot');   } catch(e) {}
+  try { rsnap = await apiFetch('/api/resources/snapshot'); } catch(e) {}
 
-    if (badge) { badge.style.opacity = '1'; badge.style.animation = 'sysLivePulse 1.2s ease-in-out infinite'; }
+  if (!snap && !rsnap) { if (badge) badge.style.opacity = '0.3'; return; }
+  if (badge) { badge.style.opacity = '1'; badge.style.animation = 'sysLivePulse 1.2s ease-in-out infinite'; }
 
-    // Score + bottleneck
-    const sc = snap.health_score || 0;
-    const scoreV = document.getElementById('sys-score-val');
-    const scoreF = document.getElementById('sys-score-fill');
-    const bnChip = document.getElementById('sys-bottleneck-chip');
-    const bnAlert = document.getElementById('sys-alert-bn-val');
-    if (scoreV) { scoreV.textContent = sc; scoreV.style.color = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : '#f44'; }
-    if (scoreF) { scoreF.style.width = sc + '%'; scoreF.style.background = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : '#f44'; }
-    if (bnChip) { bnChip.textContent = snap.bottleneck || 'balanced'; bnChip.style.color = snap.bottleneck && snap.bottleneck !== 'balanced' ? '#fa0' : '#555'; }
-    if (bnAlert) { bnAlert.textContent = snap.bottleneck || 'balanced'; bnAlert.style.color = snap.bottleneck && snap.bottleneck !== 'balanced' ? '#fa0' : '#4f4'; }
+  // Score + bottleneck
+  const sc = (snap || {}).health_score || 0;
+  const bn = (snap || {}).bottleneck || 'balanced';
+  const scoreV = document.getElementById('sys-score-val');
+  const scoreF = document.getElementById('sys-score-fill');
+  const bnChip = document.getElementById('sys-bottleneck-chip');
+  const bnAlert = document.getElementById('sys-alert-bn-val');
+  if (scoreV) { scoreV.textContent = sc || 'N/A'; scoreV.style.color = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : (sc > 0 ? '#f44' : '#888'); }
+  if (scoreF) { scoreF.style.width = (sc || 0) + '%'; scoreF.style.background = sc > 70 ? '#4af' : sc > 40 ? '#fa0' : '#f44'; }
+  if (bnChip)  { bnChip.textContent = bn;  bnChip.style.color  = bn !== 'balanced' ? '#fa0' : '#555'; }
+  if (bnAlert) { bnAlert.textContent = bn; bnAlert.style.color = bn !== 'balanced' ? '#fa0' : '#4f4'; }
 
-    // CPU dial
-    const cpu = snap.cpu || {};
-    _sysDial('sys-arc-cpu', 'sys-needle-cpu', 'sys-val-cpu', cpu.overall_pct || 0, 100, '%', '#4af');
+  // CPU dial — use system/snapshot if available, else resources/snapshot
+  const cpu = (snap || {}).cpu || {};
+  const cpuPct = cpu.overall_pct != null ? cpu.overall_pct : ((rsnap || {}).cpu_percent || 0);
+  _sysDial('sys-arc-cpu', 'sys-needle-cpu', 'sys-val-cpu', cpuPct, 100, '%', '#4af');
 
-    // RAM dial
-    const ram = snap.ram || {};
-    const ramPct = ram.total_gb ? (ram.used_gb / ram.total_gb * 100) : 0;
-    _sysDial('sys-arc-ram', 'sys-needle-ram', 'sys-val-ram', ramPct, ram.total_gb || 48, 'GB', '#6f6');
+  // RAM dial
+  const ram = (snap || {}).ram || {};
+  const ramUsed  = ram.used_gb  != null ? ram.used_gb  : ((rsnap || {}).ram_used_gb  || 0);
+  const ramTotal = ram.total_gb != null ? ram.total_gb : ((rsnap || {}).ram_total_gb || 48);
+  const ramPct   = ramTotal > 0 ? (ramUsed / ramTotal * 100) : 0;
+  // AMBER > 80%, RED only > 95% (genuine critical)
+  const ramCol = ramPct > 95 ? '#f44' : ramPct > 80 ? '#fa0' : '#6f6';
+  _sysDial('sys-arc-ram', 'sys-needle-ram', 'sys-val-ram', ramPct, ramTotal, 'GB', ramCol);
 
-    // GPU dials
-    const gpus = (snap.gpu || {}).gpus || [];
-    const g = gpus[0] || {};
-    _sysDial('sys-arc-gpu', 'sys-needle-gpu', 'sys-val-gpu', g.load_pct || 0, 100, '%', '#f8c');
-    const vramPct = g.vram_total_gb ? (g.vram_used_gb / g.vram_total_gb * 100) : 0;
-    _sysDial('sys-arc-vram', 'sys-needle-vram', 'sys-val-vram', vramPct, g.vram_total_gb || 32, 'GB', '#fa0');
-
-    // Spec banner
-    const specEl = document.getElementById('sys-spec-banner');
-    if (specEl && cpu.per_core_pct) {
-      const cores = cpu.per_core_pct.length;
-      const gpuName = g.name || 'RTX 5090';
-      const vramTot = g.vram_total_gb ? g.vram_total_gb.toFixed(0) : 32;
-      const ramTot  = ram.total_gb ? ram.total_gb.toFixed(0) : 48;
-      specEl.textContent = `${gpuName} ${vramTot}GB | ${ramTot}GB DDR5 | ${cores} cores @ ${Math.round(cpu.freq_mhz || 0)} MHz`;
-    }
-
-    // Thermal alert
-    const th = snap.thermal || {};
-    const tempV = document.getElementById('sys-alert-temp-val');
-    const tempP = document.getElementById('sys-alert-thermal-pred');
-    const tc = g.temperature_c;
-    if (tempV) { tempV.textContent = tc != null ? tc + '°C' : '—°C'; tempV.style.color = tc > 80 ? '#f44' : tc > 70 ? '#fa0' : '#ccc'; }
-    if (tempP) {
-      const pred = th.prediction || 'stable';
-      tempP.textContent = pred === 'rising' ? `↑ ~${th.readings_to_throttle || '?'}r to throttle` : pred === 'throttling_now' ? '⚠ THROTTLING' : 'stable';
-      tempP.style.color = pred === 'throttling_now' ? '#f44' : pred === 'rising' ? '#fa0' : '#555';
-    }
-
-    // Game/AI conflict
-    const confV = document.getElementById('sys-alert-conf-val');
-    if (confV) { confV.textContent = snap.game_ai_conflict ? '⚠ CONFLICT' : 'no conflict'; confV.style.color = snap.game_ai_conflict ? '#f44' : '#4f4'; }
-
-    // Disk I/O (from snapshot disk data if present, else placeholder)
-    const diskV = document.getElementById('sys-alert-disk-val');
-    if (diskV && snap.disk) { diskV.textContent = `↑ ${snap.disk.write_mb_s || 0} / ↓ ${snap.disk.read_mb_s || 0} MB/s`; }
-
-    // AI process cards
-    _sysRenderAiCards((snap.ai_allocation || {}).processes || []);
-
-    // Timeline — session-length, no cap (OCB-H)
-    _sysSnapHistory.push({ cpu: cpu.overall_pct || 0, gpu: g.load_pct || 0, ram: ramPct, ts: Date.now() });
-    _sysRenderTimeline();
-
-  } catch(e) {
-    if (badge) badge.style.opacity = '0.3';
+  // GPU dials — prefer system/snapshot GPU, fallback to nvidia-smi data from resources/snapshot
+  const gpus = (snap ? (snap.gpu || {}).gpus || [] : []);
+  const g = gpus[0] || {};
+  let gpuLoad    = g.load_pct    != null ? g.load_pct    : ((rsnap || {}).gpu_utilization_percent || null);
+  let vramUsedGb = g.vram_used_gb != null ? g.vram_used_gb : (rsnap && rsnap.gpu_vram_used_mb  != null ? rsnap.gpu_vram_used_mb / 1024  : null);
+  let vramTotGb  = g.vram_total_gb!= null ? g.vram_total_gb: (rsnap && rsnap.gpu_vram_total_mb != null ? rsnap.gpu_vram_total_mb / 1024 : 32);
+  let gpuName    = g.name || (rsnap || {}).gpu_name || 'GPU';
+  if (gpuLoad == null) {
+    // Show N/A in grey — not red
+    const gpuArc = document.getElementById('sys-arc-gpu');
+    const gpuVal = document.getElementById('sys-val-gpu');
+    if (gpuArc) gpuArc.setAttribute('stroke', '#555');
+    if (gpuVal) { gpuVal.textContent = 'N/A'; gpuVal.setAttribute('fill', '#555'); }
+  } else {
+    _sysDial('sys-arc-gpu', 'sys-needle-gpu', 'sys-val-gpu', gpuLoad, 100, '%', '#f8c');
   }
+  if (vramUsedGb == null) {
+    const vramArc = document.getElementById('sys-arc-vram');
+    const vramVal = document.getElementById('sys-val-vram');
+    if (vramArc) vramArc.setAttribute('stroke', '#555');
+    if (vramVal) { vramVal.textContent = 'N/A'; vramVal.setAttribute('fill', '#555'); }
+  } else {
+    const vramPct = vramTotGb > 0 ? (vramUsedGb / vramTotGb * 100) : 0;
+    _sysDial('sys-arc-vram', 'sys-needle-vram', 'sys-val-vram', vramPct, vramTotGb, 'GB', '#fa0');
+  }
+
+  // Spec banner
+  const specEl = document.getElementById('sys-spec-banner');
+  if (specEl) {
+    const cores = (cpu.per_core_pct || []).length || '?';
+    const vramTotLbl = vramTotGb ? Math.round(vramTotGb) + 'GB' : '32GB';
+    const ramTotLbl  = ramTotal ? Math.round(ramTotal) + 'GB' : '48GB';
+    specEl.textContent = `${gpuName} ${vramTotLbl} | ${ramTotLbl} DDR5 | ${cores} cores @ ${Math.round(cpu.freq_mhz || 0)} MHz`;
+  }
+
+  // Thermal alert
+  const th = (snap || {}).thermal || {};
+  const tempV = document.getElementById('sys-alert-temp-val');
+  const tempP = document.getElementById('sys-alert-thermal-pred');
+  const tc = g.temperature_c != null ? g.temperature_c : ((rsnap || {}).gpu_temp || null);
+  if (tempV) { tempV.textContent = tc != null ? tc + '°C' : '—°C'; tempV.style.color = tc > 80 ? '#fa0' : '#ccc'; }
+  if (tempP) {
+    const pred = th.prediction || 'stable';
+    tempP.textContent = pred === 'rising' ? `↑ ~${th.readings_to_throttle || '?'}r to throttle` : pred === 'throttling_now' ? '⚠ THROTTLING' : 'stable';
+    tempP.style.color = pred === 'throttling_now' ? '#fa0' : pred === 'rising' ? '#fa0' : '#555';
+  }
+
+  // Game/AI conflict
+  const confV = document.getElementById('sys-alert-conf-val');
+  if (confV) { confV.textContent = (snap || {}).game_ai_conflict ? '⚠ CONFLICT' : 'no conflict'; confV.style.color = (snap || {}).game_ai_conflict ? '#fa0' : '#4f4'; }
+
+  // Disk I/O
+  const diskV = document.getElementById('sys-alert-disk-val');
+  if (diskV && snap && snap.disk) { diskV.textContent = `↑ ${snap.disk.write_mb_s || 0} / ↓ ${snap.disk.read_mb_s || 0} MB/s`; }
+
+  // LM Studio status pill
+  const lmEl = document.getElementById('sys-lm-status');
+  if (lmEl) {
+    const lmUp = (rsnap || {}).lm_studio_running || (snap || {}).lm_studio === 'UP';
+    const models = (rsnap || {}).lm_studio_models_loaded || [];
+    lmEl.textContent = lmUp ? `LM Studio: ONLINE (${models.length} model${models.length !== 1 ? 's' : ''})` : 'LM Studio: offline';
+    lmEl.style.color  = lmUp ? '#4f4' : '#888';
+  }
+
+  // AI process cards
+  _sysRenderAiCards(((snap || {}).ai_allocation || {}).processes || []);
+
+  // Timeline
+  _sysSnapHistory.push({ cpu: cpuPct, gpu: gpuLoad || 0, ram: ramPct, ts: Date.now() });
+  _sysRenderTimeline();
 }
 
 function _sysRenderAiCards(procs) {
@@ -10975,6 +11515,141 @@ function _sysRenderTimeline() {
   svg.innerHTML = grid + mkPoly('ram', '#6f6', '#6f6') + mkPoly('gpu', '#f8c', '#f8c') + mkPoly('cpu', '#4af', '#4af');
 }
 
+// ── Phase 4: Drill-down panels ────────────────────────────────────────────────
+let _sysDrillActive = null;
+
+function sysDrillClose() {
+  const panel = document.getElementById('sys-drilldown-panel');
+  if (panel) panel.style.display = 'none';
+  _sysDrillActive = null;
+}
+
+async function sysDrillDown(type) {
+  const panel = document.getElementById('sys-drilldown-panel');
+  const content = document.getElementById('sys-drilldown-content');
+  if (!panel || !content) return;
+  if (_sysDrillActive === type) { sysDrillClose(); return; }
+  _sysDrillActive = type;
+  panel.style.display = 'block';
+  content.innerHTML = '<div style="color:#555;font-size:11px">Loading…</div>';
+  try {
+    if (type === 'cpu') {
+      const d = await apiFetch('/api/resources/cpu-detail');
+      if (!d.ok) { content.innerHTML = `<span style="color:#888">CPU data: ${d.error || 'unavailable'}</span>`; return; }
+      const coresHtml = (d.cores || []).map(c =>
+        `<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:9px;color:#555;width:42px">Core ${c.core}</span>
+          <div style="flex:1;height:5px;background:#1a1a1a;border-radius:2px"><div style="height:100%;width:${c.pct}%;background:${c.pct>80?'#fa0':'#4af'};border-radius:2px"></div></div>
+          <span style="font-size:9px;color:#888;min-width:32px">${c.pct}%</span>
+          <span style="font-size:9px;color:#555">${c.mhz} MHz</span>
+        </div>`).join('');
+      const procsHtml = (d.top_processes || []).map(p =>
+        `<tr><td style="color:#ccc;font-size:10px;padding:2px 6px">${p.name||'?'}</td>
+         <td style="color:#888;font-size:10px;padding:2px 6px">${p.pid}</td>
+         <td style="color:${(p.cpu||0)>20?'#fa0':'#888'};font-size:10px;padding:2px 6px">${p.cpu||0}%</td>
+         <td style="padding:2px 6px"><button class="btn" onclick="sysFreeUp(${p.pid})" style="font-size:9px;padding:1px 4px">Kill</button></td></tr>`).join('');
+      content.innerHTML = `<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:8px">CPU — Per-Core Usage</div>
+        ${coresHtml}
+        <div style="font-size:11px;font-weight:bold;color:#888;margin:10px 0 5px">Top Processes by CPU</div>
+        <table style="width:100%;border-collapse:collapse"><thead><tr>
+          <th style="font-size:9px;color:#555;text-align:left;padding:2px 6px">Process</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">PID</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">CPU%</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px"></th>
+        </thead><tbody>${procsHtml}</tbody></table>`;
+    } else if (type === 'ram') {
+      const d = await apiFetch('/api/resources/ram-detail');
+      if (!d.ok) { content.innerHTML = `<span style="color:#888">RAM data: ${d.error || 'unavailable'}</span>`; return; }
+      const procsHtml = (d.top_processes || []).map(p =>
+        `<tr><td style="color:#ccc;font-size:10px;padding:2px 6px">${p.name||'?'}</td>
+         <td style="color:#888;font-size:10px;padding:2px 6px">${p.pid}</td>
+         <td style="color:${(p.mb||0)>1000?'#f8c':'#888'};font-size:10px;padding:2px 6px">${p.mb||0} MB</td></tr>`).join('');
+      const histHtml = (d.history || []).length > 1 ? `<div style="margin-top:10px">
+        <div style="font-size:9px;color:#555;margin-bottom:4px">Memory RSS trend (last ${d.history.length} readings)</div>
+        <svg viewBox="0 0 300 40" width="100%" height="40" style="background:#0a0a0a;border-radius:3px">${
+          (() => {
+            const vals = (d.history || []).map(h => h.rss_mb || 0);
+            const mx = Math.max(...vals, 1);
+            const pts = vals.map((v, i) => `${(i/(vals.length-1)*298+1).toFixed(1)},${(40 - v/mx*36).toFixed(1)}`).join(' ');
+            return `<polyline points="${pts}" fill="none" stroke="#4af" stroke-width="1.5"/>`;
+          })()
+        }</svg></div>` : '';
+      content.innerHTML = `<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:8px">RAM — ${d.used_gb} GB used / ${d.avail_gb} GB free / ${d.total_gb} GB total (${d.percent}%)</div>
+        <div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:5px">Top Memory Consumers</div>
+        <table style="width:100%;border-collapse:collapse"><thead><tr>
+          <th style="font-size:9px;color:#555;text-align:left;padding:2px 6px">Process</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">PID</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">RAM</th>
+        </thead><tbody>${procsHtml}</tbody></table>${histHtml}`;
+    } else if (type === 'disk') {
+      const d = await apiFetch('/api/resources/disk-detail');
+      if (!d.ok) { content.innerHTML = `<span style="color:#888">Disk data: ${d.error || 'unavailable'}</span>`; return; }
+      const drivesHtml = Object.entries(d.drives || {}).map(([drv, info]) => {
+        if (info.error) return `<div style="font-size:11px;color:#555">${drv}: ${info.error}</div>`;
+        const pct = info.percent || 0;
+        const col = pct > 95 ? '#f44' : pct > 80 ? '#fa0' : '#6f6';
+        return `<div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px">
+            <span style="color:#ccc">${drv}</span>
+            <span style="color:${col}">${pct}% used — ${info.free_gb} GB free / ${info.total_gb} GB</span>
+          </div>
+          <div style="height:6px;background:#1a1a1a;border-radius:3px"><div style="height:100%;width:${pct}%;background:${col};border-radius:3px"></div></div>
+        </div>`;
+      }).join('');
+      const foldersHtml = (d.top_folders || []).map(f =>
+        `<tr><td style="color:#ccc;font-size:10px;padding:2px 6px">${f.name}</td>
+         <td style="color:#888;font-size:10px;padding:2px 6px">${f.size_mb} MB</td></tr>`).join('');
+      const ao = d.aafl_output || {};
+      content.innerHTML = `<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:8px">Disk Usage</div>
+        ${drivesHtml}
+        <div style="font-size:11px;font-weight:bold;color:#888;margin:8px 0 5px">Largest Project Folders</div>
+        <table style="width:100%;border-collapse:collapse"><thead><tr>
+          <th style="font-size:9px;color:#555;text-align:left;padding:2px 6px">Folder</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">Size</th>
+        </thead><tbody>${foldersHtml}</tbody></table>
+        <div style="margin-top:8px;font-size:10px;color:#555">aafl_output/: ${ao.file_count||0} files, ${ao.total_mb||0} MB</div>`;
+    } else if (type === 'gpu') {
+      const d = await apiFetch('/api/resources/gpu-detail');
+      if (!d.ok && !d.gpu_name) { content.innerHTML = `<span style="color:#888">${d.error || 'GPU data unavailable'}</span>`; return; }
+      const vramPct = (d.vram_total_mb && d.vram_used_mb) ? Math.round(d.vram_used_mb / d.vram_total_mb * 100) : 0;
+      const procsHtml = (d.processes || []).map(p =>
+        `<tr><td style="color:#ccc;font-size:10px;padding:2px 6px">${p.name||'?'}</td>
+         <td style="color:#888;font-size:10px;padding:2px 6px">${p.pid}</td>
+         <td style="color:#fa0;font-size:10px;padding:2px 6px">${p.vram_mb} MB</td></tr>`).join('');
+      content.innerHTML = `<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:8px">${d.gpu_name || 'GPU'} — Driver ${d.driver || '?'}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:10px;color:#555;width:60px">VRAM</span>
+          <div style="flex:1;height:8px;background:#1a1a1a;border-radius:4px"><div style="height:100%;width:${vramPct}%;background:#fa0;border-radius:4px"></div></div>
+          <span style="font-size:10px;color:#fa0">${d.vram_used_mb||0} / ${d.vram_total_mb||32768} MB (${vramPct}%)</span>
+        </div>
+        <div style="font-size:10px;color:#888;margin-bottom:8px">Utilisation: ${d.utilization != null ? d.utilization + '%' : 'N/A'} | Temp: ${d.temperature != null ? d.temperature + '°C' : 'N/A'}</div>
+        ${(d.processes||[]).length ? `<div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:5px">GPU Processes</div>
+        <table style="width:100%;border-collapse:collapse"><thead><tr>
+          <th style="font-size:9px;color:#555;text-align:left;padding:2px 6px">Process</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">PID</th>
+          <th style="font-size:9px;color:#555;padding:2px 6px">VRAM</th>
+        </thead><tbody>${procsHtml}</tbody></table>` : '<div style="font-size:10px;color:#555">No GPU compute processes</div>'}`;
+    } else if (type === 'lmstudio') {
+      const d = await apiFetch('/api/resources/lmstudio-detail');
+      if (!d.running) { content.innerHTML = `<span style="color:#888">LM Studio is offline. Start it to see model details.</span>`; return; }
+      const modelsHtml = (d.models || []).map(m =>
+        `<div style="font-size:10px;color:#ccc;padding:3px 0;border-bottom:1px solid #1a1a1a">${m.id} <span style="color:#555">(${m.owned_by||'local'})</span></div>`).join('');
+      const vramPct = (d.gpu_vram_total_mb && d.total_vram_used_mb) ? Math.round(d.total_vram_used_mb / d.gpu_vram_total_mb * 100) : 0;
+      content.innerHTML = `<div style="font-size:11px;font-weight:bold;color:#4f4;margin-bottom:8px">LM Studio ONLINE — ${(d.models||[]).length} model(s) loaded</div>
+        ${d.total_vram_used_mb != null ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:10px;color:#555;width:60px">VRAM</span>
+          <div style="flex:1;height:8px;background:#1a1a1a;border-radius:4px"><div style="height:100%;width:${vramPct}%;background:#fa0;border-radius:4px"></div></div>
+          <span style="font-size:10px;color:#fa0">${d.total_vram_used_mb} / ${d.gpu_vram_total_mb||32768} MB</span>
+        </div>` : ''}
+        <div style="font-size:11px;font-weight:bold;color:#888;margin-bottom:5px">Loaded Models</div>
+        ${modelsHtml || '<div style="font-size:10px;color:#555">No models loaded yet</div>'}
+        ${d.error ? `<div style="font-size:10px;color:#888;margin-top:8px">${d.error}</div>` : ''}`;
+    }
+  } catch(e) {
+    content.innerHTML = `<span style="color:#888">Error loading drill-down: ${e.message}</span>`;
+  }
+}
+
 function _startSystemPoller() {
   if (_sysPollerTimer) return;
   _refreshSystemMonitor();
@@ -11001,6 +11676,104 @@ function _sysFreeUpIdle() {
     idle.forEach(p => apiFetch('/api/system/kill', {method:'POST', body: JSON.stringify({pid: p.pid})}).catch(() => {}));
     setTimeout(_refreshSystemMonitor, 800);
   }).catch(() => {});
+}
+
+// ── OCB-L Phase 5: Help Tab ───────────────────────────────────────────────────
+let _helpHistoryVisible = false;
+let _helpProviderOrder  = ['lmstudio_coder', 'mistral_code', 'gemini_flash', 'cerebras', 'openrouter'];
+
+async function helpInitTab() {
+  // Load provider list for hierarchy
+  try {
+    const d = await apiFetch('/api/provider-health');
+    const providers = d.providers || [];
+    _helpProviderOrder = providers.map(p => p.id);
+    const wrap = document.getElementById('help-hierarchy');
+    if (wrap) {
+      wrap.innerHTML = providers.map(p => {
+        const st = p.status || 'UNKNOWN';
+        const dotCol = st === 'LIVE' ? '#4f4' : st === 'NO_KEY' ? '#fa0' : '#555';
+        const [locLabel, locBg, locCol] = (_LOC_BADGE || {})[p.location] || ['CLOUD', '#1a0a2a', '#a8f'];
+        return `<span data-pid="${p.id}" style="background:#111;border:1px solid #222;border-radius:4px;padding:4px 8px;font-size:10px;cursor:grab;display:inline-flex;align-items:center;gap:4px" title="${p.location} | ${p.model_loaded || '?'}">
+          <span style="width:7px;height:7px;border-radius:50%;background:${dotCol};display:inline-block"></span>
+          ${(p.name||'?').split(' ').slice(-1)[0]}
+          <span style="background:${locBg};color:${locCol};font-size:8px;padding:1px 3px;border-radius:2px">${locLabel}</span>
+        </span>`;
+      }).join('');
+    }
+  } catch(e) {}
+  helpLoadHistory();
+}
+
+async function helpAsk() {
+  const q = (document.getElementById('help-query') || {}).value?.trim();
+  if (!q) return;
+  const resWrap = document.getElementById('help-results-wrap');
+  const resEl   = document.getElementById('help-response');
+  const badge   = document.getElementById('help-source-badge');
+  const spinner = document.getElementById('help-streaming-indicator');
+  if (resWrap) resWrap.style.display = 'block';
+  if (resEl)   resEl.textContent = '';
+  if (badge)   badge.textContent = 'Asking…';
+  if (spinner) spinner.style.display = 'inline-block';
+
+  try {
+    const resp = await fetch('/api/help/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({query: q, provider_preference: _helpProviderOrder}),
+    });
+    if (!resp.body) throw new Error('No stream');
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '', fullText = '', provLabel = '';
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream: true});
+      const lines = buf.split('\n');
+      buf = lines.pop() || '';
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        try {
+          const chunk = JSON.parse(line.slice(6));
+          if (chunk.done) { if (spinner) spinner.style.display = 'none'; break; }
+          if (chunk.word) { fullText += chunk.word; if (resEl) resEl.textContent = fullText; }
+          if (chunk.provider) { provLabel = chunk.provider; if (badge) badge.textContent = 'Answered by: ' + provLabel; }
+        } catch(e2) {}
+      }
+    }
+  } catch(e) {
+    if (resEl) resEl.textContent = 'Error: ' + e.message;
+    if (spinner) spinner.style.display = 'none';
+  }
+  helpLoadHistory();
+}
+
+async function helpLoadHistory() {
+  try {
+    const d = await apiFetch('/api/help/history');
+    const hist = (d.history || []).slice().reverse(); // most recent first
+    const el = document.getElementById('help-history-list');
+    const countEl = document.getElementById('help-hist-count');
+    if (countEl) countEl.textContent = `(${hist.length})`;
+    if (!el) return;
+    if (!hist.length) { el.innerHTML = '<div style="color:#444;font-size:11px">No history yet</div>'; return; }
+    el.innerHTML = hist.map(h => `
+      <details style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;padding:6px 10px">
+        <summary style="cursor:pointer;font-size:11px;color:#888;list-style:none">
+          <span style="color:#ccc">${h.query.slice(0,80)}${h.query.length>80?'…':''}</span>
+          <span style="float:right;color:#444;font-size:9px">${h.ts} · ${h.provider}</span>
+        </summary>
+        <div style="font-size:11px;color:#aaa;margin-top:6px;line-height:1.5;white-space:pre-wrap">${h.response}</div>
+      </details>`).join('');
+  } catch(e) {}
+}
+
+function helpToggleHistory() {
+  _helpHistoryVisible = !_helpHistoryVisible;
+  const el = document.getElementById('help-history-list');
+  if (el) el.style.display = _helpHistoryVisible ? 'flex' : 'none';
 }
 
 // ── Task 5: Chart.js lazy loader + helpers ────────────────────────────────
@@ -11103,66 +11876,147 @@ const _b3DesignDefaults = {
   radius:    '4px',
 };
 
+// ── OCB-L Phase 6: Settings persistence ──────────────────────────────────────
+let _mccSettings = {};
+let _mccSaveTimer = null;
+
+async function mccLoadSettings() {
+  try {
+    const d = await apiFetch('/api/settings');
+    _mccSettings = d || {};
+    _applyMccSettings(_mccSettings);
+  } catch(e) {
+    // No server settings — fall back to localStorage for initial load
+    _applyMccSettings({});
+  }
+}
+
+function _applyMccSettings(s) {
+  // Apply design settings
+  const root = document.documentElement;
+  if (s.font)         root.style.setProperty('--b3-font', s.font);
+  if (s.font_size)    root.style.setProperty('--b3-font-size', s.font_size + 'px');
+  if (s.text_color)   root.style.setProperty('--b3-text-color', s.text_color);
+  if (s.bg_color)     root.style.setProperty('--b3-bg-color', s.bg_color);
+  if (s.border_radius)root.style.setProperty('--b3-radius', s.border_radius + 'px');
+  if (s.btn_style)    document.body.setAttribute('data-btn-style', s.btn_style);
+  if (s.animation_speed != null) {
+    const speeds = ['0s','0.3s','0.12s','0s'];
+    root.style.setProperty('--anim-duration', speeds[s.animation_speed] || '0.3s');
+  }
+  if (s.tabbar_accent) root.style.setProperty('--tab-accent', s.tabbar_accent);
+  if (s.design_density) {
+    const pad = s.design_density==='compact' ? '4px 10px' : s.design_density==='spacious' ? '16px 20px' : '8px 16px';
+    document.querySelectorAll('.pane-scroll').forEach(el => el.style.padding = pad);
+  }
+  if (s.sidebar_accent) {
+    const sb = document.querySelector('.sidebar');
+    if (sb) { sb.style.background = s.sidebar_accent; sb.style.borderRight = '1px solid ' + s.sidebar_accent; }
+  }
+  if (s.last_active_tab && s.last_active_tab !== 'wccs') {
+    // restore last tab only if not default
+    setTimeout(() => { try { const btn = document.querySelector(`.tab-btn[data-tab="${s.last_active_tab}"]`); if (btn) btn.click(); } catch(e) {} }, 400);
+  }
+}
+
+function mccSaveSettings(patch) {
+  Object.assign(_mccSettings, patch);
+  clearTimeout(_mccSaveTimer);
+  _mccSaveTimer = setTimeout(() => {
+    apiFetch('/api/settings', {method: 'POST', body: JSON.stringify(_mccSettings)}).catch(() => {});
+  }, 800);
+}
+
+async function mccRestoreDefaults() {
+  if (!confirm('Reset all MCC settings to defaults?')) return;
+  try {
+    await apiFetch('/api/settings', {method: 'POST', body: JSON.stringify({
+      theme: 'dark', tab_order: [], section_order_per_tab: {}, open_sections: {},
+      provider_preference_order: ['lmstudio_coder','mistral_code','gemini_flash','cerebras','openrouter'],
+      design_density: 'comfortable', animation_speed: 1, tab_bar_style: 'default',
+      sidebar_accent: '#0d0d0d', tabbar_accent: '#4af', btn_style: 'filled',
+      font: 'monospace', font_size: '13', text_color: '#cccccc', bg_color: '#0d0d0d',
+      border_radius: '4', last_active_tab: 'home',
+    })});
+    await mccLoadSettings();
+    b3LoadDesignState();
+    toast('Settings reset to defaults', 'ok');
+  } catch(e) { toast('Reset failed: ' + e, 'error'); }
+}
+
 function b3ApplyDesign() {
   const font   = document.getElementById('d-font-family')?.value  || _b3DesignDefaults.font;
-  const size   = (document.getElementById('d-font-size')?.value   || '14') + 'px';
+  const size   = document.getElementById('d-font-size')?.value    || '13';
   const text   = document.getElementById('d-text-color')?.value   || _b3DesignDefaults.textColor;
   const bg     = document.getElementById('d-bg-color')?.value     || _b3DesignDefaults.bgColor;
   const accent = document.getElementById('d-accent-color')?.value || _b3DesignDefaults.accent;
-  const radius = (document.getElementById('d-radius')?.value      || '4') + 'px';
+  const radius = document.getElementById('d-radius')?.value       || '4';
   const r = document.documentElement;
   r.style.setProperty('--b3-font',       font);
-  r.style.setProperty('--b3-font-size',  size);
+  r.style.setProperty('--b3-font-size',  size + 'px');
   r.style.setProperty('--b3-text-color', text);
   r.style.setProperty('--b3-bg-color',   bg);
   r.style.setProperty('--b3-accent',     accent);
-  r.style.setProperty('--b3-radius',     radius);
-  try { localStorage.setItem('b3_design', JSON.stringify({ font, fontSize: size, textColor: text, bgColor: bg, accent, radius })); } catch(e) {}
+  r.style.setProperty('--b3-radius',     radius + 'px');
+  // Save to disk (Phase 6) AND keep localStorage for fallback
+  mccSaveSettings({ font, font_size: size, text_color: text, bg_color: bg, border_radius: radius });
+  try { localStorage.setItem('b3_design', JSON.stringify({ font, fontSize: size+'px', textColor: text, bgColor: bg, accent, radius: radius+'px' })); } catch(e) {}
 }
 
 function b3SetBtnStyle(style) {
-  localStorage.setItem('b3_btn_style', style);
   document.body.setAttribute('data-btn-style', style);
+  mccSaveSettings({ btn_style: style });
+  try { localStorage.setItem('b3_btn_style', style); } catch(e) {}
 }
 
 function b3LoadDesignState() {
-  try {
-    const saved = JSON.parse(localStorage.getItem('b3_design') || '{}');
-    const d = Object.assign({}, _b3DesignDefaults, saved);
-    const el = (id) => document.getElementById(id);
-    const ff = el('d-font-family');
-    if (ff) { for (let o of ff.options) { if (o.value === d.font) { o.selected = true; break; } } }
-    if (el('d-font-size'))  { el('d-font-size').value = parseInt(d.fontSize); if (el('d-font-size-val')) el('d-font-size-val').textContent = parseInt(d.fontSize); }
-    if (el('d-text-color')) el('d-text-color').value  = d.textColor;
-    if (el('d-bg-color'))   el('d-bg-color').value    = d.bgColor;
-    if (el('d-accent-color')) el('d-accent-color').value = d.accent;
-    if (el('d-radius'))     { el('d-radius').value = parseInt(d.radius); if (el('d-radius-val')) el('d-radius-val').textContent = parseInt(d.radius); }
-    const root = document.documentElement;
-    root.style.setProperty('--b3-font',       d.font);
-    root.style.setProperty('--b3-font-size',  d.fontSize);
-    root.style.setProperty('--b3-text-color', d.textColor);
-    root.style.setProperty('--b3-bg-color',   d.bgColor);
-    root.style.setProperty('--b3-accent',     d.accent);
-    root.style.setProperty('--b3-radius',     d.radius);
-  } catch(e) {}
-  const btnStyle = localStorage.getItem('b3_btn_style') || 'filled';
+  // Prefer API settings, fall back to localStorage
+  const s = _mccSettings;
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('b3_design') || '{}'); } catch(e) { return {}; } })();
+  const d = Object.assign({}, _b3DesignDefaults, saved, {
+    font: s.font || saved.font,
+    fontSize: s.font_size ? s.font_size+'px' : saved.fontSize,
+    textColor: s.text_color || saved.textColor,
+    bgColor: s.bg_color || saved.bgColor,
+    radius: s.border_radius ? s.border_radius+'px' : saved.radius,
+  });
+  const el = (id) => document.getElementById(id);
+  const ff = el('d-font-family');
+  if (ff) { for (let o of ff.options) { if (o.value === (d.font || '')) { o.selected = true; break; } } }
+  const fsRaw = parseInt(d.fontSize) || 13;
+  if (el('d-font-size'))  { el('d-font-size').value = fsRaw; if (el('d-font-size-val')) el('d-font-size-val').textContent = fsRaw; }
+  if (el('d-text-color')) el('d-text-color').value  = d.textColor || '#cccccc';
+  if (el('d-bg-color'))   el('d-bg-color').value    = d.bgColor   || '#0d0d0d';
+  if (el('d-accent-color')) el('d-accent-color').value = d.accent || '#4af';
+  const rRaw = parseInt(d.radius) || 4;
+  if (el('d-radius'))     { el('d-radius').value = rRaw; if (el('d-radius-val')) el('d-radius-val').textContent = rRaw; }
+  const root = document.documentElement;
+  root.style.setProperty('--b3-font',       d.font       || 'monospace');
+  root.style.setProperty('--b3-font-size',  d.fontSize   || '13px');
+  root.style.setProperty('--b3-text-color', d.textColor  || '#cccccc');
+  root.style.setProperty('--b3-bg-color',   d.bgColor    || '#0d0d0d');
+  root.style.setProperty('--b3-accent',     d.accent     || '#4af');
+  root.style.setProperty('--b3-radius',     d.radius     || '4px');
+  const btnStyle = s.btn_style || localStorage.getItem('b3_btn_style') || 'filled';
   document.body.setAttribute('data-btn-style', btnStyle);
   b3LoadDesignPresets();
 }
 
-// ── OCB-H: Design Tab extra controls ─────────────────────────────────────────
+// ── OCB-H: Design Tab extra controls (Phase 6: save to disk) ─────────────────
 function b3ApplyAnimSpeed(v) {
   const labels = ['Off','Normal','Fast','Instant'];
   const speeds = ['0s','0.3s','0.12s','0s'];
   const lbl = document.getElementById('d-anim-val');
   if (lbl) lbl.textContent = labels[v] || 'Normal';
   document.documentElement.style.setProperty('--anim-duration', speeds[v] || '0.3s');
-  localStorage.setItem('b3_anim_speed', v);
+  mccSaveSettings({ animation_speed: parseInt(v) });
+  try { localStorage.setItem('b3_anim_speed', v); } catch(e) {}
 }
 function b3SetDensity(mode) {
   const pad = mode==='compact' ? '4px 10px' : mode==='spacious' ? '16px 20px' : '8px 16px';
   document.querySelectorAll('.pane-scroll').forEach(el => el.style.padding = pad);
-  localStorage.setItem('b3_density', mode);
+  mccSaveSettings({ design_density: mode });
+  try { localStorage.setItem('b3_density', mode); } catch(e) {}
   toast('Density: ' + mode, 'ok', 1500);
 }
 function b3SetTabStyle(mode) {
@@ -11178,21 +12032,24 @@ function b3SetTabStyle(mode) {
     if (tb) { tb.style.gap='2px'; tb.style.padding='0 8px'; }
     btns.forEach(b => { b.style.borderRadius=''; b.style.border=''; b.style.padding='9px 16px'; });
   }
-  localStorage.setItem('b3_tab_style', mode);
+  mccSaveSettings({ tab_bar_style: mode });
+  try { localStorage.setItem('b3_tab_style', mode); } catch(e) {}
   toast('Tab style: ' + mode, 'ok', 1500);
 }
 function b3ApplySidebarColor() {
   const bg = document.getElementById('d-sidebar-bg');
   const sb = document.querySelector('.sidebar');
   if (bg && sb) { sb.style.background = bg.value; sb.style.borderRight = '1px solid ' + bg.value; }
-  localStorage.setItem('b3_sidebar_bg', bg?.value || '#0d0d0d');
+  mccSaveSettings({ sidebar_accent: bg?.value || '#0d0d0d' });
+  try { localStorage.setItem('b3_sidebar_bg', bg?.value || '#0d0d0d'); } catch(e) {}
 }
 function b3ApplyTabbarAccent() {
   const acc = document.getElementById('d-tabbar-accent');
   if (!acc) return;
   document.documentElement.style.setProperty('--tab-accent', acc.value);
   document.querySelectorAll('.tab-btn.active').forEach(b => b.style.borderBottomColor = acc.value);
-  localStorage.setItem('b3_tabbar_accent', acc.value);
+  mccSaveSettings({ tabbar_accent: acc.value });
+  try { localStorage.setItem('b3_tabbar_accent', acc.value); } catch(e) {}
 }
 
 async function b3SaveDesignPreset() {
@@ -11202,7 +12059,10 @@ async function b3SaveDesignPreset() {
   try {
     const current = await apiFetch('/b3/design-presets').catch(() => ({ presets: {} }));
     const presets = current.presets || {};
-    try { presets[name] = JSON.parse(localStorage.getItem('b3_design') || '{}'); } catch(e) {}
+    // Use API settings as source, fall back to localStorage
+    const ds = _mccSettings;
+    presets[name] = { font: ds.font, fontSize: (ds.font_size||'13')+'px', textColor: ds.text_color,
+                      bgColor: ds.bg_color, accent: ds.tabbar_accent, radius: (ds.border_radius||'4')+'px' };
     await apiFetch('/b3/design-presets', { method: 'POST', body: JSON.stringify({ presets }) });
     toast('Preset "' + name + '" saved', 'ok');
     if (nameEl) nameEl.value = '';
@@ -11228,23 +12088,20 @@ async function b3LoadDesignPresets() {
 
 async function b3LoadDesignPreset(name) {
   if (name === '__reset__') {
-    const root = document.documentElement;
-    root.style.setProperty('--b3-font',       _b3DesignDefaults.font);
-    root.style.setProperty('--b3-font-size',  _b3DesignDefaults.fontSize);
-    root.style.setProperty('--b3-text-color', _b3DesignDefaults.textColor);
-    root.style.setProperty('--b3-bg-color',   _b3DesignDefaults.bgColor);
-    root.style.setProperty('--b3-accent',     _b3DesignDefaults.accent);
-    root.style.setProperty('--b3-radius',     _b3DesignDefaults.radius);
-    localStorage.removeItem('b3_design');
-    b3LoadDesignState();
-    toast('Design reset to defaults', 'ok');
+    mccRestoreDefaults();
     return;
   }
   try {
     const d = await apiFetch('/b3/design-presets');
     const preset = (d.presets || {})[name];
     if (!preset) { toast('Preset not found', 'warn'); return; }
-    localStorage.setItem('b3_design', JSON.stringify(preset));
+    // Apply to API settings
+    mccSaveSettings({
+      font: preset.font, font_size: parseInt(preset.fontSize) || 13,
+      text_color: preset.textColor, bg_color: preset.bgColor,
+      border_radius: parseInt(preset.radius) || 4,
+    });
+    try { localStorage.setItem('b3_design', JSON.stringify(preset)); } catch(e) {}
     b3LoadDesignState();
     toast('Preset "' + name + '" loaded', 'ok');
   } catch(e) { toast('Load preset failed: ' + e, 'error'); }
@@ -11252,6 +12109,13 @@ async function b3LoadDesignPreset(name) {
 
 // ── Build 3 DOMContentLoaded init ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
+  // Phase 6: load settings from disk FIRST, then apply design
+  mccLoadSettings().then(() => {
+    b3LoadDesignState();
+  }).catch(() => {
+    b3LoadDesignState();
+  });
+
   b3InitSidebarState();
   initAaflAccState();
   // Build nav tree and keep it updated on tab switches
@@ -11261,8 +12125,13 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   _refreshLoopPresets();
   b3LoadUrgency();
-  b3LoadDesignState();
   b3RefreshMccm();
+  // Track last active tab
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mccSaveSettings({ last_active_tab: btn.dataset.tab || 'home' });
+    });
+  });
   // Health Suite: load provider health when tab opens
   document.querySelectorAll('.tab-btn[data-tab="health-suite"]').forEach(btn => {
     btn.addEventListener('click', () => setTimeout(loadHsProviderHealth, 60));
@@ -14432,11 +15301,17 @@ function _srSaveOrder(tabEl, tabId) {
   const sections = [...tabEl.querySelectorAll('.aafl-acc')];
   const order = sections.map(s => s.id || '').filter(Boolean);
   try { localStorage.setItem('sr_order_' + tabId, JSON.stringify(order)); } catch(e) {}
+  // Phase 6: also persist to disk
+  const sop = _mccSettings.section_order_per_tab || {};
+  sop[tabId] = order;
+  mccSaveSettings({ section_order_per_tab: sop });
 }
 
 function _srRestoreOrder(tabEl, tabId) {
   try {
-    const saved = JSON.parse(localStorage.getItem('sr_order_' + tabId) || 'null');
+    // Phase 6: prefer disk settings over localStorage
+    const diskOrder = (_mccSettings.section_order_per_tab || {})[tabId];
+    const saved = diskOrder || JSON.parse(localStorage.getItem('sr_order_' + tabId) || 'null');
     if (!saved || !Array.isArray(saved)) return;
     const parent = tabEl.querySelector('.aafl-acc')?.parentNode;
     if (!parent) return;

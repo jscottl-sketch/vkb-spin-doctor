@@ -438,3 +438,11 @@ timestamp,provider_name,response_time_seconds,estimated_cost_usd,success
 2026-05-28T15:57:16.248150,mistral_code,0.0,0.0,true
 2026-05-28T15:57:16.594894,openrouter,0.34,0.0,false
 2026-05-28T15:57:17.110824,huggingface,0.51,0.0,false
+2026-05-28T19:37:04.152321,lmstudio_coder,0.25,0.0,false
+2026-05-28T19:37:50.637204,lmstudio_vision,46.48,0.0,false
+2026-05-28T19:38:36.936396,lmstudio_reason,46.3,0.0,false
+2026-05-28T19:38:58.944308,lmstudio_fast,22.01,0.0,false
+2026-05-28T19:38:59.947077,cerebras,0.74,0.0,true
+2026-05-28T19:38:59.949133,cerebras,0.0,0.0,false
+2026-05-28T19:39:01.937402,gemini_flash,1.17,0.0,true
+2026-05-28T19:39:01.939422,gemini_flash,0.0,0.0,false

@@ -1,0 +1,19 @@
+{
+  "theme": "dark",
+  "tab_order": [],
+  "section_order_per_tab": {},
+  "open_sections": {},
+  "provider_preference_order": ["lmstudio_coder", "mistral_code", "gemini_flash", "cerebras", "openrouter"],
+  "design_density": "comfortable",
+  "animation_speed": 1,
+  "tab_bar_style": "default",
+  "sidebar_accent": "#0d0d0d",
+  "tabbar_accent": "#4af",
+  "btn_style": "filled",
+  "font": "monospace",
+  "font_size": "13",
+  "text_color": "#cccccc",
+  "bg_color": "#0d0d0d",
+  "border_radius": "4",
+  "last_active_tab": "home"
+}

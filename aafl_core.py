@@ -21,8 +21,46 @@ litellm.set_verbose = False
 litellm.suppress_debug_info = True
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-HERE     = Path(__file__).parent
-LOG_FILE = HERE / "aafl_log.txt"
+HERE          = Path(__file__).parent
+LOG_FILE      = HERE / "aafl_log.txt"
+_ERROR_DB     = HERE / "data" / "aafl_error_db.json"
+_ERROR_DB_MAX = 500
+
+
+def _append_error_db(provider_id: str, error_msg: str):
+    """Atomically append a provider exception to aafl_error_db.json. Max 500 entries."""
+    import json as _json
+    try:
+        db: list = []
+        if _ERROR_DB.exists():
+            try:
+                db = _json.loads(_ERROR_DB.read_text(encoding="utf-8"))
+                if not isinstance(db, list):
+                    db = []
+            except Exception:
+                db = []
+        sig = error_msg[:80].lower()
+        entry = {
+            "error_signature": sig,
+            "provider":        provider_id,
+            "first_seen":      datetime.datetime.now().isoformat(timespec="seconds"),
+            "count":           1,
+            "last_fix":        None,
+            "fix_worked":      None,
+        }
+        for e in db:
+            if e.get("provider") == provider_id and e.get("error_signature") == sig:
+                e["count"] = e.get("count", 1) + 1
+                e["first_seen"] = datetime.datetime.now().isoformat(timespec="seconds")
+                break
+        else:
+            db.append(entry)
+        if len(db) > _ERROR_DB_MAX:
+            db = db[-_ERROR_DB_MAX:]
+        _ERROR_DB.parent.mkdir(parents=True, exist_ok=True)
+        _ERROR_DB.write_text(_json.dumps(db, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
 
 # ── Task types ────────────────────────────────────────────────────────────────
 TASK_TYPES = ["code", "fast", "reason", "vision", "batch", "embed"]
@@ -307,6 +345,7 @@ class AAFLCore:
                     print("  SKIP (timeout)")
                 else:
                     print(f"  FAIL: {msg[:80]}")
+                    _append_error_db(pid, msg)
                 continue
 
         elapsed = round(time.time() - t0, 2)

@@ -22,10 +22,17 @@ from pathlib import Path
 HERE       = Path(__file__).parent
 HEALTH_DIR = HERE / "health_results"
 
-_results = []
-_total   = 0
-_passed  = 0
-_failed  = 0
+_results   = []
+_total     = 0
+_passed    = 0
+_failed    = 0
+_LIVE_MODE = False   # set True by --live flag
+
+
+def _pre(name: str, desc: str):
+    """Print the 'Checking...' line before a test runs (--live mode only)."""
+    if _LIVE_MODE:
+        print(f"Checking {name}: {desc}...", flush=True)
 
 
 def _record(group, name, passed, detail=""):
@@ -38,16 +45,21 @@ def _record(group, name, passed, detail=""):
         _failed += 1
         status = "FAIL"
     _results.append({"group": group, "name": name, "status": status, "detail": detail})
-    icon = "OK" if passed else "XX"
-    msg  = f"  [{icon}] {name}"
-    if detail:
-        msg += f": {detail}"
-    print(msg)
+    if _LIVE_MODE:
+        icon = "✅" if passed else "❌"
+        print(f"  {icon} {status}: {detail or 'OK'}", flush=True)
+    else:
+        icon = "OK" if passed else "XX"
+        msg  = f"  [{icon}] {name}"
+        if detail:
+            msg += f": {detail}"
+        print(msg)
 
 
 def _hdr(name):
-    print(f"\n{'='*62}")
-    print(f"  {name}")
+    if not _LIVE_MODE:
+        print(f"\n{'='*62}")
+        print(f"  {name}")
     print("="*62)
 
 
@@ -68,18 +80,21 @@ def test_group_a():
     ]
     for f in py_files:
         path = HERE / f
+        _pre(f"File: {f}", f"Tests that {f} exists on disk")
         _record("A", f"File: {f}", path.exists(),
                 "exists" if path.exists() else "MISSING")
 
     # Docs
     for doc in ["INDEX.md", "STATUS.md", "HISTORY.md", "ACCA.md", "ALP_Database.md"]:
         path = HERE / doc
+        _pre(f"Doc: {doc}", f"Tests that {doc} exists in the project root")
         _record("A", f"Doc: {doc}", path.exists(),
                 "exists" if path.exists() else "MISSING")
 
     # Folders
     for folder in ["health_results", "dashboard_data", "session_logs", "archive_dead"]:
         path = HERE / folder
+        _pre(f"Folder: {folder}/", f"Tests that {folder}/ directory exists")
         _record("A", f"Folder: {folder}/", path.is_dir(),
                 "exists" if path.is_dir() else "MISSING")
 
@@ -112,6 +127,7 @@ def test_group_b():
         "spin_doctor", "sfl_agent",
     ]
     for mod in modules:
+        _pre(f"import {mod}", f"Verifies {mod}.py loads in Python without import errors")
         ok, detail = _import_test(mod)
         _record("B", f"import {mod}", ok, detail)
 
@@ -162,6 +178,7 @@ def test_group_c():
     }
     for tab_id, label in tab_checks.items():
         found = tab_id in scanner.tabs_found
+        _pre(f"Tab: {label}", f"Verifies the {label} tab (data-tab={tab_id}) exists in mission_control.html")
         _record("C", f"Tab: {label}", found, "found" if found else "MISSING")
 
     # 10 features — static IDs where possible, JS search for dynamic elements
@@ -179,16 +196,17 @@ def test_group_c():
     }
     for el_id, label in feature_ids.items():
         found = el_id in scanner.element_ids
+        _pre(f"Feature: {label}", f"Checks that HTML element id='{el_id}' ({label}) is present")
         _record("C", f"Feature: {label}", found, "found" if found else "MISSING")
 
-    # Undo system is dynamically created — check JS function name
     undo_found = "showUndoToast" in content or "undo_stack" in content
+    _pre("Feature: Undo system", "Searches for showUndoToast or undo_stack JavaScript function in HTML")
     _record("C", "Feature: Undo system", undo_found, "JS function found" if undo_found else "MISSING")
 
     sunday_found = any(kw in content for kw in ("sunday-merge", "merge_sessions", "SundayMerge", "runSundayMerge"))
+    _pre("Feature: Sunday Merge", "Searches for Sunday auto-merge keyword in HTML")
     _record("C", "Feature: Sunday Merge", sunday_found, "keyword found" if sunday_found else "MISSING")
 
-    # 7 save features from May 20
     save_features = {
         "api/timeline":  "Save Timeline",
         "tab-rewind":    "Rewind panel",
@@ -200,6 +218,7 @@ def test_group_c():
     }
     for key, label in save_features.items():
         found = key in content
+        _pre(f"Save Feature: {label}", f"Checks that '{key}' keyword is referenced in the HTML")
         _record("C", f"Save Feature: {label}", found, "found" if found else "MISSING")
 
 
@@ -251,18 +270,21 @@ def test_group_d():
         base = f"http://localhost:{PORT}"
 
         # / → HTML
+        _pre("GET / (HTML)", "Requests the root URL and checks MCC HTML is returned correctly")
         code, ok, body = _get(base + "/", expect_json=False)
         html_ok = code == 200 and ok and "#!/usr/bin" not in str(body)
         _record("D", "GET / (HTML)", html_ok, f"HTTP {code}")
 
         # JSON endpoints
         for path in ["/health-status", "/dashboard-data/", "/status"]:
+            _pre(f"GET {path} (JSON)", f"Tests that the {path} endpoint returns HTTP 200 with valid JSON")
             code, ok, data = _get(base + path, expect_json=True)
             passed = code == 200 and ok
             _record("D", f"GET {path} (JSON)", passed, f"HTTP {code}")
 
         # dashboard-data files (200 or 404 both acceptable)
         for fname in ["kanban.json", "costs.json"]:
+            _pre(f"GET /dashboard-data/{fname}", f"Checks the dashboard data file {fname} is accessible (200 or 404 both OK)")
             code, ok, _ = _get(base + f"/dashboard-data/{fname}", expect_json=True)
             passed = code in (200, 404)
             _record("D", f"GET /dashboard-data/{fname}", passed, f"HTTP {code}")
@@ -299,16 +321,19 @@ def test_group_e():
     for fname, tab_id, label in card_defs:
         in_js   = fname in content and tab_id in content
         on_disk = (HERE / "dashboard_data" / fname).exists()
+        _pre(f"Card JS ref: {label}", f"Verifies JavaScript references {fname} and tab '{tab_id}' for the {label} home card")
         _record("E", f"Card JS ref: {label}", in_js,
                 "referenced" if in_js else "missing from JS")
+        _pre(f"Card data file: {fname}", f"Checks that dashboard_data/{fname} exists on disk")
         _record("E", f"Card data file: {fname}", on_disk,
                 "exists" if on_disk else "MISSING")
 
-    # Slots are dynamically generated by JS loop — check for the loop logic
     slot_found = "home-card slot" in content and "for (let i = 0; i < 3" in content
+    _pre("3 empty slot cards (JS loop)", "Checks the JS loop that renders 3 empty home card slots exists in HTML")
     _record("E", "3 empty slot cards (JS loop)", slot_found,
             "JS loop found" if slot_found else "MISSING")
 
+    _pre("Cards have onclick navigation", "Checks homeCardClick() JavaScript function is present for card click navigation")
     _record("E", "Cards have onclick navigation", "homeCardClick" in content,
             "found" if "homeCardClick" in content else "MISSING")
 
@@ -319,10 +344,12 @@ def test_group_f():
     _hdr("GROUP F — Provider Health System")
     health_dir = HERE / "health_results"
 
+    _pre("provider_health.py exists", "Tests that the provider health script file is present on disk")
     _record("F", "provider_health.py exists",
             (HERE / "provider_health.py").exists(),
             "exists" if (HERE / "provider_health.py").exists() else "MISSING")
 
+    _pre("health_results/ folder", "Tests that the health_results/ output directory exists")
     _record("F", "health_results/ folder", health_dir.is_dir(),
             "exists" if health_dir.is_dir() else "MISSING")
 
@@ -331,15 +358,19 @@ def test_group_f():
         try:
             data = json.loads(latest.read_text(encoding="utf-8"))
             n = len(data.get("providers", []))
+            _pre("latest_health.json valid JSON", "Parses latest_health.json and counts the provider entries")
             _record("F", "latest_health.json valid JSON", True, f"{n} providers")
         except Exception as e:
+            _pre("latest_health.json valid JSON", "Parses latest_health.json — checks it is valid JSON")
             _record("F", "latest_health.json valid JSON", False, str(e)[:60])
     else:
+        _pre("latest_health.json exists", "Checks latest_health.json has been generated by running provider_health.py")
         _record("F", "latest_health.json exists", False, "run provider_health.py first")
 
     for fname in ["tier1_results.json", "tier2_results.json",
                   "tier3_results.json", "cost_log.csv"]:
         path = health_dir / fname
+        _pre(fname, f"Checks that health_results/{fname} exists after a provider health run")
         _record("F", fname, path.exists(), "exists" if path.exists() else "MISSING")
 
 
@@ -348,7 +379,7 @@ def test_group_f():
 def test_group_g():
     _hdr("GROUP G — AAFL Core")
 
-    # task_router.classify
+    _pre("task_router.classify()", "Calls classify() with a test goal and checks it returns a valid routing tier (AAFL/CLAC/SONNET/OPUS)")
     try:
         sys.path.insert(0, str(HERE))
         from task_router import classify
@@ -359,6 +390,7 @@ def test_group_g():
         _record("G", "task_router.classify()", False, str(e)[:80])
 
     # evaluator.evaluate
+    _pre("evaluator.evaluate()", "Calls evaluate() with a test result string and checks it returns a numeric score")
     try:
         from evaluator import evaluate
         sc = evaluate("This is a test result about joystick spin fix", "joystick spin")
@@ -367,7 +399,7 @@ def test_group_g():
     except Exception as e:
         _record("G", "evaluator.evaluate()", False, str(e)[:80])
 
-    # memory_bank store + cleanup (store() takes a dict)
+    _pre("memory_bank.store()", "Writes a test entry to the knowledge database, verifies it gets a UID, then deletes it")
     try:
         from memory_bank import store, DB_PATH as MB_DB
         uid = store({
@@ -377,17 +409,17 @@ def test_group_g():
             "project":     "mot",
         })
         _record("G", "memory_bank.store()", bool(uid), f"uid={str(uid)[:16]}")
-        # clean up
         import sqlite3
         conn = sqlite3.connect(str(MB_DB))
         conn.execute("DELETE FROM knowledge WHERE title = '__MOT_TEST__'")
         conn.commit()
         conn.close()
+        _pre("memory_bank cleanup", "Deletes the test row written by the store() check above")
         _record("G", "memory_bank cleanup", True, "test row removed")
     except Exception as e:
         _record("G", "memory_bank.store()", False, str(e)[:80])
 
-    # researcher has research() function
+    _pre("researcher.research() exists", "Checks that researcher.py exports a callable research() function")
     try:
         from researcher import research
         _record("G", "researcher.research() exists", callable(research), "callable")
@@ -403,23 +435,29 @@ def test_group_h():
     index = HERE / "INDEX.md"
     if index.exists():
         txt = index.read_text(encoding="utf-8", errors="replace")
+        _pre("INDEX.md has RESUME COMMAND", "Searches INDEX.md for the RESUME COMMAND section — required for session restarts")
         _record("H", "INDEX.md has RESUME COMMAND",
                 "RESUME COMMAND" in txt,
                 "found" if "RESUME COMMAND" in txt else "MISSING")
     else:
+        _pre("INDEX.md has RESUME COMMAND", "Checks INDEX.md exists and contains the RESUME COMMAND")
         _record("H", "INDEX.md has RESUME COMMAND", False, "INDEX.md missing")
 
     status = HERE / "STATUS.md"
     if status.exists():
         txt = status.read_text(encoding="utf-8", errors="replace")
+        _pre("STATUS.md has NEXT PRIORITIES", "Searches STATUS.md for NEXT PRIORITIES section — confirms the file is complete")
         _record("H", "STATUS.md has NEXT PRIORITIES",
                 "NEXT PRIORITIES" in txt,
                 "found" if "NEXT PRIORITIES" in txt else "MISSING")
+        _pre("STATUS.md has WHO IS SCOTT", "Searches STATUS.md for WHO IS SCOTT section — confirms BI rules are present")
         _record("H", "STATUS.md has WHO IS SCOTT",
                 "WHO IS SCOTT" in txt,
                 "found" if "WHO IS SCOTT" in txt else "MISSING")
     else:
+        _pre("STATUS.md has NEXT PRIORITIES", "Checks STATUS.md exists and contains NEXT PRIORITIES")
         _record("H", "STATUS.md has NEXT PRIORITIES", False, "STATUS.md missing")
+        _pre("STATUS.md has WHO IS SCOTT", "Checks STATUS.md exists and contains WHO IS SCOTT")
         _record("H", "STATUS.md has WHO IS SCOTT", False, "STATUS.md missing")
 
     alp = HERE / "ALP_Database.md"
@@ -435,18 +473,32 @@ def test_group_h():
         ]
         count = len(rows)
         label = "ALP_Database.md >=12 entries (found: " + str(count) + ")"
+        _pre(label, "Counts data rows in ALP_Database.md — must have at least 12 Allowance Preservation entries")
         _record("H", label, count >= 12, str(count) + " rows")
     else:
+        _pre("ALP_Database.md >=12 entries", "Counts ALP_Database.md entries — file must exist with >=12 rows")
         _record("H", "ALP_Database.md >=12 entries", False, "file missing")
 
 
 # ── MAIN ─────────────────────────────────────────────────────────────────────
 
 def main():
-    print("\n" + "="*62)
-    print("  MCC FULL MOT -- Mission Control System Test")
-    print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("="*62)
+    global _LIVE_MODE
+    import argparse
+    parser = argparse.ArgumentParser(description="MCC Full MOT Test Suite")
+    parser.add_argument("--live", action="store_true",
+                        help="Live mode: print check name+description before each test, then PASS/FAIL after")
+    args = parser.parse_args()
+    _LIVE_MODE = args.live
+
+    if not _LIVE_MODE:
+        print("\n" + "="*62)
+        print("  MCC FULL MOT -- Mission Control System Test")
+        print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("="*62)
+    else:
+        print(f"[LIVE] MCC FULL MOT starting — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
+        print("[LIVE] TOTAL_CHECKS=108", flush=True)
 
     test_group_a()
     test_group_b()
@@ -460,17 +512,25 @@ def main():
     pct   = round(_passed / _total * 100, 1) if _total else 0
     fails = [r for r in _results if r["status"] == "FAIL"]
 
-    print("\n" + "="*62)
-    print("  FINAL MOT REPORT")
-    print("="*62)
-    print(f"  Total:   {_total}")
-    print(f"  Passed:  {_passed} ({pct}%)")
-    print(f"  Failed:  {_failed}")
+    if _LIVE_MODE:
+        print(f"[LIVE] DONE total={_total} passed={_passed} failed={_failed} score={pct}%", flush=True)
+        if fails:
+            for f in fails:
+                hint = f.get("detail", "")
+                print(f"[LIVE] FAIL [{f['group']}] {f['name']}: {hint}", flush=True)
+        print(f"[LIVE] VERDICT={'ALL CLEAR' if _failed == 0 else 'ISSUES FOUND'}", flush=True)
+    else:
+        print("\n" + "="*62)
+        print("  FINAL MOT REPORT")
+        print("="*62)
+        print(f"  Total:   {_total}")
+        print(f"  Passed:  {_passed} ({pct}%)")
+        print(f"  Failed:  {_failed}")
 
-    if fails:
-        print(f"\n  FAILURES ({len(fails)}):")
-        for f in fails:
-            print(f"    [{f['group']}] {f['name']}: {f['detail']}")
+        if fails:
+            print(f"\n  FAILURES ({len(fails)}):")
+            for f in fails:
+                print(f"    [{f['group']}] {f['name']}: {f['detail']}")
 
     report = {
         "timestamp": datetime.now().isoformat(),
@@ -486,11 +546,11 @@ def main():
     HEALTH_DIR.mkdir(exist_ok=True)
     out = HEALTH_DIR / "full_mot_report.json"
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"\n  Report saved: {out}")
-
-    verdict = "ALL CLEAR" if _failed == 0 else f"ISSUES FOUND -- {_failed} failures"
-    print(f"\n  VERDICT: {verdict}")
-    print("="*62 + "\n")
+    if not _LIVE_MODE:
+        print(f"\n  Report saved: {out}")
+        verdict = "ALL CLEAR" if _failed == 0 else f"ISSUES FOUND -- {_failed} failures"
+        print(f"\n  VERDICT: {verdict}")
+        print("="*62 + "\n")
 
     return report
 

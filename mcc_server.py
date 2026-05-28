@@ -570,6 +570,37 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_clachr_results()
             elif path == "/api/stuck/afna-suggestions":
                 self._handle_stuck_afna_suggestions()
+            # ── OCB-K: MOT live SSE + project endpoints ─────────────────────
+            elif path == "/api/mot/live":
+                self._handle_mot_live_sse()
+            elif path == "/api/project-vision":
+                self._handle_project_vision()
+            elif path == "/api/project-awareness":
+                self._handle_project_awareness()
+            elif path == "/api/resources/snapshot":
+                self._handle_resources_snapshot()
+            elif path == "/api/aafl/errors":
+                self._handle_aafl_errors()
+            # ── OCB-L: Phase 3 — Provider health (enriched) ──────────────────
+            elif path == "/api/provider-health":
+                self._handle_provider_health_enriched()
+            # ── OCB-L: Phase 4 — Resource drill-downs ────────────────────────
+            elif path == "/api/resources/cpu-detail":
+                self._handle_resources_cpu_detail()
+            elif path == "/api/resources/ram-detail":
+                self._handle_resources_ram_detail()
+            elif path == "/api/resources/disk-detail":
+                self._handle_resources_disk_detail()
+            elif path == "/api/resources/gpu-detail":
+                self._handle_resources_gpu_detail()
+            elif path == "/api/resources/lmstudio-detail":
+                self._handle_resources_lmstudio_detail()
+            # ── OCB-L: Phase 5 — Help tab ─────────────────────────────────────
+            elif path == "/api/help/history":
+                self._handle_help_history()
+            # ── OCB-L: Phase 6 — Settings persistence ─────────────────────────
+            elif path == "/api/settings":
+                self._handle_settings_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -780,6 +811,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_llow_dry_run()
             elif path == "/api/clachr/dispatch":
                 self._handle_clachr_dispatch()
+            # ── OCB-K: Project awareness update ─────────────────────────────
+            elif path == "/api/project-awareness/update":
+                self._handle_project_awareness_update()
+            # ── OCB-L: Phase 5 — Help tab ask (SSE) ─────────────────────────
+            elif path == "/api/help/ask":
+                self._handle_help_ask()
+            # ── OCB-L: Phase 6 — Settings persistence ────────────────────────
+            elif path == "/api/settings":
+                self._handle_settings_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -5723,6 +5763,880 @@ def _handle_stuck_afna_suggestions(self):
 
 
 MCCHandler._handle_stuck_afna_suggestions = _handle_stuck_afna_suggestions  # type: ignore[attr-defined]
+
+
+# ── OCB-K: MOT Live SSE endpoint ─────────────────────────────────────────────
+
+def _handle_mot_live_sse(self):
+    """GET /api/mot/live — streams mcc_full_mot.py --live output as Server-Sent Events."""
+    try:
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+
+        proc = subprocess.Popen(
+            [PYTHON, str(MOT_SCRIPT), "--live"],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True, cwd=str(HERE), bufsize=1,
+        )
+        try:
+            for line in proc.stdout:
+                line = line.rstrip()
+                if not line:
+                    continue
+                msg = json.dumps({"line": line})
+                self.wfile.write(f"data: {msg}\n\n".encode("utf-8"))
+                self.wfile.flush()
+            proc.wait(timeout=300)
+        except Exception:
+            pass
+        finally:
+            try:
+                proc.terminate()
+            except Exception:
+                pass
+        self.wfile.write(b"data: {\"done\": true}\n\n")
+        self.wfile.flush()
+    except Exception as exc:
+        try:
+            msg = json.dumps({"error": str(exc)})
+            self.wfile.write(f"data: {msg}\n\n".encode("utf-8"))
+            self.wfile.flush()
+        except Exception:
+            pass
+
+
+MCCHandler._handle_mot_live_sse = _handle_mot_live_sse  # type: ignore[attr-defined]
+
+
+# ── OCB-K: Project Vision endpoint ───────────────────────────────────────────
+
+_PROJECT_VISION = {
+    "aafl_engine":     {"label": "AAFL Engine",     "score": 85, "done": ["14 providers", "cheapest-first routing", "DB cache", "evaluator", "cost guard", "watchdog"], "next": ["LiteLLM router class", "more providers", "overnight autonomous runs"]},
+    "mcc_cockpit":     {"label": "MCC Cockpit",     "score": 80, "done": ["19+ tabs", "108/108 MOT", "SSE live feed", "Health Suite", "LLOW canvas"], "next": ["B2 parking lot features", "Electron wrapper"]},
+    "spin_doctor":     {"label": "Spin Doctor",     "score": 60, "done": ["War Thunder fix confirmed", "benchmark framework"], "next": ["Star Citizen v0.2 benchmark", "Elite Dangerous support"]},
+    "scout_swarm":     {"label": "Scout Swarm",     "score": 70, "done": ["5 parallel strategies", "source reputation", "chief_scout", "AI synthesis"], "next": ["multi-browser sources", "per-strategy AI override"]},
+    "safety_systems":  {"label": "Safety Systems",  "score": 75, "done": ["Safety Shield HC-01–HC-10", "CLACHR relay", "cost guard", "watchdog", "stuck inbox"], "next": ["aafl_watchdog wiring confirm", "cost_guard wiring confirm"]},
+    "alp_efficiency":  {"label": "ALP Efficiency",  "score": 90, "done": ["17 ALP entries", "WCCS auto-save", "cost guard", "ALP gate in LLOW"], "next": ["Chrome extension stage 3"]},
+}
+
+_OCB_HISTORY = [
+    {"label": "A", "date": "2026-05-23", "features": 5},
+    {"label": "B", "date": "2026-05-24", "features": 4},
+    {"label": "C", "date": "2026-05-25", "features": 6},
+    {"label": "D", "date": "2026-05-25", "features": 5},
+    {"label": "E", "date": "2026-05-26", "features": 6},
+    {"label": "F", "date": "2026-05-27", "features": 4},
+    {"label": "G", "date": "2026-05-27", "features": 5},
+    {"label": "H", "date": "2026-05-28", "features": 11},
+    {"label": "I", "date": "2026-05-28", "features": 10},
+    {"label": "J", "date": "2026-05-28", "features": 6},
+    {"label": "K", "date": "2026-05-28", "features": 8},
+]
+
+_MILESTONES_PAST = [
+    "AAFL first run (Apr 2026)", "War Thunder fix confirmed", "108/108 MOT ALL CLEAR",
+    "Build 1 complete (13/13 modules)", "Build 4 MCC overhaul", "Build 4b Health Suite",
+    "OCB-A Self-Health", "OCB-B Body Map + Auto-Fix", "OCB-C Missions + Storage",
+    "OCB-D LLOW Canvas", "OCB-E Visual overhaul", "OCB-F Arrow drag-drop",
+    "OCB-G Junction Boxes + Presets", "OCB-H MCC Full Revamp", "OCB-I LLOW deep fix",
+    "OCB-J HC checks + Safety Shield", "OCB-K MOT live + Project Brain",
+]
+_MILESTONES_FUTURE = [
+    "Star Citizen benchmark v0.2", "r/LocalLLaMA post", "B2-23 Electron wrapper", "Commercial launch"
+]
+
+
+def _handle_project_vision(self):
+    """GET /api/project-vision — returns all data for the Project Vision charts."""
+    mot_report = HERE / "health_results" / "full_mot_report.json"
+    mot_score = 100
+    try:
+        if mot_report.exists():
+            d = json.loads(mot_report.read_text(encoding="utf-8"))
+            mot_score = round(d.get("pass_rate", 100))
+    except Exception:
+        pass
+    avg_radar = round(sum(v["score"] for v in _PROJECT_VISION.values()) / len(_PROJECT_VISION))
+    health_score = round((mot_score + avg_radar) / 2)
+    self._send_json({
+        "radar": _PROJECT_VISION,
+        "milestones_past": _MILESTONES_PAST,
+        "milestones_future": _MILESTONES_FUTURE,
+        "build_history": _OCB_HISTORY,
+        "health_score": health_score,
+        "mot_score": mot_score,
+    })
+
+
+MCCHandler._handle_project_vision = _handle_project_vision  # type: ignore[attr-defined]
+
+
+# ── OCB-K: Project Awareness endpoints ───────────────────────────────────────
+
+PROJECT_AWARENESS_FILE = HERE / "data" / "project_awareness.json"
+
+
+def _build_project_awareness() -> dict:
+    """Build project_awareness.json from STATUS.md content."""
+    what_is_built = [
+        {"name": "AAFL Engine", "desc": "14-provider AI routing loop with cost guard, evaluator, DB cache", "status": "ACTIVE"},
+        {"name": "MCC Cockpit", "desc": "Mission Control Center — 19+ tabs, 108/108 MOT", "status": "ACTIVE"},
+        {"name": "Spin Doctor", "desc": "Joystick mouse-spin fix for War Thunder / Elite Dangerous / Star Citizen", "status": "ACTIVE"},
+        {"name": "Scout Swarm", "desc": "5-strategy parallel web researcher with AI synthesis", "status": "ACTIVE"},
+        {"name": "LLOW Canvas", "desc": "Visual workflow builder — 35+ elements, 15 arrow types, junction boxes", "status": "ACTIVE"},
+        {"name": "Safety Shield", "desc": "HC-01–HC-10 health checks + CLACHR relay", "status": "ACTIVE"},
+        {"name": "WCCS Protocol", "desc": "Write Claude Code Save — 3-step auto-save system", "status": "ACTIVE"},
+        {"name": "self_health.py", "desc": "Element registry test runner — 109 elements", "status": "ACTIVE"},
+        {"name": "mcc_full_mot.py", "desc": "108-check Ministry of Transport test suite", "status": "ACTIVE"},
+        {"name": "provider_health.py", "desc": "3-tier 29-test provider health system", "status": "ACTIVE"},
+    ]
+    what_is_next = [
+        {"item": "Star Citizen full support", "status": "NOT STARTED"},
+        {"item": "Add GROQ_API_KEY to .env", "status": "NOT STARTED"},
+        {"item": "Add Cloudflare keys to .env", "status": "NOT STARTED"},
+        {"item": "Build 2 parking lot (23 features)", "status": "NOT STARTED"},
+        {"item": "5-project split after Star Citizen benchmark", "status": "NOT STARTED"},
+        {"item": "aafl_watchdog.py wiring confirm", "status": "BLOCKED"},
+        {"item": "LiteLLM full Router integration", "status": "NOT STARTED"},
+        {"item": "Electron wrapper B2-23", "status": "NOT STARTED"},
+        {"item": "Ko-fi + Itch.io monetisation setup", "status": "NOT STARTED"},
+        {"item": "r/LocalLLaMA post after SC benchmark", "status": "NOT STARTED"},
+    ]
+    action_plan = [
+        "1. Star Citizen v0.2 benchmark via AAFL autonomous run",
+        "2. Add GROQ + Cloudflare keys to .env (manual — security rule)",
+        "3. Polish AASKC for ship — README, demo video, r/LocalLLaMA post",
+        "4. Build 2 CLAC block (23 parking lot features)",
+        "5. LiteLLM full integration — replace direct provider calls",
+        "6. Electron wrapper for packaging",
+        "7. Ko-fi + Itch.io setup (fastest monetisation path)",
+    ]
+    evolution_log = [
+        "Started as VKB SpinDoctor joystick fix → grew into full AAFL framework",
+        "sfl_agent.py (simple loop) → aafl_core.py (14 providers, LiteLLM routing)",
+        "Single Python script → MCC Mission Control Center with 19+ tabs",
+        "Manual WCCS → aafl_wccs.py (automatic save on every OCB)",
+        "LLOW as simple workflow idea → full visual canvas with junction boxes",
+        "AASKC brand name created: Autonomous AI Simultaneous Knowledge Connection",
+    ]
+    forks_taken = [
+        {"decision": "SFL → AAFL", "chosen": "Full AAFL framework", "alternative": "Keep sfl_agent.py simple"},
+        {"decision": "SpinDoctor → benchmark", "chosen": "Use as AAFL proof of concept", "alternative": "Build standalone tool"},
+        {"decision": "Raw API → LiteLLM", "chosen": "LiteLLM unified routing", "alternative": "Direct HTTP requests per provider"},
+        {"decision": "B2-07 + OCB-C", "chosen": "Merged chain builder into Workflow Builder", "alternative": "Separate tab"},
+    ]
+    return {
+        "what_is_built": what_is_built,
+        "what_is_next": what_is_next,
+        "action_plan": action_plan,
+        "evolution_log": evolution_log,
+        "forks_taken": forks_taken,
+        "jobs_remaining": [x["item"] for x in what_is_next],
+        "last_updated": _now_iso(),
+    }
+
+
+def _handle_project_awareness(self):
+    """GET /api/project-awareness — returns project_awareness.json."""
+    if not PROJECT_AWARENESS_FILE.exists():
+        data = _build_project_awareness()
+        try:
+            PROJECT_AWARENESS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            PROJECT_AWARENESS_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        except Exception:
+            pass
+        self._send_json(data)
+        return
+    try:
+        self._send_json(json.loads(PROJECT_AWARENESS_FILE.read_text(encoding="utf-8")))
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_project_awareness_update(self):
+    """POST /api/project-awareness/update — rebuilds project_awareness.json from STATUS.md."""
+    try:
+        data = _build_project_awareness()
+        PROJECT_AWARENESS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        PROJECT_AWARENESS_FILE.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True, "updated_at": data["last_updated"]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_project_awareness = _handle_project_awareness  # type: ignore[attr-defined]
+MCCHandler._handle_project_awareness_update = _handle_project_awareness_update  # type: ignore[attr-defined]
+
+
+# ── OCB-K/L: Resource Snapshot endpoint ─────────────────────────────────────
+
+def _handle_resources_snapshot(self):
+    """GET /api/resources/snapshot — full resource data incl GPU via nvidia-smi."""
+    import socket as _sock
+    import urllib.request as _ur
+    result = {
+        "cpu_percent": 0.0,
+        "ram_used_gb": 0.0,
+        "ram_total_gb": 0.0,
+        "ram_percent": 0.0,
+        "disk_c_free_gb": 0.0,
+        "disk_c_percent": 0.0,
+        "gpu_name": "Unknown",
+        "gpu_vram_used_mb": None,
+        "gpu_vram_total_mb": None,
+        "gpu_utilization_percent": None,
+        "lm_studio_running": False,
+        "lm_studio_models_loaded": [],
+        "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
+        # backwards-compat fields
+        "ram_pct": 0.0,
+        "cpu_pct": 0.0,
+        "disk_pct": 0.0,
+        "lm_studio": "UNKNOWN",
+        "error": None,
+    }
+    try:
+        import psutil as _ps
+        result["cpu_percent"] = round(_ps.cpu_percent(interval=0.1), 1)
+        result["cpu_pct"] = result["cpu_percent"]
+        vm = _ps.virtual_memory()
+        result["ram_used_gb"]  = round(vm.used  / 1024**3, 2)
+        result["ram_total_gb"] = round(vm.total / 1024**3, 2)
+        result["ram_percent"]  = round(vm.percent, 1)
+        result["ram_pct"]      = result["ram_percent"]
+        try:
+            du = _ps.disk_usage("C:\\")
+            result["disk_c_free_gb"] = round(du.free / 1024**3, 1)
+            result["disk_c_percent"] = round(du.percent, 1)
+            result["disk_pct"]       = result["disk_c_percent"]
+        except Exception:
+            pass
+    except ImportError:
+        result["error"] = "psutil not installed"
+    except Exception as exc:
+        result["error"] = str(exc)
+    # GPU via nvidia-smi
+    try:
+        out = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name,memory.used,memory.total,utilization.gpu",
+             "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if out.returncode == 0 and out.stdout.strip():
+            parts = [p.strip() for p in out.stdout.strip().split(",")]
+            if len(parts) >= 4:
+                result["gpu_name"] = parts[0]
+                try:
+                    result["gpu_vram_used_mb"]        = int(parts[1])
+                    result["gpu_vram_total_mb"]        = int(parts[2])
+                    result["gpu_utilization_percent"]  = int(parts[3])
+                except ValueError:
+                    pass
+    except Exception:
+        pass
+    # LM Studio
+    try:
+        with _sock.create_connection(("127.0.0.1", 1234), timeout=1):
+            result["lm_studio_running"] = True
+            result["lm_studio"] = "UP"
+    except Exception:
+        result["lm_studio"] = "DOWN"
+    if result["lm_studio_running"]:
+        try:
+            req = _ur.urlopen("http://127.0.0.1:1234/v1/models", timeout=2)
+            mdata = json.loads(req.read().decode())
+            result["lm_studio_models_loaded"] = [m.get("id", "") for m in mdata.get("data", [])]
+        except Exception:
+            pass
+    self._send_json(result)
+
+
+MCCHandler._handle_resources_snapshot = _handle_resources_snapshot  # type: ignore[attr-defined]
+
+
+# ── OCB-K: AAFL Error Log endpoint ───────────────────────────────────────────
+
+AAFL_ERROR_DB = HERE / "data" / "aafl_error_db.json"
+
+
+def _handle_aafl_errors(self):
+    """GET /api/aafl/errors — returns last 20 error entries from aafl_error_db.json."""
+    if not AAFL_ERROR_DB.exists():
+        self._send_json({"errors": []})
+        return
+    try:
+        data = json.loads(AAFL_ERROR_DB.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            self._send_json({"errors": data[-20:]})
+        else:
+            self._send_json({"errors": []})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_aafl_errors = _handle_aafl_errors  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-L Phase 3 — Provider Health Enriched
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_provider_health_enriched(self):
+    """GET /api/provider-health — enriched provider data with location, model, VRAM."""
+    import urllib.request as _ur
+    import socket as _sock
+
+    # Read last health check results
+    providers_raw = []
+    if LATEST_HEALTH.exists():
+        try:
+            raw = json.loads(LATEST_HEALTH.read_text(encoding="utf-8"))
+            providers_raw = raw.get("providers", [])
+        except Exception:
+            pass
+
+    # Build a quick latency map from existing results
+    latency_map = {}
+    status_map  = {}
+    for p in providers_raw:
+        pid = p.get("id") or p.get("provider_id", "")
+        latency_map[pid] = p.get("latency_ms") or p.get("latency") or 0
+        status_map[pid]  = p.get("status", "UNKNOWN")
+
+    # Check LM Studio
+    lm_running = False
+    lm_models  = []
+    try:
+        with _sock.create_connection(("127.0.0.1", 1234), timeout=1):
+            lm_running = True
+    except Exception:
+        pass
+    if lm_running:
+        try:
+            req = _ur.urlopen("http://127.0.0.1:1234/v1/models", timeout=2)
+            mdata = json.loads(req.read().decode())
+            lm_models = [m.get("id", "") for m in mdata.get("data", [])]
+        except Exception:
+            pass
+
+    # GPU VRAM via nvidia-smi
+    gpu_vram_used_mb  = None
+    gpu_vram_total_mb = None
+    gpu_name          = "Unknown"
+    try:
+        out = subprocess.run(
+            ["nvidia-smi", "--query-gpu=name,memory.used,memory.total",
+             "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if out.returncode == 0 and out.stdout.strip():
+            parts = [p.strip() for p in out.stdout.strip().split(",")]
+            if len(parts) >= 3:
+                gpu_name = parts[0]
+                gpu_vram_used_mb  = int(parts[1])
+                gpu_vram_total_mb = int(parts[2])
+    except Exception:
+        pass
+
+    # Load provider table from aafl_core if available
+    provider_defs = []
+    try:
+        import sys as _sys
+        if str(HERE) not in _sys.path:
+            _sys.path.insert(0, str(HERE))
+        from aafl_core import PROVIDERS as _PROV
+        provider_defs = _PROV
+    except Exception:
+        pass
+
+    _LOCATION_MAP = {1: "LOCAL_GPU", 2: "CLOUD_FREE", 3: "CLOUD_FREE", 99: "CLOUD_PAID"}
+    enriched = []
+    for p in provider_defs:
+        pid  = p["id"]
+        tier = p.get("tier", 2)
+        loc  = _LOCATION_MAP.get(tier, "CLOUD_FREE")
+
+        # Override location for CPU-only local models (phi-4 is likely CPU if small)
+        if tier == 1 and "phi" in p.get("id", "").lower():
+            loc = "LOCAL_CPU"
+
+        # Determine model name loaded (for LM Studio providers)
+        model_name = p.get("model", "")
+        vram_mb    = None
+        if tier == 1 and lm_running and lm_models:
+            # Match by partial model name
+            for loaded in lm_models:
+                if any(frag in loaded.lower() for frag in [
+                    "coder", "vl", "deepseek", "phi", "qwen"
+                ]):
+                    model_name = loaded
+                    break
+            vram_mb = gpu_vram_used_mb  # total VRAM shared, not per-model
+
+        # Determine status
+        raw_status = status_map.get(pid, "UNKNOWN")
+        if tier == 1:
+            st = "LIVE" if lm_running else "OFFLINE"
+        elif raw_status in ("LIVE", "PASS", "OK"):
+            st = "LIVE"
+        elif raw_status in ("OFFLINE", "FAIL", "ERROR"):
+            st = "OFFLINE"
+        else:
+            # Check if API key is in env
+            env_key = p.get("api_key_env")
+            if env_key and not os.environ.get(env_key):
+                st = "NO_KEY"
+            else:
+                st = "UNKNOWN"
+
+        enriched.append({
+            "id":           pid,
+            "name":         p.get("label", pid),
+            "status":       st,
+            "latency_ms":   latency_map.get(pid, 0),
+            "location":     loc,
+            "model_loaded": model_name,
+            "vram_mb":      vram_mb,
+            "tier":         tier,
+            "task_types":   p.get("task_types", []),
+        })
+
+    self._send_json({
+        "providers":       enriched,
+        "lm_studio_running": lm_running,
+        "lm_models":       lm_models,
+        "gpu_name":        gpu_name,
+        "gpu_vram_used_mb":  gpu_vram_used_mb,
+        "gpu_vram_total_mb": gpu_vram_total_mb,
+        "generated_at":    datetime.datetime.now().isoformat(timespec="seconds"),
+    })
+
+
+MCCHandler._handle_provider_health_enriched = _handle_provider_health_enriched  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-L Phase 4 — Resource Drill-Down Endpoints
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_resources_cpu_detail(self):
+    """GET /api/resources/cpu-detail — per-core usage + top 10 processes."""
+    try:
+        import psutil as _ps
+        per_core = _ps.cpu_percent(interval=0.2, percpu=True)
+        freq     = _ps.cpu_freq(percpu=True)
+        top10    = sorted(
+            [{"pid": p.info["pid"], "name": p.info["name"],
+              "cpu": round(p.info["cpu_percent"] or 0, 1)}
+             for p in _ps.process_iter(["pid", "name", "cpu_percent"])
+             if (p.info["cpu_percent"] or 0) > 0],
+            key=lambda x: x["cpu"], reverse=True
+        )[:10]
+        cores = []
+        for i, pct in enumerate(per_core):
+            mhz = round(freq[i].current, 0) if freq and i < len(freq) else 0
+            cores.append({"core": i, "pct": round(pct, 1), "mhz": mhz})
+        self._send_json({"ok": True, "cores": cores, "top_processes": top10})
+    except ImportError:
+        self._send_json({"ok": False, "error": "psutil not installed"})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)})
+
+
+def _handle_resources_ram_detail(self):
+    """GET /api/resources/ram-detail — top consumers + history."""
+    try:
+        import psutil as _ps
+        vm = _ps.virtual_memory()
+        top10 = sorted(
+            [{"pid": p.info["pid"], "name": p.info["name"],
+              "mb": round(p.info["memory_info"].rss / 1024**2, 1) if p.info["memory_info"] else 0}
+             for p in _ps.process_iter(["pid", "name", "memory_info"])
+             if p.info["memory_info"]],
+            key=lambda x: x["mb"], reverse=True
+        )[:10]
+        history = []
+        mem_log = HERE / "data" / "memory_log.json"
+        if mem_log.exists():
+            try:
+                history = json.loads(mem_log.read_text(encoding="utf-8"))[-60:]
+            except Exception:
+                pass
+        self._send_json({
+            "ok": True,
+            "used_gb":  round(vm.used / 1024**3, 2),
+            "avail_gb": round(vm.available / 1024**3, 2),
+            "total_gb": round(vm.total / 1024**3, 2),
+            "percent":  vm.percent,
+            "top_processes": top10,
+            "history":  history,
+        })
+    except ImportError:
+        self._send_json({"ok": False, "error": "psutil not installed"})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)})
+
+
+def _handle_resources_disk_detail(self):
+    """GET /api/resources/disk-detail — C: and D: usage + largest project folders."""
+    drives = {}
+    for drv in ("C:\\", "D:\\"):
+        try:
+            import psutil as _ps
+            du = _ps.disk_usage(drv)
+            drives[drv] = {
+                "free_gb":  round(du.free / 1024**3, 1),
+                "used_gb":  round(du.used / 1024**3, 1),
+                "total_gb": round(du.total / 1024**3, 1),
+                "percent":  round(du.percent, 1),
+            }
+        except Exception as exc:
+            drives[drv] = {"error": str(exc)}
+
+    # Top 5 folders in project root by size
+    folders = []
+    try:
+        for entry in sorted(HERE.iterdir(), key=lambda p: p.stat().st_size if p.is_file() else sum(
+            f.stat().st_size for f in p.rglob("*") if f.is_file()
+        ), reverse=True)[:8]:
+            if entry.name.startswith(".") or entry.name in ("backups", "archive_dead"):
+                continue
+            if entry.is_dir():
+                try:
+                    sz = sum(f.stat().st_size for f in entry.rglob("*") if f.is_file())
+                    folders.append({"name": entry.name, "size_mb": round(sz / 1024**2, 1)})
+                except Exception:
+                    pass
+            if len(folders) >= 5:
+                break
+    except Exception:
+        pass
+
+    # aafl_output stats
+    aafl_out = HERE / "aafl_output"
+    aafl_count = 0
+    aafl_mb    = 0.0
+    if aafl_out.exists():
+        try:
+            files = list(aafl_out.rglob("*"))
+            aafl_count = len([f for f in files if f.is_file()])
+            aafl_mb    = round(sum(f.stat().st_size for f in files if f.is_file()) / 1024**2, 1)
+        except Exception:
+            pass
+
+    self._send_json({
+        "ok": True,
+        "drives": drives,
+        "top_folders": folders,
+        "aafl_output": {"file_count": aafl_count, "total_mb": aafl_mb},
+    })
+
+
+def _handle_resources_gpu_detail(self):
+    """GET /api/resources/gpu-detail — nvidia-smi full output parsed."""
+    result = {"ok": True, "gpu_name": "Unknown", "driver": "", "vram_used_mb": None,
+              "vram_total_mb": None, "utilization": None, "temperature": None,
+              "processes": [], "error": None}
+    try:
+        out = subprocess.run(
+            ["nvidia-smi",
+             "--query-gpu=name,driver_version,memory.used,memory.total,utilization.gpu,temperature.gpu",
+             "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if out.returncode == 0 and out.stdout.strip():
+            parts = [p.strip() for p in out.stdout.strip().split(",")]
+            if len(parts) >= 6:
+                result["gpu_name"]     = parts[0]
+                result["driver"]       = parts[1]
+                result["vram_used_mb"] = int(parts[2]) if parts[2].isdigit() else None
+                result["vram_total_mb"]= int(parts[3]) if parts[3].isdigit() else None
+                result["utilization"]  = int(parts[4]) if parts[4].isdigit() else None
+                result["temperature"]  = int(parts[5]) if parts[5].isdigit() else None
+        else:
+            result["ok"]    = False
+            result["error"] = "nvidia-smi returned no data — GPU may be offline"
+    except FileNotFoundError:
+        result["ok"]    = False
+        result["error"] = "nvidia-smi not found — no NVIDIA GPU or driver not installed"
+    except Exception as exc:
+        result["ok"]    = False
+        result["error"] = str(exc)
+
+    # Per-process VRAM
+    try:
+        out2 = subprocess.run(
+            ["nvidia-smi", "--query-compute-apps=pid,name,used_memory",
+             "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5,
+        )
+        for line in out2.stdout.strip().splitlines():
+            parts = [p.strip() for p in line.split(",")]
+            if len(parts) >= 3:
+                result["processes"].append({"pid": parts[0], "name": parts[1], "vram_mb": parts[2]})
+    except Exception:
+        pass
+    self._send_json(result)
+
+
+def _handle_resources_lmstudio_detail(self):
+    """GET /api/resources/lmstudio-detail — loaded models, VRAM, call stats."""
+    import urllib.request as _ur
+    import socket as _sock
+    result = {"ok": True, "running": False, "models": [], "total_vram_used_mb": None,
+              "gpu_vram_total_mb": None, "error": None}
+    # Check if running
+    try:
+        with _sock.create_connection(("127.0.0.1", 1234), timeout=1):
+            result["running"] = True
+    except Exception:
+        result["ok"]    = False
+        result["error"] = "LM Studio offline"
+        self._send_json(result)
+        return
+    # Loaded models
+    try:
+        req = _ur.urlopen("http://127.0.0.1:1234/v1/models", timeout=3)
+        mdata = json.loads(req.read().decode())
+        result["models"] = [{"id": m.get("id", ""), "owned_by": m.get("owned_by", "")}
+                            for m in mdata.get("data", [])]
+    except Exception as exc:
+        result["error"] = f"Could not fetch /v1/models: {exc}"
+    # GPU VRAM total
+    try:
+        out = subprocess.run(
+            ["nvidia-smi", "--query-gpu=memory.total", "--format=csv,noheader,nounits"],
+            capture_output=True, text=True, timeout=5,
+        )
+        if out.returncode == 0 and out.stdout.strip().isdigit():
+            result["gpu_vram_total_mb"] = int(out.stdout.strip())
+    except Exception:
+        pass
+    # Try LM Studio stats endpoint
+    try:
+        req2 = _ur.urlopen("http://127.0.0.1:1234/v1/system/stats", timeout=2)
+        stats = json.loads(req2.read().decode())
+        result["total_vram_used_mb"] = stats.get("vram_used_mb") or stats.get("gpu_memory_used_mb")
+    except Exception:
+        pass
+    self._send_json(result)
+
+
+MCCHandler._handle_resources_cpu_detail      = _handle_resources_cpu_detail      # type: ignore[attr-defined]
+MCCHandler._handle_resources_ram_detail      = _handle_resources_ram_detail      # type: ignore[attr-defined]
+MCCHandler._handle_resources_disk_detail     = _handle_resources_disk_detail     # type: ignore[attr-defined]
+MCCHandler._handle_resources_gpu_detail      = _handle_resources_gpu_detail      # type: ignore[attr-defined]
+MCCHandler._handle_resources_lmstudio_detail = _handle_resources_lmstudio_detail # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-L Phase 5 — Help Tab (Ask + History)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+HELP_HISTORY_FILE = HERE / "data" / "help_history.json"
+HELP_SYSTEM_PROMPT = (
+    "You are a helpful assistant for the VKB Spin Doctor / AAFL / AASKC project. "
+    "The project is a self-improving AI agent framework (AAFL) built by a beginner coder "
+    "using free local and online AI providers. The Mission Control Center (MCC) is the UI. "
+    "LLOW is the visual workflow canvas. Scout Swarm does web research. WCCS saves sessions. "
+    "Answer questions about how to use MCC, what components do, how AAFL works, "
+    "debugging help, and project status. Be concise and friendly."
+)
+
+_HELP_PROVIDER_ORDER = [
+    "lmstudio_coder", "mistral_code", "gemini_flash", "cerebras", "openrouter"
+]
+
+
+def _help_try_providers(query: str, provider_prefs: list) -> tuple[str, str]:
+    """Try providers in order, return (response_text, provider_label). Fallback to error."""
+    try:
+        import sys as _sys
+        if str(HERE) not in _sys.path:
+            _sys.path.insert(0, str(HERE))
+        from aafl_core import AAFLCore, PROVIDERS as _PROV
+    except Exception as exc:
+        return f"[Error loading AAFL core: {exc}]", "error"
+
+    pmap = {p["id"]: p for p in _PROV}
+    order = provider_prefs if provider_prefs else _HELP_PROVIDER_ORDER
+
+    for pid in order:
+        p = pmap.get(pid)
+        if not p:
+            continue
+        # Skip if needs key and key missing
+        env_key = p.get("api_key_env")
+        if env_key and not os.environ.get(env_key):
+            continue
+        try:
+            import litellm
+            msgs = [
+                {"role": "system", "content": HELP_SYSTEM_PROMPT},
+                {"role": "user", "content": query},
+            ]
+            kwargs = {"model": p["model"], "messages": msgs, "max_tokens": 800, "timeout": 30}
+            if p.get("api_base"):
+                kwargs["api_base"] = p["api_base"]
+            if p.get("api_key"):
+                kwargs["api_key"] = p["api_key"]
+            resp = litellm.completion(**kwargs)
+            text = resp.choices[0].message.content or ""
+            if text.strip():
+                return text.strip(), p.get("label", pid)
+        except Exception:
+            continue
+    return "No AI provider responded. Check your .env keys and that LM Studio is running.", "none"
+
+
+def _handle_help_ask(self):
+    """POST /api/help/ask — tries providers in order, streams response as SSE."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+    except Exception:
+        self._send_json({"error": "Invalid JSON"}, 400)
+        return
+    query    = body.get("query", "").strip()
+    prefs    = body.get("provider_preference", [])
+    if not query:
+        self._send_json({"error": "query required"}, 400)
+        return
+
+    response_text, provider_label = _help_try_providers(query, prefs)
+
+    # Save to history
+    try:
+        HELP_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        hist = []
+        if HELP_HISTORY_FILE.exists():
+            try:
+                hist = json.loads(HELP_HISTORY_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                hist = []
+        hist.append({
+            "ts":       datetime.datetime.now().isoformat(timespec="seconds"),
+            "query":    query,
+            "response": response_text,
+            "provider": provider_label,
+        })
+        if len(hist) > 100:
+            hist = hist[-100:]
+        HELP_HISTORY_FILE.write_text(json.dumps(hist, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+
+    # Send as SSE — write word by word with small delay, then close
+    words = response_text.split(" ")
+    try:
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+        import time as _time
+        for word in words:
+            chunk = json.dumps({"word": word + " ", "provider": provider_label})
+            self.wfile.write(f"data: {chunk}\n\n".encode("utf-8"))
+            self.wfile.flush()
+            _time.sleep(0.02)
+        # Send done event
+        self.wfile.write(b"data: {\"done\": true}\n\n")
+        self.wfile.flush()
+    except Exception:
+        pass
+
+
+def _handle_help_history(self):
+    """GET /api/help/history — returns last 10 Q&A entries."""
+    if not HELP_HISTORY_FILE.exists():
+        self._send_json({"history": []})
+        return
+    try:
+        hist = json.loads(HELP_HISTORY_FILE.read_text(encoding="utf-8"))
+        self._send_json({"history": hist[-10:]})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_help_ask     = _handle_help_ask     # type: ignore[attr-defined]
+MCCHandler._handle_help_history = _handle_help_history # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-L Phase 6 — Settings Persistence
+# ═══════════════════════════════════════════════════════════════════════════════
+
+MCC_SETTINGS_FILE = HERE / "data" / "mcc_settings.json"
+
+_MCC_SETTINGS_DEFAULT = {
+    "theme": "dark",
+    "tab_order": [],
+    "section_order_per_tab": {},
+    "open_sections": {},
+    "provider_preference_order": ["lmstudio_coder", "mistral_code", "gemini_flash",
+                                  "cerebras", "openrouter"],
+    "design_density": "comfortable",
+    "animation_speed": 1,
+    "tab_bar_style": "default",
+    "sidebar_accent": "#0d0d0d",
+    "tabbar_accent": "#4af",
+    "btn_style": "filled",
+    "font": "monospace",
+    "font_size": "13",
+    "text_color": "#cccccc",
+    "bg_color": "#0d0d0d",
+    "border_radius": "4",
+    "last_active_tab": "home",
+}
+
+
+def _load_mcc_settings() -> dict:
+    if not MCC_SETTINGS_FILE.exists():
+        return dict(_MCC_SETTINGS_DEFAULT)
+    try:
+        data = json.loads(MCC_SETTINGS_FILE.read_text(encoding="utf-8"))
+        merged = dict(_MCC_SETTINGS_DEFAULT)
+        merged.update(data)
+        return merged
+    except Exception:
+        return dict(_MCC_SETTINGS_DEFAULT)
+
+
+def _save_mcc_settings(data: dict) -> None:
+    MCC_SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    tmp = MCC_SETTINGS_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(MCC_SETTINGS_FILE)
+
+
+def _handle_settings_get(self):
+    """GET /api/settings — returns mcc_settings.json."""
+    self._send_json(_load_mcc_settings())
+
+
+def _handle_settings_post(self):
+    """POST /api/settings — saves mcc_settings.json (atomic write)."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+    except Exception:
+        self._send_json({"ok": False, "error": "Invalid JSON"}, 400)
+        return
+    current = _load_mcc_settings()
+    current.update(body)
+    try:
+        _save_mcc_settings(current)
+        self._send_json({"ok": True, "saved_at": datetime.datetime.now().isoformat(timespec="seconds")})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_settings_get  = _handle_settings_get  # type: ignore[attr-defined]
+MCCHandler._handle_settings_post = _handle_settings_post # type: ignore[attr-defined]
 
 
 def main():

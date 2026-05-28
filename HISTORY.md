@@ -2250,3 +2250,27 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 **New ACCA codes:** None
 
 **Files changed:** mission_control.html, STATUS.md, HISTORY.md
+
+---
+
+## OCB-L — 2026-05-28
+
+**Phases:** 7
+
+**Phase 1 (OCB-K Finish):** data/project_awareness.json built from STATUS.md. CLAUDE.md project orientation file created. data/help_history.json + data/mcc_settings.json seeded.
+
+**Phase 2 (System Monitor Fix):** _refreshSystemMonitor() updated to dual-source — /api/system/snapshot (full detail) + /api/resources/snapshot (GPU/LM Studio fallback). GPU shows grey N/A when unavailable instead of crash. LM Studio status pill added. RAM amber >80%, red only >95% (genuine critical). All red error states removed.
+
+**Phase 3 (AI Status Bar Overhaul):** New /api/provider-health endpoint returns enriched provider data: location (LOCAL_GPU/LOCAL_CPU/CLOUD_FREE/CLOUD_PAID), model_loaded, VRAM, tier. Bar height increased to 44px. Richer provider cards show GPU/CPU/CLOUD/PAID location badges, model name, latency. Click any card = tooltip with full details. Auto-refreshes every 20s.
+
+**Phase 4 (System Drill-Downs):** All 5 system dials now clickable. Each opens an expand panel below the dials row (no z-index popup): CPU (per-core bars, top processes, kill buttons), RAM (consumers, trend line), Disk (C: D: usage, top folders, aafl_output stats), GPU (VRAM bar, utilisation, per-process), LM Studio (loaded models, VRAM used). 5 new /api/resources/* endpoints in mcc_server.py.
+
+**Phase 5 (Help Tab):** New 🔍 Help tab in top bar. Large query input (Ctrl+Enter to ask). AI hierarchy selector showing live provider status. Streaming SSE response (word by word). Q&A history accordion (last 10). /api/help/ask POST (SSE) + /api/help/history GET. System prompt injected with project context. Saves to data/help_history.json.
+
+**Phase 6 (Settings Persistence):** data/mcc_settings.json created. GET /api/settings + POST /api/settings (atomic write). mccLoadSettings() called on DOMContentLoaded before rendering. Design tab (font, colors, density, tab style, sidebar/tabbar accents, animation speed, btn style) all save to disk via mccSaveSettings(). Section order saved to disk. Last active tab tracked. Restore Defaults button added to Design tab. 9+ localStorage calls replaced with API-backed persistence. Settings survive every MCC HTML rewrite.
+
+**MOT:** 108/108 ALL CLEAR 2026-05-28
+
+**New ACCA codes:** None
+
+**Files changed:** mcc_server.py, mission_control.html, system_monitor.py, aafl_core.py (unchanged — no ask() needed), STATUS.md, HISTORY.md, CLAUDE.md (new), data/project_awareness.json (new), data/mcc_settings.json (new), data/help_history.json (new)

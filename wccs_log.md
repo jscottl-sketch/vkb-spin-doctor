@@ -41,3 +41,4 @@
 | 30 | 2026-05-28 | v54 -> v55 | test chat text for recovery check | None |
 | 31 | 2026-05-28 | v55 -> v56 | mcc-instructions-keeper: instructions_db.json (132 entries), /api/instructions endpoints, 7 ? help buttons, showInstructions() JS, skill file. 108/108 MOT. | None |
 | 32 | 2026-05-28 | v56 -> v57 | OCB-J: HC-01–HC-10 health checks (3 files), Safety Shield panel (6 pills, 15s poll), CLACHR Relay (dispatch + results + copy-back), /api/safety-status + /api/clachr/* + /api/stuck/afna-suggestions endpoints, ACCA CLACHR entry, meta_proposals SUMMARY.md. 108/108 MOT. | CLACHR |
+| v58 | 2026-05-28 | OCB-L — system monitor fix, AI bar enriched, 5 drill-downs, Help tab, settings persistence to disk. 108/108 MOT. |

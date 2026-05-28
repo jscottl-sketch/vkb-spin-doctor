@@ -1,0 +1,148 @@
+{
+  "what_is_built": [
+    {
+      "name": "AAFL Engine",
+      "desc": "14-provider AI routing loop with cost guard, evaluator, DB cache",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "MCC Cockpit",
+      "desc": "Mission Control Center — 19+ tabs, 108/108 MOT",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Spin Doctor",
+      "desc": "Joystick mouse-spin fix for War Thunder / Elite Dangerous / Star Citizen",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Scout Swarm",
+      "desc": "5-strategy parallel web researcher with AI synthesis",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "LLOW Canvas",
+      "desc": "Visual workflow builder — 35+ elements, 15 arrow types, junction boxes",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "Safety Shield",
+      "desc": "HC-01–HC-10 health checks + CLACHR relay",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "WCCS Protocol",
+      "desc": "Write Claude Code Save — 3-step auto-save system",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "self_health.py",
+      "desc": "Element registry test runner — 109 elements",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "mcc_full_mot.py",
+      "desc": "108-check Ministry of Transport test suite",
+      "status": "ACTIVE"
+    },
+    {
+      "name": "provider_health.py",
+      "desc": "3-tier 29-test provider health system",
+      "status": "ACTIVE"
+    }
+  ],
+  "what_is_next": [
+    {
+      "item": "Star Citizen full support",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "Add GROQ_API_KEY to .env",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "Add Cloudflare keys to .env",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "Build 2 parking lot (23 features)",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "5-project split after Star Citizen benchmark",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "aafl_watchdog.py wiring confirm",
+      "status": "BLOCKED"
+    },
+    {
+      "item": "LiteLLM full Router integration",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "Electron wrapper B2-23",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "Ko-fi + Itch.io monetisation setup",
+      "status": "NOT STARTED"
+    },
+    {
+      "item": "r/LocalLLaMA post after SC benchmark",
+      "status": "NOT STARTED"
+    }
+  ],
+  "action_plan": [
+    "1. Star Citizen v0.2 benchmark via AAFL autonomous run",
+    "2. Add GROQ + Cloudflare keys to .env (manual — security rule)",
+    "3. Polish AASKC for ship — README, demo video, r/LocalLLaMA post",
+    "4. Build 2 CLAC block (23 parking lot features)",
+    "5. LiteLLM full integration — replace direct provider calls",
+    "6. Electron wrapper for packaging",
+    "7. Ko-fi + Itch.io setup (fastest monetisation path)"
+  ],
+  "evolution_log": [
+    "Started as VKB SpinDoctor joystick fix → grew into full AAFL framework",
+    "sfl_agent.py (simple loop) → aafl_core.py (14 providers, LiteLLM routing)",
+    "Single Python script → MCC Mission Control Center with 19+ tabs",
+    "Manual WCCS → aafl_wccs.py (automatic save on every OCB)",
+    "LLOW as simple workflow idea → full visual canvas with junction boxes",
+    "AASKC brand name created: Autonomous AI Simultaneous Knowledge Connection"
+  ],
+  "forks_taken": [
+    {
+      "decision": "SFL → AAFL",
+      "chosen": "Full AAFL framework",
+      "alternative": "Keep sfl_agent.py simple"
+    },
+    {
+      "decision": "SpinDoctor → benchmark",
+      "chosen": "Use as AAFL proof of concept",
+      "alternative": "Build standalone tool"
+    },
+    {
+      "decision": "Raw API → LiteLLM",
+      "chosen": "LiteLLM unified routing",
+      "alternative": "Direct HTTP requests per provider"
+    },
+    {
+      "decision": "B2-07 + OCB-C",
+      "chosen": "Merged chain builder into Workflow Builder",
+      "alternative": "Separate tab"
+    }
+  ],
+  "jobs_remaining": [
+    "Star Citizen full support",
+    "Add GROQ_API_KEY to .env",
+    "Add Cloudflare keys to .env",
+    "Build 2 parking lot (23 features)",
+    "5-project split after Star Citizen benchmark",
+    "aafl_watchdog.py wiring confirm",
+    "LiteLLM full Router integration",
+    "Electron wrapper B2-23",
+    "Ko-fi + Itch.io monetisation setup",
+    "r/LocalLLaMA post after SC benchmark"
+  ],
+  "last_updated": "2026-05-28T22:43:17"
+}

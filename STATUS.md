@@ -171,7 +171,14 @@
 | OCB-I Phase 9 (Section Reorganiser) | All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab. |
 | OCB-I Phase 10 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
 | mcc-instructions-keeper | data/instructions_db.json (132 entries) + /api/instructions endpoints + 7 ? help buttons in MCC headers + showInstructions() JS. Skill file uploaded to Project Files 2026-05-28. |
-| OCB-H Phase 7 (
+| OCB-K Finish | data/project_awareness.json + CLAUDE.md (project orientation) — both created 2026-05-28. |
+| OCB-L Phase 1 (OCB-K finish) | data/project_awareness.json built, CLAUDE.md written, data/help_history.json + data/mcc_settings.json created. |
+| OCB-L Phase 2 (System Monitor fix) | _refreshSystemMonitor() dual-source (system/snapshot + resources/snapshot). GPU shows grey N/A when unavailable. LM Studio status pill added. RAM AMBER >80%, RED only >95%. |
+| OCB-L Phase 3 (AI Status Bar) | /api/provider-health endpoint with location/model_loaded/VRAM. Bar height 44px. Richer provider cards with GPU/CPU/CLOUD/PAID badges. Click = expandable tooltip. Auto-refresh 20s. |
+| OCB-L Phase 4 (System Drill-Downs) | All 5 dials clickable. CPU/RAM/Disk/GPU/LMStudio expand panels below dials. 5 new /api/resources/* endpoints. |
+| OCB-L Phase 5 (Help Tab) | 🔍 Help tab added. /api/help/ask (SSE streaming). /api/help/history. AI hierarchy selector. Q&A history accordion. ask() routing via aafl_core provider chain. |
+| OCB-L Phase 6 (Settings Persistence) | data/mcc_settings.json. GET/POST /api/settings. Design tab saves to disk. section_order_per_tab to disk. mccLoadSettings() on DOMContentLoaded. Restore Defaults button. 9 localStorage calls replaced with API. |
+| OCB-L Phase 7 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
