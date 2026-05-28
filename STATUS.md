@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (OCB-F) | **Updated by:** Claude Code
+**Last updated:** 2026-05-28 (OCB-G) | **Updated by:** Claude Code
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -145,6 +145,10 @@
 | OCB-E Phase 6 (SESUM+ACCA) | sesum_2026-05-28_combined.md saved. ACCA: WRC, LLOW, STORM, AASKC added |
 | OCB-F Phase 1 (Arrow Drop Fix) | `llowOnDrop` now handles type=arrow; sets `pendingArrowType` for next port connection. Badge in topbar shows active type. All 15 arrow types draggable. |
 | OCB-F Phase 2 (Colour Strategy) | ⚙️ Settings slide-in panel. Phase Flow / Element Mirror / Snap Glow — three independent toggles. Starter workflow auto-suggest hints. 108/108 MOT. |
+| OCB-G Phase 1 (CONNECTORS) | Palette section renamed "Arrow Types" → "CONNECTORS". Per-type line styles for all 15: dotted timer/scheduled, dashed jump/branch/alp/hard_stop, solid+width for trigger/repeat/ab_split. |
+| OCB-G Phase 2 (Junction Boxes) | 8 new junction types in junctions category (llow_elements.json): Decision/Merge/Split/Gate/Counter/Logger/Router/Delay. CSS clip-path shapes per type. Double-click popup for Gate/Counter/Router/Delay editable params. Props panel "Edit Options" button. |
+| OCB-G Phase 3 (Preset Load) | Dropdown renamed "Preset Load…". 8 new workflow presets: Tutorial Load, Bug Hunt, ALP Audit Run, Scout Deep Dive, Morning Report, Meta Improve, New Project Bootstrap, Star Citizen Benchmark. Strategy auto-suggest extended to all 11 presets. |
+| OCB-G Phase 4 (Colour Strategy) | Phase Flow now renders visible zone header labels at canvas top: "INPUT", "PROCESS", "OUTPUT" with full subtitles. Strict Mode 4th toggle: wrong-zone drop = canvas shake + red zone flash + snap-back + log message. Requires Phase Flow ON. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

@@ -1,0 +1,31 @@
+{
+  "name": "New Project Bootstrap",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Scaffold a new project from scratch — clarify, research, plan, build, verify",
+  "steps": [
+    {"id": "step-np01", "element_id": "WYM",       "x": 60,   "y": 200, "params": {}},
+    {"id": "step-np02", "element_id": "IBR",       "x": 280,  "y": 200, "params": {}},
+    {"id": "step-np03", "element_id": "ALP",       "x": 500,  "y": 200, "params": {}},
+    {"id": "step-np04", "element_id": "ALP_GATE",  "x": 720,  "y": 200, "params": {"min_pct": 40}},
+    {"id": "step-np05", "element_id": "JB_GATE",   "x": 940,  "y": 200, "params": {"condition": "plan approved"}},
+    {"id": "step-np06", "element_id": "OCB",       "x": 1160, "y": 200, "params": {}},
+    {"id": "step-np07", "element_id": "WRC",       "x": 1380, "y": 200, "params": {}},
+    {"id": "step-np08", "element_id": "FFUE_CHECK","x": 1600, "y": 200, "params": {}},
+    {"id": "step-np09", "element_id": "CR",        "x": 1820, "y": 200, "params": {}},
+    {"id": "step-np10", "element_id": "SCORE_GATE","x": 1820, "y": 360, "params": {"threshold": 8}},
+    {"id": "step-np11", "element_id": "WCCS_END",  "x": 1820, "y": 500, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-np01", "from": "step-np01", "to": "step-np02", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np02", "from": "step-np02", "to": "step-np03", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np03", "from": "step-np03", "to": "step-np04", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np04", "from": "step-np04", "to": "step-np05", "arrow_type": "alp_gate",  "params": {"min_pct": 40}},
+    {"id": "arr-np05", "from": "step-np05", "to": "step-np06", "arrow_type": "approval",  "params": {}},
+    {"id": "arr-np06", "from": "step-np06", "to": "step-np07", "arrow_type": "trigger",   "params": {}},
+    {"id": "arr-np07", "from": "step-np07", "to": "step-np08", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np08", "from": "step-np08", "to": "step-np09", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np09", "from": "step-np09", "to": "step-np10", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-np10", "from": "step-np10", "to": "step-np11", "arrow_type": "approval",  "params": {}},
+    {"id": "arr-np11", "from": "step-np10", "to": "step-np06", "arrow_type": "loop_back", "params": {}}
+  ]
+}

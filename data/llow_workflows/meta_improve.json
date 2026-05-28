@@ -1,0 +1,29 @@
+{
+  "name": "Meta Improve",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Self-improving loop — reads own output, applies AFNA, rewrites until score passes",
+  "steps": [
+    {"id": "step-mi01", "element_id": "DDM",       "x": 60,   "y": 200, "params": {}},
+    {"id": "step-mi02", "element_id": "IBR",       "x": 280,  "y": 200, "params": {}},
+    {"id": "step-mi03", "element_id": "WMBW",      "x": 500,  "y": 200, "params": {}},
+    {"id": "step-mi04", "element_id": "WCBB",      "x": 720,  "y": 200, "params": {}},
+    {"id": "step-mi05", "element_id": "AFNA",      "x": 940,  "y": 200, "params": {}},
+    {"id": "step-mi06", "element_id": "JB_COUNTER","x": 1160, "y": 200, "params": {"n": 3}},
+    {"id": "step-mi07", "element_id": "WRC",       "x": 1380, "y": 200, "params": {}},
+    {"id": "step-mi08", "element_id": "CR",        "x": 1600, "y": 200, "params": {}},
+    {"id": "step-mi09", "element_id": "SCORE_GATE","x": 1820, "y": 200, "params": {"threshold": 8}},
+    {"id": "step-mi10", "element_id": "SESUM_END", "x": 1820, "y": 360, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-mi01", "from": "step-mi01", "to": "step-mi02", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi02", "from": "step-mi02", "to": "step-mi03", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi03", "from": "step-mi03", "to": "step-mi04", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi04", "from": "step-mi04", "to": "step-mi05", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi05", "from": "step-mi05", "to": "step-mi06", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi06", "from": "step-mi06", "to": "step-mi07", "arrow_type": "trigger",    "params": {}},
+    {"id": "arr-mi07", "from": "step-mi07", "to": "step-mi08", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi08", "from": "step-mi08", "to": "step-mi09", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-mi09", "from": "step-mi09", "to": "step-mi10", "arrow_type": "approval",   "params": {}},
+    {"id": "arr-mi10", "from": "step-mi09", "to": "step-mi03", "arrow_type": "loop_back",  "params": {}}
+  ]
+}

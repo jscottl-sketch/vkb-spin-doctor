@@ -1,0 +1,25 @@
+{
+  "name": "ALP Audit Run",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Check costs → Find waste → Optimise → Report cycle with ALP gate",
+  "steps": [
+    {"id": "step-aa01", "element_id": "ALP",       "x": 60,  "y": 200, "params": {}},
+    {"id": "step-aa02", "element_id": "ALP_GATE",  "x": 280,  "y": 200, "params": {"min_pct": 30}},
+    {"id": "step-aa03", "element_id": "WS",        "x": 500,  "y": 200, "params": {}},
+    {"id": "step-aa04", "element_id": "JB_ROUTER", "x": 720,  "y": 200, "params": {"rules": ">=8:WCCS_END\n<5:AFNA"}},
+    {"id": "step-aa05", "element_id": "AFNA",      "x": 940,  "y": 200, "params": {}},
+    {"id": "step-aa06", "element_id": "FFUE_CHECK","x": 1160, "y": 200, "params": {}},
+    {"id": "step-aa07", "element_id": "SIF",       "x": 1380, "y": 200, "params": {}},
+    {"id": "step-aa08", "element_id": "WCCS_END",  "x": 1600, "y": 200, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-aa01", "from": "step-aa01", "to": "step-aa02", "arrow_type": "continue",    "params": {}},
+    {"id": "arr-aa02", "from": "step-aa02", "to": "step-aa03", "arrow_type": "alp_gate",    "params": {"min_pct": 30}},
+    {"id": "arr-aa03", "from": "step-aa03", "to": "step-aa04", "arrow_type": "continue",    "params": {}},
+    {"id": "arr-aa04", "from": "step-aa04", "to": "step-aa05", "arrow_type": "branch",      "params": {"condition": "waste found"}},
+    {"id": "arr-aa05", "from": "step-aa05", "to": "step-aa06", "arrow_type": "continue",    "params": {}},
+    {"id": "arr-aa06", "from": "step-aa06", "to": "step-aa07", "arrow_type": "continue",    "params": {}},
+    {"id": "arr-aa07", "from": "step-aa07", "to": "step-aa08", "arrow_type": "continue",    "params": {}},
+    {"id": "arr-aa08", "from": "step-aa04", "to": "step-aa08", "arrow_type": "approval",    "params": {}}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Star Citizen Benchmark",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "SC v0.2 benchmark workflow — research keybinds, fix binds, verify in-game",
+  "steps": [
+    {"id": "step-sc01", "element_id": "BGM",       "x": 60,   "y": 200, "params": {}},
+    {"id": "step-sc02", "element_id": "WS",        "x": 280,  "y": 200, "params": {}},
+    {"id": "step-sc03", "element_id": "IBR",       "x": 500,  "y": 200, "params": {}},
+    {"id": "step-sc04", "element_id": "JB_DECISION","x": 720, "y": 200, "params": {}},
+    {"id": "step-sc05", "element_id": "OCB",       "x": 940,  "y": 100, "params": {}},
+    {"id": "step-sc06", "element_id": "WRC",       "x": 1160, "y": 200, "params": {}},
+    {"id": "step-sc07", "element_id": "JB_LOGGER", "x": 1380, "y": 200, "params": {}},
+    {"id": "step-sc08", "element_id": "CR",        "x": 1600, "y": 200, "params": {}},
+    {"id": "step-sc09", "element_id": "SCORE_GATE","x": 1820, "y": 200, "params": {"threshold": 8}},
+    {"id": "step-sc10", "element_id": "SESUM_END", "x": 1820, "y": 360, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-sc01", "from": "step-sc01", "to": "step-sc02", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc02", "from": "step-sc02", "to": "step-sc03", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc03", "from": "step-sc03", "to": "step-sc04", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc04", "from": "step-sc04", "to": "step-sc05", "arrow_type": "branch",     "params": {"condition": "binds needed"}},
+    {"id": "arr-sc05", "from": "step-sc04", "to": "step-sc06", "arrow_type": "branch",     "params": {"condition": "binds ok"}},
+    {"id": "arr-sc06", "from": "step-sc05", "to": "step-sc06", "arrow_type": "trigger",    "params": {}},
+    {"id": "arr-sc07", "from": "step-sc06", "to": "step-sc07", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc08", "from": "step-sc07", "to": "step-sc08", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc09", "from": "step-sc08", "to": "step-sc09", "arrow_type": "continue",   "params": {}},
+    {"id": "arr-sc10", "from": "step-sc09", "to": "step-sc10", "arrow_type": "approval",   "params": {}},
+    {"id": "arr-sc11", "from": "step-sc09", "to": "step-sc02", "arrow_type": "loop_back",  "params": {}}
+  ]
+}

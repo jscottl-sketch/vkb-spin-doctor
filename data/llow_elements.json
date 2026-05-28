@@ -41,7 +41,9 @@
         {"id": "SIF", "name": "Summarise In Full", "desc": "Full detail output"},
         {"id": "CR", "name": "Confidence Rating", "desc": "Rate confidence 1-10"},
         {"id": "ALP", "name": "ALP Check", "desc": "Check allowance before proceeding"},
-        {"id": "FFUE", "name": "FFUE Check", "desc": "Check fluid/flexible/upgradeable/editable"}
+        {"id": "FFUE", "name": "FFUE Check", "desc": "Check fluid/flexible/upgradeable/editable"},
+        {"id": "DRR", "name": "Dont Require Response", "desc": "No response needed"},
+        {"id": "DWR", "name": "Dont Want Response", "desc": "Suppress response"}
       ]
     },
     "approval_gates": {
@@ -61,7 +63,8 @@
       "elements": [
         {"id": "WCBB", "name": "What Could Be Better", "desc": "Critique and improve"},
         {"id": "AFNA", "name": "Attack From New Angle", "desc": "Try different approach"},
-        {"id": "FFUE_CHECK", "name": "FFUE Audit", "desc": "Check FFUE compliance"}
+        {"id": "FFUE_CHECK", "name": "FFUE Audit", "desc": "Check FFUE compliance"},
+        {"id": "WENTO", "name": "Whatever Else Not Thought Of", "desc": "Catch missed items"}
       ]
     },
     "cycle_controls": {
@@ -70,7 +73,8 @@
       "elements": [
         {"id": "WRC", "name": "Write-Run-Check", "desc": "Mini dev cycle"},
         {"id": "MCU", "name": "MCU Optimise", "desc": "Run Kanban optimiser"},
-        {"id": "SBS", "name": "Step By Step", "desc": "One step at a time"}
+        {"id": "SBS", "name": "Step By Step", "desc": "One step at a time"},
+        {"id": "CNP", "name": "Copy and Paste", "desc": "Export result"}
       ]
     },
     "endings": {
@@ -79,8 +83,21 @@
       "elements": [
         {"id": "WCCS_END", "name": "WCCS Save + End", "desc": "Save and stop"},
         {"id": "SESUM_END", "name": "SESUM + End", "desc": "Session summary and stop"},
-        {"id": "CNP", "name": "Copy and Paste", "desc": "Export result"},
         {"id": "HARD_STOP", "name": "Hard Stop", "desc": "End immediately"}
+      ]
+    },
+    "junctions": {
+      "icon": "🔲",
+      "colour": "#00D4FF",
+      "elements": [
+        {"id": "JB_DECISION", "name": "Decision", "desc": "Diamond — Yes/No split, two output paths"},
+        {"id": "JB_MERGE",    "name": "Merge",    "desc": "Waits for ALL input paths before firing one output"},
+        {"id": "JB_SPLIT",    "name": "Split",    "desc": "Fans one input to multiple parallel output ports"},
+        {"id": "JB_GATE",     "name": "Gate",     "desc": "Only passes flow if condition is true (editable)"},
+        {"id": "JB_COUNTER",  "name": "Counter",  "desc": "Counts flow passes, fires trigger at N (editable N)"},
+        {"id": "JB_LOGGER",   "name": "Logger",   "desc": "Records everything passing through to execution log"},
+        {"id": "JB_ROUTER",   "name": "Router",   "desc": "Reads score/value, routes to matching LEL (editable rules)"},
+        {"id": "JB_DELAY",    "name": "Delay",    "desc": "Adds wait timer before passing through (editable seconds)"}
       ]
     }
   }

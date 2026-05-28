@@ -1,0 +1,34 @@
+{
+  "name": "Scout Deep Dive",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "All 5 scout strategies parallel, synthesis, save findings",
+  "steps": [
+    {"id": "step-sd01", "element_id": "JB_SPLIT",  "x": 60,   "y": 300, "params": {}},
+    {"id": "step-sd02", "element_id": "WS",        "x": 280,   "y": 100, "params": {}},
+    {"id": "step-sd03", "element_id": "WS",        "x": 280,   "y": 200, "params": {}},
+    {"id": "step-sd04", "element_id": "WS",        "x": 280,   "y": 300, "params": {}},
+    {"id": "step-sd05", "element_id": "WS",        "x": 280,   "y": 400, "params": {}},
+    {"id": "step-sd06", "element_id": "WS",        "x": 280,   "y": 500, "params": {}},
+    {"id": "step-sd07", "element_id": "JB_MERGE",  "x": 500,   "y": 300, "params": {}},
+    {"id": "step-sd08", "element_id": "SIF",       "x": 720,   "y": 300, "params": {}},
+    {"id": "step-sd09", "element_id": "CR",        "x": 940,   "y": 300, "params": {}},
+    {"id": "step-sd10", "element_id": "SCORE_GATE","x": 1160,  "y": 300, "params": {"threshold": 7}},
+    {"id": "step-sd11", "element_id": "SESUM_END", "x": 1380,  "y": 300, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-sd01", "from": "step-sd01", "to": "step-sd02", "arrow_type": "ab_split",  "params": {}},
+    {"id": "arr-sd02", "from": "step-sd01", "to": "step-sd03", "arrow_type": "ab_split",  "params": {}},
+    {"id": "arr-sd03", "from": "step-sd01", "to": "step-sd04", "arrow_type": "ab_split",  "params": {}},
+    {"id": "arr-sd04", "from": "step-sd01", "to": "step-sd05", "arrow_type": "ab_split",  "params": {}},
+    {"id": "arr-sd05", "from": "step-sd01", "to": "step-sd06", "arrow_type": "ab_split",  "params": {}},
+    {"id": "arr-sd06", "from": "step-sd02", "to": "step-sd07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd07", "from": "step-sd03", "to": "step-sd07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd08", "from": "step-sd04", "to": "step-sd07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd09", "from": "step-sd05", "to": "step-sd07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd10", "from": "step-sd06", "to": "step-sd07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd11", "from": "step-sd07", "to": "step-sd08", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd12", "from": "step-sd08", "to": "step-sd09", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd13", "from": "step-sd09", "to": "step-sd10", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-sd14", "from": "step-sd10", "to": "step-sd11", "arrow_type": "approval",  "params": {}}
+  ]
+}

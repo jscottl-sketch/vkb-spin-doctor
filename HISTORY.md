@@ -2039,3 +2039,47 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 **MOT:** 108/108 ALL CLEAR
 
 **Files changed:** mission_control.html
+
+---
+
+## 2026-05-28 — OCB-G: LLOW Full Rebuild
+
+**OCB-G complete. All 4 phases delivered.**
+
+### Phase 1 — CONNECTORS
+- Palette section renamed: "Arrow Types" → "CONNECTORS" with updated tooltip
+- Per-type line styles for all 15 connector types in `llowRenderArrows()`:
+  - Dotted: `timer`, `scheduled`
+  - Dashed: `jump_back`, `jump_forward`, `branch`, `alp_gate`, `approval`, `hard_stop`
+  - Bold/solid: `repeat`, `trigger`, `ab_split`, `hard_stop`
+
+### Phase 2 — Junction Boxes
+- Added `junctions` category to `data/llow_elements.json` with 8 new types:
+  Decision, Merge, Split, Gate, Counter, Logger, Router, Delay
+- CSS clip-path shapes per type: diamond, trapezoid (up/down), hexagon, circle, pill, octagon
+- Special `llow-jb` CSS class + shape subclasses applied at render time
+- Double-click popup (`llowDoubleClickJunction`) for Gate/Counter/Router/Delay editable params
+- `llowJBSaveEdit()` saves param values back to step
+- Props panel shows current options + "Edit Options" button for JB types
+
+### Phase 3 — Preset Load
+- Dropdown placeholder renamed "Preset Load…" (HTML + JS)
+- 8 new preset workflow JSON files in `data/llow_workflows/`:
+  `tutorial_load.json`, `bug_hunt.json`, `alp_audit_run.json`, `scout_deep_dive.json`,
+  `morning_report.json`, `meta_improve.json`, `new_project_bootstrap.json`, `star_citizen_benchmark.json`
+- `llowSuggestStrategy()` extended to map all 11 presets to suggested strategies
+
+### Phase 4 — Colour Strategy
+- Phase Flow now renders 3 visible zone header labels at canvas top:
+  "INPUT — Brainstorm, Research, Scout" | "PROCESS — Run, Evaluate, Route" | "OUTPUT — Save, Handover, Report"
+- `llowApplyColourStrategies()` now removes `.llow-phase-label` elements on re-render
+- Strict Mode 4th toggle added to Settings panel with GOEB tooltip
+- `llowToggleStrategy()` handles strict_mode toggle
+- `LLOW_ZONE_CATS` map defines which categories belong to input/process/output zones
+- `llowGetZoneForX()`, `llowGetZoneForCat()`, `llowFlashWrongZone()` helpers added
+- `llowOnDrop()` enforces strict mode: wrong zone = red zone flash + canvas shake + reject with log message
+- `colourStrat` object extended with `strict_mode: false`
+
+**MOT:** 108/108 ALL CLEAR
+
+**Files changed:** mission_control.html, data/llow_elements.json, data/llow_workflows/ (+8 files)

@@ -973,6 +973,27 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-snap-zone{position:absolute;top:0;bottom:0;pointer-events:none;opacity:0;transition:opacity 0.25s ease;z-index:0}
 @keyframes llowSnapPulse{from{opacity:0.15}to{opacity:0.40}}
 .llow-snap-zone.glow{animation:llowSnapPulse 0.55s ease-in-out infinite alternate}
+/* ── OCB-G: Junction boxes ── */
+.llow-jb-shape{width:36px;height:36px;flex-shrink:0;margin:0 6px;pointer-events:none}
+.llow-jb-decision .llow-jb-shape{clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);background:#00D4FF}
+.llow-jb-merge .llow-jb-shape{clip-path:polygon(15% 0%,85% 0%,100% 100%,0% 100%);background:#00D4FF}
+.llow-jb-split .llow-jb-shape{clip-path:polygon(0% 0%,100% 0%,85% 100%,15% 100%);background:#00D4FF}
+.llow-jb-gate .llow-jb-shape{clip-path:polygon(20% 0%,80% 0%,100% 50%,80% 100%,20% 100%,0% 50%);background:#00D4FF}
+.llow-jb-counter .llow-jb-shape{border-radius:50%;background:#00D4FF}
+.llow-jb-logger .llow-jb-shape{border-radius:2px;background:#00D4FF;box-shadow:inset -6px 0 0 rgba(0,0,0,0.25)}
+.llow-jb-router .llow-jb-shape{clip-path:polygon(30% 0%,70% 0%,100% 30%,100% 70%,70% 100%,30% 100%,0% 70%,0% 30%);background:#00D4FF}
+.llow-jb-delay .llow-jb-shape{border-radius:18px;background:#00D4FF}
+.llow-node.llow-jb{border-color:#00D4FF;cursor:grab}
+.llow-node.llow-jb:hover{box-shadow:0 0 0 1px #00D4FF,0 2px 10px rgba(0,212,255,.25)}
+.llow-node.llow-jb.selected{box-shadow:0 0 0 2px #00D4FF,0 2px 14px rgba(0,212,255,.4)}
+.llow-jb-dbl-hint{font-size:8px;color:#00D4FF;opacity:0.5;text-align:center;display:block;margin-top:1px}
+/* ── OCB-G: Phase Flow zone labels ── */
+.llow-phase-label{position:absolute;top:4px;font-size:9px;font-weight:bold;letter-spacing:.08em;pointer-events:none;z-index:1;padding:2px 7px;border-radius:3px;text-transform:uppercase}
+/* ── OCB-G: Strict Mode shake + flash ── */
+@keyframes llowShake{0%,100%{transform:translateX(0)} 15%{transform:translateX(-7px)} 35%{transform:translateX(7px)} 55%{transform:translateX(-4px)} 75%{transform:translateX(4px)}}
+.llow-zone-flash{animation:llowShake 0.4s ease!important}
+@keyframes llowZoneRed{0%{box-shadow:inset 0 0 0 2000px rgba(220,30,30,0.25)} 100%{box-shadow:none}}
+.llow-wrong-zone{animation:llowZoneRed 0.5s ease}
 /* ── OCB-E Phase 5: Storage liquid fill wave ── */
 @keyframes waveMove{0%{background-position:0 0}100%{background-position:60px 0}}
 .stor-wave-bar{position:relative;height:22px;border-radius:4px;overflow:hidden;background:#111;border:1px solid #222}
@@ -2317,8 +2338,8 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
           <button class="btn" onclick="llowRunLoop()" style="background:#1a3a1a;color:#6f6;font-size:12px" title="Execute your loop design through AAFL. Watch progress in the log below.">▶ Run Loop</button>
           <button class="btn" onclick="llowDryRun()" style="font-size:12px" title="Validates your design without executing. Checks for errors and missing connections.">🧪 Dry Run</button>
           <button class="btn" onclick="llowSave()" style="font-size:12px" title="Save workflow to server as a named preset">💾 Save</button>
-          <select id="llow-load-select" onchange="llowLoad(this.value)" style="background:#151515;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="Load a saved workflow — replaces current canvas">
-            <option value="">📂 Load…</option>
+          <select id="llow-load-select" onchange="llowLoad(this.value)" style="background:#151515;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="Preset Load — load a saved or built-in workflow preset onto the canvas">
+            <option value="">📂 Preset Load…</option>
           </select>
           <button class="btn" onclick="llowExportClacr()" style="font-size:12px" title="Converts your visual design into a text CLACR block you can paste into Claude Code.">📋 Export as CLACR</button>
           <button class="btn" onclick="llowClearCanvas()" style="font-size:12px;background:#2a1a1a;color:#f88" title="Clear all steps and arrows from the canvas (will confirm first)">🗑 Clear</button>
@@ -2391,6 +2412,11 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
               <div class="llow-strat-row">
                 <input type="checkbox" id="llow-strat-snap" onchange="llowToggleStrategy('snap_glow')" style="flex-shrink:0;margin-top:2px">
                 <label for="llow-strat-snap"><b style="color:#ccc">Strategy 3: Snap Glow</b><br><span style="font-size:9px;color:#555">Zone pulse-glows when dragging matching element</span></label>
+              </div>
+              <div style="height:1px;background:#222;margin:6px 0"></div>
+              <div class="llow-strat-row">
+                <input type="checkbox" id="llow-strat-strict" onchange="llowToggleStrategy('strict_mode')" style="flex-shrink:0;margin-top:2px">
+                <label for="llow-strat-strict" title="GOEB: When ON, elements can only be placed in their matching colour zone. Wrong zone = shake animation + snap back to palette."><b style="color:#f84">Strict Mode</b><br><span style="font-size:9px;color:#555">LELs snap to matching zone only — wrong zone = shake + reject</span><span style="font-size:8px;color:#f84;display:block;margin-top:2px">⚠ requires Phase Flow ON</span></label>
               </div>
               <div class="llow-strat-hint" id="llow-strat-hint"></div>
             </div>
@@ -11465,7 +11491,7 @@ const LLOW = {
   arrowPreview: null,
   savedWorkflows: [],
   pendingArrowType: 'continue',  // OCB-F: arrow type for next port connection
-  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false }  // OCB-F
+  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false, strict_mode: false }  // OCB-F/G
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -11524,8 +11550,8 @@ function llowRenderPalette(filter) {
   // Arrow section
   if (!q || 'arrows'.includes(q)) {
     html += `<div class="llow-pal-sep"></div>
-    <div class="llow-cat-hdr" onclick="llowToggleCat(this)" title="Arrow types">
-      <span>↔ Arrow Types</span><span class="llow-chevron">▾</span>
+    <div class="llow-cat-hdr" onclick="llowToggleCat(this)" title="Connector lines — drag onto canvas between two LELs to connect them">
+      <span>↔ CONNECTORS</span><span class="llow-chevron">▾</span>
     </div>
     <div class="llow-cat-items" data-cat="arrows">`;
     for (const a of LLOW.arrowDefs) {
@@ -11598,13 +11624,15 @@ function llowToggleStrategy(name) {
   document.getElementById('llow-strat-phase').checked = LLOW.colourStrat.phase_flow;
   document.getElementById('llow-strat-mirror').checked = LLOW.colourStrat.element_mirror;
   document.getElementById('llow-strat-snap').checked = LLOW.colourStrat.snap_glow;
+  const strictEl = document.getElementById('llow-strat-strict');
+  if (strictEl) strictEl.checked = LLOW.colourStrat.strict_mode;
   llowApplyColourStrategies();
 }
 
 function llowApplyColourStrategies() {
   const inner = document.getElementById('llow-canvas-inner');
   if (!inner) return;
-  inner.querySelectorAll('.llow-colour-overlay').forEach(el => el.remove());
+  inner.querySelectorAll('.llow-colour-overlay,.llow-phase-label').forEach(el => el.remove());
   const { phase_flow, element_mirror } = LLOW.colourStrat;
   if (element_mirror && LLOW.elements) {
     const cats = Object.entries(LLOW.elements.categories || {});
@@ -11633,10 +11661,26 @@ function llowApplyColourStrategies() {
     }
   }
   if (phase_flow) {
+    // Main colour bands
     const ov = document.createElement('div');
     ov.className = 'llow-colour-overlay';
-    ov.style.background = 'linear-gradient(to right,rgba(0,80,255,0.20) 0%,rgba(0,80,255,0.20) 33.3%,transparent 33.3%,transparent 66.6%,rgba(255,50,0,0.20) 66.6%,rgba(255,50,0,0.20) 100%)';
+    ov.style.background = 'linear-gradient(to right,rgba(0,80,255,0.18) 0%,rgba(0,80,255,0.18) 33.3%,rgba(180,180,180,0.08) 33.3%,rgba(180,180,180,0.08) 66.6%,rgba(255,50,0,0.18) 66.6%,rgba(255,50,0,0.18) 100%)';
     inner.prepend(ov);
+    // Zone header labels
+    const zoneLabels = [
+      { text: 'INPUT — Brainstorm, Research, Scout',   left: '1%',  color: 'rgba(100,160,255,0.95)' },
+      { text: 'PROCESS — Run, Evaluate, Route',        left: '35%', color: 'rgba(200,200,200,0.85)' },
+      { text: 'OUTPUT — Save, Handover, Report',       left: '68%', color: 'rgba(255,120,100,0.95)' }
+    ];
+    for (const z of zoneLabels) {
+      const lb = document.createElement('div');
+      lb.className = 'llow-phase-label';
+      lb.style.left = z.left;
+      lb.style.color = z.color;
+      lb.style.background = 'rgba(0,0,0,0.5)';
+      lb.textContent = z.text;
+      inner.appendChild(lb);
+    }
   }
   llowSetupSnapZones();
 }
@@ -11688,10 +11732,54 @@ function llowSuggestStrategy(filename) {
   const hint = document.getElementById('llow-strat-hint');
   if (!hint) return;
   const f = (filename || '').toLowerCase();
-  if (f.includes('basic_research')) hint.textContent = '💡 Suggested for this workflow: Strategy 1 — Phase Flow';
-  else if (f.includes('full_dev_cycle')) hint.textContent = '💡 Suggested for this workflow: Strategy 2 — Element Mirror';
-  else if (f.includes('overnight_aafl')) hint.textContent = '💡 Suggested for this workflow: Strategy 3 — Snap Glow';
-  else hint.textContent = '';
+  const map = {
+    'basic_research':        '💡 Suggested: Strategy 1 — Phase Flow (Input → Process → Output)',
+    'full_dev_cycle':        '💡 Suggested: Strategy 2 — Element Mirror (colour per category)',
+    'overnight_aafl':        '💡 Suggested: Strategy 3 — Snap Glow (zone guidance)',
+    'tutorial_load':         '💡 Suggested: All 3 strategies ON — learning mode',
+    'bug_hunt':              '💡 Suggested: Strategy 2 — Element Mirror',
+    'alp_audit_run':         '💡 Suggested: Strategy 1 — Phase Flow',
+    'scout_deep_dive':       '💡 Suggested: Strategy 3 — Snap Glow',
+    'morning_report':        '💡 Suggested: Strategy 1 — Phase Flow',
+    'meta_improve':          '💡 Suggested: Strategy 2 — Element Mirror',
+    'new_project_bootstrap': '💡 Suggested: Strategy 1 — Phase Flow',
+    'star_citizen_benchmark':'💡 Suggested: Strategy 2 — Element Mirror'
+  };
+  const key = Object.keys(map).find(k => f.includes(k));
+  hint.textContent = key ? map[key] : '';
+}
+
+// ── OCB-G: Strict Mode zone helpers ──────────────────────────────────────────
+
+const LLOW_ZONE_CATS = {
+  input:   ['inputs'],
+  process: ['modes', 'modifiers', 'cycle_controls', 'quality_checks', 'junctions'],
+  output:  ['outputs', 'approval_gates', 'endings']
+};
+
+function llowGetZoneForX(x) {
+  const cw = 2200;
+  if (x < cw / 3)       return 'input';
+  if (x < (2 * cw) / 3) return 'process';
+  return 'output';
+}
+
+function llowGetZoneForCat(catKey) {
+  for (const [zone, cats] of Object.entries(LLOW_ZONE_CATS)) {
+    if (cats.includes(catKey)) return zone;
+  }
+  return null;
+}
+
+function llowFlashWrongZone(x) {
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner) return;
+  const cw = 2200;
+  const zoneIndex = x < cw/3 ? 0 : (x < 2*cw/3 ? 1 : 2);
+  const flashDiv = document.createElement('div');
+  flashDiv.style.cssText = `position:absolute;top:0;bottom:0;left:${zoneIndex*33.33}%;width:33.34%;pointer-events:none;z-index:5;background:rgba(220,30,30,0.3);animation:llowZoneRed 0.5s ease forwards`;
+  inner.appendChild(flashDiv);
+  setTimeout(() => flashDiv.remove(), 520);
 }
 
 // ── Canvas drop ───────────────────────────────────────────────────────────────
@@ -11748,6 +11836,23 @@ function llowOnDrop(e) {
   const catDef = (LLOW.elements.categories || {})[data.catKey] || {};
   const elDef = (catDef.elements || []).find(e2 => e2.id === data.elId);
   if (!elDef) return;
+
+  // Strict Mode zone check (OCB-G)
+  if (LLOW.colourStrat.strict_mode && LLOW.colourStrat.phase_flow) {
+    const dropZone = llowGetZoneForX(x);
+    const elZone   = llowGetZoneForCat(data.catKey);
+    if (elZone && dropZone !== elZone) {
+      llowFlashWrongZone(x);
+      const wrapEl = document.getElementById('llow-canvas-wrap');
+      if (wrapEl) {
+        wrapEl.classList.add('llow-zone-flash');
+        setTimeout(() => wrapEl.classList.remove('llow-zone-flash'), 420);
+      }
+      llowLogExec(`Strict Mode: ${elDef.name} belongs in ${elZone.toUpperCase()} zone — snap back`, 'fail');
+      return;
+    }
+  }
+
   const stepId = 'step-' + Math.random().toString(36).slice(2, 10);
   LLOW.wf.steps.push({ id: stepId, element_id: data.elId, x, y, params: {}, _elDef: elDef, _catDef: catDef });
   llowRenderCanvas();
@@ -11779,18 +11884,26 @@ function llowRenderCanvas() {
     const colour = cat.colour || el.colour || '#555';
     const icon = cat.icon || el.icon || '●';
     const selected = LLOW.sel === step.id && LLOW.selType === 'step';
+    const isJB = step.element_id && step.element_id.startsWith('JB_');
+    const jbType = isJB ? step.element_id.replace('JB_','').toLowerCase() : null;
     const div = document.createElement('div');
-    div.className = 'llow-node' + (selected ? ' selected' : '');
+    div.className = 'llow-node' + (selected ? ' selected' : '') + (isJB ? ' llow-jb llow-jb-' + jbType : '');
     div.id = 'llow-node-' + step.id;
     div.style.cssText = `left:${step.x}px;top:${step.y}px;border-color:${colour}`;
+    const iconOrShape = isJB
+      ? `<div class="llow-jb-shape"></div>`
+      : `<div class="llow-node-icon">${icon}</div>`;
+    const hasParams = isJB && ['jb_gate','jb_counter','jb_router','jb_delay'].includes(jbType);
+    const dblHint = isJB ? `<span class="llow-jb-dbl-hint" title="Double-click to edit options">⚙ dbl-click</span>` : '';
     div.innerHTML = `
       <div class="llow-port llow-port-in" id="llow-pin-${step.id}"
            onclick="llowPortInClick(event,'${step.id}')"
            title="Input port — click after selecting an output port to connect"></div>
-      <div class="llow-node-icon">${icon}</div>
+      ${iconOrShape}
       <div class="llow-node-body">
         <div class="llow-node-name" style="color:${colour}">${el.name || step.element_id}</div>
         <div class="llow-node-desc">${el.desc || ''}</div>
+        ${dblHint}
       </div>
       <div class="llow-port llow-port-out" id="llow-pout-${step.id}"
            onclick="llowPortOutClick(event,'${step.id}')"
@@ -11817,6 +11930,12 @@ function llowRenderCanvas() {
         llowSelectStep(step.id);
       }
     });
+    if (isJB) {
+      div.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        llowDoubleClickJunction(e, step.id);
+      });
+    }
     layer.appendChild(div);
   }
 
@@ -11848,9 +11967,15 @@ function llowRenderArrows(svg) {
     const selected = LLOW.sel === arrow.id && LLOW.selType === 'arrow';
     const dx = Math.abs(to.x - from.x) * 0.5 || 80;
     const d = `M${from.x},${from.y} C${from.x+dx},${from.y} ${to.x-dx},${to.y} ${to.x},${to.y}`;
-    const strokeW = selected ? 2.5 : 1.5;
+    const strokeW = selected ? 2.5 : ((['repeat','trigger','hard_stop','ab_split'].includes(arrow.arrow_type)) ? 2 : 1.5);
     const opacity = selected ? 1 : 0.75;
-    const dash = ['branch','alp_gate','approval'].includes(arrow.arrow_type) ? 'stroke-dasharray="5,3"' : '';
+    const dashMap = {
+      jump_back:'stroke-dasharray="6,3"', jump_forward:'stroke-dasharray="6,3"',
+      branch:'stroke-dasharray="5,3"', alp_gate:'stroke-dasharray="5,3"',
+      approval:'stroke-dasharray="4,2"', hard_stop:'stroke-dasharray="3,2"',
+      timer:'stroke-dasharray="2,4"', scheduled:'stroke-dasharray="2,5"'
+    };
+    const dash = dashMap[arrow.arrow_type] || '';
     const label = arrowDef.symbol || '→';
     const midX = (from.x + to.x) / 2;
     const midY = (from.y + to.y) / 2 - 10;
@@ -11988,6 +12113,25 @@ function llowRenderParamFields(step, el) {
   let html = '';
   const cat = step._catDef || {};
   const catKey = el.category || '';
+  // Junction box params shown read-only in props panel (edit via double-click popup)
+  if (catKey === 'junctions' && step.element_id.startsWith('JB_')) {
+    const jbType = step.element_id;
+    const hasOpts = ['JB_GATE','JB_COUNTER','JB_ROUTER','JB_DELAY'].includes(jbType);
+    if (hasOpts) {
+      const pStr = Object.entries(step.params || {}).filter(([,v]) => v !== null && v !== '' && v !== undefined).map(([k,v]) => `${k}: ${v}`).join(' | ') || 'defaults';
+      html += `<div class="llow-prop-row">
+        <div class="llow-prop-label">Options</div>
+        <div class="llow-prop-val" style="font-size:10px;color:#888">${pStr}</div>
+      </div>
+      <div style="margin-top:4px">
+        <button class="btn" style="font-size:10px;background:#0a1a2a;color:#00D4FF"
+                ondblclick="event.stopPropagation()" onclick="llowDoubleClickJunction(event,'${step.id}')">⚙ Edit Options</button>
+      </div>`;
+    } else {
+      html += `<div class="llow-prop-row"><div class="llow-prop-label" style="color:#555">No editable options</div></div>`;
+    }
+    return html;
+  }
   if (catKey === 'approval_gates' && step.element_id === 'SCORE_GATE') {
     const v = step.params.threshold || 7;
     html += `<div class="llow-prop-row">
@@ -12051,6 +12195,80 @@ function llowRenderArrowParamFields(arrow, arrowDef) {
     }
   }
   return html;
+}
+
+// ── Junction box double-click edit popup (OCB-G) ─────────────────────────────
+
+function llowDoubleClickJunction(e, stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step || !step.element_id.startsWith('JB_')) return;
+  const jbType = step.element_id;
+  const el = llowGetElInfo(jbType);
+  let fields = '';
+  if (jbType === 'JB_GATE') {
+    const v = (step.params.condition || '').replace(/"/g, '&quot;');
+    fields = `<div style="margin-bottom:8px">
+      <label style="display:block;font-size:11px;color:#888;margin-bottom:4px">Condition — pass flow only when true</label>
+      <input type="text" id="jb-edit-f1" value="${v}" placeholder="e.g. score >= 7"
+             style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px;box-sizing:border-box">
+    </div>`;
+  } else if (jbType === 'JB_COUNTER') {
+    const v = step.params.n || 5;
+    fields = `<div style="margin-bottom:8px">
+      <label style="display:block;font-size:11px;color:#888;margin-bottom:4px">Fire trigger after N passes</label>
+      <input type="number" id="jb-edit-f1" value="${v}" min="1"
+             style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+    </div>`;
+  } else if (jbType === 'JB_ROUTER') {
+    const v = (step.params.rules || '').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    fields = `<div style="margin-bottom:8px">
+      <label style="display:block;font-size:11px;color:#888;margin-bottom:4px">Routing rules (one per line: score_expr:target_id)</label>
+      <textarea id="jb-edit-f1" rows="4" placeholder="e.g.&#10;&gt;=8:SESUM_END&#10;&lt;5:AFNA"
+                style="width:100%;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:11px;box-sizing:border-box;resize:vertical">${v}</textarea>
+    </div>`;
+  } else if (jbType === 'JB_DELAY') {
+    const v = step.params.seconds || 5;
+    fields = `<div style="margin-bottom:8px">
+      <label style="display:block;font-size:11px;color:#888;margin-bottom:4px">Delay in seconds before passing through</label>
+      <input type="number" id="jb-edit-f1" value="${v}" min="1"
+             style="width:80px;background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;font-size:12px">
+    </div>`;
+  } else {
+    fields = `<div style="font-size:11px;color:#666;font-style:italic;padding:8px 0">No editable options for this junction type.</div>`;
+  }
+  const existing = document.getElementById('llow-jb-edit-popup');
+  if (existing) existing.remove();
+  const popup = document.createElement('div');
+  popup.id = 'llow-jb-edit-popup';
+  popup.className = 'mcc-popup-safe';
+  popup.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#1a1a1a;border:1px solid #00D4FF;border-radius:8px;padding:16px;z-index:9999;min-width:300px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.85)';
+  popup.innerHTML = `
+    <div style="font-size:12px;font-weight:bold;color:#00D4FF;margin-bottom:12px">🔲 ${el.name} — Edit Options</div>
+    <div style="font-size:10px;color:#555;margin-bottom:10px">${el.desc}</div>
+    ${fields}
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button class="btn" onclick="llowJBSaveEdit('${stepId}');document.getElementById('llow-jb-edit-popup').remove()"
+              style="font-size:11px;background:#0a2a0a;color:#6f6">✓ Save</button>
+      <button class="btn" onclick="document.getElementById('llow-jb-edit-popup').remove()"
+              style="font-size:11px">Cancel</button>
+    </div>`;
+  document.body.appendChild(popup);
+  setTimeout(() => { const f = popup.querySelector('#jb-edit-f1'); if (f) f.focus(); }, 50);
+}
+
+function llowJBSaveEdit(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const f = document.getElementById('jb-edit-f1');
+  if (!f) return;
+  const jbType = step.element_id;
+  if (jbType === 'JB_GATE')    step.params.condition = f.value;
+  else if (jbType === 'JB_COUNTER') step.params.n = parseInt(f.value) || 5;
+  else if (jbType === 'JB_ROUTER')  step.params.rules = f.value;
+  else if (jbType === 'JB_DELAY')   step.params.seconds = parseInt(f.value) || 5;
+  llowRenderCanvas();
+  llowSelectStep(stepId);
+  llowLogExec(`${jbType} options saved`, 'pass');
 }
 
 function llowSetStepParam(stepId, key, val) {
@@ -12305,7 +12523,7 @@ async function llowLoad(filename) {
 function llowPopulateLoadSelect() {
   const sel = document.getElementById('llow-load-select');
   if (!sel) return;
-  sel.innerHTML = '<option value="">📂 Load…</option>';
+  sel.innerHTML = '<option value="">📂 Preset Load…</option>';
   for (const wf of LLOW.savedWorkflows) {
     const opt = document.createElement('option');
     opt.value = wf.filename;

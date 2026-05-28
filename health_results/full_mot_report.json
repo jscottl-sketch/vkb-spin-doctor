@@ -1,18 +1,11 @@
 {
-  "timestamp": "2026-05-28T00:26:41.302166",
+  "timestamp": "2026-05-28T14:57:46.021275",
   "total": 108,
-  "passed": 107,
-  "failed": 1,
-  "pass_rate": 99.1,
-  "verdict": "ISSUES FOUND",
-  "failures": [
-    {
-      "group": "C",
-      "name": "Feature: ALP Counter",
-      "status": "FAIL",
-      "detail": "MISSING"
-    }
-  ],
+  "passed": 108,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "verdict": "ALL CLEAR",
+  "failures": [],
   "results": [
     {
       "group": "A",
@@ -358,9 +351,9 @@
     },
     {
       "group": "C",
-      "name": "Feature: ALP Counter",
-      "status": "FAIL",
-      "detail": "MISSING"
+      "name": "Feature: ALP Counter (merged into AAFL Control)",
+      "status": "PASS",
+      "detail": "found"
     },
     {
       "group": "C",
@@ -624,7 +617,7 @@
       "group": "G",
       "name": "memory_bank.store()",
       "status": "PASS",
-      "detail": "uid=c834f9f0-7691-42"
+      "detail": "uid=cddcd9fe-3f1f-43"
     },
     {
       "group": "G",
@@ -658,9 +651,9 @@
     },
     {
       "group": "H",
-      "name": "ALP_Database.md >=12 entries (found: 43)",
+      "name": "ALP_Database.md >=12 entries (found: 45)",
       "status": "PASS",
-      "detail": "43 rows"
+      "detail": "45 rows"
     }
   ]
 }

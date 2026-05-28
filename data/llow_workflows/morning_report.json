@@ -1,0 +1,22 @@
+{
+  "name": "Morning Report",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Quick daily status check — ALP, scan, brief summary, save",
+  "steps": [
+    {"id": "step-mr01", "element_id": "BGM",      "x": 60,   "y": 200, "params": {}},
+    {"id": "step-mr02", "element_id": "ALP",      "x": 280,  "y": 200, "params": {}},
+    {"id": "step-mr03", "element_id": "WS",       "x": 500,  "y": 200, "params": {}},
+    {"id": "step-mr04", "element_id": "JB_LOGGER","x": 720,  "y": 200, "params": {}},
+    {"id": "step-mr05", "element_id": "SIB",      "x": 940,  "y": 200, "params": {}},
+    {"id": "step-mr06", "element_id": "CR",       "x": 1160, "y": 200, "params": {}},
+    {"id": "step-mr07", "element_id": "SESUM_END","x": 1380, "y": 200, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-mr01", "from": "step-mr01", "to": "step-mr02", "arrow_type": "continue", "params": {}},
+    {"id": "arr-mr02", "from": "step-mr02", "to": "step-mr03", "arrow_type": "continue", "params": {}},
+    {"id": "arr-mr03", "from": "step-mr03", "to": "step-mr04", "arrow_type": "continue", "params": {}},
+    {"id": "arr-mr04", "from": "step-mr04", "to": "step-mr05", "arrow_type": "continue", "params": {}},
+    {"id": "arr-mr05", "from": "step-mr05", "to": "step-mr06", "arrow_type": "continue", "params": {}},
+    {"id": "arr-mr06", "from": "step-mr06", "to": "step-mr07", "arrow_type": "continue", "params": {}}
+  ]
+}

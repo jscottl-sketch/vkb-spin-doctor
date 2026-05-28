@@ -1,0 +1,29 @@
+{
+  "name": "Bug Hunt",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Scan → Identify → AFNA → Fix → Verify loop with score gate",
+  "steps": [
+    {"id": "step-bh01", "element_id": "TBLM",      "x": 60,  "y": 200, "params": {}},
+    {"id": "step-bh02", "element_id": "WS",        "x": 280,  "y": 200, "params": {}},
+    {"id": "step-bh03", "element_id": "JB_LOGGER", "x": 500,  "y": 200, "params": {}},
+    {"id": "step-bh04", "element_id": "WMBW",      "x": 720,  "y": 200, "params": {}},
+    {"id": "step-bh05", "element_id": "AFNA",      "x": 940,  "y": 200, "params": {}},
+    {"id": "step-bh06", "element_id": "WRC",       "x": 1160, "y": 200, "params": {}},
+    {"id": "step-bh07", "element_id": "CR",        "x": 1380, "y": 200, "params": {}},
+    {"id": "step-bh08", "element_id": "ALP_GATE",  "x": 1600, "y": 200, "params": {}},
+    {"id": "step-bh09", "element_id": "SCORE_GATE","x": 1600, "y": 360, "params": {"threshold": 7}},
+    {"id": "step-bh10", "element_id": "SESUM_END", "x": 1820, "y": 200, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arr-bh01", "from": "step-bh01", "to": "step-bh02", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh02", "from": "step-bh02", "to": "step-bh03", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh03", "from": "step-bh03", "to": "step-bh04", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh04", "from": "step-bh04", "to": "step-bh05", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh05", "from": "step-bh05", "to": "step-bh06", "arrow_type": "trigger",   "params": {}},
+    {"id": "arr-bh06", "from": "step-bh06", "to": "step-bh07", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh07", "from": "step-bh07", "to": "step-bh08", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh08", "from": "step-bh08", "to": "step-bh09", "arrow_type": "continue",  "params": {}},
+    {"id": "arr-bh09", "from": "step-bh09", "to": "step-bh10", "arrow_type": "approval",  "params": {}},
+    {"id": "arr-bh10", "from": "step-bh09", "to": "step-bh05", "arrow_type": "loop_back", "params": {}}
+  ]
+}
