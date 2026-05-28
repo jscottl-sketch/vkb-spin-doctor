@@ -293,6 +293,80 @@ class WorkChecker:
         return {"name": "HC-10 Watchdog Wiring", "status": "PASS",
                 "detail": "aafl_watchdog and cost_guard both imported and called"}
 
+    def build_timeline_panel(self):
+        """Return project_timeline.json data for the timeline panel."""
+        tl_file = ROOT / "data" / "project_timeline.json"
+        if not tl_file.exists():
+            try:
+                import project_timeline_builder
+                project_timeline_builder.build()
+            except Exception:
+                pass
+        if tl_file.exists():
+            try:
+                return json.loads(tl_file.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        return {}
+
+    def build_checklist(self):
+        """Return PENDING items from STATUS.md as checkable items."""
+        items = []
+        if not STATUS_FILE.exists():
+            return items
+        text = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
+        in_section = False
+        for line in text.splitlines():
+            if re.match(r"^##\s+CURRENT STATUS.+PENDING", line, re.IGNORECASE):
+                in_section = True
+                continue
+            if in_section:
+                if line.startswith("## "):
+                    break
+                m = re.match(r"^\|\s*(.+?)\s*\|\s*(.+?)\s*\|", line)
+                if m:
+                    comp = m.group(1).strip()
+                    notes = m.group(2).strip()
+                    if comp and not comp.startswith("---") and comp.lower() not in ("component", "#"):
+                        items.append({"id": re.sub(r"[^\w]", "_", comp[:40]), "component": comp, "notes": notes, "done": False})
+        return items
+
+    def mark_item_done(self, item_id: str, done: bool):
+        """Attempt to move item_id from PENDING to BUILT in STATUS.md (best-effort)."""
+        if not STATUS_FILE.exists():
+            return False
+        text = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
+        item_id_clean = item_id.replace("_", " ").lower()
+        if done:
+            lines = text.splitlines(keepends=True)
+            new_lines = []
+            for line in lines:
+                m = re.match(r"^\|\s*(.+?)\s*\|", line)
+                if m and m.group(1).strip().lower().replace(" ", "_")[:40] == item_id:
+                    line = line.rstrip("\n").rstrip("\r") + "  ✓ (marked done)\n"
+                new_lines.append(line)
+            STATUS_FILE.write_text("".join(new_lines), encoding="utf-8")
+        return True
+
+    def build_action_plan(self):
+        """Return top 5 next priorities from STATUS.md NEXT PRIORITIES."""
+        if not STATUS_FILE.exists():
+            return []
+        text = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
+        in_section = False
+        items = []
+        for line in text.splitlines():
+            if re.match(r"^##\s+NEXT PRIORITIES", line, re.IGNORECASE):
+                in_section = True
+                continue
+            if in_section:
+                if line.startswith("## ") or line.startswith("---"):
+                    break
+                m = re.match(r"^(\d+)\.\s+(.+)", line.strip())
+                if m:
+                    items.append({"rank": int(m.group(1)), "priority": m.group(2).strip()})
+        return items[:5]
+
     def generate_report(self):
         sessions = self.scan_sesum_files()
         completed_items, lost_items, stuck_items = self.compare_to_status()

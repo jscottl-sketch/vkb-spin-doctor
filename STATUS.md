@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (aafl_wccs.py) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-29 (OCB-N) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -179,6 +179,12 @@
 | OCB-L Phase 5 (Help Tab) | 🔍 Help tab added. /api/help/ask (SSE streaming). /api/help/history. AI hierarchy selector. Q&A history accordion. ask() routing via aafl_core provider chain. |
 | OCB-L Phase 6 (Settings Persistence) | data/mcc_settings.json. GET/POST /api/settings. Design tab saves to disk. section_order_per_tab to disk. mccLoadSettings() on DOMContentLoaded. Restore Defaults button. 9 localStorage calls replaced with API. |
 | OCB-L Phase 7 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
+| OCB-N Phase 1 (Scout Swarm LEL) | DATA SOURCES category + SCOUT_SWARM LEL in llow_elements.json. Time limit/counter/status/params on canvas node. /api/llow/scout-swarm endpoints. |
+| OCB-N Phase 2 (Project Timeline) | project_timeline_builder.py — scans git/session_logs/STATUS/HISTORY/ACCA. Saves data/project_timeline.json. Wired into aafl_wccs.py on every save. /api/timeline-data endpoint. |
+| OCB-N Phase 3 (Work Checker upgrade) | 3 new panels: TIMELINE (horizontal OCB track), CHECKLIST (STATUS.md PENDING as live checkboxes), ACTION PLAN (top 5 priorities + Delegate buttons). 5 new endpoints. |
+| OCB-N Phase 4 (ACCA Ticker) | Persistent bottom bar scrolling all ACCA codes. Click-to-expand. Auto-loads on connect. Colour coded. Auto-reload every 5min. |
+| OCB-N Phase 5 (Remove handover writes) | wccs_runner.py no longer creates VKB_SpinDoctor_Handover_vXX.md files. STATUS/HISTORY/ACCA are source of truth. |
+| OCB-N Phase 6 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -253,9 +259,9 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
-2. Add GROQ + Cloudflare keys to .env (manual — security rule)
-3. OCB-B — Body Map visual + Auto-Fix Engine + Real-Time updates (Health Suite)
+1. Run MOT 108/108 after OCB-N — confirm all checks PASS
+2. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
+3. Add GROQ + Cloudflare keys to .env (manual — security rule)
 4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
 5. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
 6. Post on r/LocalLLaMA when Star Citizen benchmark passes

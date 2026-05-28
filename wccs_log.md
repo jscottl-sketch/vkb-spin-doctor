@@ -44,3 +44,6 @@
 | v58 | 2026-05-28 | OCB-L — system monitor fix, AI bar enriched, 5 drill-downs, Help tab, settings persistence to disk. 108/108 MOT. |
 | 33 | 2026-05-28 | v58 -> v59 | test chat text for recovery check | None |
 | 34 | 2026-05-29 | v59 -> v60 | OCB-M: LLOW LEL dblclick fix (manual detection), zone headers, GPU N/A verify, pie chart navigation, AI providers LELs (11), Health Suite PFS+bar drill-downs, Instructions 3-section restructure, AI Appendix (table+radar), LLC to ACCA. 108/108 MOT. | LLC = Loop Law Chain |
+| 35 | 2026-05-29 | v62 (last handover — Phase 5) | OCB-N: Scout Swarm LEL (DATA SOURCES palette, live counter/status/time-limit), project_timeline_builder.py, Work Checker 3 panels (Timeline/Checklist/Action Plan), ACCA ticker bar, removed legacy handover writes. 108/108 MOT. | SWARM, PTL, WCTL, WCCL, WCAP, ACCATICK |
+| 35 | 2026-05-29 | v60 -> v61 | {} | None |
+| 36 | 2026-05-29 | v61 -> v62 | test chat text for recovery check | None |

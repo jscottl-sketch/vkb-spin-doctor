@@ -68,4 +68,12 @@
 
 | LLC | Loop Law Chain — a sequence of AI LEL nodes on the LLOW canvas connected by arrows, forming an ordered chain where context passes from one AI provider LEL to the next. Each node processes the input and forwards output to the next in the chain. | 2026-05-29 |
 
+
+| SWARM | Scout Swarm LEL — a DATA SOURCES LLOW element that launches chief_scout.py with parameters and time limit, showing live result counter and status on the canvas | 2026-05-29 |
+| PTL | Project Timeline — live document (data/project_timeline.json) built by project_timeline_builder.py on every WCCS run, tracking OCBs/MOT/velocity/milestones | 2026-05-29 |
+| WCTL | Work Checker Timeline — horizontal clickable OCB timeline panel inside the Work Checker section of Health Suite | 2026-05-29 |
+| WCCL | Work Checker Checklist — live checkboxes of all PENDING items from STATUS.md, tick = marks done | 2026-05-29 |
+| WCAP | Work Checker Action Plan — top 5 next priorities from STATUS.md with Delegate → MCCM buttons | 2026-05-29 |
+| ACCATICK | ACCA Ticker Bar — persistent bottom bar scrolling all ACCA shorthand codes; click to expand inline | 2026-05-29 |
+
 <!-- END_OF_FILE -->

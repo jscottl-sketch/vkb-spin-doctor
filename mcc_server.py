@@ -81,9 +81,12 @@ WORKFLOW_PRESETS   = HERE / "aafl_workflow_presets.json"
 LOOP_PRESETS       = HERE / "aafl_loop_presets.json"
 
 # ── LLOW paths (OCB-D) ───────────────────────────────────────────────────────
-LLOW_ELEMENTS_FILE = HERE / "data" / "llow_elements.json"
-LLOW_ARROWS_FILE   = HERE / "data" / "llow_arrows.json"
-LLOW_WORKFLOWS_DIR = HERE / "data" / "llow_workflows"
+LLOW_ELEMENTS_FILE  = HERE / "data" / "llow_elements.json"
+LLOW_ARROWS_FILE    = HERE / "data" / "llow_arrows.json"
+LLOW_WORKFLOWS_DIR  = HERE / "data" / "llow_workflows"
+# ── OCB-N paths ───────────────────────────────────────────────────────────────
+TIMELINE_FILE       = HERE / "data" / "project_timeline.json"
+SCOUT_SWARM_STATE   = HERE / "data" / "scout_swarm_state.json"
 
 # ── Self-Health paths (OCB-A / OCB-B) ────────────────────────────────────────
 SH_REGISTRY     = HERE / "data" / "element_registry.json"
@@ -121,6 +124,10 @@ _scout_proc          = None  # subprocess.Popen handle (killable)
 _scout_start_time    = None  # datetime when scout started (for 120s auto-clear)
 _aafl_running: bool  = False
 _aafl_proc           = None  # subprocess.Popen handle
+
+# ── OCB-N: Scout Swarm LLOW LEL state ────────────────────────────────────────
+_swarm_sessions: dict = {}   # session_id → {status, results_count, params, time_limit, proc, started}
+_swarm_lock = threading.Lock()
 
 # ── Auto-WCCS state ───────────────────────────────────────────────────────────
 _auto_wccs_timer     = None
@@ -555,6 +562,18 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/llow/workflow/"):
                 name = urllib.parse.unquote(path[len("/api/llow/workflow/"):])
                 self._handle_llow_get_workflow(name)
+            # ── OCB-N: Scout Swarm + Timeline ────────────────────────────────
+            elif path == "/api/llow/scout-swarm":
+                self._handle_scout_swarm_get()
+            elif path == "/api/timeline-data":
+                self._handle_api_timeline_data()
+            # ── OCB-N: Work Checker new panels ───────────────────────────────
+            elif path == "/api/work-checker/timeline":
+                self._handle_wc_timeline()
+            elif path == "/api/work-checker/checklist":
+                self._handle_wc_checklist()
+            elif path == "/api/work-checker/action-plan":
+                self._handle_wc_action_plan()
             # ── Instructions keeper ────────────────────────────────────────────
             elif path == "/api/instructions":
                 self._handle_api_instructions()
@@ -809,6 +828,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_llow_run()
             elif path == "/api/llow/dry-run":
                 self._handle_llow_dry_run()
+            # ── OCB-N: Scout Swarm launch + Work Checker ─────────────────────
+            elif path == "/api/llow/scout-swarm":
+                self._handle_scout_swarm_post()
+            elif path == "/api/work-checker/check-item":
+                self._handle_wc_check_item()
+            elif path == "/api/work-checker/delegate":
+                self._handle_wc_delegate()
             elif path == "/api/clachr/dispatch":
                 self._handle_clachr_dispatch()
             # ── OCB-K: Project awareness update ─────────────────────────────
@@ -6637,6 +6663,226 @@ def _handle_settings_post(self):
 
 MCCHandler._handle_settings_get  = _handle_settings_get  # type: ignore[attr-defined]
 MCCHandler._handle_settings_post = _handle_settings_post # type: ignore[attr-defined]
+
+
+# ── OCB-N: Scout Swarm LLOW LEL handlers ─────────────────────────────────────
+
+def _run_swarm_bg(session_id: str, params: str, time_limit: str):
+    global _swarm_sessions
+    timeout_map = {"5min": 300, "15min": 900, "30min": 1800, "1hr": 3600, "indefinite": None}
+    timeout_secs = timeout_map.get(time_limit)
+    SCOUT_OUTPUT.mkdir(exist_ok=True)
+    out_file = SCOUT_OUTPUT / f"swarm_{session_id}.txt"
+    try:
+        with open(out_file, "w", encoding="utf-8") as f:
+            f.write(f"[SWARM] session={session_id}\n[PARAMS] {params}\n[STARTED] {_now_iso()}\n")
+        cmd = [PYTHON, str(HERE / "chief_scout.py"), params]
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                 text=True, cwd=str(HERE))
+        with _swarm_lock:
+            _swarm_sessions[session_id]["proc"] = proc
+            _swarm_sessions[session_id]["status"] = "running"
+        lines = []
+        with open(out_file, "a", encoding="utf-8") as f:
+            if timeout_secs:
+                import signal as _sig
+                deadline = datetime.datetime.now().timestamp() + timeout_secs
+            for line in proc.stdout:
+                lines.append(line)
+                f.write(line)
+                f.flush()
+                with _swarm_lock:
+                    _swarm_sessions[session_id]["results_count"] = len(lines)
+                if timeout_secs and datetime.datetime.now().timestamp() > deadline:
+                    proc.terminate()
+                    break
+        proc.wait()
+        with _swarm_lock:
+            _swarm_sessions[session_id]["status"] = "complete"
+            _swarm_sessions[session_id]["results_count"] = len(lines)
+    except Exception as exc:
+        with _swarm_lock:
+            _swarm_sessions[session_id]["status"] = "error"
+            _swarm_sessions[session_id]["error"] = str(exc)
+
+
+def _handle_scout_swarm_get(self):
+    """GET /api/llow/scout-swarm?session_id=X — poll swarm session status."""
+    try:
+        params = dict(urllib.parse.parse_qsl(urllib.parse.urlparse(self.path).query))
+        sid = params.get("session_id", "").strip()
+        if not sid:
+            with _swarm_lock:
+                self._send_json({"sessions": list(_swarm_sessions.values())})
+            return
+        with _swarm_lock:
+            s = _swarm_sessions.get(sid)
+        if not s:
+            self._send_json({"error": "session not found"}, 404)
+            return
+        out_file = SCOUT_OUTPUT / f"swarm_{sid}.txt"
+        output = ""
+        if out_file.exists():
+            try:
+                output = out_file.read_text(encoding="utf-8", errors="replace")[-2000:]
+            except Exception:
+                pass
+        self._send_json({
+            "session_id": sid,
+            "status": s.get("status", "idle"),
+            "results_count": s.get("results_count", 0),
+            "params": s.get("params", ""),
+            "time_limit": s.get("time_limit", ""),
+            "started": s.get("started", ""),
+            "output": output,
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_scout_swarm_post(self):
+    """POST /api/llow/scout-swarm — launch a new swarm session."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        params = body.get("parameters", "").strip()
+        time_limit = body.get("time_limit", "15min")
+        if not params:
+            self._send_json({"error": "parameters required"}, 400)
+            return
+        import uuid as _uuid
+        sid = _uuid.uuid4().hex[:12]
+        with _swarm_lock:
+            _swarm_sessions[sid] = {
+                "session_id": sid, "status": "starting",
+                "results_count": 0, "params": params,
+                "time_limit": time_limit, "started": _now_iso(), "proc": None,
+            }
+        t = threading.Thread(target=_run_swarm_bg, args=(sid, params, time_limit), daemon=True)
+        t.start()
+        self._send_json({"ok": True, "session_id": sid, "status": "starting"})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_scout_swarm_get  = _handle_scout_swarm_get   # type: ignore[attr-defined]
+MCCHandler._handle_scout_swarm_post = _handle_scout_swarm_post  # type: ignore[attr-defined]
+
+
+# ── OCB-N: Project Timeline endpoint ─────────────────────────────────────────
+
+def _handle_api_timeline_data(self):
+    """GET /api/timeline-data — return data/project_timeline.json, rebuild if stale."""
+    try:
+        rebuild = not TIMELINE_FILE.exists()
+        if not rebuild and TIMELINE_FILE.exists():
+            age = (datetime.datetime.now() - datetime.datetime.fromtimestamp(
+                TIMELINE_FILE.stat().st_mtime)).total_seconds()
+            rebuild = age > 3600  # rebuild if >1h old
+        if rebuild:
+            try:
+                sys.path.insert(0, str(HERE))
+                import importlib
+                tl_mod = importlib.import_module("project_timeline_builder")
+                tl_mod.build()
+            except Exception:
+                pass
+        if TIMELINE_FILE.exists():
+            data = json.loads(TIMELINE_FILE.read_text(encoding="utf-8"))
+            self._send_json(data)
+        else:
+            self._send_json({"error": "Timeline not yet built", "ocb_nodes": [], "milestones": [], "recent_commits": []})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_api_timeline_data = _handle_api_timeline_data  # type: ignore[attr-defined]
+
+
+# ── OCB-N: Work Checker new panel handlers ────────────────────────────────────
+
+def _handle_wc_timeline(self):
+    """GET /api/work-checker/timeline — return timeline panel data."""
+    try:
+        from work_checker import WorkChecker
+        wc = WorkChecker()
+        self._send_json(wc.build_timeline_panel())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_wc_checklist(self):
+    """GET /api/work-checker/checklist — return PENDING items as checkboxes."""
+    try:
+        from work_checker import WorkChecker
+        wc = WorkChecker()
+        self._send_json({"items": wc.build_checklist()})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_wc_action_plan(self):
+    """GET /api/work-checker/action-plan — return top 5 next priorities."""
+    try:
+        from work_checker import WorkChecker
+        wc = WorkChecker()
+        self._send_json({"priorities": wc.build_action_plan()})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_wc_check_item(self):
+    """POST /api/work-checker/check-item — mark item done/undone in STATUS.md."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        item_id = body.get("item_id", "").strip()
+        done = bool(body.get("done", True))
+        if not item_id:
+            self._send_json({"ok": False, "error": "item_id required"}, 400)
+            return
+        from work_checker import WorkChecker
+        wc = WorkChecker()
+        ok = wc.mark_item_done(item_id, done)
+        self._send_json({"ok": ok})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_wc_delegate(self):
+    """POST /api/work-checker/delegate — send priority to stuck inbox as a task."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        priority = body.get("priority", "").strip()
+        if not priority:
+            self._send_json({"ok": False, "error": "priority required"}, 400)
+            return
+        inbox = []
+        if STUCK_INBOX_FILE.exists():
+            try:
+                inbox = json.loads(STUCK_INBOX_FILE.read_text(encoding="utf-8"))
+                if not isinstance(inbox, list):
+                    inbox = []
+            except Exception:
+                inbox = []
+        import uuid as _uuid2
+        inbox.append({
+            "item_id": _uuid2.uuid4().hex[:8],
+            "content": priority,
+            "severity": "medium",
+            "source": "action_plan",
+            "status": "open",
+            "created_at": _now_iso(),
+        })
+        STUCK_INBOX_FILE.write_text(json.dumps(inbox, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True, "delegated": priority})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_wc_timeline    = _handle_wc_timeline     # type: ignore[attr-defined]
+MCCHandler._handle_wc_checklist   = _handle_wc_checklist    # type: ignore[attr-defined]
+MCCHandler._handle_wc_action_plan = _handle_wc_action_plan  # type: ignore[attr-defined]
+MCCHandler._handle_wc_check_item  = _handle_wc_check_item   # type: ignore[attr-defined]
+MCCHandler._handle_wc_delegate    = _handle_wc_delegate     # type: ignore[attr-defined]
 
 
 def main():

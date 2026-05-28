@@ -373,6 +373,12 @@ def main():
         except Exception as e:
             print(f"[GIT PUSH] Failed — run manually. Error: {e}")
     if not args.dry_run:
+        try:
+            import project_timeline_builder
+            project_timeline_builder.build()
+        except Exception as _tl_err:
+            print(f"[WARN] Timeline build failed (non-fatal): {_tl_err}")
+    if not args.dry_run:
         _sunday_merge()
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''}")
 

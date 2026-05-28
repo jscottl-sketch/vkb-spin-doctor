@@ -4,6 +4,20 @@
 ## CHAT LOG
 <!-- Append new entries below. Never delete. Never overwrite. -->
 
+---
+
+### 2026-05-29 (Claude Code session — OCB-N)
+**Key decisions:** OCB-N built in 6 phases: Scout Swarm LEL (DATA SOURCES category in LLOW palette with live counter/status/time-limit), project_timeline_builder.py (auto-rebuilds data/project_timeline.json on every WCCS), Work Checker 3 new panels (Timeline/Checklist/Action Plan with delegate buttons), persistent ACCA ticker bar at MCC bottom, legacy handover writes removed from wccs_runner.py. Phase 5 means no new VKB_SpinDoctor_Handover_vXX.md files will be created — STATUS/HISTORY/ACCA are permanent source of truth.
+**New ACCA codes:** SWARM, PTL, WCTL, WCCL, WCAP, ACCATICK (all added to ACCA.md 2026-05-29)
+**Bugs fixed:** None
+**Ideas discussed:** Scout Swarm as a LLOW data source that drives chief_scout.py from the visual canvas; living project timeline to track velocity and OCB history; ACCA ticker as a persistent learning aid at the bottom of MCC
+**Next priorities:**
+1. Run MOT 108/108 after OCB-N — confirm all checks PASS (DONE: 108/108 ALL CLEAR)
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Add GROQ + Cloudflare keys to .env
+4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
+5. Build 2 CLAC block (23 parking lot features)
+
 ### 2026-05-17
 **Key decisions:** Cerebras model chain llama3.1-70b → llama-3.3-70b (both deprecated) → gpt-oss-120b (current stable). reasoning_content fallback for all reasoning models. Cloudflare needs two env vars (CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID). Groq auth is API key only. win_hardener follows conductor.py API contract. Queue runner uses separate .py file to avoid batch special-character issues.
 **New ACCA codes:** None

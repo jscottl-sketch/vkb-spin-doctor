@@ -260,31 +260,22 @@ def run_script(script_name):
 def main():
     today = datetime.date.today().isoformat()
     results = {}
-    print("[WCCS] Starting WCCS automation...")
+    print("[WCCS] Starting WCCS automation (legacy runner — STATUS/HISTORY/ACCA mode)...")
 
     # 1. Read chat_latest.txt
     chat_path = HERE / "chat_latest.txt"
     if not chat_path.exists():
-        print("[WCCS] FAIL: chat_latest.txt not found")
-        return 1
-    chat_summary = chat_path.read_text(encoding="utf-8", errors="replace").strip()
-    if not chat_summary:
-        print("[WCCS] FAIL: chat_latest.txt is empty")
-        return 1
+        print("[WCCS] No chat_latest.txt — skipping session log. Running mcu/dashboard only.")
+        chat_summary = ""
+    else:
+        chat_summary = chat_path.read_text(encoding="utf-8", errors="replace").strip()
     print(f"[WCCS] Chat summary: {len(chat_summary)} chars")
 
-    # 2. Find current handover
-    old_handover = find_latest_handover()
-    if not old_handover:
-        print("[WCCS] FAIL: No handover file found")
-        return 1
-    old_ver = handover_version(old_handover)
-    new_ver = old_ver + 1
-    new_handover_name = f"VKB_SpinDoctor_Handover_v{new_ver}.md"
-    new_handover_path = HERE / new_handover_name
-    print(f"[WCCS] Handover: v{old_ver} -> v{new_ver}")
+    # NOTE: Handover file creation is REMOVED (Phase 5 — OCB-N).
+    # STATUS.md / HISTORY.md / ACCA.md are the source of truth.
+    # Use aafl_wccs.py for full WCCS saves. This runner is legacy support only.
 
-    # 3. Determine session label
+    # 2. Determine session label
     existing_cc = list(SESSION_LOGS.glob(f"{today}-cc*.md")) if SESSION_LOGS.exists() else []
     max_cc = 0
     for f in existing_cc:
@@ -295,63 +286,55 @@ def main():
     session_label = f"Claude Code session {session_n}"
     session_log_path = SESSION_LOGS / f"{today}-cc{session_n}.md"
 
-    # 4. LLM call
-    print("[WCCS] Sending to AAFLCore (free LLM)...")
-    old_text = old_handover.read_text(encoding="utf-8", errors="replace")
-    prompt = build_llm_prompt(chat_summary, old_text, today, session_label)
-    aafl = AAFLCore(dry_run=False, allow_paid=False)
-    result = aafl.run(prompt, task_type="batch", max_tokens=2000, system=AGENT_SYSTEM)
+    chat_entry = (
+        f"### {today} ({session_label})\n"
+        f"**Key decisions:** WCCS legacy runner (no AI call).\n"
+        f"**New ACCA codes:** None\n"
+        f"**Ideas discussed:** None\n"
+        f"**Next priorities:** See STATUS.md NEXT PRIORITIES.\n"
+    )
 
-    chat_entry = None
-    priorities = None
-    if result.ok and result.response.strip():
-        print(f"[WCCS] LLM: {result.provider_id}  ${result.cost_usd:.5f}")
-        chat_entry, priorities = parse_llm_response(result.response)
-        results["llm"] = "PASS"
-    else:
-        print("[WCCS] WARN: LLM call failed -- using minimal fallback")
-        results["llm"] = "FAIL (fallback used)"
-
-    if not chat_entry:
-        chat_entry = (
-            f"### {today} ({session_label})\n"
-            f"**Key decisions:** WCCS automation run.\n"
-            f"**New ACCA codes:** None\n"
-            f"**Ideas discussed:** None\n"
-            f"**Next priorities:** See handover NEXT PRIORITIES section.\n"
+    # 3. Write session log
+    SESSION_LOGS.mkdir(exist_ok=True)
+    try:
+        content = (
+            f"# Session Log -- {session_log_path.stem}\n\n"
+            f"**Mode:** Legacy wccs_runner (no handover created)\n\n"
+            f"## Chat Summary\n\n{chat_summary[:2000]}\n\n"
+            f"## Session Entry\n\n{chat_entry}\n"
         )
-
-    # 5. Write new handover
-    try:
-        new_text = build_new_handover(old_text, old_ver, new_ver,
-                                       chat_entry, priorities, today)
-        new_handover_path.write_text(new_text, encoding="utf-8")
-        print(f"[WCCS] Handover written: {new_handover_name}")
-        results["handover"] = "PASS"
-    except Exception as e:
-        print(f"[WCCS] FAIL: Could not write handover: {e}")
-        return 1
-
-    # 6. Write session log
-    try:
-        write_session_log(session_log_path, old_ver, new_ver, chat_summary, chat_entry)
+        session_log_path.write_text(content, encoding="utf-8")
         print(f"[WCCS] Session log: {session_log_path.name}")
         results["session_log"] = "PASS"
     except Exception as e:
         print(f"[WCCS] WARN: Session log failed: {e}")
         results["session_log"] = "FAIL"
 
-    # 7. Append wccs_log.md
+    # 4. Append wccs_log.md
     try:
         row_num = next_wccs_row_number()
-        append_wccs_log(row_num, old_ver, new_ver, chat_summary, today)
+        log_path = HERE / "wccs_log.md"
+        focus = (chat_summary[:80].replace("\n", " ").replace("|", "/")).strip() or "legacy runner"
+        row = f"| {row_num} | {today} | legacy | {focus} | None |\n"
+        if not log_path.exists():
+            header = (
+                "# WCCS Run Log\n\n"
+                "**WCCS = Write Claude Code Save.**\n\n"
+                "---\n\n"
+                "| # | Date | Handover | Session Focus | ALP Rules Added |\n"
+                "|---|---|---|---|---|\n"
+            )
+            log_path.write_text(header + row, encoding="utf-8")
+        else:
+            with log_path.open("a", encoding="utf-8") as f:
+                f.write(row)
         print(f"[WCCS] wccs_log.md: row {row_num} appended")
         results["wccs_log"] = "PASS"
     except Exception as e:
         print(f"[WCCS] WARN: wccs_log failed: {e}")
         results["wccs_log"] = "FAIL"
 
-    # 8. Run mcu_optimizer.py
+    # 5. Run mcu_optimizer.py
     print("[WCCS] Running mcu_optimizer.py...")
     ok, out = run_script("mcu_optimizer.py")
     results["mcu_optimizer"] = "PASS" if ok else "FAIL"
@@ -360,7 +343,7 @@ def main():
     else:
         print("[WCCS] mcu_optimizer: OK")
 
-    # 9. Run dashboard_builder.py
+    # 6. Run dashboard_builder.py
     print("[WCCS] Running dashboard_builder.py...")
     ok, out = run_script("dashboard_builder.py")
     results["dashboard_builder"] = "PASS" if ok else "FAIL"
@@ -369,33 +352,7 @@ def main():
     else:
         print("[WCCS] dashboard_builder: OK")
 
-    # 10. Update sfl_agent.py
-    try:
-        updated = update_sfl_agent(new_ver)
-        print(f"[WCCS] sfl_agent.py: {'updated to v' + str(new_ver) if updated else 'already current'}")
-        results["sfl_agent"] = "PASS"
-    except Exception as e:
-        print(f"[WCCS] WARN: sfl_agent update failed: {e}")
-        results["sfl_agent"] = "FAIL"
-
-    # 11. Delete old handover + chat_latest.txt
-    try:
-        old_handover.unlink()
-        print(f"[WCCS] Deleted: {old_handover.name}")
-        results["cleanup_handover"] = "PASS"
-    except Exception as e:
-        print(f"[WCCS] WARN: Could not delete old handover: {e}")
-        results["cleanup_handover"] = "FAIL"
-
-    try:
-        chat_path.unlink()
-        print("[WCCS] Deleted: chat_latest.txt")
-        results["cleanup_chat"] = "PASS"
-    except Exception as e:
-        print(f"[WCCS] WARN: Could not delete chat_latest.txt: {e}")
-        results["cleanup_chat"] = "FAIL"
-
-    # 12. Summary
+    # 7. Summary
     fails = [k for k, v in results.items() if v.startswith("FAIL")]
     print("\n" + "=" * 50)
     print("[WCCS] SUMMARY:")
@@ -403,9 +360,9 @@ def main():
         icon = "OK" if v == "PASS" else "!!"
         print(f"  [{icon}] {k}: {v}")
     if fails:
-        print(f"\n[WCCS] RESULT: FAIL ({len(fails)} issue(s))")
-        return 1
-    print(f"\n[WCCS] RESULT: PASS -- v{new_ver} written")
+        print(f"\n[WCCS] RESULT: WARN ({len(fails)} issue(s)) — non-fatal")
+    else:
+        print(f"\n[WCCS] RESULT: PASS")
     return 0
 
 

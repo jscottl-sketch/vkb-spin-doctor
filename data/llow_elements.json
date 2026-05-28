@@ -100,6 +100,24 @@
         {"id": "JB_DELAY",    "name": "Delay",    "desc": "Adds wait timer before passing through (editable seconds)"}
       ]
     },
+    "data_sources": {
+      "icon": "🔍",
+      "colour": "#F59E0B",
+      "elements": [
+        {
+          "id": "SCOUT_SWARM",
+          "name": "Scout Swarm",
+          "desc": "Launch chief_scout.py — parallel web research with live result counter",
+          "special": "scout_swarm",
+          "options": [
+            {"key": "parameters",  "label": "Search parameters", "type": "text",   "default": "VKB Elite Dangerous keybindings"},
+            {"key": "time_limit",  "label": "Time limit",        "type": "select", "choices": ["5min","15min","30min","1hr","indefinite"], "default": "15min"},
+            {"key": "max_results", "label": "Max results",       "type": "number", "default": "20"},
+            {"key": "strategies",  "label": "Strategies",        "type": "text",   "default": "all"}
+          ]
+        }
+      ]
+    },
     "ai_providers": {
       "icon": "🤖",
       "colour": "#00D4FF",

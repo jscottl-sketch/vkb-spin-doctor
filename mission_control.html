@@ -1157,6 +1157,54 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
 /* Panel/drawer/accordion open state — always below tooltips (9999) — OCB-K */
 .aafl-acc[open],.llow-settings-panel.open,.ai-master-panel,.bm-drill-panel.open{z-index:8000}
+/* ── OCB-N: Scout Swarm LEL node ── */
+.llow-node.scout-swarm-node{min-width:220px;height:auto;flex-direction:column;align-items:stretch;padding:6px 8px;gap:4px}
+.ssn-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.ssn-status{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#555}
+.ssn-status.idle{background:#555}
+.ssn-status.running{background:#4f4;animation:aiPulse 1s ease-in-out infinite}
+.ssn-status.complete{background:#4af}
+.ssn-status.error{background:#f44}
+.ssn-counter{font-size:9px;color:#888;margin-left:auto}
+.ssn-param-input{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#ccc;border-radius:3px;padding:3px 5px;font-size:10px;box-sizing:border-box}
+.ssn-time-select{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;color:#ccc;border-radius:3px;padding:2px 4px;font-size:10px;box-sizing:border-box}
+.ssn-run-btn{background:#0a1a0a;border:1px solid #1a3a1a;color:#4f4;border-radius:3px;padding:2px 8px;font-size:9px;cursor:pointer;width:100%;transition:.15s}
+.ssn-run-btn:hover{background:#143a14}
+.ssn-run-btn.running{background:#0a2a1a;color:#4af;cursor:default}
+/* ── OCB-N: Work Checker new panels ── */
+.wc-timeline-track{display:flex;align-items:center;overflow-x:auto;gap:0;padding:8px 0;min-height:60px}
+.wc-tl-node{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:80px;cursor:pointer;transition:.15s}
+.wc-tl-node:hover .wc-tl-dot{box-shadow:0 0 0 3px rgba(74,170,255,.4)}
+.wc-tl-dot{width:14px;height:14px;border-radius:50%;background:#2a7;border:2px solid #174;flex-shrink:0}
+.wc-tl-dot.fail{background:#a33;border-color:#622}
+.wc-tl-line{height:2px;flex:1;min-width:20px;background:#1a1a1a;align-self:center}
+.wc-tl-label{font-size:8px;color:#666;text-align:center;max-width:75px;line-height:1.3;word-break:break-word}
+.wc-tl-score{font-size:9px;color:#4af;font-weight:bold}
+.wc-checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 8px;border-bottom:1px solid #111;font-size:11px;transition:.1s}
+.wc-checklist-item:hover{background:#111}
+.wc-checklist-item input[type=checkbox]{margin-top:2px;accent-color:#2a7;flex-shrink:0}
+.wc-checklist-comp{flex:1;color:#ccc}
+.wc-checklist-notes{color:#666;font-size:10px}
+.wc-ap-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-left:3px solid #4af;margin-bottom:4px;background:#0d0d0d;border-radius:0 4px 4px 0;font-size:11px}
+.wc-ap-rank{width:18px;height:18px;border-radius:50%;background:#0a1a2a;color:#4af;font-size:9px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wc-ap-text{flex:1;color:#bbb}
+.wc-ap-delegate{background:#0a1a2a;border:1px solid #1a3a5a;color:#4af;border-radius:3px;padding:2px 8px;font-size:9px;cursor:pointer;flex-shrink:0;transition:.15s}
+.wc-ap-delegate:hover{background:#142a42}
+/* ── OCB-N: ACCA ticker bar ── */
+#acca-ticker-bar{position:fixed;bottom:0;left:0;right:0;height:28px;background:linear-gradient(90deg,#070707 0%,#0a0a0a 100%);border-top:1px solid #1a1a1a;display:flex;align-items:center;z-index:200;overflow:hidden;flex-shrink:0}
+#acca-ticker-bar::before{content:"ACCA";position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;padding:0 8px;font-size:8px;color:#1a2a1a;letter-spacing:2px;font-weight:bold;background:#070707;border-right:1px solid #111;z-index:2;white-space:nowrap}
+#acca-ticker-scroll{flex:1;overflow:hidden;margin-left:52px;height:100%;position:relative}
+#acca-ticker-inner{display:flex;gap:20px;white-space:nowrap;font-size:10px;padding:0 8px;line-height:28px;animation:accaTicker 60s linear infinite;cursor:default}
+@keyframes accaTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+#acca-ticker-inner:hover{animation-play-state:paused}
+.acca-chip{display:inline-flex;align-items:center;gap:4px;padding:1px 6px;border-radius:8px;font-size:9px;background:rgba(255,255,255,0.03);border:1px solid #1a1a1a;cursor:pointer;transition:border-color .2s;white-space:nowrap}
+.acca-chip:hover{border-color:#4af;background:rgba(74,170,255,.08)}
+.acca-chip .acca-code{font-weight:bold;color:#aaa}
+.acca-chip .acca-meaning{color:#555}
+/* ACCA expand tooltip */
+#acca-expand{position:fixed;bottom:34px;z-index:9999;background:#141414;border:1px solid #4af;border-radius:6px;padding:8px 12px;font-size:11px;max-width:340px;pointer-events:none;display:none;box-shadow:0 -4px 16px rgba(0,0,0,.6)}
+/* Pad body so content doesn't hide behind ticker */
+body{padding-bottom:28px}
 </style>
 </head>
 <body>
@@ -4190,6 +4238,48 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <tbody id="wc-sessions-tbody"><tr><td colspan="5" style="text-align:center;color:#555;padding:10px">Loading…</td></tr></tbody>
           </table>
           <button id="wc-show-all-sessions" class="btn" onclick="wcShowAllSessions()" style="display:none;margin-top:8px;font-size:11px">Show All</button>
+        </div>
+      </div>
+
+      <!-- OCB-N: TIMELINE panel -->
+      <div class="wc-panel">
+        <div class="wc-panel-header" onclick="wcTogglePanel(this)">
+          <span>📅 Timeline — Project Build History</span>
+          <span class="wc-chevron">▼</span>
+          <span class="tooltip-wrap"><button class="tip-btn">?</button><span class="tip">Visual horizontal timeline of every OCB build, MOT scores, and milestone markers. Click any node to expand phases.</span></span>
+        </div>
+        <div class="wc-panel-body collapsed" id="wc-timeline-body">
+          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <button class="btn" onclick="wcLoadTimeline()" style="font-size:11px">🔄 Refresh Timeline</button>
+            <span id="wc-tl-summary" style="font-size:11px;color:#666;align-self:center"></span>
+          </div>
+          <div class="wc-timeline-track" id="wc-tl-track"></div>
+          <div id="wc-tl-detail" style="display:none;margin-top:8px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:8px;font-size:11px;color:#bbb"></div>
+        </div>
+      </div>
+
+      <!-- OCB-N: CHECKLIST panel -->
+      <div class="wc-panel">
+        <div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadChecklist()">
+          <span>☑️ Checklist — Pending Items</span>
+          <span class="wc-chevron">▼</span>
+          <span class="tooltip-wrap"><button class="tip-btn">?</button><span class="tip">All PENDING items from STATUS.md shown as live checkboxes. Tick a box to mark it done — syncs back to STATUS.md.</span></span>
+        </div>
+        <div class="wc-panel-body collapsed" id="wc-checklist-body">
+          <div style="font-size:11px;color:#666;margin-bottom:8px">Tick a checkbox to mark the item as completed in STATUS.md.</div>
+          <div id="wc-checklist-list"></div>
+        </div>
+      </div>
+
+      <!-- OCB-N: ACTION PLAN panel -->
+      <div class="wc-panel">
+        <div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadActionPlan()">
+          <span>🎯 Action Plan — Top 5 Priorities</span>
+          <span class="wc-chevron">▼</span>
+          <span class="tooltip-wrap"><button class="tip-btn">?</button><span class="tip">Top 5 next priorities from STATUS.md NEXT PRIORITIES. Click Delegate to send any item to the MCCM Stuck Inbox.</span></span>
+        </div>
+        <div class="wc-panel-body collapsed" id="wc-action-plan-body">
+          <div id="wc-ap-list"></div>
         </div>
       </div>
 
@@ -12854,6 +12944,146 @@ function wcTogglePanel(header) {
   if (chev) chev.classList.toggle('open', !collapsed);
 }
 
+// ── OCB-N: Work Checker — Timeline panel ────────────────────────────────────
+
+async function wcLoadTimeline() {
+  const track = document.getElementById('wc-tl-track');
+  const sumEl = document.getElementById('wc-tl-summary');
+  if (!track) return;
+  track.innerHTML = '<span style="color:#555;font-size:11px">Loading…</span>';
+  try {
+    const data = await apiFetch('/api/work-checker/timeline');
+    const nodes = data.ocb_nodes || [];
+    const milestones = data.milestones || [];
+    const vel = data.velocity || {};
+    if (sumEl) sumEl.textContent = `${data.summary?.built_items || 0} built · ${data.summary?.pending_items || 0} pending · ${vel.total_commits || 0} commits · ${vel.per_week || 0}/wk`;
+    if (!nodes.length && !milestones.length) {
+      track.innerHTML = '<span style="color:#555;font-size:11px">No timeline data yet. Run WCCS to build.</span>';
+      return;
+    }
+    track.innerHTML = '';
+    // Render OCB nodes + milestones as a horizontal timeline
+    const all = [
+      ...milestones.map(m => ({type:'milestone', date:m.date, label:m.label, detail:m.detail, pass:true})),
+      ...nodes.map(n => ({type:'ocb', date:n.date||'', label:n.id, detail:`Phases: ${n.phases?.length||0}`, phases:n.phases, mot:n.mot_score, pass:!n.phases?.some(p=>p.status==='FAIL')}))
+    ].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+    all.forEach((item, idx) => {
+      const dot = document.createElement('div');
+      dot.className = 'wc-tl-dot' + (item.pass ? '' : ' fail');
+      dot.style.background = item.type === 'milestone' ? '#c83' : '#2a7';
+      const label = document.createElement('div');
+      label.className = 'wc-tl-label';
+      label.textContent = item.label;
+      if (item.mot) label.textContent += '\n' + item.mot;
+      const node = document.createElement('div');
+      node.className = 'wc-tl-node';
+      node.title = (item.date || '') + ' — ' + (item.detail || '');
+      node.appendChild(dot);
+      node.appendChild(label);
+      node.addEventListener('click', () => wcTlExpand(item));
+      track.appendChild(node);
+      if (idx < all.length - 1) {
+        const line = document.createElement('div');
+        line.className = 'wc-tl-line';
+        track.appendChild(line);
+      }
+    });
+  } catch(e) {
+    if (track) track.innerHTML = '<span style="color:#a55;font-size:11px">Error: ' + e.message + '</span>';
+  }
+}
+
+function wcTlExpand(item) {
+  const det = document.getElementById('wc-tl-detail');
+  if (!det) return;
+  let html = `<strong style="color:#fff">${item.label}</strong>`;
+  if (item.date) html += ` <span style="color:#555">${item.date}</span>`;
+  if (item.detail) html += `<br>${item.detail}`;
+  if (item.phases && item.phases.length) {
+    html += '<ul style="margin:4px 0 0 12px">';
+    item.phases.forEach(p => { html += `<li>Phase ${p.phase}: ${p.name} — ${p.status}</li>`; });
+    html += '</ul>';
+  }
+  det.innerHTML = html;
+  det.style.display = 'block';
+}
+
+// ── OCB-N: Work Checker — Checklist panel ────────────────────────────────────
+
+async function wcLoadChecklist() {
+  const list = document.getElementById('wc-checklist-list');
+  if (!list) return;
+  list.innerHTML = '<span style="color:#555;font-size:11px">Loading…</span>';
+  try {
+    const data = await apiFetch('/api/work-checker/checklist');
+    const items = data.items || [];
+    if (!items.length) { list.innerHTML = '<div style="color:#555;font-size:11px;padding:8px">No pending items found in STATUS.md.</div>'; return; }
+    list.innerHTML = '';
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'wc-checklist-item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = item.done || false;
+      cb.title = 'Mark as done in STATUS.md';
+      cb.addEventListener('change', () => wcCheckItem(item.id, cb.checked, row));
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      info.innerHTML = `<div class="wc-checklist-comp">${item.component}</div>` +
+        (item.notes ? `<div class="wc-checklist-notes">${item.notes.slice(0,80)}</div>` : '');
+      row.appendChild(cb);
+      row.appendChild(info);
+      list.appendChild(row);
+    });
+  } catch(e) {
+    if (list) list.innerHTML = '<span style="color:#a55;font-size:11px">Error: ' + e.message + '</span>';
+  }
+}
+
+async function wcCheckItem(itemId, done, rowEl) {
+  try {
+    await apiFetch('/api/work-checker/check-item', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({item_id:itemId,done})});
+    if (rowEl) rowEl.style.opacity = done ? '0.4' : '1';
+    toast(done ? 'Item marked done' : 'Item unchecked', 'success');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
+}
+
+// ── OCB-N: Work Checker — Action Plan panel ───────────────────────────────────
+
+async function wcLoadActionPlan() {
+  const list = document.getElementById('wc-ap-list');
+  if (!list) return;
+  list.innerHTML = '<span style="color:#555;font-size:11px">Loading…</span>';
+  try {
+    const data = await apiFetch('/api/work-checker/action-plan');
+    const items = data.priorities || [];
+    if (!items.length) { list.innerHTML = '<div style="color:#555;font-size:11px;padding:8px">No next priorities found in STATUS.md.</div>'; return; }
+    list.innerHTML = '';
+    items.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'wc-ap-item';
+      row.innerHTML = `<div class="wc-ap-rank">${item.rank}</div>` +
+        `<div class="wc-ap-text">${item.priority}</div>` +
+        `<button class="wc-ap-delegate" title="Delegate to MCCM Stuck Inbox" onclick="wcDelegate('${item.priority.replace(/'/g,'\\')}',this)">→ MCCM</button>`;
+      list.appendChild(row);
+    });
+  } catch(e) {
+    if (list) list.innerHTML = '<span style="color:#a55;font-size:11px">Error: ' + e.message + '</span>';
+  }
+}
+
+async function wcDelegate(priority, btn) {
+  try {
+    if (btn) btn.disabled = true;
+    await apiFetch('/api/work-checker/delegate', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({priority})});
+    if (btn) { btn.textContent = '✓ Sent'; btn.style.color = '#4f4'; }
+    toast('Delegated to MCCM', 'success');
+  } catch(e) {
+    if (btn) btn.disabled = false;
+    toast('Error: ' + e.message, 'error');
+  }
+}
+
 // ── OCB-A: Self-Health Functions ──────────────────────────────────────────────
 
 let _shPopupEl = null;
@@ -13865,7 +14095,7 @@ function llowSuggestStrategy(filename) {
 // ── OCB-H: Snap Mode zone helpers (renamed from Strict Mode) ──────────────────
 
 const LLOW_ZONE_CATS = {
-  input:   ['inputs'],
+  input:   ['inputs', 'data_sources'],
   process: ['modes', 'modifiers', 'cycle_controls', 'quality_checks', 'junctions', 'ai_providers'],
   output:  ['outputs', 'approval_gates', 'endings']
 };
@@ -13893,6 +14123,60 @@ function llowFlashWrongZone(x) {
   flashDiv.style.cssText = `position:absolute;top:0;bottom:0;left:${zoneIndex*33.33}%;width:33.34%;pointer-events:none;z-index:5;background:rgba(220,30,30,0.3);animation:llowZoneRed 0.5s ease forwards`;
   inner.appendChild(flashDiv);
   setTimeout(() => flashDiv.remove(), 520);
+}
+
+// ── OCB-N: Scout Swarm LLOW LEL helpers ──────────────────────────────────────
+
+function llowSwarmSetParam(stepId, key, value) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  if (!step.options) step.options = {};
+  step.options[key] = value;
+}
+
+async function llowSwarmRun(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const params = step.options?.parameters || '';
+  const timeLimit = step.options?.time_limit || '15min';
+  if (!params.trim()) { toast('Set search parameters first', 'error'); return; }
+  try {
+    const resp = await apiFetch('/api/llow/scout-swarm', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({parameters: params, time_limit: timeLimit})});
+    if (resp.ok) {
+      if (!step._swarmState) step._swarmState = {};
+      step._swarmState.session_id = resp.session_id;
+      step._swarmState.status = 'running';
+      step._swarmState.results_count = 0;
+      llowRenderCanvas();
+      toast('Scout Swarm launched', 'success');
+      llowSwarmPoll(stepId, resp.session_id);
+    }
+  } catch(e) { toast('Launch failed: ' + e.message, 'error'); }
+}
+
+function llowSwarmPoll(stepId, sessionId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  apiFetch('/api/llow/scout-swarm?session_id=' + sessionId)
+    .then(data => {
+      if (!step._swarmState) step._swarmState = {};
+      step._swarmState.status = data.status;
+      step._swarmState.results_count = data.results_count || 0;
+      // Update counter without full re-render for performance
+      const countEl = document.querySelector(`#llow-node-${stepId} .ssn-counter`);
+      const statusEl = document.querySelector(`#llow-node-${stepId} .ssn-status`);
+      if (countEl) countEl.textContent = (data.results_count || 0) + ' results';
+      if (statusEl) { statusEl.className = 'ssn-status ' + data.status; }
+      if (data.status === 'running') {
+        setTimeout(() => llowSwarmPoll(stepId, sessionId), 3000);
+      } else {
+        llowRenderCanvas();
+        toast('Scout Swarm ' + data.status + ' — ' + (data.results_count||0) + ' results', data.status==='complete' ? 'success' : 'info');
+      }
+    })
+    .catch(() => setTimeout(() => llowSwarmPoll(stepId, sessionId), 5000));
 }
 
 // ── Canvas drop ───────────────────────────────────────────────────────────────
@@ -13999,8 +14283,9 @@ function llowRenderCanvas() {
     const selected = LLOW.sel === step.id && LLOW.selType === 'step';
     const isJB = step.element_id && step.element_id.startsWith('JB_');
     const jbType = isJB ? step.element_id.replace('JB_','').toLowerCase() : null;
+    const isSwarm = step.element_id === 'SCOUT_SWARM';
     const div = document.createElement('div');
-    div.className = 'llow-node' + (selected ? ' selected' : '') + (isJB ? ' llow-jb llow-jb-' + jbType : '');
+    div.className = 'llow-node' + (selected ? ' selected' : '') + (isJB ? ' llow-jb llow-jb-' + jbType : '') + (isSwarm ? ' scout-swarm-node' : '');
     div.id = 'llow-node-' + step.id;
     div.style.cssText = `left:${step.x}px;top:${step.y}px;border-color:${colour}`;
     const iconOrShape = isJB
@@ -14009,19 +14294,47 @@ function llowRenderCanvas() {
     const hasParams = isJB && ['jb_gate','jb_counter','jb_router','jb_delay'].includes(jbType);
     const hasLELOpts = !isJB && typeof llowGetElOptions === 'function' && llowGetElOptions(step.element_id).length > 0;
     const dblHint = (isJB || hasLELOpts) ? `<span class="llow-jb-dbl-hint" title="Double-click to edit options">⚙ dbl-click</span>` : '';
-    div.innerHTML = `
-      <div class="llow-port llow-port-in" id="llow-pin-${step.id}"
-           onclick="llowPortInClick(event,'${step.id}')"
-           title="Input port — click after selecting an output port to connect"></div>
-      ${iconOrShape}
-      <div class="llow-node-body">
-        <div class="llow-node-name" style="color:${colour}">${el.name || step.element_id}</div>
-        <div class="llow-node-desc">${el.desc || ''}</div>
-        ${dblHint}
-      </div>
-      <div class="llow-port llow-port-out" id="llow-pout-${step.id}"
-           onclick="llowPortOutClick(event,'${step.id}')"
-           title="Output port — click to start drawing an arrow"></div>`;
+
+    if (isSwarm) {
+      // Scout Swarm special node: parameters, time limit, counter, status
+      const swarmState = step._swarmState || {};
+      const status = swarmState.status || 'idle';
+      const count = swarmState.results_count || 0;
+      const params = step.options?.parameters || el.options?.find(o=>o.key==='parameters')?.default || '';
+      const tlimit = step.options?.time_limit || '15min';
+      div.innerHTML = `
+        <div class="llow-port llow-port-in" id="llow-pin-${step.id}" onclick="llowPortInClick(event,'${step.id}')" title="Input port"></div>
+        <div class="ssn-header">
+          <div class="llow-node-icon" style="padding:0 4px 0 0">${icon}</div>
+          <div style="font-size:10px;font-weight:bold;color:${colour}">Scout Swarm</div>
+          <span class="ssn-status ${status}" title="Status: ${status}"></span>
+          <span class="ssn-counter">${count} results</span>
+        </div>
+        <input class="ssn-param-input" placeholder="Search parameters…" value="${params.replace(/"/g,'&quot;')}"
+          onchange="llowSwarmSetParam('${step.id}','parameters',this.value)" title="What to search for">
+        <select class="ssn-time-select" onchange="llowSwarmSetParam('${step.id}','time_limit',this.value)" title="Time limit">
+          ${['5min','15min','30min','1hr','indefinite'].map(t=>`<option value="${t}"${t===tlimit?' selected':''}>${t}</option>`).join('')}
+        </select>
+        <button class="ssn-run-btn${status==='running'?' running':''}" onclick="llowSwarmRun('${step.id}')"
+          ${status==='running'?'disabled':''}>
+          ${status==='running'?'⟳ Running…':status==='complete'?'✓ Rerun':'▶ Run Scout'}
+        </button>
+        <div class="llow-port llow-port-out" id="llow-pout-${step.id}" onclick="llowPortOutClick(event,'${step.id}')" title="Output port"></div>`;
+    } else {
+      div.innerHTML = `
+        <div class="llow-port llow-port-in" id="llow-pin-${step.id}"
+             onclick="llowPortInClick(event,'${step.id}')"
+             title="Input port — click after selecting an output port to connect"></div>
+        ${iconOrShape}
+        <div class="llow-node-body">
+          <div class="llow-node-name" style="color:${colour}">${el.name || step.element_id}</div>
+          <div class="llow-node-desc">${el.desc || ''}</div>
+          ${dblHint}
+        </div>
+        <div class="llow-port llow-port-out" id="llow-pout-${step.id}"
+             onclick="llowPortOutClick(event,'${step.id}')"
+             title="Output port — click to start drawing an arrow"></div>`;
+    }
     div.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('llow-port')) return;
       e.stopPropagation();
@@ -15748,6 +16061,89 @@ function showInstructions(elementId, btn) {
 }
 
 </script>
+
+<!-- ── OCB-N: ACCA Ticker Bar ── -->
+<div id="acca-ticker-bar">
+  <div id="acca-ticker-scroll">
+    <div id="acca-ticker-inner">
+      <span class="acca-chip"><span class="acca-code">ACCA</span><span class="acca-meaning">Loading codes…</span></span>
+    </div>
+  </div>
+</div>
+<!-- ACCA code expand tooltip -->
+<div id="acca-expand"></div>
+
+<script>
+// ── OCB-N: ACCA Ticker ─────────────────────────────────────────────────────
+let _accaCodesCache = [];
+
+async function accaTickerLoad() {
+  try {
+    const data = await apiFetch('/acca-codes');
+    const codes = Array.isArray(data) ? data : (data.codes || []);
+    _accaCodesCache = codes;
+    _accaTickerRender(codes);
+  } catch(e) {}
+}
+
+function _accaTickerRender(codes) {
+  const inner = document.getElementById('acca-ticker-inner');
+  if (!inner) return;
+  // Category colour map (mirroring LLOW element categories)
+  const catColours = {
+    'communication': '#4af','protocol': '#4af','response': '#888',
+    'modes': '#4A90D9','inputs': '#50C878','outputs': '#FF6B6B',
+    'modifiers': '#FFD700','approval_gates': '#FF9500','quality_checks': '#8B5CF6',
+    'cycle_controls': '#EC4899','endings': '#6B7280','junctions': '#00D4FF',
+    'ai_providers': '#00D4FF','data_sources': '#F59E0B',
+  };
+  // Build doubled array for seamless loop
+  const chips = codes.map(c => {
+    const col = '#888';
+    return `<span class="acca-chip" title="${c.code}: ${c.meaning}" onclick="accaExpandCode('${c.code}',event)" style="border-color:#222">` +
+      `<span class="acca-code" style="color:#ccc">${c.code}</span>` +
+      `<span class="acca-meaning">${c.meaning.length > 40 ? c.meaning.slice(0,38)+'…' : c.meaning}</span>` +
+      `</span>`;
+  }).join('');
+  inner.innerHTML = chips + chips; // doubled for seamless ticker
+  // Reset animation
+  inner.style.animation = 'none';
+  inner.offsetHeight; // reflow
+  const duration = Math.max(30, codes.length * 2);
+  inner.style.animation = `accaTicker ${duration}s linear infinite`;
+}
+
+function accaExpandCode(code, evt) {
+  const expand = document.getElementById('acca-expand');
+  if (!expand) return;
+  const c = _accaCodesCache.find(x => x.code === code);
+  if (!c) return;
+  if (expand.style.display === 'block' && expand.dataset.code === code) {
+    expand.style.display = 'none';
+    return;
+  }
+  expand.dataset.code = code;
+  expand.innerHTML = `<strong style="color:#fff">${c.code}</strong> — ${c.meaning}` +
+    (c.added ? `<span style="color:#555;margin-left:8px;font-size:10px">(${c.added})</span>` : '');
+  const x = Math.min(evt.clientX, window.innerWidth - 360);
+  expand.style.left = x + 'px';
+  expand.style.display = 'block';
+  expand.style.pointerEvents = 'auto';
+  setTimeout(() => {
+    const dismiss = () => { expand.style.display = 'none'; document.removeEventListener('click', dismiss); };
+    document.addEventListener('click', dismiss);
+  }, 60);
+}
+
+// Auto-load ticker on page connect
+const _origConnectData = typeof connectData === 'function' ? connectData : null;
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(accaTickerLoad, 3000);
+  // Reload every 5 minutes
+  setInterval(accaTickerLoad, 300000);
+});
+</script>
+
 </div><!-- end content-area -->
 </div><!-- end main-layout -->
 </body>
