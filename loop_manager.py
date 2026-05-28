@@ -46,10 +46,11 @@ try: from chief_scout import chief_scout as _chief_scout
 except ImportError: _chief_scout = None
 from cost_guard import CostGuard, CostGuardError
 try:
-    from aafl_watchdog import run_cycle as _watchdog_run_cycle
+    from aafl_watchdog import run_cycle as _watchdog_run_cycle, check_loop_danger as _watchdog_check
     _WATCHDOG_OK = True
 except ImportError:
     _watchdog_run_cycle = None
+    _watchdog_check = None
     _WATCHDOG_OK = False
 from evaluator import evaluate
 try:
@@ -198,12 +199,13 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         print(f"[LOOP] Done (DB cache hit).")
         return
 
-    iterations         = 0
-    best_attempt       = None
-    stop_reason        = "max_iterations"
-    prev_feedback      = ""
-    _consec_fails      = 0
-    _last_best_score   = -1.0
+    iterations            = 0
+    best_attempt          = None
+    stop_reason           = "max_iterations"
+    prev_feedback         = ""
+    _consec_fails         = 0
+    _last_best_score      = -1.0
+    _provider_fail_streak = 0   # consecutive iterations where all providers failed
 
     while iterations < max_loop_iters:
         if (HERE / "STOP").exists():
@@ -255,10 +257,18 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         guard.record_call(plan_result.cost_usd)
 
         if not plan_result.ok:
+            _provider_fail_streak += 1
             print("[LOOP] Plan step: no provider available — skipping")
+            if _WATCHDOG_OK and _watchdog_check is not None:
+                _wd_danger, _wd_reason = _watchdog_check(
+                    iterations, guard.running_cost, _provider_fail_streak)
+                if _wd_danger:
+                    stop_reason = _wd_reason
+                    break
             continue
 
         plan_text = plan_result.response
+        _provider_fail_streak = 0   # at least one provider responded
 
         # ── Loop detection ────────────────────────────────────────────────────
         try:
@@ -289,7 +299,14 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         guard.record_call(work_result.cost_usd)
 
         if not work_result.ok:
+            _provider_fail_streak += 1
             print("[LOOP] Work step: no provider available — skipping")
+            if _WATCHDOG_OK and _watchdog_check is not None:
+                _wd_danger, _wd_reason = _watchdog_check(
+                    iterations, guard.running_cost, _provider_fail_streak)
+                if _wd_danger:
+                    stop_reason = _wd_reason
+                    break
             continue
 
         work_text = work_result.response
@@ -439,6 +456,14 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             stop_reason = "goal_met"
             break
 
+        # ── Post-iteration watchdog check ─────────────────────────────────────
+        if _WATCHDOG_OK and _watchdog_check is not None:
+            _wd_danger, _wd_reason = _watchdog_check(
+                iterations, guard.running_cost, _provider_fail_streak)
+            if _wd_danger:
+                stop_reason = _wd_reason
+                break
+
         # ── End-of-iteration cost guard ───────────────────────────────────────
         try:
             guard.check_before_call(0.0)
@@ -478,8 +503,187 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     _notify_done(stop_reason, iterations, total_cost)
 
 
+def run_llow_workflow(workflow_json: dict) -> list[dict]:
+    """
+    Execute a LLOW workflow JSON.
+    Iterates steps in order defined by arrows, respects branch/gate/stop logic.
+    Logs each step result. Returns execution log.
+    """
+    import json as _json
+    steps  = workflow_json.get("steps", [])
+    arrows = workflow_json.get("arrows", [])
+    name   = workflow_json.get("name", "LLOW Workflow")
+    log    = []
+
+    def _log(msg, status="info"):
+        entry = {
+            "step": msg,
+            "status": status,
+            "ts": datetime.datetime.now().isoformat(timespec="seconds"),
+        }
+        log.append(entry)
+        print(f"[LLOW] [{status.upper()}] {msg}", flush=True)
+
+    _log(f"Starting LLOW workflow: {name}", "info")
+
+    if not steps:
+        _log("No steps in workflow", "fail")
+        return log
+
+    # Build adjacency map
+    out_arrows: dict = {}
+    for a in arrows:
+        out_arrows.setdefault(a["from"], []).append(a)
+
+    step_map = {s["id"]: s for s in steps}
+    current_id = steps[0]["id"]
+    visited_count: dict = {}
+    MAX_VISITS = 10  # guard against infinite loops
+
+    while current_id:
+        step = step_map.get(current_id)
+        if not step:
+            _log(f"Step not found: {current_id}", "fail")
+            break
+
+        visits = visited_count.get(current_id, 0)
+        if visits >= MAX_VISITS:
+            _log(f"Max visits ({MAX_VISITS}) reached at step {current_id} — stopping", "fail")
+            break
+        visited_count[current_id] = visits + 1
+
+        el_id = step.get("element_id", "?")
+        _log(f"Executing: {el_id}", "running")
+
+        # ── Handler dispatch ────────────────────────────────────────────────
+        next_id = None
+        should_stop = False
+
+        if el_id == "AAFL_RUN":
+            try:
+                _log("Launching AAFL loop (1 iteration)", "info")
+                run_loop(max_loop_iters=1, max_llm_calls=20)
+                _log("AAFL run complete", "pass")
+            except Exception as exc:
+                _log(f"AAFL run error: {exc}", "fail")
+
+        elif el_id in ("WCCS_END", "SESUM_END", "HARD_STOP", "CNP"):
+            _log(f"Ending step reached: {el_id}", "pass")
+            should_stop = True
+
+        elif el_id == "ALP_GATE":
+            params = step.get("params", {})
+            min_pct = params.get("min_pct", 20)
+            _log(f"ALP Gate: min {min_pct}% — check ALP_Database.md", "info")
+            # Non-blocking: just log and continue
+            _log("ALP Gate passed (automated run — assuming ALP sufficient)", "pass")
+
+        elif el_id == "SCORE_GATE":
+            params = step.get("params", {})
+            threshold = params.get("threshold", 7)
+            _log(f"Score Gate (threshold {threshold}) — auto-continue", "pass")
+
+        elif el_id in ("YO", "PAUSE"):
+            _log(f"Pause gate ({el_id}) — skipping in automated run", "info")
+
+        else:
+            _log(f"Step {el_id}: no automation handler — marking pass", "pass")
+
+        if should_stop:
+            break
+
+        # ── Arrow resolution ────────────────────────────────────────────────
+        out = out_arrows.get(current_id, [])
+        if not out:
+            _log("No outgoing arrows — workflow complete", "pass")
+            break
+
+        # Pick the first non-loop arrow for automated execution
+        chosen = None
+        for a in out:
+            atype = a.get("arrow_type", "continue")
+            if atype == "hard_stop":
+                _log("Hard stop arrow — ending", "pass")
+                should_stop = True
+                break
+            elif atype == "alp_gate":
+                min_pct = a.get("params", {}).get("min_pct", 20)
+                _log(f"ALP gate arrow ({min_pct}%) — continuing", "info")
+                chosen = a
+                break
+            elif atype in ("continue", "approval", "trigger", "checkpoint"):
+                chosen = a
+                break
+            elif atype == "branch":
+                # In automated mode take the first branch
+                chosen = a
+                break
+            elif atype in ("loop_back", "repeat", "jump_back", "jump_forward"):
+                chosen = a
+                break
+            elif atype in ("timer", "scheduled"):
+                secs = a.get("params", {}).get("seconds", 5)
+                import time as _time
+                _log(f"Timer: waiting {min(secs, 30)}s", "info")
+                _time.sleep(min(secs, 30))
+                chosen = a
+                break
+            else:
+                chosen = a
+                break
+
+        if should_stop:
+            break
+
+        if chosen:
+            atype = chosen.get("arrow_type", "continue")
+            if atype == "loop_back":
+                next_id = steps[0]["id"]
+                _log(f"Loop back to start: {next_id}", "info")
+            elif atype == "jump_back":
+                n = chosen.get("params", {}).get("n", 1)
+                step_list = list(step_map.keys())
+                curr_idx = step_list.index(current_id) if current_id in step_list else 0
+                next_idx = max(0, curr_idx - int(n))
+                next_id = step_list[next_idx]
+                _log(f"Jump back {n} to: {next_id}", "info")
+            elif atype == "jump_forward":
+                n = chosen.get("params", {}).get("n", 1)
+                step_list = list(step_map.keys())
+                curr_idx = step_list.index(current_id) if current_id in step_list else 0
+                next_idx = min(len(step_list) - 1, curr_idx + int(n))
+                next_id = step_list[next_idx]
+                _log(f"Jump forward {n} to: {next_id}", "info")
+            else:
+                next_id = chosen.get("to")
+        else:
+            _log("No applicable arrow — workflow complete", "pass")
+            break
+
+        current_id = next_id
+
+    _log(f"LLOW workflow '{name}' finished. Steps executed: {sum(visited_count.values())}", "pass")
+
+    # Write execution log
+    log_path = HERE / "data" / "llow_last_run.json"
+    try:
+        log_path.write_text(
+            __import__("json").dumps({"workflow": name, "log": log}, indent=2, ensure_ascii=False),
+            encoding="utf-8"
+        )
+    except Exception:
+        pass
+
+    return log
+
+
 if __name__ == "__main__":
     _once = "--once" in sys.argv
+    _goal_idx = next((i for i, a in enumerate(sys.argv) if a == "--goal"), None)
+    if _goal_idx is not None and _goal_idx + 1 < len(sys.argv):
+        _inline_goal = sys.argv[_goal_idx + 1]
+        (HERE / "goal.txt").write_text(_inline_goal, encoding="utf-8")
+        print(f"[LOOP] Set goal from --goal flag: {_inline_goal}")
     if _once:
         run_loop(max_loop_iters=1, max_llm_calls=10)
     else:

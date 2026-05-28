@@ -1,0 +1,87 @@
+{
+  "categories": {
+    "modes": {
+      "icon": "⚙️",
+      "colour": "#4A90D9",
+      "elements": [
+        {"id": "BGM", "name": "Beginner Mode", "desc": "Explain simply"},
+        {"id": "DDM", "name": "Deep Dive Mode", "desc": "Maximum detail"},
+        {"id": "TBLM", "name": "Troubleshoot Mode", "desc": "Debug focus"},
+        {"id": "BPM", "name": "Battle Plan Mode", "desc": "Strategic planning"},
+        {"id": "EM", "name": "Evidence Mode", "desc": "Cite sources"},
+        {"id": "NRM", "name": "No-Repeat Mode", "desc": "Never repeat info"}
+      ]
+    },
+    "inputs": {
+      "icon": "📥",
+      "colour": "#50C878",
+      "elements": [
+        {"id": "WS", "name": "Web Search", "desc": "Search the web"},
+        {"id": "WSF", "name": "Web Search Finding", "desc": "Report search result"},
+        {"id": "WYM", "name": "What You Mean", "desc": "Clarify request"},
+        {"id": "IBR", "name": "Investigate Brainstorm Report", "desc": "Research + brainstorm + report"}
+      ]
+    },
+    "outputs": {
+      "icon": "📤",
+      "colour": "#FF6B6B",
+      "elements": [
+        {"id": "OCB", "name": "One CLAC Block", "desc": "Generate CLAC block"},
+        {"id": "CLACR", "name": "CLAC Request", "desc": "Generate CLAC request"},
+        {"id": "AAFL_RUN", "name": "AAFL Run", "desc": "Trigger AAFL loop"},
+        {"id": "SESUM", "name": "Session Summary", "desc": "Write session log"},
+        {"id": "WCCS", "name": "Save Handover", "desc": "Write WCCS save"}
+      ]
+    },
+    "modifiers": {
+      "icon": "🎛️",
+      "colour": "#FFD700",
+      "elements": [
+        {"id": "SIB", "name": "Summarise In Brief", "desc": "Short output"},
+        {"id": "SIF", "name": "Summarise In Full", "desc": "Full detail output"},
+        {"id": "CR", "name": "Confidence Rating", "desc": "Rate confidence 1-10"},
+        {"id": "ALP", "name": "ALP Check", "desc": "Check allowance before proceeding"},
+        {"id": "FFUE", "name": "FFUE Check", "desc": "Check fluid/flexible/upgradeable/editable"}
+      ]
+    },
+    "approval_gates": {
+      "icon": "👍",
+      "colour": "#FF9500",
+      "elements": [
+        {"id": "YO", "name": "Your Opinion", "desc": "Ask Scott for opinion"},
+        {"id": "AIO", "name": "AI Opinion", "desc": "Claude gives its opinion"},
+        {"id": "WMBW", "name": "Why Might Be Wrong", "desc": "Challenge own answer"},
+        {"id": "SCORE_GATE", "name": "Score Gate", "desc": "Continue only if score >= threshold"},
+        {"id": "ALP_GATE", "name": "ALP Gate", "desc": "Continue only if ALP >= threshold"}
+      ]
+    },
+    "quality_checks": {
+      "icon": "✅",
+      "colour": "#8B5CF6",
+      "elements": [
+        {"id": "WCBB", "name": "What Could Be Better", "desc": "Critique and improve"},
+        {"id": "AFNA", "name": "Attack From New Angle", "desc": "Try different approach"},
+        {"id": "FFUE_CHECK", "name": "FFUE Audit", "desc": "Check FFUE compliance"}
+      ]
+    },
+    "cycle_controls": {
+      "icon": "🔄",
+      "colour": "#EC4899",
+      "elements": [
+        {"id": "WRC", "name": "Write-Run-Check", "desc": "Mini dev cycle"},
+        {"id": "MCU", "name": "MCU Optimise", "desc": "Run Kanban optimiser"},
+        {"id": "SBS", "name": "Step By Step", "desc": "One step at a time"}
+      ]
+    },
+    "endings": {
+      "icon": "🏁",
+      "colour": "#6B7280",
+      "elements": [
+        {"id": "WCCS_END", "name": "WCCS Save + End", "desc": "Save and stop"},
+        {"id": "SESUM_END", "name": "SESUM + End", "desc": "Session summary and stop"},
+        {"id": "CNP", "name": "Copy and Paste", "desc": "Export result"},
+        {"id": "HARD_STOP", "name": "Hard Stop", "desc": "End immediately"}
+      ]
+    }
+  }
+}

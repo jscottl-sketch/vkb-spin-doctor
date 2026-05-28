@@ -903,6 +903,62 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .run-detail-val{color:#ccc;word-break:break-word}
 .run-detail-close{float:right;background:#2a1a1a;border:1px solid #4a2a2a;color:#f88;padding:1px 7px;border-radius:3px;cursor:pointer;font-size:10px}
 @keyframes sysLivePulse{0%,100%{opacity:.5;box-shadow:0 0 4px #4f4}50%{opacity:1;box-shadow:0 0 10px #4f4}}
+/* ── LLOW (Loop Law Organiser Window) — OCB-D ── */
+.llow-3panel{display:flex;height:520px;gap:0;border:1px solid #1e1e1e;border-radius:6px;overflow:hidden;background:#0a0a0a}
+.llow-palette{width:200px;min-width:180px;background:#0d0d0d;border-right:1px solid #1e1e1e;display:flex;flex-direction:column;overflow:hidden}
+.llow-palette-search{padding:6px;border-bottom:1px solid #1a1a1a}
+.llow-palette-search input{width:100%;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:11px;box-sizing:border-box}
+.llow-palette-body{flex:1;overflow-y:auto;padding:4px 0}
+.llow-cat-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;font-size:10px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;user-select:none}
+.llow-cat-hdr:hover{background:#111;color:#888}
+.llow-cat-hdr .llow-chevron{font-size:9px;transition:transform .2s}
+.llow-cat-hdr.collapsed .llow-chevron{transform:rotate(-90deg)}
+.llow-cat-items{overflow:hidden}
+.llow-cat-items.hidden{display:none}
+.llow-pal-el{display:flex;align-items:center;gap:6px;padding:5px 10px;cursor:grab;font-size:11px;color:#aaa;border-radius:3px;margin:1px 4px;transition:background .12s}
+.llow-pal-el:hover{background:#181818;color:#eee}
+.llow-pal-el-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.llow-pal-el-name{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.llow-pal-sep{height:1px;background:#1a1a1a;margin:4px 8px}
+.llow-pal-arrow{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:grab;font-size:11px;color:#888;border-radius:3px;margin:1px 4px;transition:background .12s}
+.llow-pal-arrow:hover{background:#181818;color:#eee}
+.llow-canvas-wrap{flex:1;position:relative;overflow:hidden;background:#0a0a0a}
+.llow-canvas-scroll{width:100%;height:100%;overflow:auto;position:relative}
+.llow-canvas-inner{position:relative;width:2200px;height:1400px;background-image:linear-gradient(to right,#161616 1px,transparent 1px),linear-gradient(to bottom,#161616 1px,transparent 1px);background-size:20px 20px}
+.llow-canvas-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.llow-nodes-layer{position:absolute;top:0;left:0;width:100%;height:100%}
+.llow-node{position:absolute;display:flex;align-items:center;gap:0;border-radius:6px;border:2px solid #444;background:#111;cursor:pointer;user-select:none;box-sizing:border-box;min-width:160px;height:58px;transition:box-shadow .15s}
+.llow-node.selected{box-shadow:0 0 0 2px #4af,0 2px 12px rgba(0,0,0,.6)}
+.llow-node:hover{box-shadow:0 0 0 1px #888,0 2px 8px rgba(0,0,0,.4)}
+.llow-node-icon{font-size:18px;padding:0 8px;flex-shrink:0}
+.llow-node-body{flex:1;min-width:0;padding-right:6px}
+.llow-node-name{font-size:11px;font-weight:bold;color:#eee;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.llow-node-desc{font-size:9px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.llow-port{position:absolute;width:12px;height:12px;border-radius:50%;top:50%;transform:translateY(-50%);cursor:crosshair;border:2px solid #555;background:#222;z-index:2;transition:background .12s,border-color .12s}
+.llow-port:hover{background:#4af;border-color:#4af}
+.llow-port-in{left:-7px}
+.llow-port-out{right:-7px}
+.llow-port.active{background:#4af;border-color:#4af;box-shadow:0 0 6px #4af}
+.llow-zoom-btns{position:absolute;bottom:8px;right:8px;display:flex;flex-direction:column;gap:2px;z-index:10}
+.llow-zoom-btns button{background:#181818;border:1px solid #333;color:#aaa;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:13px;line-height:1;padding:0}
+.llow-zoom-btns button:hover{background:#2a2a2a;color:#fff}
+.llow-minimap{position:absolute;bottom:8px;right:40px;width:110px;height:70px;background:#070707;border:1px solid #222;border-radius:4px;overflow:hidden;z-index:10;opacity:.8}
+.llow-minimap-node{position:absolute;border-radius:2px;background:#333}
+.llow-props{width:250px;min-width:230px;background:#0d0d0d;border-left:1px solid #1e1e1e;overflow-y:auto;padding:10px}
+.llow-props-title{font-size:11px;font-weight:bold;color:#777;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.llow-prop-row{margin-bottom:8px}
+.llow-prop-label{font-size:10px;color:#555;margin-bottom:3px}
+.llow-prop-val{font-size:12px;color:#ccc}
+.llow-prop-input{width:100%;background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 7px;font:inherit;font-size:12px;box-sizing:border-box}
+.llow-prop-select{width:100%;background:#151515;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 7px;font:inherit;font-size:12px;box-sizing:border-box}
+.llow-exec-log{background:#060606;border:1px solid #1a1a1a;border-radius:4px;max-height:100px;overflow-y:auto;padding:6px 8px;font-size:11px;color:#666;margin-top:6px;font-family:monospace}
+.llow-exec-row{display:flex;gap:8px;padding:2px 0;border-bottom:1px solid #0f0f0f}
+.llow-exec-row.running{color:#4af}
+.llow-exec-row.pass{color:#4f4}
+.llow-exec-row.fail{color:#f66}
+.llow-topbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;padding:6px 8px;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px}
+.llow-topbar input[type=text]{background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:12px;min-width:140px}
+.llow-arrow-label-popup{position:absolute;background:#1a1a2a;border:1px solid #4af;border-radius:4px;padding:4px 8px;font-size:10px;color:#ccc;pointer-events:none;z-index:50;white-space:nowrap;display:none}
 </style>
 </head>
 <body>
@@ -2194,6 +2250,86 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
         </div>
       </div>
     </div><!-- /acc-workflow -->
+
+    <!-- acc-llow (OCB-D): Loop Law Organiser Window -->
+    <div class="aafl-acc open" id="acc-llow">
+      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-llow')">🔄 Loop Law Organiser Window (LLOW)
+        <span style="font-size:10px;background:#1a2a3a;color:#4af;border-radius:10px;padding:1px 8px;margin-left:8px;vertical-align:middle" title="Design visual loop workflows. Drag elements from the palette, connect with arrows, then Export as CLACR or Run directly via AAFL.">OCB-D</span>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="aafl-acc-body">
+        <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px" title="Drag elements from the left panel. Connect them with arrows to define flow. Export as CLACR to get a ready-to-paste CLAC block, or Run Loop to execute directly.">Design your loop visually — drag elements onto the canvas, draw arrows between them, then export or run.</div>
+
+        <!-- TOP BAR -->
+        <div class="llow-topbar">
+          <input type="text" id="llow-wf-name" value="New Workflow" title="Name your workflow — used when saving">
+          <button class="btn" onclick="llowRunLoop()" style="background:#1a3a1a;color:#6f6;font-size:12px" title="Execute your loop design through AAFL. Watch progress in the log below.">▶ Run Loop</button>
+          <button class="btn" onclick="llowDryRun()" style="font-size:12px" title="Validates your design without executing. Checks for errors and missing connections.">🧪 Dry Run</button>
+          <button class="btn" onclick="llowSave()" style="font-size:12px" title="Save workflow to server as a named preset">💾 Save</button>
+          <select id="llow-load-select" onchange="llowLoad(this.value)" style="background:#151515;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font-size:12px" title="Load a saved workflow — replaces current canvas">
+            <option value="">📂 Load…</option>
+          </select>
+          <button class="btn" onclick="llowExportClacr()" style="font-size:12px" title="Converts your visual design into a text CLACR block you can paste into Claude Code.">📋 Export as CLACR</button>
+          <button class="btn" onclick="llowClearCanvas()" style="font-size:12px;background:#2a1a1a;color:#f88" title="Clear all steps and arrows from the canvas (will confirm first)">🗑 Clear</button>
+        </div>
+
+        <!-- 3-PANEL LAYOUT -->
+        <div class="llow-3panel">
+
+          <!-- LEFT: ELEMENT PALETTE -->
+          <div class="llow-palette" title="Drag elements from here onto the canvas to build your workflow">
+            <div class="llow-palette-search">
+              <input type="text" id="llow-search" placeholder="Search elements…" oninput="llowFilterPalette(this.value)" title="Filter elements by name or description">
+            </div>
+            <div class="llow-palette-body" id="llow-palette-body">
+              <div style="font-size:10px;color:#444;padding:8px;text-align:center">Loading…</div>
+            </div>
+          </div>
+
+          <!-- MIDDLE: CANVAS -->
+          <div class="llow-canvas-wrap" id="llow-canvas-wrap"
+               title="Drag elements from the left panel. Connect them with arrows to define flow. Click Export as CLACR to generate a ready-to-paste CLAC block."
+               ondragover="event.preventDefault()" ondrop="llowOnDrop(event)">
+            <div class="llow-canvas-scroll" id="llow-canvas-scroll">
+              <div class="llow-canvas-inner" id="llow-canvas-inner"
+                   onmousemove="llowOnCanvasMouseMove(event)"
+                   onmouseup="llowOnCanvasMouseUp(event)"
+                   onclick="llowOnCanvasClick(event)">
+                <svg class="llow-canvas-svg" id="llow-canvas-svg"></svg>
+                <div class="llow-nodes-layer" id="llow-nodes-layer"></div>
+              </div>
+            </div>
+            <!-- Zoom controls -->
+            <div class="llow-zoom-btns">
+              <button onclick="llowZoom(1.2)" title="Zoom in">+</button>
+              <button onclick="llowZoom(1/1.2)" title="Zoom out">−</button>
+              <button onclick="llowFitAll()" title="Fit all nodes in view" style="font-size:9px;width:auto;padding:0 4px">Fit</button>
+            </div>
+            <!-- Minimap -->
+            <div class="llow-minimap" id="llow-minimap" title="Overview of all nodes on the canvas"></div>
+            <!-- Arrow label popup -->
+            <div class="llow-arrow-label-popup" id="llow-arrow-label"></div>
+          </div>
+
+          <!-- RIGHT: PROPERTIES INSPECTOR -->
+          <div class="llow-props" id="llow-props">
+            <div class="llow-props-title">Properties</div>
+            <div id="llow-props-content" style="font-size:11px;color:#555;font-style:italic">
+              Click a step or arrow to see its properties here.
+            </div>
+          </div>
+
+        </div><!-- /3panel -->
+
+        <!-- BOTTOM: EXECUTION LOG -->
+        <div style="font-size:10px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:.06em;margin-top:6px;margin-bottom:3px">Execution Log</div>
+        <div class="llow-exec-log" id="llow-exec-log">
+          <span style="color:#333">No run started. Click ▶ Run Loop to begin.</span>
+        </div>
+
+      </div>
+    </div><!-- /acc-llow -->
+
 
     <!-- acc-b2-06 -->
     <div class="aafl-acc open" id="acc-b2-06">
@@ -10918,6 +11054,805 @@ async function shLoadHistory() {
     }).join('');
   } catch(e) { list.textContent = 'Failed to load history.'; }
 }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LLOW — Loop Law Organiser Window (OCB-D)
+// ══════════════════════════════════════════════════════════════════════════════
+
+const LLOW = {
+  elements: null,
+  arrowDefs: [],
+  wf: { name: 'New Workflow', steps: [], arrows: [] },
+  sel: null,
+  selType: null,     // 'step' | 'arrow'
+  scale: 1.0,
+  arrowFrom: null,   // step id when drawing arrow
+  dragNode: null,    // { stepId, startMouseX, startMouseY, origX, origY }
+  dragPalette: null, // element_id being dragged from palette
+  arrowPreview: null,
+  savedWorkflows: []
+};
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+async function llowInit() {
+  try {
+    const [elements, arrows, workflows] = await Promise.all([
+      apiFetch('/api/llow/elements'),
+      apiFetch('/api/llow/arrows'),
+      apiFetch('/api/llow/workflows')
+    ]);
+    LLOW.elements = elements;
+    LLOW.arrowDefs = arrows.arrows || [];
+    LLOW.savedWorkflows = workflows || [];
+    llowRenderPalette();
+    llowRenderCanvas();
+    llowPopulateLoadSelect();
+  } catch(e) {
+    console.warn('[LLOW] Init failed:', e);
+    const pb = document.getElementById('llow-palette-body');
+    if (pb) pb.innerHTML = '<div style="font-size:10px;color:#555;padding:8px">Server offline — start mcc_server.py to load elements.</div>';
+  }
+}
+
+// ── Palette ───────────────────────────────────────────────────────────────────
+
+function llowRenderPalette(filter) {
+  const pb = document.getElementById('llow-palette-body');
+  if (!pb || !LLOW.elements) return;
+  const q = (filter || '').toLowerCase();
+  let html = '';
+  const cats = LLOW.elements.categories || {};
+  for (const [catKey, cat] of Object.entries(cats)) {
+    const els = (cat.elements || []).filter(e =>
+      !q || e.name.toLowerCase().includes(q) || e.id.toLowerCase().includes(q) || (e.desc||'').toLowerCase().includes(q)
+    );
+    if (!els.length) continue;
+    html += `<div class="llow-cat-hdr" onclick="llowToggleCat(this)" title="${cat.icon} ${catKey}">
+      <span>${cat.icon} ${catKey}</span>
+      <span class="llow-chevron">▾</span>
+    </div>
+    <div class="llow-cat-items" data-cat="${catKey}">`;
+    for (const el of els) {
+      html += `<div class="llow-pal-el" draggable="true"
+          data-el-id="${el.id}" data-cat="${catKey}"
+          ondragstart="llowPalDragStart(event,'${el.id}','${catKey}')"
+          title="${el.desc} — drag onto canvas to add">
+        <div class="llow-pal-el-dot" style="background:${cat.colour}"></div>
+        <div class="llow-pal-el-name" style="color:${cat.colour}">${el.name}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  // Arrow section
+  if (!q || 'arrows'.includes(q)) {
+    html += `<div class="llow-pal-sep"></div>
+    <div class="llow-cat-hdr" onclick="llowToggleCat(this)" title="Arrow types">
+      <span>↔ Arrow Types</span><span class="llow-chevron">▾</span>
+    </div>
+    <div class="llow-cat-items" data-cat="arrows">`;
+    for (const a of LLOW.arrowDefs) {
+      if (q && !a.name.toLowerCase().includes(q) && !a.id.includes(q)) continue;
+      html += `<div class="llow-pal-arrow"
+          draggable="true"
+          data-arrow-id="${a.id}"
+          ondragstart="llowArrowDragStart(event,'${a.id}')"
+          title="${a.desc} — drag between two steps to connect">
+        <span style="color:${a.colour}">${a.symbol}</span>
+        <span>${a.name}</span>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  pb.innerHTML = html || '<div style="font-size:10px;color:#444;padding:8px">No matches</div>';
+}
+
+function llowFilterPalette(v) { llowRenderPalette(v); }
+
+function llowToggleCat(hdr) {
+  hdr.classList.toggle('collapsed');
+  const items = hdr.nextElementSibling;
+  if (items) items.classList.toggle('hidden');
+}
+
+function llowPalDragStart(e, elId, catKey) {
+  LLOW.dragPalette = { type: 'element', elId, catKey };
+  e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'element', elId, catKey }));
+  e.dataTransfer.effectAllowed = 'copy';
+}
+
+function llowArrowDragStart(e, arrowId) {
+  LLOW.dragPalette = { type: 'arrow', arrowId };
+  e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'arrow', arrowId }));
+  e.dataTransfer.effectAllowed = 'copy';
+}
+
+// ── Canvas drop ───────────────────────────────────────────────────────────────
+
+function llowOnDrop(e) {
+  e.preventDefault();
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner || !LLOW.elements) return;
+  let data;
+  try { data = JSON.parse(e.dataTransfer.getData('text/plain')); } catch{ return; }
+  if (data.type !== 'element') return;
+  const rect = inner.getBoundingClientRect();
+  const scroll = document.getElementById('llow-canvas-scroll');
+  const rawX = e.clientX - rect.left + (scroll ? scroll.scrollLeft : 0);
+  const rawY = e.clientY - rect.top + (scroll ? scroll.scrollTop : 0);
+  const x = Math.round(rawX / 20) * 20;
+  const y = Math.round(rawY / 20) * 20;
+  const catDef = (LLOW.elements.categories || {})[data.catKey] || {};
+  const elDef = (catDef.elements || []).find(e2 => e2.id === data.elId);
+  if (!elDef) return;
+  const stepId = 'step-' + Math.random().toString(36).slice(2, 10);
+  LLOW.wf.steps.push({ id: stepId, element_id: data.elId, x, y, params: {}, _elDef: elDef, _catDef: catDef });
+  llowRenderCanvas();
+  llowSelectStep(stepId);
+  llowLogExec(`Added: ${elDef.name}`, 'pass');
+}
+
+// ── Canvas render ─────────────────────────────────────────────────────────────
+
+function llowGetElInfo(elId) {
+  if (!LLOW.elements) return { name: elId, desc: '', colour: '#555', icon: '●', category: '' };
+  for (const [catKey, cat] of Object.entries(LLOW.elements.categories || {})) {
+    const el = (cat.elements || []).find(e => e.id === elId);
+    if (el) return { ...el, colour: cat.colour, icon: cat.icon, category: catKey };
+  }
+  return { name: elId, desc: '', colour: '#555', icon: '●', category: '' };
+}
+
+function llowRenderCanvas() {
+  const layer = document.getElementById('llow-nodes-layer');
+  const svg   = document.getElementById('llow-canvas-svg');
+  if (!layer || !svg) return;
+
+  // Render nodes
+  layer.innerHTML = '';
+  for (const step of LLOW.wf.steps) {
+    const el = step._elDef || llowGetElInfo(step.element_id);
+    const cat = step._catDef || {};
+    const colour = cat.colour || el.colour || '#555';
+    const icon = cat.icon || el.icon || '●';
+    const selected = LLOW.sel === step.id && LLOW.selType === 'step';
+    const div = document.createElement('div');
+    div.className = 'llow-node' + (selected ? ' selected' : '');
+    div.id = 'llow-node-' + step.id;
+    div.style.cssText = `left:${step.x}px;top:${step.y}px;border-color:${colour}`;
+    div.innerHTML = `
+      <div class="llow-port llow-port-in" id="llow-pin-${step.id}"
+           onclick="llowPortInClick(event,'${step.id}')"
+           title="Input port — click after selecting an output port to connect"></div>
+      <div class="llow-node-icon">${icon}</div>
+      <div class="llow-node-body">
+        <div class="llow-node-name" style="color:${colour}">${el.name || step.element_id}</div>
+        <div class="llow-node-desc">${el.desc || ''}</div>
+      </div>
+      <div class="llow-port llow-port-out" id="llow-pout-${step.id}"
+           onclick="llowPortOutClick(event,'${step.id}')"
+           title="Output port — click to start drawing an arrow"></div>`;
+    div.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('llow-port')) return;
+      e.stopPropagation();
+      llowSelectStep(step.id);
+      LLOW.dragNode = {
+        stepId: step.id,
+        startMouseX: e.clientX,
+        startMouseY: e.clientY,
+        origX: step.x,
+        origY: step.y
+      };
+    });
+    div.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      llowNodeContextMenu(e, step.id);
+    });
+    div.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('llow-port')) {
+        e.stopPropagation();
+        llowSelectStep(step.id);
+      }
+    });
+    layer.appendChild(div);
+  }
+
+  // Render arrows
+  llowRenderArrows(svg);
+  llowRenderMinimap();
+}
+
+function llowNodeWidth() { return 164; }
+function llowNodeHeight() { return 58; }
+
+function llowGetPortPos(stepId, port) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return { x: 0, y: 0 };
+  const hw = llowNodeWidth() / 2;
+  const hh = llowNodeHeight() / 2;
+  return port === 'out'
+    ? { x: step.x + llowNodeWidth(), y: step.y + hh }
+    : { x: step.x,                   y: step.y + hh };
+}
+
+function llowRenderArrows(svg) {
+  let svgContent = '';
+  for (const arrow of LLOW.wf.arrows) {
+    const from = llowGetPortPos(arrow.from, 'out');
+    const to   = llowGetPortPos(arrow.to,   'in');
+    const arrowDef = LLOW.arrowDefs.find(a => a.id === arrow.arrow_type) || {};
+    const colour = arrowDef.colour || '#888';
+    const selected = LLOW.sel === arrow.id && LLOW.selType === 'arrow';
+    const dx = Math.abs(to.x - from.x) * 0.5 || 80;
+    const d = `M${from.x},${from.y} C${from.x+dx},${from.y} ${to.x-dx},${to.y} ${to.x},${to.y}`;
+    const strokeW = selected ? 2.5 : 1.5;
+    const opacity = selected ? 1 : 0.75;
+    const dash = ['branch','alp_gate','approval'].includes(arrow.arrow_type) ? 'stroke-dasharray="5,3"' : '';
+    const label = arrowDef.symbol || '→';
+    const midX = (from.x + to.x) / 2;
+    const midY = (from.y + to.y) / 2 - 10;
+    svgContent += `
+      <g data-arrow-id="${arrow.id}" style="cursor:pointer" onclick="llowSelectArrow('${arrow.id}')">
+        <path d="${d}" fill="none" stroke="${colour}" stroke-width="${strokeW}" opacity="${opacity}" ${dash}
+              onmouseenter="llowArrowHover(event,'${arrow.id}')" onmouseleave="llowArrowLeave()"/>
+        <text x="${midX}" y="${midY}" fill="${colour}" font-size="12" text-anchor="middle" opacity="${opacity}"
+              font-family="monospace" pointer-events="none">${label}</text>
+      </g>`;
+  }
+  // Preview line
+  if (LLOW.arrowPreview) {
+    const ap = LLOW.arrowPreview;
+    svgContent += `<line x1="${ap.x1}" y1="${ap.y1}" x2="${ap.x2}" y2="${ap.y2}"
+      stroke="#4af" stroke-width="1.5" stroke-dasharray="6,3" opacity=".7" pointer-events="none"/>`;
+  }
+  // Arrowhead marker
+  svgContent = `<defs><marker id="ah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 Z" fill="#888"/>
+  </marker></defs>` + svgContent;
+  svg.innerHTML = svgContent;
+}
+
+function llowRenderMinimap() {
+  const mm = document.getElementById('llow-minimap');
+  if (!mm || !LLOW.wf.steps.length) { if (mm) mm.innerHTML = ''; return; }
+  const SCALE = 0.05;
+  mm.innerHTML = '';
+  for (const step of LLOW.wf.steps) {
+    const el = step._elDef || llowGetElInfo(step.element_id);
+    const cat = step._catDef || {};
+    const colour = cat.colour || el.colour || '#555';
+    const d = document.createElement('div');
+    d.className = 'llow-minimap-node';
+    d.style.cssText = `left:${step.x*SCALE}px;top:${step.y*SCALE}px;width:${llowNodeWidth()*SCALE}px;height:${llowNodeHeight()*SCALE}px;background:${colour};opacity:.7`;
+    mm.appendChild(d);
+  }
+}
+
+// ── Zoom ──────────────────────────────────────────────────────────────────────
+
+function llowZoom(factor) {
+  LLOW.scale = Math.max(0.4, Math.min(2.5, LLOW.scale * factor));
+  const inner = document.getElementById('llow-canvas-inner');
+  if (inner) inner.style.transform = `scale(${LLOW.scale})`;
+  inner.style.transformOrigin = '0 0';
+}
+
+function llowFitAll() {
+  if (!LLOW.wf.steps.length) return;
+  const scroll = document.getElementById('llow-canvas-scroll');
+  if (!scroll) return;
+  const minX = Math.min(...LLOW.wf.steps.map(s => s.x));
+  const minY = Math.min(...LLOW.wf.steps.map(s => s.y));
+  scroll.scrollLeft = Math.max(0, minX - 40);
+  scroll.scrollTop  = Math.max(0, minY - 40);
+}
+
+// ── Selection ─────────────────────────────────────────────────────────────────
+
+function llowSelectStep(stepId) {
+  LLOW.sel = stepId;
+  LLOW.selType = 'step';
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const el = step._elDef || llowGetElInfo(step.element_id);
+  const cat = step._catDef || {};
+  const colour = cat.colour || el.colour || '#555';
+  const pc = document.getElementById('llow-props-content');
+  if (!pc) return;
+  pc.innerHTML = `
+    <div class="llow-props-title" style="color:${colour}">${cat.icon || ''} ${el.name || step.element_id}</div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">ID</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#555">${step.id}</div>
+    </div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Type</div>
+      <div class="llow-prop-val">${step.element_id}</div>
+    </div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Category</div>
+      <div class="llow-prop-val">${el.category || ''}</div>
+    </div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Description</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#aaa">${el.desc || ''}</div>
+    </div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Position</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#666">x:${step.x} y:${step.y}</div>
+    </div>
+    ${llowRenderParamFields(step, el)}
+    <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn" style="font-size:10px;background:#2a1a1a;color:#f88"
+              onclick="llowDeleteStep('${stepId}')">Delete Step</button>
+      <button class="btn" style="font-size:10px"
+              onclick="llowDuplicateStep('${stepId}')">Duplicate</button>
+    </div>`;
+  llowRenderCanvas();
+}
+
+function llowSelectArrow(arrowId) {
+  LLOW.sel = arrowId;
+  LLOW.selType = 'arrow';
+  const arrow = LLOW.wf.arrows.find(a => a.id === arrowId);
+  if (!arrow) return;
+  const arrowDef = LLOW.arrowDefs.find(a => a.id === arrow.arrow_type) || {};
+  const pc = document.getElementById('llow-props-content');
+  if (!pc) return;
+  pc.innerHTML = `
+    <div class="llow-props-title" style="color:${arrowDef.colour||'#aaa'}">${arrowDef.symbol||'→'} ${arrowDef.name||arrow.arrow_type}</div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Description</div>
+      <div class="llow-prop-val" style="font-size:10px;color:#aaa">${arrowDef.desc||''}</div>
+    </div>
+    <div class="llow-prop-row">
+      <div class="llow-prop-label">Arrow Type</div>
+      <div class="llow-prop-val">
+        <select class="llow-prop-select" onchange="llowChangeArrowType('${arrowId}',this.value)">
+          ${LLOW.arrowDefs.map(a=>`<option value="${a.id}"${a.id===arrow.arrow_type?' selected':''}>${a.symbol} ${a.name}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    ${llowRenderArrowParamFields(arrow, arrowDef)}
+    <div style="margin-top:10px">
+      <button class="btn" style="font-size:10px;background:#2a1a1a;color:#f88"
+              onclick="llowDeleteArrow('${arrowId}')">Delete Arrow</button>
+    </div>`;
+  llowRenderCanvas();
+}
+
+function llowRenderParamFields(step, el) {
+  let html = '';
+  const cat = step._catDef || {};
+  const catKey = el.category || '';
+  if (catKey === 'approval_gates' && step.element_id === 'SCORE_GATE') {
+    const v = step.params.threshold || 7;
+    html += `<div class="llow-prop-row">
+      <div class="llow-prop-label">Score threshold (1-10)</div>
+      <input class="llow-prop-input" type="range" min="1" max="10" value="${v}"
+             oninput="llowSetStepParam('${step.id}','threshold',+this.value);this.nextSibling.textContent=' '+this.value"
+             style="width:calc(100% - 30px)"><span style="font-size:11px;color:#ccc"> ${v}</span>
+    </div>`;
+  } else if (catKey === 'approval_gates' && step.element_id === 'ALP_GATE') {
+    const v = step.params.min_pct || 20;
+    html += `<div class="llow-prop-row">
+      <div class="llow-prop-label">Min ALP % (5-95)</div>
+      <input class="llow-prop-input" type="range" min="5" max="95" value="${v}"
+             oninput="llowSetStepParam('${step.id}','min_pct',+this.value);this.nextSibling.textContent=' '+this.value+'%'"
+             style="width:calc(100% - 40px)"><span style="font-size:11px;color:#ccc"> ${v}%</span>
+    </div>`;
+  }
+  return html;
+}
+
+function llowRenderArrowParamFields(arrow, arrowDef) {
+  const paramDefs = arrowDef.params || {};
+  let html = '';
+  for (const [pname, ptype] of Object.entries(paramDefs)) {
+    const val = (arrow.params || {})[pname] || '';
+    if (ptype === 'integer') {
+      if (pname === 'min_pct') {
+        html += `<div class="llow-prop-row">
+          <div class="llow-prop-label">Min ALP % (5-95)</div>
+          <input class="llow-prop-input" type="range" min="5" max="95" value="${val||20}"
+                 oninput="llowSetArrowParam('${arrow.id}','${pname}',+this.value);this.nextSibling.textContent=' '+this.value+'%'"
+                 style="width:calc(100% - 40px)"><span style="font-size:11px;color:#ccc"> ${val||20}%</span>
+        </div>`;
+      } else if (pname === 'seconds') {
+        html += `<div class="llow-prop-row">
+          <div class="llow-prop-label">Seconds</div>
+          <input class="llow-prop-input" type="number" min="1" value="${val||60}"
+                 onchange="llowSetArrowParam('${arrow.id}','${pname}',+this.value)">
+        </div>`;
+      } else {
+        html += `<div class="llow-prop-row">
+          <div class="llow-prop-label">${pname} (integer)</div>
+          <input class="llow-prop-input" type="number" min="1" value="${val||1}"
+                 onchange="llowSetArrowParam('${arrow.id}','${pname}',+this.value)">
+        </div>`;
+      }
+    } else if (ptype === 'string') {
+      if (pname === 'datetime') {
+        html += `<div class="llow-prop-row">
+          <div class="llow-prop-label">Datetime</div>
+          <input class="llow-prop-input" type="datetime-local" value="${val||''}"
+                 onchange="llowSetArrowParam('${arrow.id}','${pname}',this.value)">
+        </div>`;
+      } else {
+        html += `<div class="llow-prop-row">
+          <div class="llow-prop-label">${pname}</div>
+          <input class="llow-prop-input" type="text" value="${val||''}" placeholder="Enter ${pname}…"
+                 onchange="llowSetArrowParam('${arrow.id}','${pname}',this.value)">
+        </div>`;
+      }
+    }
+  }
+  return html;
+}
+
+function llowSetStepParam(stepId, key, val) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (step) step.params[key] = val;
+}
+
+function llowSetArrowParam(arrowId, key, val) {
+  const arrow = LLOW.wf.arrows.find(a => a.id === arrowId);
+  if (arrow) { arrow.params = arrow.params || {}; arrow.params[key] = val; }
+  llowRenderCanvas();
+}
+
+function llowChangeArrowType(arrowId, newType) {
+  const arrow = LLOW.wf.arrows.find(a => a.id === arrowId);
+  if (!arrow) return;
+  arrow.arrow_type = newType;
+  arrow.params = {};
+  llowSelectArrow(arrowId);
+}
+
+// ── Port interactions (arrow drawing) ─────────────────────────────────────────
+
+function llowPortOutClick(e, stepId) {
+  e.stopPropagation();
+  if (LLOW.arrowFrom) {
+    LLOW.arrowFrom = null;
+    LLOW.arrowPreview = null;
+    document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
+    llowRenderCanvas();
+  } else {
+    LLOW.arrowFrom = stepId;
+    const port = document.getElementById('llow-pout-' + stepId);
+    if (port) port.classList.add('active');
+    llowLogExec('Arrow drawing started — click an input port to connect', 'running');
+  }
+}
+
+function llowPortInClick(e, stepId) {
+  e.stopPropagation();
+  if (!LLOW.arrowFrom || LLOW.arrowFrom === stepId) {
+    LLOW.arrowFrom = null;
+    LLOW.arrowPreview = null;
+    document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
+    llowRenderCanvas();
+    return;
+  }
+  // Create arrow
+  const arrowId = 'arrow-' + Math.random().toString(36).slice(2, 10);
+  LLOW.wf.arrows.push({
+    id: arrowId,
+    from: LLOW.arrowFrom,
+    to: stepId,
+    arrow_type: 'continue',
+    params: {}
+  });
+  LLOW.arrowFrom = null;
+  LLOW.arrowPreview = null;
+  document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
+  llowLogExec('Arrow connected', 'pass');
+  llowRenderCanvas();
+  llowSelectArrow(arrowId);
+}
+
+// ── Mouse events on canvas ────────────────────────────────────────────────────
+
+function llowOnCanvasMouseMove(e) {
+  if (LLOW.dragNode) {
+    const dx = e.clientX - LLOW.dragNode.startMouseX;
+    const dy = e.clientY - LLOW.dragNode.startMouseY;
+    const step = LLOW.wf.steps.find(s => s.id === LLOW.dragNode.stepId);
+    if (step) {
+      step.x = Math.round((LLOW.dragNode.origX + dx) / 20) * 20;
+      step.y = Math.round((LLOW.dragNode.origY + dy) / 20) * 20;
+      step.x = Math.max(0, step.x);
+      step.y = Math.max(0, step.y);
+      const node = document.getElementById('llow-node-' + step.id);
+      if (node) { node.style.left = step.x + 'px'; node.style.top = step.y + 'px'; }
+      llowRenderArrows(document.getElementById('llow-canvas-svg'));
+      llowRenderMinimap();
+    }
+    return;
+  }
+  if (LLOW.arrowFrom) {
+    const inner = document.getElementById('llow-canvas-inner');
+    const scroll = document.getElementById('llow-canvas-scroll');
+    if (!inner) return;
+    const rect = inner.getBoundingClientRect();
+    const mx = e.clientX - rect.left + (scroll ? scroll.scrollLeft : 0);
+    const my = e.clientY - rect.top  + (scroll ? scroll.scrollTop : 0);
+    const from = llowGetPortPos(LLOW.arrowFrom, 'out');
+    LLOW.arrowPreview = { x1: from.x, y1: from.y, x2: mx, y2: my };
+    llowRenderArrows(document.getElementById('llow-canvas-svg'));
+  }
+}
+
+function llowOnCanvasMouseUp(e) {
+  if (LLOW.dragNode) {
+    LLOW.dragNode = null;
+    if (LLOW.sel && LLOW.selType === 'step') llowSelectStep(LLOW.sel);
+  }
+}
+
+function llowOnCanvasClick(e) {
+  if (e.target.id === 'llow-canvas-inner' || e.target.classList.contains('llow-nodes-layer')) {
+    LLOW.sel = null;
+    LLOW.selType = null;
+    if (LLOW.arrowFrom) {
+      LLOW.arrowFrom = null;
+      LLOW.arrowPreview = null;
+      document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
+    }
+    const pc = document.getElementById('llow-props-content');
+    if (pc) pc.innerHTML = '<div style="font-size:11px;color:#555;font-style:italic">Click a step or arrow to see its properties here.</div>';
+    llowRenderCanvas();
+  }
+}
+
+// ── Arrow hover tooltip ───────────────────────────────────────────────────────
+
+function llowArrowHover(e, arrowId) {
+  const arrow = LLOW.wf.arrows.find(a => a.id === arrowId);
+  if (!arrow) return;
+  const arrowDef = LLOW.arrowDefs.find(a => a.id === arrow.arrow_type) || {};
+  const popup = document.getElementById('llow-arrow-label');
+  if (!popup) return;
+  const params = Object.entries(arrow.params || {}).map(([k,v])=>`${k}:${v}`).join(', ');
+  popup.textContent = `${arrowDef.symbol||'→'} ${arrowDef.name||arrow.arrow_type}${params?' ('+params+')':''}`;
+  popup.style.display = 'block';
+  popup.style.left = (e.offsetX + 8) + 'px';
+  popup.style.top  = (e.offsetY - 20) + 'px';
+}
+
+function llowArrowLeave() {
+  const popup = document.getElementById('llow-arrow-label');
+  if (popup) popup.style.display = 'none';
+}
+
+// ── Context menu ──────────────────────────────────────────────────────────────
+
+function llowNodeContextMenu(e, stepId) {
+  const existing = document.getElementById('llow-ctx-menu');
+  if (existing) existing.remove();
+  const menu = document.createElement('div');
+  menu.id = 'llow-ctx-menu';
+  menu.className = 'mcc-popup-safe';
+  menu.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;background:#1a1a1a;border:1px solid #333;border-radius:6px;padding:4px 0;z-index:9999;min-width:140px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.7)`;
+  menu.innerHTML = `
+    <div onclick="llowDeleteStep('${stepId}');llowCloseCtx()" style="padding:6px 14px;cursor:pointer;color:#f88" onmouseover="this.style.background='#2a1010'" onmouseout="this.style.background=''">Delete</div>
+    <div onclick="llowDuplicateStep('${stepId}');llowCloseCtx()" style="padding:6px 14px;cursor:pointer;color:#ccc" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background=''">Duplicate</div>
+    <div onclick="llowCloseCtx()" style="padding:6px 14px;cursor:pointer;color:#666" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background=''">Cancel</div>`;
+  document.body.appendChild(menu);
+  setTimeout(() => document.addEventListener('click', llowCloseCtx, { once: true }), 50);
+}
+
+function llowCloseCtx() {
+  const m = document.getElementById('llow-ctx-menu');
+  if (m) m.remove();
+}
+
+// ── Delete / Duplicate ────────────────────────────────────────────────────────
+
+function llowDeleteStep(stepId) {
+  LLOW.wf.steps = LLOW.wf.steps.filter(s => s.id !== stepId);
+  LLOW.wf.arrows = LLOW.wf.arrows.filter(a => a.from !== stepId && a.to !== stepId);
+  if (LLOW.sel === stepId) { LLOW.sel = null; LLOW.selType = null; }
+  llowRenderCanvas();
+  llowLogExec('Step deleted', 'pass');
+  const pc = document.getElementById('llow-props-content');
+  if (pc) pc.innerHTML = '<div style="font-size:11px;color:#555;font-style:italic">Click a step or arrow to see its properties here.</div>';
+}
+
+function llowDeleteArrow(arrowId) {
+  LLOW.wf.arrows = LLOW.wf.arrows.filter(a => a.id !== arrowId);
+  if (LLOW.sel === arrowId) { LLOW.sel = null; LLOW.selType = null; }
+  llowRenderCanvas();
+  llowLogExec('Arrow deleted', 'pass');
+}
+
+function llowDuplicateStep(stepId) {
+  const step = LLOW.wf.steps.find(s => s.id === stepId);
+  if (!step) return;
+  const newId = 'step-' + Math.random().toString(36).slice(2, 10);
+  LLOW.wf.steps.push({ ...step, id: newId, x: step.x + 40, y: step.y + 40 });
+  llowRenderCanvas();
+  llowSelectStep(newId);
+}
+
+// ── Top bar actions ───────────────────────────────────────────────────────────
+
+function llowClearCanvas() {
+  if (!confirm('Clear the canvas? All steps and arrows will be removed.')) return;
+  LLOW.wf.steps = [];
+  LLOW.wf.arrows = [];
+  LLOW.sel = null;
+  LLOW.selType = null;
+  LLOW.arrowFrom = null;
+  LLOW.arrowPreview = null;
+  llowRenderCanvas();
+  llowLogExec('Canvas cleared', 'pass');
+}
+
+async function llowSave() {
+  const name = (document.getElementById('llow-wf-name') || {}).value || 'Unnamed';
+  LLOW.wf.name = name;
+  const cleanWf = {
+    name: LLOW.wf.name,
+    steps: LLOW.wf.steps.map(s => ({ id: s.id, element_id: s.element_id, x: s.x, y: s.y, params: s.params })),
+    arrows: LLOW.wf.arrows
+  };
+  try {
+    const res = await apiFetch('/api/llow/workflow', 'POST', cleanWf);
+    showToast('Workflow saved: ' + name, 'success');
+    LLOW.savedWorkflows = await apiFetch('/api/llow/workflows');
+    llowPopulateLoadSelect();
+    llowLogExec('Saved: ' + name, 'pass');
+  } catch(e) {
+    showToast('Save failed: ' + e.message, 'error');
+  }
+}
+
+async function llowLoad(filename) {
+  if (!filename) return;
+  try {
+    const wf = await apiFetch('/api/llow/workflow/' + encodeURIComponent(filename));
+    LLOW.wf = {
+      name: wf.name,
+      steps: (wf.steps || []).map(s => {
+        const el = llowGetElInfo(s.element_id);
+        const cats = (LLOW.elements || {}).categories || {};
+        const catKey = el.category;
+        return { ...s, _elDef: el, _catDef: cats[catKey] || {} };
+      }),
+      arrows: wf.arrows || []
+    };
+    const nameEl = document.getElementById('llow-wf-name');
+    if (nameEl) nameEl.value = wf.name;
+    llowRenderCanvas();
+    showToast('Loaded: ' + wf.name, 'success');
+    llowLogExec('Loaded: ' + wf.name, 'pass');
+  } catch(e) {
+    showToast('Load failed: ' + e.message, 'error');
+  }
+  document.getElementById('llow-load-select').value = '';
+}
+
+function llowPopulateLoadSelect() {
+  const sel = document.getElementById('llow-load-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">📂 Load…</option>';
+  for (const wf of LLOW.savedWorkflows) {
+    const opt = document.createElement('option');
+    opt.value = wf.filename;
+    opt.textContent = `${wf.name} (${wf.step_count} steps)`;
+    sel.appendChild(opt);
+  }
+}
+
+async function llowDryRun() {
+  const name = (document.getElementById('llow-wf-name') || {}).value || LLOW.wf.name;
+  LLOW.wf.name = name;
+  const cleanWf = {
+    name: LLOW.wf.name,
+    steps: LLOW.wf.steps.map(s => ({ id: s.id, element_id: s.element_id, x: s.x, y: s.y, params: s.params })),
+    arrows: LLOW.wf.arrows
+  };
+  try {
+    const res = await apiFetch('/api/llow/validate', 'POST', cleanWf);
+    const log = document.getElementById('llow-exec-log');
+    if (res.valid) {
+      if (log) log.innerHTML = '<div class="llow-exec-row pass">✓ Workflow valid — ' + (res.warnings || []).join(' | ') + '</div>';
+      showToast('Dry Run: PASS' + (res.warnings.length ? ' with ' + res.warnings.length + ' warning(s)' : ''), 'success');
+    } else {
+      const errHtml = (res.warnings || ['Unknown error']).map(w => `<div class="llow-exec-row fail">✗ ${w}</div>`).join('');
+      if (log) log.innerHTML = errHtml;
+      showToast('Dry Run: FAIL — ' + res.warnings.length + ' error(s)', 'error');
+    }
+  } catch(e) {
+    showToast('Dry Run failed: ' + e.message, 'error');
+  }
+}
+
+async function llowExportClacr() {
+  const name = (document.getElementById('llow-wf-name') || {}).value || LLOW.wf.name;
+  LLOW.wf.name = name;
+  const cleanWf = {
+    name: LLOW.wf.name,
+    steps: LLOW.wf.steps.map(s => ({ id: s.id, element_id: s.element_id, x: s.x, y: s.y, params: s.params })),
+    arrows: LLOW.wf.arrows
+  };
+  try {
+    const res = await apiFetch('/api/llow/export-clacr', 'POST', cleanWf);
+    await navigator.clipboard.writeText(res.clacr || '');
+    showToast('CLACR copied to clipboard!', 'success');
+    llowLogExec('Exported as CLACR — pasted to clipboard', 'pass');
+  } catch(e) {
+    showToast('Export failed: ' + e.message, 'error');
+  }
+}
+
+async function llowRunLoop() {
+  const name = (document.getElementById('llow-wf-name') || {}).value || LLOW.wf.name;
+  LLOW.wf.name = name;
+  const cleanWf = {
+    name: LLOW.wf.name,
+    steps: LLOW.wf.steps.map(s => ({ id: s.id, element_id: s.element_id, x: s.x, y: s.y, params: s.params })),
+    arrows: LLOW.wf.arrows
+  };
+  llowLogExec('Starting loop run…', 'running');
+  try {
+    const res = await apiFetch('/api/llow/run', 'POST', cleanWf);
+    if (res.ok) {
+      showToast('Loop run started', 'success');
+      llowLogExec('Run started — pid ' + (res.pid || '?'), 'pass');
+    } else {
+      showToast('Run failed: ' + (res.error || '?'), 'error');
+      llowLogExec('Run failed: ' + (res.error || '?'), 'fail');
+    }
+  } catch(e) {
+    showToast('Run failed: ' + e.message, 'error');
+    llowLogExec('Run error: ' + e.message, 'fail');
+  }
+}
+
+// ── Execution log ─────────────────────────────────────────────────────────────
+
+function llowLogExec(msg, cls) {
+  const log = document.getElementById('llow-exec-log');
+  if (!log) return;
+  const row = document.createElement('div');
+  row.className = 'llow-exec-row ' + (cls || '');
+  const stamp = new Date().toLocaleTimeString();
+  row.textContent = stamp + ' — ' + msg;
+  log.appendChild(row);
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── Init on tab switch ────────────────────────────────────────────────────────
+
+(function() {
+  const orig = window.switchTab || null;
+  const _llowInitDone = { done: false };
+  function maybeInitLlow() {
+    if (!_llowInitDone.done) {
+      _llowInitDone.done = true;
+      llowInit();
+    }
+  }
+  // Init on DOMContentLoaded if AAFL tab is active, else lazy-init on first tab switch
+  document.addEventListener('DOMContentLoaded', () => {
+    const aaflTab = document.querySelector('[data-tab="aafl-control"]');
+    if (aaflTab && aaflTab.classList.contains('active')) maybeInitLlow();
+  });
+  // Hook into existing tab switch
+  const _origSwitchTab = window.switchTab;
+  window.switchTab = function(tab) {
+    if (_origSwitchTab) _origSwitchTab(tab);
+    if (tab === 'aafl-control') maybeInitLlow();
+  };
+  // Also try after 1s in case DOMContentLoaded already fired
+  setTimeout(() => {
+    const body = document.getElementById('llow-palette-body');
+    if (body && body.innerHTML.includes('Loading')) maybeInitLlow();
+  }, 1200);
+})();
 
 </script>
 </div><!-- end content-area -->

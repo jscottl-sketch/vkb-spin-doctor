@@ -80,6 +80,11 @@ SESSION_LOGS_DIR   = HERE / "session_logs"
 WORKFLOW_PRESETS   = HERE / "aafl_workflow_presets.json"
 LOOP_PRESETS       = HERE / "aafl_loop_presets.json"
 
+# ── LLOW paths (OCB-D) ───────────────────────────────────────────────────────
+LLOW_ELEMENTS_FILE = HERE / "data" / "llow_elements.json"
+LLOW_ARROWS_FILE   = HERE / "data" / "llow_arrows.json"
+LLOW_WORKFLOWS_DIR = HERE / "data" / "llow_workflows"
+
 # ── Self-Health paths (OCB-A / OCB-B) ────────────────────────────────────────
 SH_REGISTRY     = HERE / "data" / "element_registry.json"
 SH_HEALTH_DB    = HERE / "data" / "health.db"
@@ -532,6 +537,16 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_system_ai_allocation()
             elif path == "/api/health/latest":
                 self._handle_health_latest()
+            # ── OCB-D: LLOW ─────────────────────────────────────────────────────
+            elif path == "/api/llow/elements":
+                self._handle_llow_elements()
+            elif path == "/api/llow/arrows":
+                self._handle_llow_arrows()
+            elif path == "/api/llow/workflows":
+                self._handle_llow_list_workflows()
+            elif path.startswith("/api/llow/workflow/"):
+                name = urllib.parse.unquote(path[len("/api/llow/workflow/"):])
+                self._handle_llow_get_workflow(name)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -729,6 +744,17 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_launch_spindoctor()
             elif path == "/api/system/kill":
                 self._handle_system_kill()
+            # ── OCB-D: LLOW ─────────────────────────────────────────────────────
+            elif path == "/api/llow/workflow":
+                self._handle_llow_save_workflow()
+            elif path == "/api/llow/validate":
+                self._handle_llow_validate()
+            elif path == "/api/llow/export-clacr":
+                self._handle_llow_export_clacr()
+            elif path == "/api/llow/run":
+                self._handle_llow_run()
+            elif path == "/api/llow/dry-run":
+                self._handle_llow_dry_run()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -758,6 +784,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         elif path.startswith("/api/missions/"):
             mission_id = path[len("/api/missions/"):]
             self._handle_api_missions_delete(mission_id)
+        elif path.startswith("/api/llow/workflow/"):
+            name = urllib.parse.unquote(path[len("/api/llow/workflow/"):])
+            self._handle_llow_delete_workflow(name)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -5119,6 +5148,161 @@ def _handle_system_kill(self):
         self._send_json({"ok": True, "killed_pid": pid, "name": name})
     except Exception as exc:
         self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+# ── OCB-D: LLOW handlers ─────────────────────────────────────────────────────
+
+def _handle_llow_elements(self):
+    """GET /api/llow/elements — return llow_elements.json."""
+    try:
+        data = json.loads(LLOW_ELEMENTS_FILE.read_text(encoding="utf-8"))
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_arrows(self):
+    """GET /api/llow/arrows — return llow_arrows.json."""
+    try:
+        data = json.loads(LLOW_ARROWS_FILE.read_text(encoding="utf-8"))
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_list_workflows(self):
+    """GET /api/llow/workflows — list saved workflows."""
+    try:
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        self._send_json(engine.list_workflows())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_get_workflow(self, name: str):
+    """GET /api/llow/workflow/<name> — load a specific workflow."""
+    try:
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        wf = engine.load_workflow(name)
+        self._send_json(wf)
+    except FileNotFoundError:
+        self._send_json({"error": f"Workflow not found: {name}"}, 404)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_save_workflow(self):
+    """POST /api/llow/workflow — save workflow JSON."""
+    try:
+        wf = json.loads(self._read_body())
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        filename = wf.get("name", "unnamed").replace(" ", "_").lower()
+        import re as _re
+        filename = _re.sub(r"[^\w\-]", "_", filename)
+        path = engine.save_workflow(wf, filename)
+        self._send_json({"ok": True, "filename": path.name})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_delete_workflow(self, name: str):
+    """DELETE /api/llow/workflow/<name> — delete a workflow."""
+    try:
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        deleted = engine.delete_workflow(name)
+        self._send_json({"ok": deleted})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_validate(self):
+    """POST /api/llow/validate — validate workflow, return errors/warnings."""
+    try:
+        wf = json.loads(self._read_body())
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        valid, warnings = engine.validate_workflow(wf)
+        self._send_json({"valid": valid, "warnings": warnings})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_export_clacr(self):
+    """POST /api/llow/export-clacr — convert workflow to CLACR text."""
+    try:
+        wf = json.loads(self._read_body())
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        clacr = engine.export_as_clacr(wf)
+        self._send_json({"clacr": clacr})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_run(self):
+    """POST /api/llow/run — execute workflow via loop_manager."""
+    try:
+        wf = json.loads(self._read_body())
+        from loop_manager import run_llow_workflow
+        import threading as _threading
+        t = _threading.Thread(target=run_llow_workflow, args=(wf,), daemon=True)
+        t.start()
+        self._send_json({"ok": True, "message": "LLOW run started"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_llow_dry_run(self):
+    """POST /api/llow/dry-run — validate + simulate without executing."""
+    try:
+        wf = json.loads(self._read_body())
+        from llow_engine import LLOWEngine
+        engine = LLOWEngine()
+        valid, warnings = engine.validate_workflow(wf)
+        # Simulate step order
+        steps = wf.get("steps", [])
+        arrows = wf.get("arrows", [])
+        out: dict = {}
+        for a in arrows:
+            out.setdefault(a["from"], []).append(a["to"])
+        ordered = []
+        visited: set = set()
+        queue = [steps[0]["id"]] if steps else []
+        step_map = {s["id"]: s for s in steps}
+        while queue:
+            sid = queue.pop(0)
+            if sid in visited:
+                continue
+            visited.add(sid)
+            ordered.append(step_map.get(sid, {}).get("element_id", sid))
+            for nxt in out.get(sid, []):
+                if nxt not in visited:
+                    queue.append(nxt)
+        self._send_json({
+            "valid": valid,
+            "warnings": warnings,
+            "simulated_order": ordered,
+            "step_count": len(steps),
+            "arrow_count": len(arrows),
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_llow_elements       = _handle_llow_elements        # type: ignore[attr-defined]
+MCCHandler._handle_llow_arrows         = _handle_llow_arrows          # type: ignore[attr-defined]
+MCCHandler._handle_llow_list_workflows = _handle_llow_list_workflows  # type: ignore[attr-defined]
+MCCHandler._handle_llow_get_workflow   = _handle_llow_get_workflow    # type: ignore[attr-defined]
+MCCHandler._handle_llow_save_workflow  = _handle_llow_save_workflow   # type: ignore[attr-defined]
+MCCHandler._handle_llow_delete_workflow= _handle_llow_delete_workflow # type: ignore[attr-defined]
+MCCHandler._handle_llow_validate       = _handle_llow_validate        # type: ignore[attr-defined]
+MCCHandler._handle_llow_export_clacr   = _handle_llow_export_clacr   # type: ignore[attr-defined]
+MCCHandler._handle_llow_run            = _handle_llow_run             # type: ignore[attr-defined]
+MCCHandler._handle_llow_dry_run        = _handle_llow_dry_run         # type: ignore[attr-defined]
 
 
 MCCHandler._handle_system_kill          = _handle_system_kill           # type: ignore[attr-defined]

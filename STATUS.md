@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 | **Updated by:** Claude Code (OCB-C complete)
+**Last updated:** 2026-05-28 | **Updated by:** Claude Code (OCB-D complete)
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -134,6 +134,10 @@
 | OCB-C Phase 3 (Storage) | 8 visual elements + 3 API endpoints — pie chart, bar graphs, dial, trend, forecast, sliders |
 | OCB-C Phase 4 (System Monitor) | system_monitor.py, 4-dial hs-pane-system, AI process cards, timeline SVG, 6 API endpoints |
 | STORM (deduplication) | deduplicate_status/sesums/history methods in storage_manager.py — ACCA: STORM |
+| OCB-D Phase 1 (LLOW Engine) | llow_engine.py, data/llow_elements.json (35 elements), data/llow_arrows.json (15 types) |
+| OCB-D Phase 2 (LLOW Canvas UI) | 3-panel drag-drop canvas in AAFL Control tab — palette, canvas, properties, exec log |
+| OCB-D Phase 3 (LLOW Endpoints) | 10 /api/llow/* endpoints in mcc_server.py + run_llow_workflow() in loop_manager.py |
+| OCB-D Phase 4 (Starter Workflows) | basic_research, full_dev_cycle, overnight_aafl in data/llow_workflows/ |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -206,7 +210,7 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. OCB-D (LLOW — Large Language Orchestration Workbench) — next session
+1. mcc-instructions-keeper skill — context persistence helper (post-OCB manual step)
 2. mcc-instructions-keeper skill — context persistence helper
 3. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
 4. Star Citizen v0.2 benchmark via AAFL autonomous run

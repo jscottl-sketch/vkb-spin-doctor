@@ -1,0 +1,25 @@
+{
+  "name": "Full Dev Cycle",
+  "created_at": "2026-05-28T00:00:00",
+  "description": "Research, plan, write-run-check, review, retry if needed, export as CLAC block",
+  "steps": [
+    {"id": "step-1", "element_id": "IBR",        "x": 60,   "y": 200, "params": {}},
+    {"id": "step-2", "element_id": "BPM",        "x": 280,  "y": 200, "params": {}},
+    {"id": "step-3", "element_id": "WRC",        "x": 500,  "y": 200, "params": {}},
+    {"id": "step-4", "element_id": "WCBB",       "x": 720,  "y": 200, "params": {}},
+    {"id": "step-5", "element_id": "SCORE_GATE", "x": 940,  "y": 200, "params": {"threshold": 8}},
+    {"id": "step-6", "element_id": "AFNA",       "x": 940,  "y": 360, "params": {}},
+    {"id": "step-7", "element_id": "OCB",        "x": 1160, "y": 200, "params": {}},
+    {"id": "step-8", "element_id": "WCCS_END",   "x": 1380, "y": 200, "params": {}}
+  ],
+  "arrows": [
+    {"id": "arrow-1", "from": "step-1", "to": "step-2", "arrow_type": "continue",  "params": {}},
+    {"id": "arrow-2", "from": "step-2", "to": "step-3", "arrow_type": "continue",  "params": {}},
+    {"id": "arrow-3", "from": "step-3", "to": "step-4", "arrow_type": "continue",  "params": {}},
+    {"id": "arrow-4", "from": "step-4", "to": "step-5", "arrow_type": "continue",  "params": {}},
+    {"id": "arrow-5", "from": "step-5", "to": "step-7", "arrow_type": "approval",  "params": {}},
+    {"id": "arrow-6", "from": "step-5", "to": "step-6", "arrow_type": "branch",    "params": {"condition": "score < 8"}},
+    {"id": "arrow-7", "from": "step-6", "to": "step-3", "arrow_type": "loop_back", "params": {}},
+    {"id": "arrow-8", "from": "step-7", "to": "step-8", "arrow_type": "continue",  "params": {}}
+  ]
+}

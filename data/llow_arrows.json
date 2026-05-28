@@ -1,0 +1,19 @@
+{
+  "arrows": [
+    {"id": "continue", "symbol": "→", "name": "Continue", "desc": "Go to next step", "colour": "#FFFFFF"},
+    {"id": "loop_back", "symbol": "↺", "name": "Loop Back", "desc": "Return to start of loop", "colour": "#4A90D9"},
+    {"id": "jump_back", "symbol": "⤴", "name": "Jump Back N", "desc": "Jump back N steps", "params": {"n": "integer"}, "colour": "#FF6B6B"},
+    {"id": "jump_forward", "symbol": "⤵", "name": "Jump Forward N", "desc": "Skip N steps ahead", "params": {"n": "integer"}, "colour": "#50C878"},
+    {"id": "repeat", "symbol": "🔁", "name": "Repeat ×N", "desc": "Repeat section N times", "params": {"n": "integer"}, "colour": "#FFD700"},
+    {"id": "branch", "symbol": "🔀", "name": "Branch", "desc": "IF condition, split path", "params": {"condition": "string"}, "colour": "#FF9500"},
+    {"id": "pause", "symbol": "⏸", "name": "Pause", "desc": "Wait for user input", "colour": "#8B5CF6"},
+    {"id": "trigger", "symbol": "⚡", "name": "Trigger", "desc": "Fire whatever element comes next", "colour": "#EC4899"},
+    {"id": "checkpoint", "symbol": "🎯", "name": "Checkpoint", "desc": "Save progress marker", "colour": "#10B981"},
+    {"id": "hard_stop", "symbol": "⛔", "name": "Hard Stop", "desc": "End loop immediately", "colour": "#EF4444"},
+    {"id": "alp_gate", "symbol": "⚠", "name": "ALP Safety Gate", "desc": "Stop if ALP below threshold", "params": {"min_pct": "integer"}, "colour": "#F59E0B"},
+    {"id": "approval", "symbol": "👍", "name": "Approval Gate", "desc": "Whatever follows must pass to continue", "colour": "#FF9500"},
+    {"id": "timer", "symbol": "🕒", "name": "Timer", "desc": "Wait N seconds", "params": {"seconds": "integer"}, "colour": "#6B7280"},
+    {"id": "scheduled", "symbol": "📅", "name": "Scheduled", "desc": "Wait until calendar time", "params": {"datetime": "string"}, "colour": "#6B7280"},
+    {"id": "ab_split", "symbol": "🧪", "name": "A/B Split", "desc": "Run two paths parallel, compare results", "colour": "#8B5CF6"}
+  ]
+}
