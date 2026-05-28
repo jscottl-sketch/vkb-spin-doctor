@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-28 (OCB-F) | **Updated by:** Claude Code
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -138,6 +138,13 @@
 | OCB-D Phase 2 (LLOW Canvas UI) | 3-panel drag-drop canvas in AAFL Control tab — palette, canvas, properties, exec log |
 | OCB-D Phase 3 (LLOW Endpoints) | 10 /api/llow/* endpoints in mcc_server.py + run_llow_workflow() in loop_manager.py |
 | OCB-D Phase 4 (Starter Workflows) | basic_research, full_dev_cycle, overnight_aafl in data/llow_workflows/ |
+| OCB-E Phase 1 (LLOW Population) | 38 elements (added DRR, DWR, WENTO, moved CNP) — retry logic fixed |
+| OCB-E Phase 3 (Popup z-index) | .mcc-popup-safe CSS class + z-index:9999 global fix |
+| OCB-E Phase 4 (Visual Overhaul) | Ticker bar, AI provider cards, leaderboard, cost savings counter in Health Suite |
+| OCB-E Phase 5 (Storage Visuals) | Treemap, archive timeline heatmap, cleanup suggestions, 4 new API endpoints |
+| OCB-E Phase 6 (SESUM+ACCA) | sesum_2026-05-28_combined.md saved. ACCA: WRC, LLOW, STORM, AASKC added |
+| OCB-F Phase 1 (Arrow Drop Fix) | `llowOnDrop` now handles type=arrow; sets `pendingArrowType` for next port connection. Badge in topbar shows active type. All 15 arrow types draggable. |
+| OCB-F Phase 2 (Colour Strategy) | ⚙️ Settings slide-in panel. Phase Flow / Element Mirror / Snap Glow — three independent toggles. Starter workflow auto-suggest hints. 108/108 MOT. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -188,6 +195,8 @@
 ## BIG VISION
 AAFL IS THE PROJECT NOW. Spin Doctor is the first proof. AAFL competes with LangGraph, CrewAI, AutoGPT. Story angle: beginner with BI builds self-improving AI agent. Target: r/LocalLLaMA when Star Citizen v0.2 benchmark passes.
 
+**AASKC** (Autonomous AI Simultaneous Knowledge Connection) = the PRODUCT NAME for the full platform: AAFL engine + Mission Control Center + LLOW visual canvas + Scout web researcher + STORM dedup. One product. One brand. Beginner built.
+
 Spin Doctor = universal input device assistant. Any hardware, any game. Core fix: Steam Generic Gamepad Config silently breaks joysticks for millions. One unchecked box = fixed.
 
 MCC = cross-cutting cockpit across all 6 projects.
@@ -210,11 +219,11 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. mcc-instructions-keeper skill — context persistence helper (post-OCB manual step)
-2. mcc-instructions-keeper skill — context persistence helper
-3. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
-4. Star Citizen v0.2 benchmark via AAFL autonomous run
-5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+1. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
+2. Add GROQ + Cloudflare keys to .env (manual — security rule)
+3. MCC MOT re-run after OCB-E additions (verify all new elements pass)
+4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
+5. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
 6. Post on r/LocalLLaMA when Star Citizen benchmark passes
 7. LiteLLM full integration — replace direct provider calls with LiteLLM router
 8. Electron wrapper for packaging

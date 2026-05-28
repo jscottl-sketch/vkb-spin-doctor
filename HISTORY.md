@@ -2014,3 +2014,28 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 4. Star Citizen v0.2 benchmark via AAFL
 5. Add GROQ + Cloudflare keys to .env (manual — security rule)
 6. loop_output file cap (35+ files, 50 max planned, never built)
+
+---
+
+### 2026-05-28 — OCB-F
+
+**Goal 1 — Arrow Drag-Drop Fix:**
+- Root cause: `llowOnDrop` had `if (data.type !== 'element') return;` — silently dropped all arrow palette drags
+- Fix: Added arrow handling branch in `llowOnDrop` — arrow drop sets `LLOW.pendingArrowType`
+- Added `LLOW.dragPalette` fallback in drop handler for cross-browser safety
+- Active arrow type shown in topbar badge (→ Continue); turns orange when non-default type is active
+- `llowPortInClick` now uses `pendingArrowType` when creating connections; resets to `continue` after each use
+- All 15 arrow types now draggable onto canvas to set connection mode
+
+**Goal 2 — LLOW Colour Strategy Settings:**
+- ⚙️ Settings button added to LLOW topbar → slide-in 4th column panel (220px, does not cover canvas)
+- Strategy 1 Phase Flow: horizontal blue/white/red gradient bands across full canvas background
+- Strategy 2 Element Mirror: vertical column wash per palette category colour (proportional to element count)
+- Strategy 3 Snap Glow: invisible category zones pulse-glow when dragging matching category element
+- All three toggle independently; blank canvas is default (all off)
+- Starter workflow auto-suggest: basic_research → S1, full_dev_cycle → S2, overnight_aafl → S3 (hint text only, never auto-applies)
+- New functions: `llowUpdateArrowBadge`, `llowClearArrowType`, `llowOpenSettings`, `llowCloseSettings`, `llowToggleStrategy`, `llowApplyColourStrategies`, `llowSetupSnapZones`, `llowSnapGlowAt`, `llowSnapGlowOff`, `llowOnDragOver`, `llowSuggestStrategy`
+
+**MOT:** 108/108 ALL CLEAR
+
+**Files changed:** mission_control.html

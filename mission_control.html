@@ -959,6 +959,20 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-topbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;padding:6px 8px;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px}
 .llow-topbar input[type=text]{background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:12px;min-width:140px}
 .llow-arrow-label-popup{position:absolute;background:#1a1a2a;border:1px solid #4af;border-radius:4px;padding:4px 8px;font-size:10px;color:#ccc;pointer-events:none;z-index:50;white-space:nowrap;display:none}
+/* ── OCB-F: LLOW arrow type badge + settings panel ── */
+.llow-active-arrow{font-size:11px;color:#4af;background:#0d1a2a;border:1px solid #1a3a5a;border-radius:4px;padding:2px 8px;cursor:pointer;white-space:nowrap;transition:all .2s;user-select:none}
+.llow-active-arrow:hover{background:#1a2a3a}
+.llow-settings-panel{width:0;min-width:0;overflow:hidden;transition:width 0.22s ease,min-width 0.22s ease;background:#0d0d0d;border-left:0 solid #1e1e1e;display:flex;flex-direction:column;flex-shrink:0}
+.llow-settings-panel.open{width:220px;min-width:220px;border-left-width:1px}
+.llow-settings-inner{width:220px;overflow-y:auto;flex:1}
+.llow-settings-title{font-size:10px;font-weight:bold;color:#777;padding:8px 10px 6px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #1e1e1e;display:flex;align-items:center;justify-content:space-between}
+.llow-strat-row{padding:7px 10px;border-bottom:1px solid #111;display:flex;align-items:flex-start;gap:8px}
+.llow-strat-row label{font-size:11px;color:#aaa;cursor:pointer;flex:1;line-height:1.4}
+.llow-strat-hint{font-size:10px;color:#4af;padding:6px 10px;font-style:italic;min-height:16px;line-height:1.4}
+.llow-colour-overlay{position:absolute;inset:0;pointer-events:none;z-index:0}
+.llow-snap-zone{position:absolute;top:0;bottom:0;pointer-events:none;opacity:0;transition:opacity 0.25s ease;z-index:0}
+@keyframes llowSnapPulse{from{opacity:0.06}to{opacity:0.2}}
+.llow-snap-zone.glow{animation:llowSnapPulse 0.55s ease-in-out infinite alternate}
 /* ── OCB-E Phase 5: Storage liquid fill wave ── */
 @keyframes waveMove{0%{background-position:0 0}100%{background-position:60px 0}}
 .stor-wave-bar{position:relative;height:22px;border-radius:4px;overflow:hidden;background:#111;border:1px solid #222}
@@ -2308,6 +2322,8 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
           </select>
           <button class="btn" onclick="llowExportClacr()" style="font-size:12px" title="Converts your visual design into a text CLACR block you can paste into Claude Code.">📋 Export as CLACR</button>
           <button class="btn" onclick="llowClearCanvas()" style="font-size:12px;background:#2a1a1a;color:#f88" title="Clear all steps and arrows from the canvas (will confirm first)">🗑 Clear</button>
+          <button class="btn" onclick="llowOpenSettings()" id="llow-settings-btn" style="font-size:12px;margin-left:auto" title="Open LLOW colour strategy settings — OCB-F">⚙️ Settings</button>
+          <span id="llow-active-arrow-badge" class="llow-active-arrow" onclick="llowClearArrowType()" title="Active arrow type — drag from palette to set, click to reset to Continue">→ Continue</span>
         </div>
 
         <!-- 3-PANEL LAYOUT -->
@@ -2326,7 +2342,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
           <!-- MIDDLE: CANVAS -->
           <div class="llow-canvas-wrap" id="llow-canvas-wrap"
                title="Drag elements from the left panel. Connect them with arrows to define flow. Click Export as CLACR to generate a ready-to-paste CLAC block."
-               ondragover="event.preventDefault()" ondrop="llowOnDrop(event)">
+               ondragover="llowOnDragOver(event)" ondragleave="llowSnapGlowOff()" ondrop="llowOnDrop(event)">
             <div class="llow-canvas-scroll" id="llow-canvas-scroll">
               <div class="llow-canvas-inner" id="llow-canvas-inner"
                    onmousemove="llowOnCanvasMouseMove(event)"
@@ -2353,6 +2369,30 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
             <div class="llow-props-title">Properties</div>
             <div id="llow-props-content" style="font-size:11px;color:#555;font-style:italic">
               Click a step or arrow to see its properties here.
+            </div>
+          </div>
+
+          <!-- SETTINGS PANEL (OCB-F) -->
+          <div class="llow-settings-panel" id="llow-settings-panel">
+            <div class="llow-settings-inner">
+              <div class="llow-settings-title">
+                ⚙️ Colour Strategy
+                <button onclick="llowCloseSettings()" style="background:none;border:none;color:#666;cursor:pointer;font-size:13px;padding:0 2px;line-height:1" title="Close settings">✕</button>
+              </div>
+              <div style="font-size:10px;color:#444;padding:6px 10px 4px;line-height:1.5">Blank is the default. Strategies toggle independently.</div>
+              <div class="llow-strat-row">
+                <input type="checkbox" id="llow-strat-phase" onchange="llowToggleStrategy('phase_flow')" style="flex-shrink:0;margin-top:2px">
+                <label for="llow-strat-phase"><b style="color:#ccc">Strategy 1: Phase Flow</b><br><span style="font-size:9px;color:#555">Blue input → white process → red output bands</span></label>
+              </div>
+              <div class="llow-strat-row">
+                <input type="checkbox" id="llow-strat-mirror" onchange="llowToggleStrategy('element_mirror')" style="flex-shrink:0;margin-top:2px">
+                <label for="llow-strat-mirror"><b style="color:#ccc">Strategy 2: Element Mirror</b><br><span style="font-size:9px;color:#555">Column wash per palette category colour</span></label>
+              </div>
+              <div class="llow-strat-row">
+                <input type="checkbox" id="llow-strat-snap" onchange="llowToggleStrategy('snap_glow')" style="flex-shrink:0;margin-top:2px">
+                <label for="llow-strat-snap"><b style="color:#ccc">Strategy 3: Snap Glow</b><br><span style="font-size:9px;color:#555">Zone pulse-glows when dragging matching element</span></label>
+              </div>
+              <div class="llow-strat-hint" id="llow-strat-hint"></div>
             </div>
           </div>
 
@@ -11421,9 +11461,11 @@ const LLOW = {
   scale: 1.0,
   arrowFrom: null,   // step id when drawing arrow
   dragNode: null,    // { stepId, startMouseX, startMouseY, origX, origY }
-  dragPalette: null, // element_id being dragged from palette
+  dragPalette: null, // item being dragged from palette { type, elId/arrowId, catKey }
   arrowPreview: null,
-  savedWorkflows: []
+  savedWorkflows: [],
+  pendingArrowType: 'continue',  // OCB-F: arrow type for next port connection
+  colourStrat: { phase_flow: false, element_mirror: false, snap_glow: false }  // OCB-F
 };
 
 // ── Init ──────────────────────────────────────────────────────────────────────
@@ -11441,6 +11483,7 @@ async function llowInit() {
     llowRenderPalette();
     llowRenderCanvas();
     llowPopulateLoadSelect();
+    llowUpdateArrowBadge();
   } catch(e) {
     console.warn('[LLOW] Init failed:', e);
     window._llowInitFailed = true;
@@ -11521,14 +11564,162 @@ function llowArrowDragStart(e, arrowId) {
   e.dataTransfer.effectAllowed = 'copy';
 }
 
+// ── OCB-F: Arrow badge + Settings + Colour Strategies ────────────────────────
+
+function llowUpdateArrowBadge() {
+  const badge = document.getElementById('llow-active-arrow-badge');
+  if (!badge) return;
+  const adef = LLOW.arrowDefs.find(a => a.id === LLOW.pendingArrowType) || {};
+  const sym = adef.symbol || '→';
+  const name = adef.name || LLOW.pendingArrowType;
+  badge.textContent = sym + ' ' + name;
+  const active = LLOW.pendingArrowType !== 'continue';
+  badge.style.borderColor = active ? '#f84' : '#1a3a5a';
+  badge.style.color = active ? '#f84' : '#4af';
+  badge.style.background = active ? '#1a0d00' : '#0d1a2a';
+}
+
+function llowClearArrowType() {
+  LLOW.pendingArrowType = 'continue';
+  llowUpdateArrowBadge();
+  llowLogExec('Arrow type reset to Continue', 'pass');
+}
+
+function llowOpenSettings() {
+  document.getElementById('llow-settings-panel').classList.add('open');
+}
+
+function llowCloseSettings() {
+  document.getElementById('llow-settings-panel').classList.remove('open');
+}
+
+function llowToggleStrategy(name) {
+  LLOW.colourStrat[name] = !LLOW.colourStrat[name];
+  document.getElementById('llow-strat-phase').checked = LLOW.colourStrat.phase_flow;
+  document.getElementById('llow-strat-mirror').checked = LLOW.colourStrat.element_mirror;
+  document.getElementById('llow-strat-snap').checked = LLOW.colourStrat.snap_glow;
+  llowApplyColourStrategies();
+}
+
+function llowApplyColourStrategies() {
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner) return;
+  inner.querySelectorAll('.llow-colour-overlay').forEach(el => el.remove());
+  const { phase_flow, element_mirror } = LLOW.colourStrat;
+  if (element_mirror && LLOW.elements) {
+    const cats = Object.entries(LLOW.elements.categories || {});
+    const totalEls = cats.reduce((s, [, c]) => s + (c.elements?.length || 0), 0);
+    if (totalEls > 0) {
+      const stops = [];
+      let pct = 0;
+      for (const [, cat] of cats) {
+        const n = cat.elements?.length || 0;
+        if (!n) continue;
+        const w = (n / totalEls) * 100;
+        const col = cat.colour || '#888888';
+        const r = parseInt(col.slice(1, 3), 16) || 0;
+        const g = parseInt(col.slice(3, 5), 16) || 0;
+        const b = parseInt(col.slice(5, 7), 16) || 0;
+        stops.push(`rgba(${r},${g},${b},0.07) ${pct.toFixed(1)}%`);
+        stops.push(`rgba(${r},${g},${b},0.07) ${(pct + w).toFixed(1)}%`);
+        pct += w;
+      }
+      if (stops.length) {
+        const ov = document.createElement('div');
+        ov.className = 'llow-colour-overlay';
+        ov.style.background = `linear-gradient(to right,${stops.join(',')})`;
+        inner.prepend(ov);
+      }
+    }
+  }
+  if (phase_flow) {
+    const ov = document.createElement('div');
+    ov.className = 'llow-colour-overlay';
+    ov.style.background = 'linear-gradient(to right,rgba(0,80,255,0.05) 0%,rgba(0,80,255,0.05) 33.3%,transparent 33.3%,transparent 66.6%,rgba(255,50,0,0.05) 66.6%,rgba(255,50,0,0.05) 100%)';
+    inner.prepend(ov);
+  }
+  llowSetupSnapZones();
+}
+
+function llowSetupSnapZones() {
+  const inner = document.getElementById('llow-canvas-inner');
+  if (!inner) return;
+  inner.querySelectorAll('.llow-snap-zone').forEach(el => el.remove());
+  if (!LLOW.colourStrat.snap_glow || !LLOW.elements) return;
+  const cats = Object.entries(LLOW.elements.categories || {});
+  const totalEls = cats.reduce((s, [, c]) => s + (c.elements?.length || 0), 0);
+  if (!totalEls) return;
+  let pct = 0;
+  for (const [catKey, cat] of cats) {
+    const n = cat.elements?.length || 0;
+    if (!n) continue;
+    const w = (n / totalEls) * 100;
+    const ov = document.createElement('div');
+    ov.className = 'llow-snap-zone';
+    ov.dataset.cat = catKey;
+    ov.style.left = pct.toFixed(1) + '%';
+    ov.style.width = w.toFixed(1) + '%';
+    ov.style.background = cat.colour || '#888';
+    inner.prepend(ov);
+    pct += w;
+  }
+}
+
+function llowSnapGlowAt(catKey) {
+  document.querySelectorAll('.llow-snap-zone').forEach(z => {
+    if (z.dataset.cat === catKey) z.classList.add('glow');
+    else z.classList.remove('glow');
+  });
+}
+
+function llowSnapGlowOff() {
+  document.querySelectorAll('.llow-snap-zone').forEach(z => z.classList.remove('glow'));
+}
+
+function llowOnDragOver(e) {
+  e.preventDefault();
+  if (!LLOW.colourStrat.snap_glow) return;
+  const dp = LLOW.dragPalette;
+  if (!dp || dp.type !== 'element') return;
+  llowSnapGlowAt(dp.catKey);
+}
+
+function llowSuggestStrategy(filename) {
+  const hint = document.getElementById('llow-strat-hint');
+  if (!hint) return;
+  const f = (filename || '').toLowerCase();
+  if (f.includes('basic_research')) hint.textContent = '💡 Suggested for this workflow: Strategy 1 — Phase Flow';
+  else if (f.includes('full_dev_cycle')) hint.textContent = '💡 Suggested for this workflow: Strategy 2 — Element Mirror';
+  else if (f.includes('overnight_aafl')) hint.textContent = '💡 Suggested for this workflow: Strategy 3 — Snap Glow';
+  else hint.textContent = '';
+}
+
 // ── Canvas drop ───────────────────────────────────────────────────────────────
 
 function llowOnDrop(e) {
   e.preventDefault();
+  llowSnapGlowOff();
   const inner = document.getElementById('llow-canvas-inner');
   if (!inner || !LLOW.elements) return;
-  let data;
-  try { data = JSON.parse(e.dataTransfer.getData('text/plain')); } catch{ return; }
+  // Read from dataTransfer first, fall back to LLOW.dragPalette for cross-browser safety
+  let data = null;
+  try {
+    const raw = e.dataTransfer.getData('text/plain');
+    if (raw) data = JSON.parse(raw);
+  } catch {}
+  if (!data) data = LLOW.dragPalette;
+  LLOW.dragPalette = null;
+  if (!data) return;
+
+  // OCB-F: Arrow type drop — sets pending arrow type for next port connection
+  if (data.type === 'arrow') {
+    LLOW.pendingArrowType = data.arrowId;
+    const adef = LLOW.arrowDefs.find(a => a.id === data.arrowId) || {};
+    llowUpdateArrowBadge();
+    llowLogExec(`Arrow type set: ${adef.name || data.arrowId} — click output port then input port to connect`, 'running');
+    return;
+  }
+
   if (data.type !== 'element') return;
   const rect = inner.getBoundingClientRect();
   const scroll = document.getElementById('llow-canvas-scroll');
@@ -11889,19 +12080,23 @@ function llowPortInClick(e, stepId) {
     llowRenderCanvas();
     return;
   }
-  // Create arrow
+  // Create arrow — use pendingArrowType set by palette drag (OCB-F)
+  const usedArrowType = LLOW.pendingArrowType || 'continue';
   const arrowId = 'arrow-' + Math.random().toString(36).slice(2, 10);
   LLOW.wf.arrows.push({
     id: arrowId,
     from: LLOW.arrowFrom,
     to: stepId,
-    arrow_type: 'continue',
+    arrow_type: usedArrowType,
     params: {}
   });
+  LLOW.pendingArrowType = 'continue';
+  llowUpdateArrowBadge();
   LLOW.arrowFrom = null;
   LLOW.arrowPreview = null;
   document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
-  llowLogExec('Arrow connected', 'pass');
+  const adef = LLOW.arrowDefs.find(a => a.id === usedArrowType) || {};
+  llowLogExec(`Arrow connected: ${adef.name || usedArrowType}`, 'pass');
   llowRenderCanvas();
   llowSelectArrow(arrowId);
 }
@@ -12082,6 +12277,7 @@ async function llowLoad(filename) {
     llowRenderCanvas();
     showToast('Loaded: ' + wf.name, 'success');
     llowLogExec('Loaded: ' + wf.name, 'pass');
+    llowSuggestStrategy(filename);
   } catch(e) {
     showToast('Load failed: ' + e.message, 'error');
   }
