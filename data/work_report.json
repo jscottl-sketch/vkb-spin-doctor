@@ -1,0 +1,78 @@
+{
+  "report_date": "2026-05-27",
+  "sessions_scanned": 1,
+  "overall_completion_pct": 100.0,
+  "lost_work": [],
+  "stuck_items": [],
+  "orphaned_plans": [
+    {
+      "text": "OCB-B Body Map",
+      "date_first": "2026-05-27",
+      "days_since": 0
+    },
+    {
+      "text": "OCB-C consolidation",
+      "date_first": "2026-05-27",
+      "days_since": 0
+    },
+    {
+      "text": "Phase 7 final run",
+      "date_first": "2026-05-27",
+      "days_since": 0
+    },
+    {
+      "text": "Star Citizen v0.2",
+      "date_first": "2026-05-27",
+      "days_since": 0
+    },
+    {
+      "text": "Session 21 May 2026 - aafl_wccs fixed, merge_sessions built, MCC 7 save features built, JSON error fixed, ACCA tab planned, ASKC defined, ALP Counter Tab RIBS idea, Scout timed runs and 1TB storage pl",
+      "date_first": "2026-05-21",
+      "days_since": 6
+    },
+    {
+      "text": "MCC test suite built (mcc_test.py, 138 tests, 133/138 PASS, dual-run comparison). Auto-refresh polling added (30s, \"updated Xs ago\" label, manual refresh button). AAFL Control fixed — Run Now works, L",
+      "date_first": "2026-05-24",
+      "days_since": 3
+    },
+    {
+      "text": "- IBR = Investigate Brainstorm Report",
+      "date_first": "2026-05-27",
+      "days_since": 0
+    },
+    {
+      "text": "- **4 new codes added:** CLACH = Claude Chat | CNP = Copy and Paste | RIBS = Random Inspirational BrainStorm | SESUM = Session Summary",
+      "date_first": "2026-05-20",
+      "days_since": 7
+    },
+    {
+      "text": "| ACCA.md | +SBS, +CLACH, +CNP, +RIBS, +SESUM, modes moved to table, FFUE integrated, CAP removed |",
+      "date_first": "2026-05-20",
+      "days_since": 7
+    },
+    {
+      "text": "- 5 ACCA codes added (CLACH/CNP/RIBS/SESUM/SBS)",
+      "date_first": "2026-05-20",
+      "days_since": 7
+    }
+  ],
+  "alp_waste_estimate": {
+    "incomplete_item_count": 10,
+    "estimated_alp_wasted_pct": 50.0,
+    "sessions_below_80pct": 0,
+    "alp_message": "~50% allowance estimated lost to incomplete work across 0 session(s)"
+  },
+  "last_session_score": 100.0,
+  "last_session_incomplete": [],
+  "requeue_block": "Read STATUS.md and INDEX.md. This is a CLACR (CLAC Request) — re-run incomplete work.\n\nNo lost or stuck items found. All clear.",
+  "sessions": [
+    {
+      "date": "2026-05-27",
+      "filename": "sesum_2026-05-27.md",
+      "planned": 1,
+      "completed": 1,
+      "score": 100.0
+    }
+  ],
+  "manual_findings": []
+}

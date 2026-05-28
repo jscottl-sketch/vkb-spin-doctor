@@ -13,13 +13,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 STATUS = ROOT / "STATUS.md"
+STATUS_BAK = ROOT / "STATUS.md.bak"   # pre-write safety copy (same folder)
 HISTORY = ROOT / "HISTORY.md"
 ACCA = ROOT / "ACCA.md"
 CHAT_LATEST = ROOT / "chat_latest.txt"
 BACKUP_DIR = ROOT / "archive_dead"
 EOF_MARKER = "<!-- END_OF_FILE -->"
-LINE_COUNT_THRESHOLD = 0.80
-LINE_COUNT_WARN      = 0.90
+LINE_COUNT_THRESHOLD = 0.90   # hard reject — no warn path, no proceeding
+REJECTION_LOG = ROOT / "wccs_rejections.log"
+WCCS_ERROR_LOG = ROOT / "wccs_errors.log"
+
+# Section headers Mistral must include; if any missing → truncation detected → reject
+REQUIRED_SECTION_PATTERNS = [
+    (r"^##\s+WHO IS SCOTT",            "## WHO IS SCOTT — READ THIS FIRST"),
+    (r"^##\s+CURRENT STATUS.+BUILT",   "## CURRENT STATUS — BUILT AND WORKING"),
+    (r"^##\s+CURRENT STATUS.+PENDING", "## CURRENT STATUS — PENDING"),
+]
 
 try:
     from aafl_core import AAFLCore
@@ -49,9 +58,144 @@ def verify_line_count(old, new, name):
     if old_n == 0: return
     ratio = new_n / old_n
     if ratio < LINE_COUNT_THRESHOLD:
-        raise RuntimeError(f"[FAIL] {name}: {new_n} lines vs prev {old_n} (ratio {ratio:.0%} < 80%). Refusing to write.")
-    if ratio < LINE_COUNT_WARN:
-        print(f"[WARN] {name}: {new_n} lines vs prev {old_n} (ratio {ratio:.0%}). Writing with caution.")
+        raise RuntimeError(f"line count {new_n} vs prev {old_n} ({ratio:.1%} < 90%)")
+
+def verify_sections(content):
+    for pattern, label in REQUIRED_SECTION_PATTERNS:
+        if not re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
+            raise RuntimeError(f"missing required section '{label}' — Mistral output truncated")
+
+def log_rejection(reason, old_n, new_n, ratio, restore_method="unknown"):
+    stamp = dt.datetime.now().isoformat(timespec="seconds")
+    pct = f"{ratio:.1%}" if ratio is not None else "N/A"
+    entry = (f"[{stamp}] REJECTED — {reason} | old={old_n} lines, new={new_n} lines, "
+             f"ratio={pct} | restore={restore_method}\n")
+    with open(REJECTION_LOG, "a", encoding="utf-8") as f:
+        f.write(entry)
+
+def _log_wccs_error(msg):
+    stamp = dt.datetime.now().isoformat(timespec="seconds")
+    with open(WCCS_ERROR_LOG, "a", encoding="utf-8") as f:
+        f.write(f"[{stamp}] {msg}\n")
+
+def _parse_by_sections(text):
+    """Split text into [(header_line|None, body_text)] ordered pairs."""
+    sections = []
+    lines = text.splitlines(keepends=True)
+    cur_header = None
+    cur_body = []
+    for line in lines:
+        if re.match(r'^## ', line):
+            sections.append((cur_header, ''.join(cur_body)))
+            cur_header = line.rstrip('\n').rstrip('\r')
+            cur_body = []
+        else:
+            cur_body.append(line)
+    sections.append((cur_header, ''.join(cur_body)))
+    return sections
+
+def _extract_table_rows(body):
+    """
+    Parse a markdown table within body text.
+    Returns (pre_lines, hdr_line, sep_line, rows_dict, post_lines).
+    rows_dict preserves insertion order (Python 3.7+).
+    """
+    lines = body.splitlines(keepends=True)
+    pre, post = [], []
+    hdr = sep = None
+    rows = {}
+    state = 'pre'
+    for line in lines:
+        s = line.strip()
+        if state == 'pre':
+            if s.startswith('|'):
+                if re.match(r'^\|[\s\-:]+\|', s):
+                    sep = line
+                    state = 'rows'
+                else:
+                    hdr = line
+                    state = 'hdr_found'
+            else:
+                pre.append(line)
+        elif state == 'hdr_found':
+            if s.startswith('|') and re.match(r'^\|[\s\-:]+\|', s):
+                sep = line
+                state = 'rows'
+            else:
+                pre.append(hdr)
+                hdr = None
+                state = 'pre'
+                pre.append(line)
+        elif state == 'rows':
+            if s.startswith('|'):
+                cols = [c.strip() for c in s.strip('|').split('|')]
+                key = cols[0] if cols else ''
+                if key:
+                    rows[key] = line
+            else:
+                post.append(line)
+                state = 'post'
+        else:
+            post.append(line)
+    return pre, hdr, sep, rows, post
+
+def _rebuild_section(header, pre, hdr, sep, rows, post):
+    body = ''.join(pre) + (hdr or '') + (sep or '') + ''.join(rows.values()) + ''.join(post)
+    return f"{header}\n{body}"
+
+def merge_status(old_text, new_text):
+    """
+    Merge new_text into old_text by ## section.
+    BUILT AND WORKING: append new rows only — never remove existing rows.
+    PENDING: update existing rows if present, append new, never remove.
+    NEXT PRIORITIES: replace entirely from new_text.
+    All other sections: preserve exactly from old_text.
+    """
+    old_secs = _parse_by_sections(old_text)
+    new_secs = _parse_by_sections(new_text)
+
+    def nk(h): return re.sub(r'\s+', ' ', (h or '').upper().strip())
+    new_map = {nk(h): c for h, c in new_secs}
+
+    result = []
+    for old_h, old_c in old_secs:
+        key = nk(old_h)
+
+        if old_h is None:
+            new_pre = new_map.get('', '')
+            result.append(new_pre if new_pre and new_pre.strip() else old_c)
+            continue
+
+        if 'BUILT AND WORKING' in key:
+            pre, hdr, sep, old_rows, post = _extract_table_rows(old_c)
+            new_c = new_map.get(key, '')
+            _, _, _, new_rows, _ = _extract_table_rows(new_c) if new_c else ([], None, None, {}, [])
+            merged = dict(old_rows)
+            for k, v in new_rows.items():
+                if k not in merged:
+                    merged[k] = v
+            result.append(_rebuild_section(old_h, pre, hdr, sep, merged, post))
+
+        elif 'PENDING' in key:
+            pre, hdr, sep, old_rows, post = _extract_table_rows(old_c)
+            new_c = new_map.get(key, '')
+            _, _, _, new_rows, _ = _extract_table_rows(new_c) if new_c else ([], None, None, {}, [])
+            merged = dict(old_rows)
+            for k, v in new_rows.items():
+                merged[k] = v
+            result.append(_rebuild_section(old_h, pre, hdr, sep, merged, post))
+
+        elif 'NEXT PRIORITIES' in key:
+            new_c = new_map.get(key, old_c)
+            result.append(f"{old_h}\n{new_c}")
+
+        else:
+            result.append(f"{old_h}\n{old_c}")
+
+    merged_text = ''.join(result)
+    if EOF_MARKER not in merged_text:
+        merged_text = merged_text.rstrip() + f"\n\n{EOF_MARKER}\n"
+    return merged_text
 
 def append_to_file(path, entry, header=None):
     if not path.exists():
@@ -128,27 +272,75 @@ def main():
     if not current_status:
         print("[FATAL] STATUS.md not found. Run handover split first.")
         sys.exit(1)
+    # --- PRE-WRITE BACKUP: copy STATUS.md → STATUS.md.bak BEFORE validation or write ---
+    if not args.dry_run and STATUS.exists():
+        shutil.copy2(STATUS, STATUS_BAK)
+        print(f"[PRE-BAK] STATUS.md.bak created ({STATUS.stat().st_size} bytes)")
     print(f"[START] aafl_wccs.py {'(DRY RUN)' if args.dry_run else ''}")
-    if not args.dry_run:
-        bak = backup_file(STATUS)
-        print(f"[OK] Backed up STATUS.md to {bak.name}")
     new_status = rewrite_status(chat_text, current_status, args.dry_run)
+
+    old_n = len(current_status.splitlines())
+    new_n = len(new_status.splitlines())
+    ratio = new_n / old_n if old_n > 0 else 1.0
+
+    # Sanity check AI output isn't empty/garbage before merging
+    if new_n < 10:
+        rejection_reason = f"AI output too short ({new_n} lines) — likely empty or garbled"
+        log_rejection(rejection_reason, old_n, new_n, ratio, "preserved (STATUS.md not modified)")
+        print(f"WCCS REJECTED: {rejection_reason}. Old file preserved.")
+        sys.exit(1)
+
+    # --- Read-merge-write with 90% sanity check ---
+    # Merge first — preserves all old sections not explicitly replaced.
+    # Then validate required sections against the merged result.
+    merged = merge_status(current_status, new_status)
+    merged_n = len(merged.splitlines())
+
+    # --- Validate required sections on merged output (not raw AI output) ---
+    rejection_reason = None
     try:
-        verify_line_count(current_status, new_status, "STATUS.md")
-        if args.dry_run:
-            print(f"[DRY] STATUS.md would be {len(new_status.splitlines())} lines (prev {len(current_status.splitlines())})")
-        else:
-            atomic_write(STATUS, new_status)
-            print(f"[OK] STATUS.md written ({len(new_status.splitlines())} lines)")
+        verify_sections(merged)
     except RuntimeError as e:
-        print(str(e)); print("[RESTORE] STATUS.md untouched"); sys.exit(1)
+        rejection_reason = str(e)
+    if rejection_reason:
+        restore_method = "preserved (STATUS.md not modified)"
+        log_rejection(rejection_reason, old_n, merged_n, merged_n / old_n if old_n > 0 else 1.0, restore_method)
+        print(f"WCCS REJECTED: {rejection_reason}. Old file preserved.")
+        sys.exit(1)
+    if args.dry_run:
+        print(f"[DRY] STATUS.md would be {merged_n} lines after merge (prev {old_n})")
+    else:
+        try:
+            STATUS_TMP = STATUS.with_name("STATUS_tmp.md")
+            STATUS_TMP.write_text(merged, encoding="utf-8")
+            tmp_n = len(STATUS_TMP.read_text(encoding="utf-8").splitlines())
+            if tmp_n < old_n * LINE_COUNT_THRESHOLD:
+                try:
+                    STATUS_TMP.unlink()
+                except OSError:
+                    pass
+                err = f"STATUS merge aborted: {tmp_n} lines < 90% of {old_n} ({old_n * LINE_COUNT_THRESHOLD:.0f})"
+                _log_wccs_error(err)
+                print(f"[ABORT] {err}. STATUS.md untouched.")
+            else:
+                bak = backup_file(STATUS)
+                print(f"[OK] Backed up STATUS.md to {bak.name}")
+                STATUS_TMP.replace(STATUS)
+                print(f"[OK] STATUS.md written via merge ({tmp_n} lines, was {old_n})")
+        except Exception as _write_err:
+            _log_wccs_error(f"STATUS write crashed: {_write_err}")
+            print(f"[ERROR] STATUS.md write crashed — see wccs_errors.log. {_write_err}")
     today = dt.date.today().isoformat()
     entry = f"\n---\n\n### {today}\n\n{chat_text.strip()}\n"
     if args.dry_run:
         print(f"[DRY] Would append to HISTORY.md")
     else:
-        append_to_file(HISTORY, entry, f"# HISTORY — VKB Spin Doctor\n*Append-only chat log.*\n")
-        print(f"[OK] HISTORY.md appended")
+        try:
+            append_to_file(HISTORY, entry, f"# HISTORY — VKB Spin Doctor\n*Append-only chat log.*\n")
+            print(f"[OK] HISTORY.md appended")
+        except Exception as _hist_err:
+            _log_wccs_error(f"HISTORY append crashed: {_hist_err}")
+            print(f"[WARN] HISTORY.md append failed — see wccs_errors.log. {_hist_err}")
     new_codes = extract_acca_codes(chat_text)
     if new_codes:
         existing = read_text(ACCA).upper()
@@ -158,8 +350,12 @@ def main():
             if args.dry_run:
                 print(f"[DRY] Would append {len(additions)} codes to ACCA.md")
             else:
-                append_to_file(ACCA, entry, f"# ACCA — VKB Spin Doctor\n*Append-only.*\n\n| Code | Meaning | Added |\n|---|---|---|\n")
-                print(f"[OK] ACCA.md appended ({len(additions)} codes)")
+                try:
+                    append_to_file(ACCA, entry, f"# ACCA — VKB Spin Doctor\n*Append-only.*\n\n| Code | Meaning | Added |\n|---|---|---|\n")
+                    print(f"[OK] ACCA.md appended ({len(additions)} codes)")
+                except Exception as _acca_err:
+                    _log_wccs_error(f"ACCA append crashed: {_acca_err}")
+                    print(f"[WARN] ACCA.md append failed — see wccs_errors.log. {_acca_err}")
     if not args.dry_run:
         try:
             msg = f"WCCS auto-save {today} (aafl_wccs.py)"

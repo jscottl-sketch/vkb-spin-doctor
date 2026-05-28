@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "frequency_modes": {
+    "every_30s": false,
+    "every_5min": false,
+    "every_30min": true,
+    "hourly": true,
+    "sunday_weekly": false,
+    "on_demand_only": true,
+    "on_tab_switch": false,
+    "on_startup": true,
+    "calendar_scheduled": false,
+    "adaptive": false
+  },
+  "calendar_schedule": [],
+  "auto_fix_mode": "always_ask",
+  "auto_fix_calendar_window": null,
+  "escalate_to_stuck_inbox": true,
+  "escalate_only_when_no_fix": true,
+  "last_run": "2026-05-28T15:56:52",
+  "next_scheduled": null
+}

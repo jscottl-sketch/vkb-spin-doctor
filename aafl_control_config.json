@@ -12,7 +12,7 @@
   "use_chief_scout": true,
   "use_db_cache": true,
   "use_meta_loop": false,
-  "current_goal": "1+1=",
+  "current_goal": "not json at all }{",
   "run_mode": "once",
   "provider_list": [
     {
@@ -114,5 +114,7 @@
       "status": "blocked"
     }
   ],
-  "test_key": "mcc_test"
+  "test_key": "mcc_test",
+  "_test": true,
+  "_persist_test": true
 }

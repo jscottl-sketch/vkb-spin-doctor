@@ -1,0 +1,33 @@
+=================================================================
+  IBR SCAN REPORT — 2026-05-27T09:16:26
+=================================================================
+  Result: 4 PASS  |  2 WARN  |  0 FAIL
+=================================================================
+
+[PASS]  Check 1 — File Integrity
+     +  STATUS.md exists: 12859 bytes
+     +  INDEX.md exists: 2747 bytes
+     +  HISTORY.md exists: 99144 bytes
+     +  ACCA.md exists: 2320 bytes
+     +  STATUS.md line count: 197 lines (baseline 181, 109%)
+     +  Files in STATUS built list: All referenced files found
+
+[PASS]  Check 2 — Session Log Health
+     +  Session log count: 7 .md files in session_logs/
+     +  Date range: Oldest: 2026-05-25  Newest: 2026-05-27
+     +  Truncated session logs: All session logs have ≥10 lines
+
+[PASS]  Check 3 — ACCA Code Consistency
+     +  Registered ACCA codes: 0 codes in ACCA.md
+     +  Unregistered codes found: All codes in project files are registered in ACCA.md
+
+[WARN]  Check 4 — Dead File Check
+     !  Orphan files in root: 114 files not mentioned in STATUS.md: AAFL_Overnight_Task.xml, ACCA.md, ALP_Database.md, DESIGN_RULES.md, END_SESSION.bat, GIT_BACKUP.bat, GIT_INIT.bat, GOODNIGHT.bat, HISTORY.md, HOW_TO_INTEGRATE_DIAGNOSTIC.py, INDEX.md, Knowledge_Engine_Schema_v1.md, RUN_OVERNIGHT.bat, RUN_VKB.bat, SAVE_NOW.bat
+
+[PASS]  Check 5 — ALP Database
+     +  ALP entry count: 36 entries found
+     +  Last ALP entry age: Last entry: 2026-05-25 — within 7 days
+
+[WARN]  Check 6 — Provider Health Snapshot
+     +  MCC server reachable: Connected to http://127.0.0.1:8080
+     !  Provider health snapshot: 2/14 providers healthy

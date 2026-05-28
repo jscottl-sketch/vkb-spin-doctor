@@ -198,9 +198,9 @@ PROVIDERS = [
     },
 ]
 
-# TODO: Replace direct provider calls with LiteLLM routing — see https://docs.litellm.ai
-# (LiteLLM is already used for the actual API call in _call(); this marks the routing
-# table as the integration point for future unified LiteLLM router migration.)
+# LiteLLM routing is active: all API calls go through litellm.completion() in _call().
+# The ROUTING dict + for-loop in run() drive cheapest-first provider selection.
+# To migrate to LiteLLM's Router class instead, see https://docs.litellm.ai/docs/routing
 
 # Routing table: task_type → provider IDs in cheapest-first order
 ROUTING = {
@@ -511,14 +511,26 @@ def _check_lmstudio(host: str = "127.0.0.1", port: int = 1234) -> bool:
 # ── Self-test ─────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    _live_test = "--test-providers" in sys.argv
+
     print("\n" + "=" * 68)
-    print("  AAFL CORE — DRY-RUN SELF-TEST")
+    if _live_test:
+        print("  AAFL CORE — LIVE PROVIDER STATUS  (--test-providers)")
+    else:
+        print("  AAFL CORE — DRY-RUN SELF-TEST")
     print("=" * 68)
 
-    core = AAFLCore(dry_run=True)
+    # PRE-LITELLM: core = AAFLCore(dry_run=True)
+    core = AAFLCore(dry_run=not _live_test)
 
     # ── Show which providers are live ────────────────────────────────────────
     rows = core.status()
+
+    if _live_test:
+        live_count = sum(1 for r in rows if r["status"] == "LIVE")
+        print(f"\n  {live_count} provider(s) LIVE and ready for calls.")
+        print("=" * 68 + "\n")
+        sys.exit(0)
 
     # ── Run one dry call per task type ───────────────────────────────────────
     print("  ROUTING TEST (dry_run — no real calls, no cost)\n")

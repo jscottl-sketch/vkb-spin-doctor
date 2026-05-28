@@ -1,0 +1,12 @@
+/src
+  /MachineInput.Api
+    Controllers/
+      MachineInputController.cs
+    Dto/
+      InputStateDto.cs
+      InputCommandDto.cs
+    Services/
+      IInputInjectionService.cs
+      InputInjectionService.cs
+    Mapping/
+      InputMapper.cs

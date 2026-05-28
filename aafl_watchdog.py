@@ -24,7 +24,7 @@ from aafl_core import AAFLCore
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 HERE        = Path(__file__).parent
-CLAUDE_PROJ = Path(r"C:\Users\jscot\.claude\projects")
+from config import CLAUDE_PROJ  # noqa: E402
 CHAT_FILE   = HERE / "chat_latest.txt"
 WCCS_LOG    = HERE / "wccs_log.md"
 MCC_URL     = "http://localhost:8080/captures"
@@ -300,6 +300,65 @@ def log_cycle(method: str, success: bool) -> None:
             fh.write(line)
     except Exception as exc:
         print(f"[WATCHDOG] Log write failed: {exc}")
+
+
+# ── Per-iteration loop danger check ──────────────────────────────────────────
+_WATCHDOG_LOG = HERE / "aafl_output" / "watchdog_loop_log.txt"
+
+
+def check_loop_danger(
+    iterations: int,
+    cost_gbp: float,
+    consecutive_provider_fails: int,
+) -> tuple[bool, str]:
+    """
+    Called after each loop iteration to detect dangerous conditions.
+    Returns (is_danger, reason). Logs every check to aafl_output/watchdog_loop_log.txt.
+
+    Detects:
+    - Runaway provider failures (all providers exhausted repeatedly)
+    - Token burn rate too high (cost/iteration > £0.02)
+    - Iteration ceiling hit without goal completion
+    """
+    danger = False
+    reason = "ok"
+
+    if consecutive_provider_fails >= 5:
+        danger = True
+        reason = (
+            f"WATCHDOG ABORT: {consecutive_provider_fails} consecutive provider failures "
+            "— runaway loop with no output"
+        )
+    elif cost_gbp > 0 and iterations > 0 and (cost_gbp / iterations) > 0.02:
+        burn = cost_gbp / iterations
+        danger = True
+        reason = (
+            f"WATCHDOG ABORT: token burn rate £{burn:.4f}/iter exceeds safety threshold "
+            f"(£0.0200/iter) after {iterations} iterations"
+        )
+    elif iterations >= 45:
+        danger = True
+        reason = (
+            f"WATCHDOG ABORT: iteration ceiling reached ({iterations}/45) "
+            "with no goal completion"
+        )
+
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    try:
+        (HERE / "aafl_output").mkdir(exist_ok=True)
+        with open(_WATCHDOG_LOG, "a", encoding="utf-8") as f:
+            f.write(
+                f"[{ts}] iter={iterations} cost=£{cost_gbp:.4f} "
+                f"prov_fails={consecutive_provider_fails} "
+                f"danger={danger} reason={reason}\n"
+            )
+    except Exception:
+        pass
+
+    if danger:
+        print(f"[WATCHDOG] {reason}")
+
+    return danger, reason
 
 
 # ── Full cycle ────────────────────────────────────────────────────────────────

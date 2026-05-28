@@ -60,7 +60,8 @@ from datetime import datetime
 from pathlib import Path
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-DEFAULT_WORK_FOLDER = r"C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor"
+from config import PROJECT_ROOT
+DEFAULT_WORK_FOLDER = str(PROJECT_ROOT)
 MAX_TOKENS          = 2048
 DEFAULT_MAX_ITER    = 50
 MEMORY_MAX_CHARS    = 6000

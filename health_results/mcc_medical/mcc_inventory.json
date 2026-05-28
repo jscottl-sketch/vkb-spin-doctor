@@ -1,0 +1,3610 @@
+{
+  "generated_at": "2026-05-28T15:56:36",
+  "tabs": [
+    {
+      "id": "wccs",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn active"
+    },
+    {
+      "id": "kanban",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "scout",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "aafl-control",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "memory",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "costs",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "storage",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "health-suite",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "acca",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "keybind-profiles",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "design",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "promo",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "missions",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    }
+  ],
+  "buttons": [
+    {
+      "id": "btn-connect",
+      "type": "button",
+      "classes": "btn-connect",
+      "data-tip": "Connect to the MCC server to load all live data — required before any tab shows real values",
+      "onclick": "connectData()",
+      "parent_tab": "root",
+      "label": "Connect Data"
+    },
+    {
+      "id": "tutorial-toggle-btn",
+      "type": "button",
+      "classes": "theme-toggle-btn",
+      "data-tip": "",
+      "onclick": "b2ToggleTutorial()",
+      "parent_tab": "root",
+      "label": "Tutorial"
+    },
+    {
+      "id": "theme-toggle-btn",
+      "type": "button",
+      "classes": "theme-toggle-btn",
+      "data-tip": "Toggle dark/light theme — Dark mode uses dark backgrounds, Light mode uses white",
+      "onclick": "b2ToggleTheme()",
+      "parent_tab": "root",
+      "label": "🌙 Dark"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn-refresh",
+      "data-tip": "Refresh status, history, ACCA and health data from the MCC server right now",
+      "onclick": "manualRefresh()",
+      "parent_tab": "root",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save the current active tab as a named preset button you can click to return to it",
+      "onclick": "savePreset()",
+      "parent_tab": "root",
+      "label": "Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload saved presets from the server in case another session added new ones",
+      "onclick": "loadPresets()",
+      "parent_tab": "root",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "mccm-delegate-btn",
+      "data-tip": "Trigger the highest-urgency tab's default action automatically",
+      "onclick": "b3Delegate()",
+      "parent_tab": "root",
+      "label": "⚡ Delegate Top Task"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Run provider health check (~30s)",
+      "onclick": "runHealthCheck()",
+      "parent_tab": "root",
+      "label": "🏥 Health Check"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Start recurring Scout web research",
+      "onclick": "homeStartScout()",
+      "parent_tab": "root",
+      "label": "🔭 Start Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Prompt for a goal and queue it for AAFL",
+      "onclick": "homeRunAafl()",
+      "parent_tab": "root",
+      "label": "🔄 Run AAFL Goal"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Save session to STATUS.md and HISTORY.md",
+      "onclick": "saveSession()",
+      "parent_tab": "root",
+      "label": "💾 Save WCCS"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Open Health Suite tab",
+      "onclick": "goToTab('health-suite')",
+      "parent_tab": "root",
+      "label": "💊 Health Suite"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-action-btn",
+      "data-tip": "Open Design tab",
+      "onclick": "goToTab('design')",
+      "parent_tab": "root",
+      "label": "🎨 Design"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "sb-refresh-btn",
+      "data-tip": "Refresh process list now",
+      "onclick": "event.stopPropagation();refreshProcesses()",
+      "parent_tab": "root",
+      "label": "↻"
+    },
+    {
+      "id": "sidebar-toggle",
+      "type": "button",
+      "classes": "sidebar-toggle",
+      "data-tip": "Collapse/expand sidebar (Ctrl+B)",
+      "onclick": "toggleSidebar()",
+      "parent_tab": "root",
+      "label": "◀"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn home-act-btn",
+      "data-tip": "Runs provider_health.py (~30s) — checks all AI providers and updates the health gauge",
+      "onclick": "runHealthCheck()",
+      "parent_tab": "tab-home",
+      "label": "🏥 Run Health Check"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn home-act-btn",
+      "data-tip": "Starts a recurring Scout web-research run for the default VKB goal — repeats every 30 min",
+      "onclick": "homeStartScout()",
+      "parent_tab": "tab-home",
+      "label": "🔭 Start Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn home-act-btn",
+      "data-tip": "Prompts you to type a goal, then adds it to goal_queue.txt for the AAFL AI engine to process",
+      "onclick": "homeRunAafl()",
+      "parent_tab": "tab-home",
+      "label": "🔄 Run AAFL Goal"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn home-act-btn",
+      "data-tip": "Saves your session to STATUS.md and HISTORY.md right now — same as Save Session Now on the WCCS tab",
+      "onclick": "saveSession()",
+      "parent_tab": "tab-home",
+      "label": "💾 Save WCCS"
+    },
+    {
+      "id": "ibr-scan-btn",
+      "type": "button",
+      "classes": "btn home-act-btn",
+      "data-tip": "IBR Scan — full project health audit: file integrity, sessions, ACCA codes, dead files, ALP, providers",
+      "onclick": "runIbrScan()",
+      "parent_tab": "tab-home",
+      "label": "🔍 IBR Scan"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Download ibr_latest.txt to your computer",
+      "onclick": "exportIbrReport()",
+      "parent_tab": "tab-home",
+      "label": "Export"
+    },
+    {
+      "id": "ph-detail-btn",
+      "type": "button",
+      "classes": "ph-detail-btn",
+      "data-tip": "Expand to see each individual AI provider's status and last check time",
+      "onclick": "event.stopPropagation();phToggleDetail()",
+      "parent_tab": "tab-home",
+      "label": "Show Details"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Force-reload all home cards and instrument values from the server",
+      "onclick": "loadHomeScreen()",
+      "parent_tab": "tab-home",
+      "label": "Refresh Cards"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy the full contents of STATUS.md to your clipboard — paste into Claude.ai Project Files to update Claude's context",
+      "onclick": "copyProjectFile('status')",
+      "parent_tab": "tab-home",
+      "label": "📋 Copy STATUS.md"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy the full contents of HISTORY.md to your clipboard — paste into Claude.ai Project Files to give Claude your full session history",
+      "onclick": "copyProjectFile('history')",
+      "parent_tab": "tab-home",
+      "label": "📋 Copy HISTORY.md"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Adds each line as a separate goal for AAFL to run — they appear in the Current Queue below",
+      "onclick": "taskInboxAdd()",
+      "parent_tab": "tab-home",
+      "label": "+ Add to Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Starts AAFL running through all queued goals automatically — runs them one after another",
+      "onclick": "taskInboxRunQueue()",
+      "parent_tab": "tab-home",
+      "label": "▶ Run Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "wccs-back-btn",
+      "data-tip": "",
+      "onclick": "wccsBack()",
+      "parent_tab": "tab-wccs",
+      "label": "← Back"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn btn-danger",
+      "data-tip": "Replace the live STATUS.md with this version — your current STATUS.md is backed up first",
+      "onclick": "wrewindRestore()",
+      "parent_tab": "tab-wccs",
+      "label": "Restore to STATUS.md"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run the diff comparison between the two selected versions — shows added, removed, and changed lines",
+      "onclick": "wccsRunDiff()",
+      "parent_tab": "tab-wccs",
+      "label": "Compare"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the activity log from the server",
+      "onclick": "b2LoadActivity()",
+      "parent_tab": "tab-wccs",
+      "label": "Refresh"
+    },
+    {
+      "id": "btn-ai-summarise",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send the activity log to an AI and get a plain-English summary of what happened today",
+      "onclick": "b2AiSummariseActivity()",
+      "parent_tab": "tab-wccs",
+      "label": "🤖 AI Summarise"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Download the current filtered activity log as a .txt file",
+      "onclick": "b2ExportActivity()",
+      "parent_tab": "tab-wccs",
+      "label": "📄 Export .txt"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn active",
+      "data-tip": "Show every activity entry",
+      "onclick": "b2ActFilter(this,'all')",
+      "parent_tab": "tab-wccs",
+      "label": "All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only Kanban card changes",
+      "onclick": "b2ActFilter(this,'kanban')",
+      "parent_tab": "tab-wccs",
+      "label": "Kanban"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only AAFL goal runs",
+      "onclick": "b2ActFilter(this,'aafl')",
+      "parent_tab": "tab-wccs",
+      "label": "AAFL"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only Scout web search events",
+      "onclick": "b2ActFilter(this,'scout')",
+      "parent_tab": "tab-wccs",
+      "label": "Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only WCCS session save events",
+      "onclick": "b2ActFilter(this,'wccs')",
+      "parent_tab": "tab-wccs",
+      "label": "WCCS"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only cost and spending events",
+      "onclick": "b2ActFilter(this,'costs')",
+      "parent_tab": "tab-wccs",
+      "label": "Costs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only errors and failures — useful for debugging",
+      "onclick": "b2ActFilter(this,'errors')",
+      "parent_tab": "tab-wccs",
+      "label": "Errors"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only events you triggered manually",
+      "onclick": "b2ActFilter(this,'manual')",
+      "parent_tab": "tab-wccs",
+      "label": "Manual"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only events triggered automatically by the system",
+      "onclick": "b2ActFilter(this,'auto')",
+      "parent_tab": "tab-wccs",
+      "label": "Auto"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only events from today",
+      "onclick": "b2ActFilter(this,'today')",
+      "parent_tab": "tab-wccs",
+      "label": "Today"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only events from the last 7 days",
+      "onclick": "b2ActFilter(this,'week')",
+      "parent_tab": "tab-wccs",
+      "label": "This Week"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only events from the last 30 days",
+      "onclick": "b2ActFilter(this,'month')",
+      "parent_tab": "tab-wccs",
+      "label": "This Month"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the save timeline dots from the server — each dot is one backup",
+      "onclick": "b2LoadTimeline()",
+      "parent_tab": "tab-wccs",
+      "label": "Refresh"
+    },
+    {
+      "id": "btn-wccs-hub",
+      "type": "button",
+      "classes": "btn-save-lg",
+      "data-tip": "Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.",
+      "onclick": "saveSession()",
+      "parent_tab": "tab-wccs",
+      "label": "💾 Save Session Now"
+    },
+    {
+      "id": "copyStatusBtn",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context",
+      "onclick": "copyStatusForClaude()",
+      "parent_tab": "tab-wccs",
+      "label": "📋 Copy STATUS.md for Claude"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Scan session_logs, archive_dead and other locations for lost chat/SESUM data",
+      "onclick": "runOldSavesScan()",
+      "parent_tab": "tab-wccs",
+      "label": "🔍 Run Scan"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send chat text to Mistral AI to generate a structured SESUM session summary",
+      "onclick": "generateSesum()",
+      "parent_tab": "tab-wccs",
+      "label": "Generate SESUM with Mistral"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy SESUM text to clipboard",
+      "onclick": "copySesum()",
+      "parent_tab": "tab-wccs",
+      "label": "📋 Copy"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload all Kanban cards from kanban.json on the server",
+      "onclick": "loadKanban()",
+      "parent_tab": "tab-kanban",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add a new card pre-filled with the standard bug report fields",
+      "onclick": "b2KanbanTemplate('bug')",
+      "parent_tab": "tab-kanban",
+      "label": "🐛 Bug Template"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add a new card pre-filled with the standard feature request fields",
+      "onclick": "b2KanbanTemplate('feature')",
+      "parent_tab": "tab-kanban",
+      "label": "✨ Feature Template"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add a new card pre-filled with the standard research task fields",
+      "onclick": "b2KanbanTemplate('research')",
+      "parent_tab": "tab-kanban",
+      "label": "🔬 Research Template"
+    },
+    {
+      "id": "btn-bulk-toggle",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Enable bulk selection mode — tick multiple cards then move, tag, or delete them all at once",
+      "onclick": "b2ToggleBulkMode()",
+      "parent_tab": "tab-kanban",
+      "label": "☑ Bulk Mode"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Show cards that were automatically archived after 7 days in the Done column",
+      "onclick": "b2ShowArchive()",
+      "parent_tab": "tab-kanban",
+      "label": "📦 Archive"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Move all selected cards to the Done column",
+      "onclick": "b2BulkMove('done')",
+      "parent_tab": "tab-kanban",
+      "label": "→ Done"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add a tag to all selected cards at once",
+      "onclick": "b2BulkTag()",
+      "parent_tab": "tab-kanban",
+      "label": "🏷 Tag"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn btn-danger",
+      "data-tip": "Permanently delete all selected cards — cannot be undone",
+      "onclick": "b2BulkDelete()",
+      "parent_tab": "tab-kanban",
+      "label": "🗑 Delete"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Create a new card in the selected column with the title you typed",
+      "onclick": "b2KanbanAdd()",
+      "parent_tab": "tab-kanban",
+      "label": "+ Add Card"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload all AAFL run history from the server",
+      "onclick": "loadAaflRuns()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "Refresh"
+    },
+    {
+      "id": "btn-compare-mode",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Enable compare mode — select two runs to see their scores and outputs side-by-side",
+      "onclick": "b2ToggleCompare()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "⚖ Compare Runs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Show which goals fail most often and what error patterns appear — helps identify systemic issues",
+      "onclick": "b2ShowFailureAnalysis()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "📉 Failure Analysis"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Show which goal types and providers achieve the highest scores — useful for optimising future runs",
+      "onclick": "b2ShowSuccessPatterns()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "🏆 Success Patterns"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Compare the two selected runs side-by-side — shows scores, providers, and output differences",
+      "onclick": "b2CompareRuns()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "Compare"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load the last 20 retry attempts — shows which goals were retried, why, and whether they eventually passed",
+      "onclick": "loadRetryLog()",
+      "parent_tab": "tab-aafl-runs",
+      "label": "Load"
+    },
+    {
+      "id": "scout-uq-ask-btn",
+      "type": "button",
+      "classes": "btn uq-btn-ask",
+      "data-tip": "Ask this question directly to a free AI — instant answer",
+      "onclick": "scoutUqAsk()",
+      "parent_tab": "tab-scout",
+      "label": "⚡ Ask"
+    },
+    {
+      "id": "scout-uq-web-btn",
+      "type": "button",
+      "classes": "btn uq-btn-web",
+      "data-tip": "Search the web for this query using Scout",
+      "onclick": "scoutUqSearch()",
+      "parent_tab": "tab-scout",
+      "label": "🔎 Search Web"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pre-fill the Run Now goal input with this query",
+      "onclick": "scoutUqSendToLoop()",
+      "parent_tab": "tab-scout",
+      "label": "Send to AAFL Loop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pre-fill the Workflow Builder with this query",
+      "onclick": "scoutUqSendToWorkflow()",
+      "parent_tab": "tab-scout",
+      "label": "Send to Workflow Builder"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all 5 Scout strategies on this query",
+      "onclick": "scoutUqRunFullScout()",
+      "parent_tab": "tab-scout",
+      "label": "Run Full Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save this Q&A to memory",
+      "onclick": "scoutUqSaveToMemory()",
+      "parent_tab": "tab-scout",
+      "label": "Save to Memory"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload Scout status and last search results from the server",
+      "onclick": "loadScout()",
+      "parent_tab": "tab-scout",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Export all current Scout results as a formatted .txt briefing document",
+      "onclick": "b2ExportBriefing()",
+      "parent_tab": "tab-scout",
+      "label": "📄 Export Briefing"
+    },
+    {
+      "id": "scout-stop-btn",
+      "type": "button",
+      "classes": "btn-stop idle",
+      "data-tip": "Kill the running Scout process immediately",
+      "onclick": "stopScout()",
+      "parent_tab": "tab-scout",
+      "label": "⏹ Stop Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run a web scout search for this query",
+      "onclick": "scoutSearch()",
+      "parent_tab": "tab-scout",
+      "label": "🔎 Search"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'Scout searches the web and returns links and summaries. The AI Summary (top) is a plain-English digest. Web links are clickable. Show Raw reveals the unfiltered output. Preview opens a page inline.')",
+      "parent_tab": "tab-scout",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Manually reload Scout results right now",
+      "onclick": "loadScoutResults()",
+      "parent_tab": "tab-scout",
+      "label": "Refresh Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pass results through Mistral AI for a plain-English summary",
+      "onclick": "b3GetScoutAiSummary()",
+      "parent_tab": "tab-scout",
+      "label": "🤖 AI Summary"
+    },
+    {
+      "id": "scout-raw-toggle-btn",
+      "type": "button",
+      "classes": "scout-raw-toggle",
+      "data-tip": "",
+      "onclick": "b3ToggleScoutRaw()",
+      "parent_tab": "tab-scout",
+      "label": "▶ Show Raw Output"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "b3CloseScoutPreview()",
+      "parent_tab": "tab-scout",
+      "label": "✕ Close Preview"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Search DuckDuckGo web results for your question — fast general-purpose web search",
+      "onclick": "runScoutStrategy('ddg')",
+      "parent_tab": "tab-scout",
+      "label": "DDG Search (DuckDuckGo)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Search Reddit posts and threads for community advice on your question",
+      "onclick": "runScoutStrategy('reddit')",
+      "parent_tab": "tab-scout",
+      "label": "Reddit (community posts)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Search GitHub repositories and issues — useful for code, configs, and technical tools",
+      "onclick": "runScoutStrategy('github')",
+      "parent_tab": "tab-scout",
+      "label": "GitHub (code & repos)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Search YouTube video titles and descriptions — useful for tutorials and reviews",
+      "onclick": "runScoutStrategy('youtube')",
+      "parent_tab": "tab-scout",
+      "label": "YouTube (videos)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Search flight sim and gaming forums — useful for niche hardware and game settings",
+      "onclick": "runScoutStrategy('forum')",
+      "parent_tab": "tab-scout",
+      "label": "Forum (sim communities)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all 5 strategies at the same time in parallel — takes longer but gives the most complete picture",
+      "onclick": "runScoutStrategy('all')",
+      "parent_tab": "tab-scout",
+      "label": "All Parallel (search all 5 sources at once)"
+    },
+    {
+      "id": "scout-force-stop-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Kill the running scout search and reset the lock — use if a search gets stuck",
+      "onclick": "scoutForceStop()",
+      "parent_tab": "tab-scout",
+      "label": "Force Stop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send the scout goal above to both providers simultaneously and show their answers side-by-side",
+      "onclick": "b2RunScoutComparison()",
+      "parent_tab": "tab-scout",
+      "label": "Run Comparison"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save your per-strategy AI provider choices to the server",
+      "onclick": "b2SaveStrategyOverrides()",
+      "parent_tab": "tab-scout",
+      "label": "Save Overrides"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reset all strategies back to the global Auto provider selection",
+      "onclick": "b2ResetStrategyOverrides()",
+      "parent_tab": "tab-scout",
+      "label": "Reset to Defaults"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this URL to the blocked list — Scout will skip it from now on",
+      "onclick": "b2BlockSource()",
+      "parent_tab": "tab-scout",
+      "label": "Block"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Re-check the health status of all search sources right now",
+      "onclick": "b2LoadSourceHealth()",
+      "parent_tab": "tab-scout",
+      "label": "Refresh Health"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Start the timed scout — it will run every N minutes for the specified duration",
+      "onclick": "startScoutTimer()",
+      "parent_tab": "tab-scout",
+      "label": "Start"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn btn-danger",
+      "data-tip": "Stop the timed scout — it finishes the current run then stops",
+      "onclick": "stopScoutTimer()",
+      "parent_tab": "tab-scout",
+      "label": "Stop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Check whether the timed scout is currently running and how many runs have completed",
+      "onclick": "loadScoutTimerStatus()",
+      "parent_tab": "tab-scout",
+      "label": "Status"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load your saved source URLs from the server — filter by topic first to narrow results",
+      "onclick": "loadSourceLibrary()",
+      "parent_tab": "tab-scout",
+      "label": "Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run Scout in discovery mode to find new relevant URLs for your current goal",
+      "onclick": "runSourceDiscovery()",
+      "parent_tab": "tab-scout",
+      "label": "Discover"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save this URL and description to your Source Library on the server",
+      "onclick": "addSource()",
+      "parent_tab": "tab-scout",
+      "label": "+ Add Source"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the ALP database from ALP_Database.md on the server",
+      "onclick": "loadAlp()",
+      "parent_tab": "tab-costs",
+      "label": "Refresh ALP"
+    },
+    {
+      "id": "btn-alp-add",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this saving to ALP_Database.md",
+      "onclick": "alpAdd()",
+      "parent_tab": "tab-costs",
+      "label": "+ Add Entry"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload cost data from costs.json on the server",
+      "onclick": "loadCosts()",
+      "parent_tab": "tab-costs",
+      "label": "Refresh"
+    },
+    {
+      "id": "currency-toggle-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Switch between GBP (£) and USD ($) for all cost displays",
+      "onclick": "b2ToggleCurrency()",
+      "parent_tab": "tab-costs",
+      "label": "£ GBP"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save your budget cap values to the server so they persist between sessions",
+      "onclick": "b2SaveBudgetCaps()",
+      "parent_tab": "tab-costs",
+      "label": "Save Caps"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the budget caps from the server — useful if you changed them elsewhere",
+      "onclick": "b2LoadBudgetCaps()",
+      "parent_tab": "tab-costs",
+      "label": "Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this number of hours to your running savings total",
+      "onclick": "b2AddSavings()",
+      "parent_tab": "tab-costs",
+      "label": "Add"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this saving to the ALP database now",
+      "onclick": "addAlpFromCosts()",
+      "parent_tab": "tab-costs",
+      "label": "+ Log Saving"
+    },
+    {
+      "id": "aafl-uq-ask-btn",
+      "type": "button",
+      "classes": "btn uq-btn-ask",
+      "data-tip": "Ask this question directly to a free AI — instant answer, no loop",
+      "onclick": "aaflUqAsk()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⚡ Ask"
+    },
+    {
+      "id": "aafl-uq-web-btn",
+      "type": "button",
+      "classes": "btn uq-btn-web",
+      "data-tip": "Search the web for this query using Scout",
+      "onclick": "aaflUqSearch()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🔎 Search Web"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pre-fill the Run Now goal input with this query",
+      "onclick": "aaflUqSendToLoop()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Send to AAFL Loop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pre-fill the Workflow Builder with this query",
+      "onclick": "aaflUqSendToWorkflow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Send to Workflow Builder"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all 5 Scout strategies on this query",
+      "onclick": "aaflUqRunFullScout()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Run Full Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save this Q&A to memory",
+      "onclick": "aaflUqSaveToMemory()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Save to Memory"
+    },
+    {
+      "id": "btn-run-now",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this goal to goal_queue.txt — AAFL will pick it up and start processing",
+      "onclick": "runGoalNow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Run Now"
+    },
+    {
+      "id": "aafl-stop-btn",
+      "type": "button",
+      "classes": "btn-stop idle",
+      "data-tip": "Kill the running AAFL process immediately",
+      "onclick": "stopAaflProcess()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⏹ Stop AAFL"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Analyse your goal text and auto-select the AI provider most likely to give the best result",
+      "onclick": "suggestProvider()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Suggest Provider"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load current AAFL settings from the server into these fields",
+      "onclick": "loadAaflSettings()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save these settings to the server so AAFL uses them on next run",
+      "onclick": "saveAaflSettings()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the AAFL live output from the server",
+      "onclick": "refreshAaflOutput()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clear the output panel — does not stop AAFL, just clears the display",
+      "onclick": "clearAaflChat()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run a Scout web search for whatever goal is currently in AAFL — feeds the results back into the AI",
+      "onclick": "triggerScoutBridge()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Run Scout for Current Goal"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load and display the Scout bridge result from the last run",
+      "onclick": "loadBridgeResult()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Show Result"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this step to the workflow canvas below",
+      "onclick": "addWorkflowStep()",
+      "parent_tab": "tab-aafl-control",
+      "label": "+ Add Step"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Remove the last step from the canvas",
+      "onclick": "removeWorkflowStep()",
+      "parent_tab": "tab-aafl-control",
+      "label": "− Last"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Remove all steps and start fresh",
+      "onclick": "clearWorkflow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "✕ Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all workflow steps in sequence — each step's output feeds into the next",
+      "onclick": "runWorkflow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Run Workflow"
+    },
+    {
+      "id": "btn-run-chain",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run chain_runner.py — Scout→Enrich→AAFL→Evaluate→Retry for the current goal",
+      "onclick": "runChain()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⛓ Run Chain"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Stop the workflow after the current step completes",
+      "onclick": "stopWorkflow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "■ Stop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Export this workflow as a CLACR block you can paste into Claude Code",
+      "onclick": "wfExportClacr()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📋 Export as CLACR"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save the current step list as a named preset — stored in aafl_workflow_presets.json",
+      "onclick": "saveWorkflow()",
+      "parent_tab": "tab-aafl-control",
+      "label": "💾 Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this goal to the sequential queue",
+      "onclick": "b2ChainAddGoal()",
+      "parent_tab": "tab-aafl-control",
+      "label": "+ Add"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clear all goals from the queue",
+      "onclick": "b2ChainClear()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all queued goals in sequence via AAFL — results logged to chain_log.json",
+      "onclick": "b2RunChainBuilder()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Run Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save the current goal queue as a named preset",
+      "onclick": "b2SaveChain()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Save Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save loop count, end condition and action flags as a named preset",
+      "onclick": "saveLoopPreset()",
+      "parent_tab": "tab-aafl-control",
+      "label": "💾 Save Loop Preset"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Ask the browser to allow MCC to send desktop notifications — required before the checkboxes work",
+      "onclick": "b2RequestNotifPermission()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Enable Notifications"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Execute your loop design through AAFL. Watch progress in the log below.",
+      "onclick": "llowRunLoop()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Run Loop"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Validates your design without executing. Checks for errors and missing connections.",
+      "onclick": "llowDryRun()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🧪 Dry Run"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save workflow to server as a named preset",
+      "onclick": "llowSave()",
+      "parent_tab": "tab-aafl-control",
+      "label": "💾 Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Converts your visual design into a text CLACR block you can paste into Claude Code.",
+      "onclick": "llowExportClacr()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📋 Export as CLACR"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clear all steps and arrows from the canvas (will confirm first)",
+      "onclick": "llowClearCanvas()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🗑 Clear"
+    },
+    {
+      "id": "llow-settings-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Open LLOW colour strategy settings — OCB-F",
+      "onclick": "llowOpenSettings()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⚙️ Settings"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Zoom in",
+      "onclick": "llowZoom(1.2)",
+      "parent_tab": "tab-aafl-control",
+      "label": "+"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Zoom out",
+      "onclick": "llowZoom(1/1.2)",
+      "parent_tab": "tab-aafl-control",
+      "label": "−"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Fit all nodes in view",
+      "onclick": "llowFitAll()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Fit"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Close settings",
+      "onclick": "llowCloseSettings()",
+      "parent_tab": "tab-aafl-control",
+      "label": "✕"
+    },
+    {
+      "id": "btn-step-next",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Advance AAFL to the next phase (Plan → Work → Verify → Store)",
+      "onclick": "b2StepNext()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Next Phase"
+    },
+    {
+      "id": "btn-pause-aafl",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pause AAFL after the current phase completes — it will wait until you click Resume",
+      "onclick": "b2PauseAafl()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⏸ Pause"
+    },
+    {
+      "id": "btn-resume-aafl",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Resume AAFL from where it paused",
+      "onclick": "b2ResumeAafl()",
+      "parent_tab": "tab-aafl-control",
+      "label": "▶ Resume"
+    },
+    {
+      "id": "btn-run-benchmark",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run the benchmark — sends the goal to multiple providers simultaneously and shows a comparison table of scores and times",
+      "onclick": "b2RunBenchmark()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🏁 Run Benchmark"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send the last AAFL result to a different AI provider and get its assessment — useful when you are unsure about the quality of an answer",
+      "onclick": "b2GetSecondOpinion()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🤔 Get Second Opinion"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Mark all stuck goals as resolved and clear them from this inbox — use when you have manually dealt with the issues",
+      "onclick": "bulkResolveStuck()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Bulk Resolve All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload all AAFL run history from the server",
+      "onclick": "loadAaflRuns()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Refresh"
+    },
+    {
+      "id": "btn-compare-mode2",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Enable compare mode",
+      "onclick": "b2ToggleCompare()",
+      "parent_tab": "tab-aafl-control",
+      "label": "⚖ Compare Runs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Failure analysis",
+      "onclick": "b2ShowFailureAnalysis()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📉 Failure Analysis"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Success patterns",
+      "onclick": "b2ShowSuccessPatterns()",
+      "parent_tab": "tab-aafl-control",
+      "label": "🏆 Success Patterns"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load retry history",
+      "onclick": "loadRetryLog()",
+      "parent_tab": "tab-aafl-control",
+      "label": "Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the Memory database from the server",
+      "onclick": "loadMemory()",
+      "parent_tab": "tab-memory",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the promotion queue from the server",
+      "onclick": "loadPromo()",
+      "parent_tab": "tab-promo",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add a custom mission to your registry — give it a name, icon, description, and a linked tab",
+      "onclick": "showAddMissionForm()",
+      "parent_tab": "tab-missions",
+      "label": "➕ Add New Mission"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload custom missions from the server",
+      "onclick": "loadMissions()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Open spin_doctor.py — launches the joystick fix GUI",
+      "onclick": "event.stopPropagation();mcOpenSpinDoctor()",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Launch the Spin Doctor GUI — runs spin_doctor.py",
+      "onclick": "mcOpenSpinDoctor()",
+      "parent_tab": "tab-missions",
+      "label": "▶ Launch GUI"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to AAFL Control to run a Spin Doctor benchmark goal",
+      "onclick": "goToTab('aafl-control')",
+      "parent_tab": "tab-missions",
+      "label": "🤖 Run via AAFL"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to AAFL Control tab to run goals, set providers, and manage the AI loop",
+      "onclick": "event.stopPropagation();goToTab('aafl-control')",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Open AAFL Control to run a goal now",
+      "onclick": "goToTab('aafl-control')",
+      "parent_tab": "tab-missions",
+      "label": "▶ Run Goal"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to Health Suite to see AAFL run history",
+      "onclick": "goToTab('health-suite')",
+      "parent_tab": "tab-missions",
+      "label": "📊 Run History"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the Scout tab for full controls — timed scout, source library, parallel strategies",
+      "onclick": "event.stopPropagation();goToTab('scout')",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run all 5 Scout strategies on this goal — results appear in the Scout tab",
+      "onclick": "mcQuickScout()",
+      "parent_tab": "tab-missions",
+      "label": "🔍 Scout"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Full Scout controls — timed runs, source library, strategy overrides",
+      "onclick": "goToTab('scout')",
+      "parent_tab": "tab-missions",
+      "label": "→ Full Scout Tab"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load the most recent Scout output",
+      "onclick": "loadScoutLatest()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Latest Result"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Expand to see and manage all keybinding profiles — no separate tab needed",
+      "onclick": "event.stopPropagation();mcToggle('mc-kb')",
+      "parent_tab": "tab-missions",
+      "label": "Expand"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload all profiles from the server",
+      "onclick": "b2LoadKbProfilesMissions()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Download the selected keybinding profile as a .json file",
+      "onclick": "b2ExportKbProfileMissions()",
+      "parent_tab": "tab-missions",
+      "label": "📤 Export"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Import a keybinding profile from a .json file on your computer",
+      "onclick": "document.getElementById('b2-kbp-import-file-m').click()",
+      "parent_tab": "tab-missions",
+      "label": "📥 Import"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save this new keybinding profile to the server",
+      "onclick": "b2SaveKbProfileMissions()",
+      "parent_tab": "tab-missions",
+      "label": "Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to Health Suite to see the MOT score and run diagnostics",
+      "onclick": "event.stopPropagation();goToTab('health-suite')",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to Health Suite to run the Full MOT check",
+      "onclick": "goToTab('health-suite')",
+      "parent_tab": "tab-missions",
+      "label": "🔧 Health Suite"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Fetch the latest MOT score from the server",
+      "onclick": "mcLoadMccScore()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Refresh Score"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the Promo tab to review high-scoring results waiting for approval",
+      "onclick": "event.stopPropagation();goToTab('promo')",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the Promo tab",
+      "onclick": "goToTab('promo')",
+      "parent_tab": "tab-missions",
+      "label": "→ Promo Tab"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to Instructions & Codes tab to see all ACCA codes and MCC instructions",
+      "onclick": "event.stopPropagation();goToTab('acca')",
+      "parent_tab": "tab-missions",
+      "label": "Open"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the full ACCA codes reference",
+      "onclick": "goToTab('acca')",
+      "parent_tab": "tab-missions",
+      "label": "→ Full Reference"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load a preview of the ACCA codes",
+      "onclick": "mcLoadAccaPreview()",
+      "parent_tab": "tab-missions",
+      "label": "↻ Preview"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save this mission to the server",
+      "onclick": "saveMissionForm()",
+      "parent_tab": "tab-missions",
+      "label": "Save Mission"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn btn-danger",
+      "data-tip": "Cancel without saving",
+      "onclick": "hideMissionForm()",
+      "parent_tab": "tab-missions",
+      "label": "Cancel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload ACCA codes from ACCA.md on the server",
+      "onclick": "loadAcca()",
+      "parent_tab": "tab-acca",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload all storage data — slot sizes, trends, and largest files — from the server",
+      "onclick": "loadStorageFull()",
+      "parent_tab": "tab-storage",
+      "label": "↻ Refresh All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Generate a summary report: total allocated, total used, and any warnings",
+      "onclick": "loadStorageReport()",
+      "parent_tab": "tab-storage",
+      "label": "📋 Weekly Report"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Write the new quota values to storage_config.json on the server",
+      "onclick": "storSaveQuotas()",
+      "parent_tab": "tab-storage",
+      "label": "💾 Save Quotas"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload from server and discard unsaved slider changes",
+      "onclick": "loadStorageFull()",
+      "parent_tab": "tab-storage",
+      "label": "↺ Revert"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Scan all slots for the 10 largest files — may take a few seconds",
+      "onclick": "loadStorageLargest()",
+      "parent_tab": "tab-storage",
+      "label": "🔍 Scan Largest Files"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Scan all slots and show file type breakdown as a treemap",
+      "onclick": "loadStorageTreemap()",
+      "parent_tab": "tab-storage",
+      "label": "🗂 Scan Treemap"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load archive history and render heatmap",
+      "onclick": "loadStorageArchiveTimeline()",
+      "parent_tab": "tab-storage",
+      "label": "📅 Load Timeline"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Scan for old or large files that could be safely archived",
+      "onclick": "loadStorageCleanup()",
+      "parent_tab": "tab-storage",
+      "label": "🧹 Analyse"
+    },
+    {
+      "id": "stor-archive-sel-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Archive all selected files",
+      "onclick": "storArchiveSelected()",
+      "parent_tab": "tab-storage",
+      "label": "Archive Selected"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load memory counts from the knowledge database",
+      "onclick": "loadMemoryStatus()",
+      "parent_tab": "tab-storage",
+      "label": "Refresh Memory Stats"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the Missions tab and open the KB Profile Library card",
+      "onclick": "goToTab('missions');setTimeout(()=>{mcToggle('mc-kb');b2LoadKbProfilesMissions()},300)",
+      "parent_tab": "tab-keybind-profiles",
+      "label": "→ Go to Missions Tab"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Close this keyboard shortcuts overlay (or press Esc)",
+      "onclick": "closeKbHelp()",
+      "parent_tab": "tab-keybind-profiles",
+      "label": "Close"
+    },
+    {
+      "id": "confirm-yes",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Confirm and proceed with this action",
+      "onclick": "",
+      "parent_tab": "tab-keybind-profiles",
+      "label": "Yes"
+    },
+    {
+      "id": "confirm-no",
+      "type": "button",
+      "classes": "btn btn-danger",
+      "data-tip": "Cancel — do not proceed with this action",
+      "onclick": "",
+      "parent_tab": "tab-keybind-profiles",
+      "label": "No"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn active",
+      "data-tip": "Check which AI providers are online right now",
+      "onclick": "hsTabSwitch('provider')",
+      "parent_tab": "tab-health-suite",
+      "label": "🏥 Provider Health"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "Internal health checks — MOT runner, module manager, known issues, file health",
+      "onclick": "hsTabSwitch('selfdiag')",
+      "parent_tab": "tab-health-suite",
+      "label": "🔧 Self-Diagnosis"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "History of all AAFL goal runs — scores, providers, timings",
+      "onclick": "hsTabSwitch('aaflruns')",
+      "parent_tab": "tab-health-suite",
+      "label": "🔄 AAFL & Scout Runs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "Live CPU, RAM, and Disk usage gauges — auto-refreshes every 5s",
+      "onclick": "hsTabSwitch('system')",
+      "parent_tab": "tab-health-suite",
+      "label": "💻 GPU / CPU / RAM"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "Doctor CLAC full medical — fitness score, report, history trend",
+      "onclick": "hsTabSwitch('medical')",
+      "parent_tab": "tab-health-suite",
+      "label": "🩺 Medical"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "Work Checker — tracks incomplete CLAC runs and lost work across sessions",
+      "onclick": "hsTabSwitch('workchecker');wcLoadReport()",
+      "parent_tab": "tab-health-suite",
+      "label": "🔍 Work Checker"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hs-tab-btn",
+      "data-tip": "Self-Health — configure how MCC tests its own UI elements and endpoints",
+      "onclick": "hsTabSwitch('selfhealth');shLoadConfig();bmInit()",
+      "parent_tab": "tab-health-suite",
+      "label": "⚙️ Self-Health"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Force re-run work_checker.py and reload the report",
+      "onclick": "wcRefreshReport()",
+      "parent_tab": "tab-health-suite",
+      "label": "🔄 Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Go to the WCCS save tab",
+      "onclick": "goToTab('wccs')",
+      "parent_tab": "tab-health-suite",
+      "label": "→ WCCS Tab"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy the CLACR re-queue block to clipboard",
+      "onclick": "wcCopyRequeue()",
+      "parent_tab": "tab-health-suite",
+      "label": "📋 Copy CLACR Block"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Append these results to work_report.json as manual_findings",
+      "onclick": "wcImportDeepScan()",
+      "parent_tab": "tab-health-suite",
+      "label": "Import Results"
+    },
+    {
+      "id": "wc-show-all-sessions",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "wcShowAllSessions()",
+      "parent_tab": "tab-health-suite",
+      "label": "Show All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Re-check all AI provider endpoints now",
+      "onclick": "loadHsProviderHealth()",
+      "parent_tab": "tab-health-suite",
+      "label": "Refresh Providers"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'Shows which AI providers are live right now. Green dot = responding, Red = offline. Click Refresh to re-check all providers.')",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "btn-run-mot",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run mcc_full_mot.py — tests all MCC modules and returns a pass rate and list of failures (~30 seconds)",
+      "onclick": "sdRunMot()",
+      "parent_tab": "tab-health-suite",
+      "label": "🔍 Run Full MOT"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the module list from the server",
+      "onclick": "loadModules()",
+      "parent_tab": "tab-health-suite",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add this issue to the Known Issues list with the chosen severity",
+      "onclick": "sdAddIssue()",
+      "parent_tab": "tab-health-suite",
+      "label": "+ Add"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reload the AAFL run history table",
+      "onclick": "loadHsAaflRuns()",
+      "parent_tab": "tab-health-suite",
+      "label": "Refresh Runs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'Shows all AAFL goal runs — score, provider, time, cost. Same data as the AAFL Runs tab but visible from Health Suite.')",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Refresh all AI provider cards",
+      "onclick": "hsLoadProviderCards()",
+      "parent_tab": "tab-health-suite",
+      "label": "Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pause 2-second auto-refresh",
+      "onclick": "_stopSystemPoller()",
+      "parent_tab": "tab-health-suite",
+      "label": "Pause"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Resume auto-refresh",
+      "onclick": "_startSystemPoller()",
+      "parent_tab": "tab-health-suite",
+      "label": "Resume"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'System monitor — polls /api/system/snapshot every 2 s. CPU/GPU load turns orange above 60%, red above 80%. Thermal prediction uses a slope of last 6 GPU temperature readings.')",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Kill all AI processes using under 1% CPU and under 50 MB RAM",
+      "onclick": "_sysFreeUpIdle()",
+      "parent_tab": "tab-health-suite",
+      "label": "Free Up Idle"
+    },
+    {
+      "id": "med-run-btn",
+      "type": "button",
+      "classes": "med-run-btn",
+      "data-tip": "Run full medical — all 14 categories (~3 min)",
+      "onclick": "runMedical(false)",
+      "parent_tab": "tab-health-suite",
+      "label": "🩺 Run Medical"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Quick check: functional + endpoints only (~30s)",
+      "onclick": "runMedical(true)",
+      "parent_tab": "tab-health-suite",
+      "label": "⚡ Quick"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "shAddCalendarEntry()",
+      "parent_tab": "tab-health-suite",
+      "label": "+ Add"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Set a date/time window when auto-fixes are allowed to run automatically",
+      "onclick": "shSetCalendarWindow()",
+      "parent_tab": "tab-health-suite",
+      "label": "📅 Set calendar window for auto-fixing"
+    },
+    {
+      "id": "sh-run-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run a full self-health test of all registered MCC elements now",
+      "onclick": "shRunAll()",
+      "parent_tab": "tab-health-suite",
+      "label": "► Run Self-Health Test Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Show a timeline of recent self-health test runs",
+      "onclick": "shLoadHistory()",
+      "parent_tab": "tab-health-suite",
+      "label": "📅 View Test History"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run a full self-health test now — dots update live",
+      "onclick": "bmRunAll()",
+      "parent_tab": "tab-health-suite",
+      "label": "▶ Run Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Set a date/time window when auto-fixes are allowed to run automatically",
+      "onclick": "afSetWindow()",
+      "parent_tab": "tab-health-suite",
+      "label": "📅 Set auto-fix window"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "bm-drill-close",
+      "data-tip": "",
+      "onclick": "bmCloseDrill()",
+      "parent_tab": "tab-health-suite",
+      "label": "✕ Close"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'Change how MCC looks. All changes apply live — you see them instantly. Save as a preset to keep your design. Reset to Default restores the original look.')",
+      "parent_tab": "tab-design",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Solid filled buttons (default)",
+      "onclick": "b3SetBtnStyle('filled')",
+      "parent_tab": "tab-design",
+      "label": "Filled"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Outlined transparent buttons",
+      "onclick": "b3SetBtnStyle('outline')",
+      "parent_tab": "tab-design",
+      "label": "Outline"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Ghost text-link buttons",
+      "onclick": "b3SetBtnStyle('ghost')",
+      "parent_tab": "tab-design",
+      "label": "Ghost"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save current design as a named preset",
+      "onclick": "b3SaveDesignPreset()",
+      "parent_tab": "tab-design",
+      "label": "💾 Save Preset"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Reset all design settings back to MCC defaults",
+      "onclick": "b3LoadDesignPreset('__reset__')",
+      "parent_tab": "tab-design",
+      "label": "Reset to Default"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-design",
+      "label": "Sample Button"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "auto-toggle",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "root"
+    },
+    {
+      "id": "auto-interval",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "root"
+    },
+    {
+      "id": "preset-save-name",
+      "type": "text",
+      "placeholder": "New preset name…",
+      "classes": "",
+      "parent_tab": "root"
+    },
+    {
+      "id": "urg-wccs",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "wccs-srch-input",
+      "type": "text",
+      "placeholder": "Search HISTORY.md and ACCA.md…",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "kanban-new-title",
+      "type": "text",
+      "placeholder": "New card title…",
+      "classes": "",
+      "parent_tab": "tab-kanban"
+    },
+    {
+      "id": "runs-tag-filter",
+      "type": "text",
+      "placeholder": "Filter by tag…",
+      "classes": "",
+      "parent_tab": "tab-aafl-runs"
+    },
+    {
+      "id": "scout-uq-input",
+      "type": "text",
+      "placeholder": "Ask anything or type a research goal…",
+      "classes": "uq-input",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "scout-search-input",
+      "type": "text",
+      "placeholder": "Search the web for anything… e.g. best VKB curve settings",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "scout-strategy-goal",
+      "type": "text",
+      "placeholder": "e.g. Star Citizen joystick keybindings best setup",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "b2-workers-slider",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "b2-block-url",
+      "type": "text",
+      "placeholder": "Source URL to block…",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "scout-timer-goal",
+      "type": "text",
+      "placeholder": "Scout goal…",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "scout-timer-hours",
+      "type": "number",
+      "placeholder": "Hours (0=indefinite)",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "scout-timer-interval",
+      "type": "number",
+      "placeholder": "Interval (min)",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "src-lib-topic",
+      "type": "text",
+      "placeholder": "Filter by topic…",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "src-add-url",
+      "type": "text",
+      "placeholder": "URL to add…",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "src-add-desc",
+      "type": "text",
+      "placeholder": "Description…",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "alp-entry-input",
+      "type": "text",
+      "placeholder": "Describe the saving / lesson learned…",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "b2-daily-cap",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "b2-weekly-cap",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "b2-monthly-cap",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "b2-savings-add",
+      "type": "number",
+      "placeholder": "hrs saved",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "alp-entry-costs",
+      "type": "text",
+      "placeholder": "Describe saving — e.g. Found free API that saves $5/mo",
+      "classes": "",
+      "parent_tab": "tab-costs"
+    },
+    {
+      "id": "aafl-uq-input",
+      "type": "text",
+      "placeholder": "Ask anything or type a research goal…",
+      "classes": "uq-input",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "run-now-goal",
+      "type": "text",
+      "placeholder": "Enter goal text…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "as-confidence",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "as-cost-cap",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "as-max-retries",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-goal",
+      "type": "text",
+      "placeholder": "Goal for this step…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-timeout",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-retries",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-minscore",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-preset-name",
+      "type": "text",
+      "placeholder": "Preset name…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-chain-add-goal",
+      "type": "text",
+      "placeholder": "Add goal to queue…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-chain-preset-name",
+      "type": "text",
+      "placeholder": "Queue preset name…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "loop-count",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "loop-infinite",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-sif",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-sesum",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-wccs",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-wcbb",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-afna",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-wrs",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-dsp",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "la-wento",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "loop-preset-name",
+      "type": "text",
+      "placeholder": "Loop preset name…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-notif-complete",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-notif-error",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-notif-score",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-notif-score-val",
+      "type": "number",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-wf-name",
+      "type": "text",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-search",
+      "type": "text",
+      "placeholder": "Search elements…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-strat-phase",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-strat-mirror",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-strat-snap",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-strat-strict",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-step-mode-toggle",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "b2-bench-goal",
+      "type": "text",
+      "placeholder": "Benchmark goal (runs 3× across providers)…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "runs-tag-filter2",
+      "type": "text",
+      "placeholder": "Filter by tag…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "memory-search-kb",
+      "type": "text",
+      "placeholder": "Search knowledge…",
+      "classes": "search-box",
+      "parent_tab": "tab-memory"
+    },
+    {
+      "id": "memory-search-sol",
+      "type": "text",
+      "placeholder": "Search solutions…",
+      "classes": "search-box",
+      "parent_tab": "tab-memory"
+    },
+    {
+      "id": "mc-scout-goal",
+      "type": "text",
+      "placeholder": "Quick scout goal…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-filter-game-m",
+      "type": "text",
+      "placeholder": "Filter by game…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-filter-device-m",
+      "type": "text",
+      "placeholder": "Filter by device…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-import-file-m",
+      "type": "file",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-name-m",
+      "type": "text",
+      "placeholder": "Profile name…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-game-m",
+      "type": "text",
+      "placeholder": "Game…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "b2-kbp-device-m",
+      "type": "text",
+      "placeholder": "Device (e.g. VKB)…",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "mission-form-id",
+      "type": "hidden",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "mf-name",
+      "type": "text",
+      "placeholder": "Mission name",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "mf-description",
+      "type": "text",
+      "placeholder": "What this mission does",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "mf-tags",
+      "type": "text",
+      "placeholder": "ai, gaming, core",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "mf-started",
+      "type": "text",
+      "placeholder": "2026-05",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "acca-search",
+      "type": "text",
+      "placeholder": "Search codes…",
+      "classes": "search-box",
+      "parent_tab": "tab-acca"
+    },
+    {
+      "id": "b2-kbp-import-file",
+      "type": "file",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-keybind-profiles"
+    },
+    {
+      "id": "cmdpal-input",
+      "type": "text",
+      "placeholder": "Type a command…",
+      "classes": "cmdpal-input",
+      "parent_tab": "tab-keybind-profiles"
+    },
+    {
+      "id": "urg-health-suite",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sd-issue-desc",
+      "type": "text",
+      "placeholder": "Describe the issue…",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-30s",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-5min",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-30min",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-hourly",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-sunday",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-ondemand",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-tabswitch",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-startup",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-calendar",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-freq-adaptive",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-cal-dt",
+      "type": "datetime-local",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "",
+      "type": "radio",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "",
+      "type": "radio",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "",
+      "type": "radio",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-escalate-stuck",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "sh-escalate-nofix",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "urg-design",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-font-size",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-text-color",
+      "type": "color",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-bg-color",
+      "type": "color",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-accent-color",
+      "type": "color",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-radius",
+      "type": "range",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-design"
+    },
+    {
+      "id": "d-preset-name",
+      "type": "text",
+      "placeholder": "Preset name…",
+      "classes": "",
+      "parent_tab": "tab-design"
+    }
+  ],
+  "textareas": [
+    {
+      "id": "task-inbox-input",
+      "placeholder": "e.g. Research best VKB throttle grip settings\nFind optimal Star Citizen flight model settings\nCheck Reddit for joystick deadzone advice",
+      "classes": "",
+      "parent_tab": "tab-home"
+    },
+    {
+      "id": "wrewind-edit",
+      "placeholder": "Select a version above…",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "wccs-chat-input",
+      "placeholder": "Paste your Claude chat summary here before saving… (Ctrl+V works here)",
+      "classes": "wccs-chat-textarea",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "sesum-chat-input",
+      "placeholder": "Paste your full chat export here...",
+      "classes": "wccs-chat-textarea",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "mf-notes",
+      "placeholder": "Freeform notes, context, next steps...",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "wc-deep-scan-input",
+      "placeholder": "Paste MCP chat search results here…",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    }
+  ],
+  "selects": [
+    {
+      "id": "wrewind-sel",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "wdiff-a",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "wdiff-b",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "kanban-new-col",
+      "classes": "",
+      "parent_tab": "tab-kanban"
+    },
+    {
+      "id": "cmp-run-a",
+      "classes": "",
+      "parent_tab": "tab-aafl-runs"
+    },
+    {
+      "id": "cmp-run-b",
+      "classes": "",
+      "parent_tab": "tab-aafl-runs"
+    },
+    {
+      "id": "scout-uq-provider",
+      "classes": "uq-provider-sel",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "b2-scout-source",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "b2-cmp-prov-a",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "b2-cmp-prov-b",
+      "classes": "",
+      "parent_tab": "tab-scout"
+    },
+    {
+      "id": "aafl-uq-provider",
+      "classes": "uq-provider-sel",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "run-now-provider",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-provider",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-task",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-step-branch",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "wf-preset-select",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "loop-end-condition",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "loop-preset-select",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "llow-load-select",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
+      "id": "mf-status",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "sd-issue-sev",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "d-font-family",
+      "classes": "",
+      "parent_tab": "tab-design"
+    }
+  ],
+  "modals": [
+    {
+      "id": "kb-overlay",
+      "classes": "kb-overlay"
+    },
+    {
+      "id": "cmdpal-overlay",
+      "classes": "cmdpal-overlay"
+    },
+    {
+      "id": "confirm-overlay",
+      "classes": "confirm-overlay"
+    },
+    {
+      "id": "",
+      "classes": "confirm-box"
+    },
+    {
+      "id": "confirm-msg",
+      "classes": "confirm-msg"
+    },
+    {
+      "id": "",
+      "classes": "confirm-btns"
+    }
+  ],
+  "endpoints_get": [
+    "/\", \"/mission_control.html",
+    "/aafl-config",
+    "/aafl-providers",
+    "/aafl-queue",
+    "/aafl-settings",
+    "/aafl-status",
+    "/aafl/bridge-result",
+    "/aafl/last-result",
+    "/aafl/live",
+    "/aafl/workflow-presets",
+    "/acca-codes",
+    "/alp-data",
+    "/api/acca",
+    "/api/auto-fix/history",
+    "/api/auto-fix/proposals",
+    "/api/auto-wccs",
+    "/api/backup",
+    "/api/diff",
+    "/api/health",
+    "/api/health/latest",
+    "/api/history",
+    "/api/ibr-latest",
+    "/api/ibr-scan",
+    "/api/llow/arrows",
+    "/api/llow/elements",
+    "/api/llow/workflow/",
+    "/api/llow/workflows",
+    "/api/medical-history",
+    "/api/medical-report",
+    "/api/missions",
+    "/api/old-saves-report",
+    "/api/processes",
+    "/api/search",
+    "/api/self-health/config",
+    "/api/self-health/element-history",
+    "/api/self-health/history",
+    "/api/self-health/last-run",
+    "/api/self-health/registry",
+    "/api/self-health/results",
+    "/api/self-health/solutions",
+    "/api/session-log",
+    "/api/session-logs",
+    "/api/status",
+    "/api/statuscheck",
+    "/api/storage/archive-history",
+    "/api/storage/detailed",
+    "/api/storage/forecast",
+    "/api/storage/largest",
+    "/api/storage/stats",
+    "/api/storage/treemap",
+    "/api/system/ai-allocation",
+    "/api/system/cpu",
+    "/api/system/gpu",
+    "/api/system/ram",
+    "/api/system/snapshot",
+    "/api/task-inbox",
+    "/api/timeline",
+    "/api/work-checker/orphaned",
+    "/api/work-checker/report",
+    "/api/work-checker/requeue",
+    "/b2/aafl-runs",
+    "/b2/activity",
+    "/b2/budget-caps",
+    "/b2/costs",
+    "/b2/kanban",
+    "/b2/keybind-profiles",
+    "/b2/loop-preset/",
+    "/b2/loop-presets",
+    "/b2/prefs",
+    "/b2/source-health",
+    "/b3/design-presets",
+    "/b3/scout-ai-summary",
+    "/b3/urgency",
+    "/captures",
+    "/chain-log",
+    "/chain-status",
+    "/dashboard-data",
+    "/health-status",
+    "/health/system",
+    "/known-issues",
+    "/memory/knowledge",
+    "/memory/solutions",
+    "/memory/sources",
+    "/modules",
+    "/presets",
+    "/presets/load",
+    "/promo-queue",
+    "/retry-log",
+    "/scout-config",
+    "/scout-presets",
+    "/scout-result",
+    "/scout-timer/status",
+    "/scout/results",
+    "/self-diagnosis",
+    "/sources-library",
+    "/status",
+    "/storage",
+    "/storage/report",
+    "/stuck-inbox",
+    "/stuck-inbox/summary",
+    "/wccs/history-search",
+    "/wccs/save-log",
+    "/wccs/session-logs",
+    "/wccs/versions"
+  ],
+  "endpoints_post": [
+    "/aafl-config",
+    "/aafl-queue",
+    "/aafl-settings",
+    "/aafl/run-goal",
+    "/aafl/scout-bridge",
+    "/aafl/stop",
+    "/aafl/workflow",
+    "/alp-add",
+    "/api/auto-fix/approve",
+    "/api/auto-fix/reject",
+    "/api/auto-wccs",
+    "/api/chat-to-sesum",
+    "/api/launch-spindoctor",
+    "/api/llow/dry-run",
+    "/api/llow/export-clacr",
+    "/api/llow/run",
+    "/api/llow/validate",
+    "/api/llow/workflow",
+    "/api/missions",
+    "/api/restore",
+    "/api/run-medical",
+    "/api/run-queue",
+    "/api/self-health/config",
+    "/api/self-health/run",
+    "/api/self-health/run-tab",
+    "/api/storage/reallocate",
+    "/api/system/kill",
+    "/api/task-inbox",
+    "/api/wccs",
+    "/api/work-checker/refresh",
+    "/approve-promo",
+    "/b2/activity",
+    "/b2/activity/summarise",
+    "/b2/benchmark",
+    "/b2/block-source",
+    "/b2/budget-caps",
+    "/b2/chain-run",
+    "/b2/chain-save",
+    "/b2/export-briefing",
+    "/b2/kanban",
+    "/b2/keybind-profiles",
+    "/b2/keybind-profiles/delete",
+    "/b2/keybind-profiles/rate",
+    "/b2/pause-aafl",
+    "/b2/prefs",
+    "/b2/resume-aafl",
+    "/b2/run-notes",
+    "/b2/run-tag",
+    "/b2/save-loop-preset",
+    "/b2/scout-compare",
+    "/b2/second-opinion",
+    "/b2/step-mode",
+    "/b2/step-next",
+    "/b2/strategy-overrides",
+    "/b2/unblock-source",
+    "/b2/workers",
+    "/b3/delegate",
+    "/b3/design-presets",
+    "/b3/urgency",
+    "/capture",
+    "/known-issues",
+    "/presets/delete",
+    "/presets/save",
+    "/quick-ask",
+    "/reject-promo",
+    "/resolve-stuck",
+    "/run-aafl",
+    "/run-chain",
+    "/run-health-check",
+    "/run-merge-sessions",
+    "/run-mot",
+    "/run-now",
+    "/run-scout",
+    "/scout-config",
+    "/scout-timer/start",
+    "/scout-timer/stop",
+    "/scout/force-stop",
+    "/scout/search",
+    "/scout/stop",
+    "/scout/strategy",
+    "/set-aafl-goal",
+    "/sources-library/add",
+    "/stop-aafl",
+    "/stuck-inbox/bulk-resolve",
+    "/suggest-provider",
+    "/toggle-module",
+    "/wccs",
+    "/wccs/diff",
+    "/wccs/restore"
+  ],
+  "endpoints_delete": [],
+  "files_read": [
+    "ACCA.md",
+    "ALP_Database.md",
+    "HISTORY.md",
+    "STATUS.md",
+    "aafl_config.json",
+    "aafl_control_config.json",
+    "aafl_loop_presets.json",
+    "aafl_output",
+    "aafl_workflow_presets.json",
+    "activity_log.json",
+    "archive_dead",
+    "b2_blocked_sources.json",
+    "b2_chain.json",
+    "b2_step_state.json",
+    "benchmark_results.json",
+    "budget_caps.json",
+    "chat_latest.txt",
+    "chief_scout_config.json",
+    "config",
+    "dashboard_data",
+    "data",
+    "design_presets.json",
+    "goal.txt",
+    "goal_queue.txt",
+    "health_results",
+    "kanban_board.json",
+    "keybind_profiles",
+    "mcc_full_mot.py",
+    "mcc_medical.py",
+    "mcc_prefs.json",
+    "modules",
+    "presets",
+    "promo_queue.json",
+    "scout_briefings",
+    "scout_config.json",
+    "scout_output",
+    "scout_timer_stop.flag",
+    "session_logs",
+    "sources_library.json",
+    "storage_config.json",
+    "stuck_inbox.json",
+    "wccs_errors.log",
+    "wccs_log.md",
+    "work_checker.py"
+  ],
+  "files_written": [],
+  "dependencies": [],
+  "fetch_calls_in_html": [
+    "/api/chat-to-sesum",
+    "/api/missions",
+    "/api/missions/",
+    "/api/run-medical",
+    "/api/status",
+    "/api/work-checker/refresh",
+    "/api/work-checker/requeue",
+    "/status"
+  ],
+  "endpoints_get_full": [
+    "/",
+    "/mission_control.html",
+    "/status",
+    "/captures",
+    "/scout-result",
+    "/scout-config",
+    "/scout-presets",
+    "/aafl-status",
+    "/aafl-queue",
+    "/aafl-config",
+    "/aafl-providers",
+    "/api/timeline",
+    "/api/backup",
+    "/api/diff",
+    "/api/session-logs",
+    "/api/session-log",
+    "/api/search",
+    "/api/auto-wccs",
+    "/health-status",
+    "/dashboard-data/",
+    "/stuck-inbox",
+    "/memory/knowledge",
+    "/memory/solutions",
+    "/memory/sources",
+    "/promo-queue",
+    "/acca-codes",
+    "/alp-data",
+    "/self-diagnosis",
+    "/known-issues",
+    "/modules",
+    "/presets",
+    "/presets/load",
+    "/aafl-settings",
+    "/retry-log",
+    "/chain-status",
+    "/chain-log",
+    "/scout-timer/status",
+    "/sources-library",
+    "/stuck-inbox/summary",
+    "/storage",
+    "/storage/report",
+    "/wccs/save-log",
+    "/wccs/history-search",
+    "/wccs/session-logs",
+    "/wccs/versions",
+    "/api/status",
+    "/api/history",
+    "/api/acca",
+    "/api/health",
+    "/aafl/live",
+    "/aafl/bridge-result",
+    "/aafl/workflow-presets",
+    "/b2/kanban",
+    "/b2/activity",
+    "/b2/aafl-runs",
+    "/b2/prefs",
+    "/b2/budget-caps",
+    "/b2/costs",
+    "/b2/keybind-profiles",
+    "/b2/source-health",
+    "/scout/results",
+    "/api/task-inbox",
+    "/api/medical-report",
+    "/api/medical-history"
+  ],
+  "endpoints_post_full": [
+    "/wccs",
+    "/capture",
+    "/run-scout",
+    "/scout-config",
+    "/run-aafl",
+    "/set-aafl-goal",
+    "/aafl-queue",
+    "/aafl-config",
+    "/stop-aafl",
+    "/api/wccs",
+    "/api/restore",
+    "/api/auto-wccs",
+    "/resolve-stuck",
+    "/run-now",
+    "/approve-promo",
+    "/reject-promo",
+    "/alp-add",
+    "/run-mot",
+    "/known-issues",
+    "/run-health-check",
+    "/run-merge-sessions",
+    "/toggle-module",
+    "/presets/save",
+    "/presets/delete",
+    "/aafl-settings",
+    "/suggest-provider",
+    "/run-chain",
+    "/scout-timer/start",
+    "/scout-timer/stop",
+    "/sources-library/add",
+    "/stuck-inbox/bulk-resolve",
+    "/wccs/restore",
+    "/wccs/diff",
+    "/aafl/run-goal",
+    "/scout/strategy",
+    "/aafl/scout-bridge",
+    "/aafl/workflow",
+    "/b2/kanban",
+    "/b2/activity",
+    "/b2/activity/summarise",
+    "/b2/run-tag",
+    "/b2/run-notes",
+    "/b2/prefs",
+    "/b2/budget-caps",
+    "/b2/benchmark",
+    "/b2/second-opinion",
+    "/b2/step-mode",
+    "/b2/step-next",
+    "/b2/pause-aafl",
+    "/b2/resume-aafl",
+    "/b2/chain-save",
+    "/b2/chain-run",
+    "/b2/keybind-profiles",
+    "/b2/keybind-profiles/rate",
+    "/b2/keybind-profiles/delete",
+    "/b2/strategy-overrides",
+    "/b2/workers",
+    "/b2/block-source",
+    "/b2/unblock-source",
+    "/b2/export-briefing",
+    "/b2/scout-compare",
+    "/api/task-inbox",
+    "/api/run-queue",
+    "/api/run-medical"
+  ],
+  "endpoints_delete_full": [
+    "/aafl-queue"
+  ],
+  "tabs_full": [
+    "home",
+    "wccs",
+    "kanban",
+    "aafl-runs",
+    "scout",
+    "costs",
+    "aafl-control",
+    "memory",
+    "promo",
+    "acca",
+    "alp",
+    "storage",
+    "self-diagnosis",
+    "autolog",
+    "providerhealth",
+    "keybind-profiles",
+    "medical"
+  ]
+}

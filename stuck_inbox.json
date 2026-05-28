@@ -33,5 +33,41 @@
     "afna_suggestion": "cerebras",
     "created_at": "2026-05-23T18:16:29.527734",
     "resolved_at": "2026-05-23T18:16:29.528837"
+  },
+  {
+    "id": "sh_72de24b3_aafl_run_now_btn",
+    "goal": "Self-Health: Run Now Button FAILED",
+    "error": "HTTP 400",
+    "timestamp": "2026-05-27T15:29:06",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_6bf68c07_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-27T19:54:42",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_432ff561_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-28T02:49:19",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_4091af36_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-28T15:56:52",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
   }
 ]

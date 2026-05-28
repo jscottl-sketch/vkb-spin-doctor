@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-05-27T09:16:26",
+  "summary": {
+    "total": 6,
+    "pass": 4,
+    "warn": 2,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "Check 1 — File Integrity",
+      "items": [
+        {
+          "check": "STATUS.md exists",
+          "status": "PASS",
+          "detail": "12859 bytes"
+        },
+        {
+          "check": "INDEX.md exists",
+          "status": "PASS",
+          "detail": "2747 bytes"
+        },
+        {
+          "check": "HISTORY.md exists",
+          "status": "PASS",
+          "detail": "99144 bytes"
+        },
+        {
+          "check": "ACCA.md exists",
+          "status": "PASS",
+          "detail": "2320 bytes"
+        },
+        {
+          "check": "STATUS.md line count",
+          "status": "PASS",
+          "detail": "197 lines (baseline 181, 109%)"
+        },
+        {
+          "check": "Files in STATUS built list",
+          "status": "PASS",
+          "detail": "All referenced files found"
+        }
+      ],
+      "overall": "PASS"
+    },
+    {
+      "name": "Check 2 — Session Log Health",
+      "overall": "PASS",
+      "items": [
+        {
+          "check": "Session log count",
+          "status": "PASS",
+          "detail": "7 .md files in session_logs/"
+        },
+        {
+          "check": "Date range",
+          "status": "PASS",
+          "detail": "Oldest: 2026-05-25  Newest: 2026-05-27"
+        },
+        {
+          "check": "Truncated session logs",
+          "status": "PASS",
+          "detail": "All session logs have ≥10 lines"
+        }
+      ]
+    },
+    {
+      "name": "Check 3 — ACCA Code Consistency",
+      "overall": "PASS",
+      "items": [
+        {
+          "check": "Registered ACCA codes",
+          "status": "PASS",
+          "detail": "0 codes in ACCA.md"
+        },
+        {
+          "check": "Unregistered codes found",
+          "status": "PASS",
+          "detail": "All codes in project files are registered in ACCA.md"
+        }
+      ]
+    },
+    {
+      "name": "Check 4 — Dead File Check",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "Orphan files in root",
+          "status": "WARN",
+          "detail": "114 files not mentioned in STATUS.md: AAFL_Overnight_Task.xml, ACCA.md, ALP_Database.md, DESIGN_RULES.md, END_SESSION.bat, GIT_BACKUP.bat, GIT_INIT.bat, GOODNIGHT.bat, HISTORY.md, HOW_TO_INTEGRATE_DIAGNOSTIC.py, INDEX.md, Knowledge_Engine_Schema_v1.md, RUN_OVERNIGHT.bat, RUN_VKB.bat, SAVE_NOW.bat"
+        }
+      ]
+    },
+    {
+      "name": "Check 5 — ALP Database",
+      "overall": "PASS",
+      "items": [
+        {
+          "check": "ALP entry count",
+          "status": "PASS",
+          "detail": "36 entries found"
+        },
+        {
+          "check": "Last ALP entry age",
+          "status": "PASS",
+          "detail": "Last entry: 2026-05-25 — within 7 days"
+        }
+      ]
+    },
+    {
+      "name": "Check 6 — Provider Health Snapshot",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "MCC server reachable",
+          "status": "PASS",
+          "detail": "Connected to http://127.0.0.1:8080"
+        },
+        {
+          "check": "Provider health snapshot",
+          "status": "WARN",
+          "detail": "2/14 providers healthy"
+        }
+      ]
+    }
+  ]
+}

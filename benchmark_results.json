@@ -1,5 +1,60 @@
 {
-  "goal": "",
-  "ts": "",
-  "results": []
+  "goal": "benchmark test",
+  "ts": "2026-05-28T15:59:49",
+  "results": [
+    {
+      "provider": "mistral",
+      "run": 1,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "mistral",
+      "run": 2,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "mistral",
+      "run": 3,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "cerebras",
+      "run": 1,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "cerebras",
+      "run": 2,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "cerebras",
+      "run": 3,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "openrouter",
+      "run": 1,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "openrouter",
+      "run": 2,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    },
+    {
+      "provider": "openrouter",
+      "run": 3,
+      "ok": false,
+      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+    }
+  ]
 }

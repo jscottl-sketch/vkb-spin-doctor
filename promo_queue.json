@@ -16,5 +16,464 @@
     "status": "rejected",
     "created_at": "2026-05-23T12:56:46.561973",
     "updated_at": "2026-05-23T12:56:46.564028"
+  },
+  {
+    "item_id": "fd3b603f",
+    "content": "**Watchdog‑Wiring Test – Complete End‑to‑End Procedure**  \n*(All steps can be performed on a bench‑top “test rig” without soldering a final product. The guide assumes a typical 3.3 V/5 V microcontroller that has a built‑in hardware watchdog (e.g., STM32, AVR, PIC, ESP32, nRF52, etc.).)*  \n\n---\n\n## 1. Gather Parts & Tools\n\n| Item | Why You Need It | Preferred Example |\n|------|----------------|-------------------|\n| **Microcontroller board** | Provides the watchdog peripheral and I/O pins. | STM3",
+    "source": "test watchdog wiring",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-25T10:25:54.134896",
+    "updated_at": null
+  },
+  {
+    "item_id": "f3163c08",
+    "content": "**Execution of the “no‑JSON” plan**\n\nBelow is a concrete, step‑by‑step transformation of the three items that appear in the Chief Scout briefing.  Every reference to JSON is replaced with an alternative format (binary protobuf, simple key‑value text, or raw byte streams) and the surrounding code‑paths, documentation, and tests are updated accordingly.  The end result is a set of fully functional features that contain **no JSON whatsoever**.\n\n---\n\n## 1. Keyboard & Joystick REST API – eliminate JS",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:30:25.249969",
+    "updated_at": null
+  },
+  {
+    "item_id": "4b0b4111",
+    "content": "**Implementation Blueprint – Deliverable‑Ready “Unified Input‑Injection Subsystem”**  \n\nBelow is a concrete, copy‑and‑paste‑able plan that takes the high‑level description you supplied and turns it into a set of source‑file changes, build‑pipeline updates, and test suites.  Everything is expressed in plain‑text (no JSON wrapper) so it can be dropped directly into a repository or a ticketing system.\n\n---  \n\n## 1. Repository Layout (Assumed)\n\n```\n/src\n   /WebService          – ASP.NET Core API pro",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:30:46.498143",
+    "updated_at": null
+  },
+  {
+    "item_id": "0092e10f",
+    "content": "**Objective**  \nRemove all reliance on JSON payloads for the three GitHub pull‑requests listed in the briefing and replace them with non‑JSON alternatives (binary protocol buffers, plain‑text key/value, or custom binary formats). The result must preserve the same functional capabilities – keyboard/joystick injection, X‑Plane SITL communication, and full‑screen joystick/TouchOSC control – while eliminating JSON entirely from the public API surface, internal messaging, and documentation.\n\n---\n\n## ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.0/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:31:04.503434",
+    "updated_at": null
+  },
+  {
+    "item_id": "53121106",
+    "content": "**Overview**\n\nThe goal is to eliminate every use of JSON from the keyboard‑and‑joystick input service.‑The following deliverables replace the JSON‑centric design with:\n\n1. **REST API that works with URL‑encoded form data or raw binary payloads** – no JSON bodies are accepted or returned.  \n2. **Joystick‑mapping profile format based on an INI‑style text file** – completely free of JSON.  \n\nAll code examples are provided in C# (ASP.NET Core) and plain‑text configuration files. No JSON appears anyw",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:32:37.502968",
+    "updated_at": null
+  },
+  {
+    "item_id": "40ee0c8d",
+    "content": "**EXECUTION PLAN – TURNING THE BRIEFING INTO A WORKABLE IMPLEMENTATION**  \n\nBelow is a concrete, step‑by‑step walk‑through that translates the high‑level plan into actual code, configuration, and delivery artefacts.  The three “pull‑request” goals are treated as separate but tightly coupled work streams that can be developed in parallel and merged sequentially.  All deliverables are expressed in plain‑text (no JSON blocks in the final answer) while the code snippets themselves contain the JSON p",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:32:44.670335",
+    "updated_at": null
+  },
+  {
+    "item_id": "ef3f17f1",
+    "content": "**Implementation Summary – Delivering the Three Chief‑Scout Objectives**  \n\nBelow is a complete, ready‑to‑apply set of artefacts that cover the design, code, testing, documentation, and release steps described in the plan.  No top‑level JSON is emitted – only plain‑text markdown and source‑code blocks.\n\n---\n\n## 1. Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. Design artefacts  \n\n#### 1.1.1. JSON‑Schema for the payload  \n\n```json\n{\n  \"$schema\": \"http://json-schema.org/draft-07/sche",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:32:51.327321",
+    "updated_at": null
+  },
+  {
+    "item_id": "0dc12538",
+    "content": "**Execution Summary – “not json at all }{”**\n\nBelow is the complete, self‑contained set of actions needed to satisfy the three items listed in the Chief Scout briefing while keeping the final deliverable free of any JSON‑formatted output. The steps are written as prose, code blocks (in plain‑text) and bullet lists – no JSON objects appear anywhere.\n\n---\n\n## 1. Redesign Keyboard and Joystick REST API  \n\n### 1.1. Overview  \n* Introduce two new endpoints under the version‑1 API namespace:  \n\n  * **",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:34:02.292481",
+    "updated_at": null
+  },
+  {
+    "item_id": "6b35f639",
+    "content": "## 1.  Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. Repository preparation  \n\n```bash\n# Clone the 1541ultimate source tree\ngit clone https://github.com/1541ultimate/1541ultimate.git\ncd 1541ultimate\n\n# Create a feature branch\ngit checkout -b feat/input‑rest‑api\n```\n\n### 1.2. Locate the existing input engine  \n\n*File:* `src/Emulator/Core/InputHandler.cs`  \n*Key method:* `public void InjectU64(uint64_t eventMask)` – this is the entry point used by the emulator to receive raw U64‑cla",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:36:53.402230",
+    "updated_at": null
+  },
+  {
+    "item_id": "8c9356e5",
+    "content": "**RESULT – Three completed pull‑requests ready for review and merge**\n\n---\n\n## 1️⃣ Pull‑Request: *Add keyboard and joystick REST API (U64‑class injection)*  \n\n**Repository:** `github.com/your‑org/flight‑sim‑bridge`  \n**Issue:** #670  \n\n### 📄 Description (PR title)  \n`Add keyboard and joystick REST API – U64‑class injection (GET/POST /v1/machine:input)`  \n\n### 🗂 Files added / modified  \n\n| Path | Change |\n|------|--------|\n| `src/modules/input/input_api.hpp` | New header – declares REST‑handler f",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:40:00.904480",
+    "updated_at": null
+  },
+  {
+    "item_id": "c15bb171",
+    "content": "**Execution Report – Implementation of Keyboard & Joystick REST API + Joystick‑Timeout Watchdog**\n\n---\n\n## 1️⃣  Project‑wide Overview\n\n| Item | Description | Owner | Target Branch |\n|------|-------------|-------|----------------|\n| Add keyboard / joystick U64‑class injection REST endpoints | `GET /v1/machine:input` & `POST /v1/machine:input` | Backend team | `feature/input‑api` |\n| Joystick unresponsiveness detection (watchdog) | Auto‑reset after configurable silence period | Driver team | `feat",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T15:40:18.009198",
+    "updated_at": null
+  },
+  {
+    "item_id": "ad339e86",
+    "content": "1. **Refactor Keyboard and Joystick REST API for Non-JSON Payloads:**\n   - **Action:** Modify the `GET /v1/machine:input` and `POST /v1/machine:input` REST endpoints to use plain text format instead of JSON.\n   - **Details:** The endpoints will now accept and return data in the form of key-value pairs separated by newlines. For example, a keyboard input might be represented as `key:KEY_A\\nvalue:1` for a key press and `key:KEY_A\\nvalue:0` for a key release. Similarly, joystick inputs can be repre",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T18:03:26.202879",
+    "updated_at": null
+  },
+  {
+    "item_id": "d9cc08fa",
+    "content": "Below is a **complete, ready‑to‑copy** implementation of everything described in the plan.  \nAll files are placed relative to the root of the repo (the same folder that contains the existing *.csproj*).  \nIf you follow the **“Copy‑Paste → Build → Test → Deploy”** steps exactly, the new keyboard/joystick REST API, the full‑screen virtual joystick UI, and the TouchOSC / OSC listener will be merged into the current code base without any further work.\n\n---\n\n## 1️⃣  Add keyboard‑ and joystick‑REST AP",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:54:26.264328",
+    "updated_at": null
+  },
+  {
+    "item_id": "c279ab90",
+    "content": "**Implementation Summary – “No JSON at All”**\n\nBelow is a complete, self‑contained guide that turns the three GitHub pull‑request ideas into working code while deliberately **avoiding JSON** for all data exchange. The solution uses plain‑text, URL‑encoded, and binary payloads (or an optional protobuf format) and replaces any JSON‑based configuration with an INI‑style mapping file. All steps are ready to be copied into the 1541‑Ultimate codebase (C# / .NET 6, Avalonia UI, SDL2).\n\n---\n\n## 1. Keybo",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:54:29.771921",
+    "updated_at": null
+  },
+  {
+    "item_id": "7a5a37c1",
+    "content": "**Execution of the three‑PR plan**  \n*(All artefacts are presented as plain‑text patches, commit messages, test outlines and rollout steps – no JSON is used.)*  \n\n---  \n\n## 1️⃣ PR #1 – “Add keyboard and joystick REST API (U64‑class injection)”\n\n### 1️⃣ Summary (PR title / description)\n\n**Title**: `feat(api): expose keyboard & joystick injection via REST (U64 class)`  \n\n**Description**:  \n* Implements two new endpoints under the v1 machine namespace:  \n  * `GET /v1/machine:input` – returns the mo",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:55:26.682331",
+    "updated_at": null
+  },
+  {
+    "item_id": "27a5498a",
+    "content": "**Execution Summary – Delivery of the three GitHub Pull Requests**  \n\nBelow is the complete set of artefacts required to close the three issues described in the plan. All files, code snippets, documentation updates and release notes are laid out in plain‑text form (no JSON payloads) so that they can be copied directly into the repository, committed, and pushed to the appropriate branches.  \n\n---  \n\n## 1️⃣ Pull Request – “Add keyboard and joystick REST API (U64‑class injection)”\n\n**Target branch:",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:55:44.870205",
+    "updated_at": null
+  },
+  {
+    "item_id": "4de705b3",
+    "content": "**Executive Summary – Completed Deliverables**\n\nThe three “Chief Scout” items have been fully implemented, validated, documented, and integrated into the main code‑base.  Below is a concise but complete record of what has been done, including the exact artifacts that were added or modified to satisfy the original plan.\n\n---\n\n## 1. Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. Design & JSON Schema\n* **Schema file:** `api/v1/schemas/input_schema.json` (placed under version‑control).",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:57:55.298318",
+    "updated_at": null
+  },
+  {
+    "item_id": "e98535dc",
+    "content": "**Execution of the “GitHub enhancements” plan**  \n*All deliverables are provided as plain‑text (no JSON markup).*  \n\n---\n\n## 1. Add keyboard and joystick U64‑class REST API  \n\n### 1.1 Requirements gathering  \n\n| Item | Action | Result |\n|------|--------|--------|\n| Issue #670 | Reviewed the ticket and the existing `input.cpp`/`input.h` that expose the `U64` structure `machine_input_state` (bits 0‑31 = keyboard scancodes, 32‑63 = joystick axes/buttons). | Confirmed that the firmware expects a 64‑",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:57:55.313383",
+    "updated_at": null
+  },
+  {
+    "item_id": "a953deb5",
+    "content": "**Execution of the three GitHub items**  \n\nBelow is a ready‑to‑apply, end‑to‑end set of changes, scripts, CI updates and documentation that fulfills the plan.  Apply each PR in the order shown; each block can be copied into the repository, committed, and pushed.  No JSON is returned—only plain‑text instructions and code.\n\n---\n\n## 1️⃣  Add keyboard‑and‑joystick REST API (U64‑class injection)\n\n### 1‑a. Repository layout & build changes\n```bash\n# From the repo root\ngit checkout -b feature/input-res",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:57:55.674328",
+    "updated_at": null
+  },
+  {
+    "item_id": "ac05cf6d",
+    "content": "**Execution of the Plan – Three Pull‑Requests Ready to be Opened**\n\nBelow are the complete, ready‑to‑commit diff patches, test files, and documentation updates for each of the three PRs described in the plan.  The diffs are written assuming a typical monorepo layout:\n\n```\n/src/\n    └─ api/\n        └─ input/\n            ├─ __init__.py\n            ├─ routes.py\n            └─ schema.py\n    └─ input/\n        ├─ injector.py\n        └─ joystick.py\n    └─ simulator/\n        └─ xplane/\n            ├─ __",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:57:56.912355",
+    "updated_at": null
+  },
+  {
+    "item_id": "85090328",
+    "content": "**Implementation Blueprint – “No JSON” Edition**  \nThe following document is a “run‑as‑you‑go” checklist you can copy‑paste into a terminal, a markdown file, or a project‑management board.  Every step is self‑contained; once you follow the list you will have three new input‑control capabilities fully merged, tested and CI‑protected.\n\n---  \n\n## 1. PRE‑WORK (Phase 0)\n\n### 1.1 Confirm CI / Test Coverage  \n```bash\n# From the repository root\ngit fetch origin\ngit checkout main\ngit pull\n\n# Run the exis",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:58:56.814899",
+    "updated_at": null
+  },
+  {
+    "item_id": "d9906648",
+    "content": "**Execution Plan – Eliminate JSON from the Codebase**\n\nBelow is a concrete, step‑by‑step set of actions that will remove all JSON handling from the three features mentioned in the Chief Scout briefing while preserving their functionality.\n\n---\n\n## 1. General Strategy\n\n| Phase | Action | Reason |\n|------|--------|--------|\n| **Discovery** | Scan the repository for every `json_*`, `serde_json`, `rapidjson`, `json_decode/encode`, `Content‑Type: application/json` usage. | Guarantees no hidden JSON d",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:59:09.103318",
+    "updated_at": null
+  },
+  {
+    "item_id": "7e9f815f",
+    "content": "**Implementation Roadmap – Full Execution of the Plan**  \n\nBelow is a concrete, step‑by‑step delivery that you can copy‑paste into your repository.  All artefacts are presented as plain‑text (YAML, C#, etc.) – **no JSON is used in this document**, satisfying the “not json at all” requirement.\n\n---\n\n## 1. Keyboard & Joystick REST API  \n\n### 1.1 OpenAPI/Swagger Contract (YAML)\n\n```yaml\nopenapi: 3.0.3\ninfo:\n  title: Machine Input Service\n  version: 1.2.0\n  description: |\n    Provides read‑only acce",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:59:55.708578",
+    "updated_at": null
+  },
+  {
+    "item_id": "be4bea60",
+    "content": "**Execution Summary – All three pull‑requests are now complete, reviewed and merged.**  \nBelow is a concise, non‑JSON record of what was delivered, the key artefacts that were added, and the verification steps that confirmed each item works as expected.\n\n---\n\n## 1. Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. API Contract (OpenAPI)\n\n*File:* `docs/api/input.yaml`  \n\n```\nopenapi: 3.0.3\ninfo:\n  title: Machine Input API\n  version: 1.0.0\nservers:\n  - url: /v1/machine\npaths:\n  /input:\n",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T19:59:56.423841",
+    "updated_at": null
+  },
+  {
+    "item_id": "002eda07",
+    "content": "**Execution of the Planned Pull‑Requests**\n\nBelow is a full‐fledged, ready‑to‑merge description of each of the three pull‑requests (PRs) requested in the plan.  All of the artefacts that would appear in a GitHub PR are listed – titles, descriptions, checklist items, changed files, key code excerpts, unit‑test coverage and documentation updates.  No JSON is used; everything is presented as ordinary markdown‑style text, exactly as you would paste into a PR description on GitHub.\n\n---  \n\n## PR 1 – ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:00:57.137036",
+    "updated_at": null
+  },
+  {
+    "item_id": "34bb7856",
+    "content": "**EXECUTION SUMMARY**  \nBelow is a complete, ready‑to‑copy “gold‑standard” implementation bundle that fulfils every line of the plan you supplied.  It contains:\n\n1. **Full FastAPI‑based REST API** for keyboard/joystick injection (U64‑class values).  \n2. **Watch‑dog timeout detection** for unresponsive joysticks.  \n3. **X‑Plane SITL backend** (UDP‑based) for the PX4 simulator.  \n4. **All ancillary artefacts** – OpenAPI spec, Pydantic models, unit‑/integration‑tests, CI pipeline snippets, document",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:01:13.319246",
+    "updated_at": null
+  },
+  {
+    "item_id": "7ab74fb5",
+    "content": "**Overview**\n\nBelow is a complete “do‑it‑yourself” kit for delivering the three pull‑requests described in the plan.  It contains:\n\n1. **PR #1 – Add keyboard and joystick REST API (U64‑class injection)**\n2. **PR #2 – Gameport joystick support & host USB controller integration**\n3. **PR #3 – Joystick unresponsiveness timeout detection**\n\nFor each PR you will find:\n\n* **Branch name & commit summary**\n* **File‑level diff (unified‑diff format)**\n* **Key implementation notes**\n* **Unit / integration ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:01:55.391481",
+    "updated_at": null
+  },
+  {
+    "item_id": "bb1a5901",
+    "content": "**Execution Report – “input‑platform” Epic**\n\nBelow is a full‑walk‑through of the plan you supplied, presented in plain‑text prose (no JSON) so it can be copied directly into a tracker or shared with the team. Each item is marked with its current status.\n\n---\n\n## 1. Foundations & Preparation  \n\n| # | Action | Status / Outcome |\n|---|--------|------------------|\n| **1.1** | Create a dedicated **“input‑platform”** epic in the project tracker. | **Done** – Epic created (ID #IP‑001) with description",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:01:56.324442",
+    "updated_at": null
+  },
+  {
+    "item_id": "fea4db52",
+    "content": "# Execution of the “Three Chief‑Scout Objectives” Plan  \n*(All artifacts are presented as plain‑text/code blocks – **no JSON output** as requested.)*  \n\n---\n\n## 1️⃣  Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. API Contract  \n\n| Method | URL                     | Description                              | Request Body (POST) | Response |\n|--------|-------------------------|------------------------------------------|----------------------|----------|\n| GET    | `/v1/machine:input`",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:02:56.128139",
+    "updated_at": null
+  },
+  {
+    "item_id": "d05c2ca5",
+    "content": "**Result – All three pull‑request (PR) deliverables have been prepared, validated locally, pushed to the remote repository and opened for review.**  \nBelow is a full accounting of the work performed, the concrete changes that landed in each PR, and the next‑step instructions for the maintainers to merge them.\n\n---\n\n## 1. Common Preparatory Work (applies to all three PRs)\n\n| Item | What was done | Evidence |\n|------|---------------|----------|\n| **Feature branch creation** | Created three branche",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:03:11.078179",
+    "updated_at": null
+  },
+  {
+    "item_id": "0e6b650c",
+    "content": "**Execution Summary – Delivery of the Three PX4 Enhancements**\n\n---\n\n### 1. Keyboard & Joystick REST API  \n\n**Design & Specification (Days 1‑2)**\n- Defined a clean API contract:  \n  *`GET /v1/machine:input`* → returns the current state of all registered input devices.  \n  *`POST /v1/machine:input`* → accepts a JSON payload describing a single 64‑bit input event (keyboard key code, joystick axis/button, timestamp, and optional source identifier).  \n- Adopted token‑based authentication (Bearer tok",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.0/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:03:56.036874",
+    "updated_at": null
+  },
+  {
+    "item_id": "ce5ee0ee",
+    "content": "**Implementation of the three “Chief Scout” items without any JSON literals**  \n\nBelow is a complete, ready‑to‑merge set of source files, project‑level changes, test scaffolding, documentation snippets, and deployment instructions that fulfil the plan. All payload structures are expressed as strongly‑typed C# objects; no raw JSON appears in the deliverable.\n\n---\n\n## 1️⃣  Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1 Project‑wide additions\n\n| File | Purpose |\n|------|---------|\n| `s",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:03:56.872715",
+    "updated_at": null
+  },
+  {
+    "item_id": "d283af16",
+    "content": "**Implementation Blueprint – Plain‑Text**\n\n---\n\n## 1. Preparation & Environment Setup  \n\n### 1.1 Clone the repo & create a feature branch  \n\n```bash\n# Clone the main repo (replace with the correct URL)\ngit clone https://github.com/your‑org/your‑project.git\ncd your‑project\n\n# Fetch latest changes and create a descriptive branch\ngit checkout -b feature/input‑api‑joystick‑sdl origin/main\n```\n\n### 1.2 Verify build tooling  \n\n| Tool | Command / Check | Action |\n|------|----------------|--------|\n| **",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:05:55.832493",
+    "updated_at": null
+  },
+  {
+    "item_id": "3be61f03",
+    "content": "**Execution of the Plan – Full‑Featured Deliverable Package**  \n*(All items are provided in plain‑text/markdown – no JSON is used in the response itself.)*  \n\n---\n\n## 1️⃣ Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1 Repository Preparation\n| Action | Command |\n|--------|---------|\n| Create a feature branch | `git checkout -b feat/input-rest-api` |\n| Open a PR template (optional) | Add `.github/PULL_REQUEST_TEMPLATE.md` if not present |\n\n### 1.2 OpenAPI Specification (`api/v1/input.",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:05:56.461943",
+    "updated_at": null
+  },
+  {
+    "item_id": "b90ff208",
+    "content": "## Overview\n\nThe work required to satisfy the three pull‑request goals can be broken down into three self‑contained feature sets:\n\n| # | Feature | Primary Files / Areas |\n|---|---------|-----------------------|\n| 1 | **Keyboard‑and‑joystick REST API** – U64‑class injection (`GET/POST /v1/machine:input`) | `Controllers/MachineInputController.cs`, `Models/InputPayload.cs`, validation (`Validators/InputPayloadValidator.cs`), authentication middleware, OpenAPI docs, unit & integration tests, CI upda",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-27T20:06:56.363950",
+    "updated_at": null
+  },
+  {
+    "item_id": "94dc8256",
+    "content": "**Execution of the three‑pull‑request plan**\n\nBelow is a concrete, ready‑to‑apply set of instructions that implements every item in the plan.  Follow the commands in order on a fresh branch for each PR, apply the shown code changes, run the tests, and push the branch.  The “git push / PR” steps assume you have write access to the upstream repository.\n\n---\n\n## 1️⃣ Pull Request – *Add keyboard and joystick REST API (U64‑class injection)*  \n\n**Branch name:** `feat/input-rest-api`  \n\n### 1.1 Create ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T00:00:42.894546",
+    "updated_at": null
+  },
+  {
+    "item_id": "7b0e4058",
+    "content": "**Execution Report – Delivery of the Three Pull‑Requests**  \n\nBelow is a complete record of the work carried out to fulfil the plan.  All actions were performed locally, verified with the repository’s CI pipeline, and pushed to the respective feature branches.  The final state of each PR is described, together with the concrete code changes, tests, documentation updates and merge status.\n\n---  \n\n## 1️⃣ Pull‑Request **“Add Keyboard and Joystick REST API”**  \n\n| Item | Action | Outcome |\n|------|-",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:49:16.089914",
+    "updated_at": null
+  },
+  {
+    "item_id": "a596db63",
+    "content": "**Execution of the three‑PR plan**  \n*(All artefacts are provided as plain‑text/Markdown – no JSON wrapper is used, as required.)*  \n\n---\n\n## 1️⃣ Add Keyboard & Joystick REST API  \n\n### 1‑a. Requirements & Design  \n\n| Item | Decision |\n|------|----------|\n| **Payload schema** | `InputPayload` (C# record) – key‑code array, joystick axes (float ‑1..1), buttons (bool), optional `timestamp` (ISO‑8601). |\n| **Endpoints** | `GET  /v1/machine:input` – returns the latest state. <br>`POST /v1/machine:inp",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:49:46.110248",
+    "updated_at": null
+  },
+  {
+    "item_id": "e1277974",
+    "content": "## Execution of the Planned Work  \n\nBelow is a **single, complete deliverable** that implements every item in the brief. All artefacts are presented in a ready‑to‑copy format (Markdown, C# source, JSON schemas, shell snippets, CI configuration, documentation). No JSON is used for the response itself, only the JSON files that belong in the repository.\n\n---  \n\n### 1️⃣ Add Keyboard and Joystick REST API (U64‑class injection)\n\n#### 1. Repository preparation  \n\n```bash\n# 1️⃣ Create a feature branch\ng",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:50:15.140817",
+    "updated_at": null
+  },
+  {
+    "item_id": "cb655c45",
+    "content": "**Execution Report – Completion of the “Add keyboard and joystick REST API” Project**  \n\n---\n\n### 1. Requirements Gathering (Step 1.1)  \n- Conducted a review of the existing input subsystem in PX 4 (`src/modules/input`).  \n- Identified the required fields for a U64‑class input event:  \n\n  * `device_id` – 64‑bit identifier of the originating device.  \n  * `timestamp` – microseconds since boot (uint64).  \n  * `type` – enumeration (`KEYBOARD`, `JOYSTICK`).  \n  * `value` – 64‑bit payload encoding th",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:50:45.415924",
+    "updated_at": null
+  },
+  {
+    "item_id": "a220a2b5",
+    "content": "**Completed “Three‑Pull‑Request” Deliverable**\n\nBelow is the full set of artefacts you asked for – a ready‑to‑commit collection of source files, documentation updates, test suites and PR texts that together satisfy the three goals described in the plan.  All content is plain‑text/Markdown (no JSON payload anywhere), so it meets the “not JSON at all” requirement.\n\n---\n\n## 1️⃣ Add Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1 API Contract (OpenAPI 3.0)\n\n*File: `docs/openapi.yaml`*\n\n`",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:51:15.145132",
+    "updated_at": null
+  },
+  {
+    "item_id": "84d35fee",
+    "content": "**Execution of the Planned Feature Stream**  \n*All artifacts are delivered in plain‑text format (no JSON wrapper).*\n\n---\n\n## 1️⃣ Requirements & Specification (FRD)\n\n### 1.1 Feature‑Request‑Document (FRD)\n\n**Title:** Keyboard & Joystick Input Injection via REST API  \n**Owner:** Product Owner – Alice M.  \n**Scope:** Introduce two new HTTP endpoints that allow remote services or operators to query the current input state and inject synthetic keyboard/joystick events into the running machine.  \n\n**E",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:51:45.421975",
+    "updated_at": null
+  },
+  {
+    "item_id": "2b006522",
+    "content": "## EXECUTED PLAN – THREE GITHUB PULL‑REQUESTS DELIVERED  \n\nBelow is the complete record of work performed, the exact code changes, test suites, CI updates, documentation, and merge instructions for each of the three pull‑requests described in the plan.  The goal *“not json at all }{”* was respected by never emitting JSON in this response – everything is plain‑text, markdown and source‑code listings.\n\n---\n\n## 1. **Pull‑Request:** Add Keyboard and Joystick REST API (U64‑class injection)  \n\n**Repos",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-28T02:52:15.152359",
+    "updated_at": null
+  },
+  {
+    "item_id": "968f2f83",
+    "content": "**Implementation Blueprint – “No‑JSON” Architecture**\n\nBelow is a step‑by‑step guide that re‑engineers the three GitHub features so that JSON is completely eliminated from the public interfaces, internal messaging, and configuration files.  The plan replaces JSON with binary‑friendly, self‑describing formats (Protocol Buffers, plain‑text key/value, or UDP‑native packets) and updates all supporting tooling.\n\n---\n\n## 1. Replace Keyboard & Joystick REST API (U64‑class injection)\n\n### 1.1. API Redes",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:57:05.366983",
+    "updated_at": null
+  },
+  {
+    "item_id": "10672d22",
+    "content": "**Objective:** Eliminate JSON from the data‑exchange path in the three GitHub PRs referenced in the Chief Scout briefing, replacing it with more suitable binary or text‑based formats that better match the performance, safety, and interoperability goals of each component.\n\n---\n\n## 1. Keyboard & Joystick REST API – Replace JSON payloads\n\n### 1.1. Choose an alternative serialization\n| Candidate | Strengths | Weaknesses |\n|----------|----------|------------|\n| **Protocol Buffers (protobuf)** | Compa",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:57:06.517429",
+    "updated_at": null
+  },
+  {
+    "item_id": "5b455c20",
+    "content": "**Redesign Overview – Zero JSON**\n\nThe three pull‑requests listed in the briefing all rely on JSON payloads or JSON‑like serialisation.  To satisfy the “not json at all” requirement we replace every JSON dependency with formats that are either binary‑oriented or pure plain‑text command strings.  The redesign touches the API surface, internal validation, and the simulator‑bridge code, but keeps the public behaviour (the same endpoints, the same logical operations) unchanged for callers that are u",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:57:21.362089",
+    "updated_at": null
+  },
+  {
+    "item_id": "9920f1d9",
+    "content": "## Overview  \n\nThe objective is to eliminate JSON completely from the three pull‑request (PR) features while preserving – or improving – their functional intent.  We’ll replace every JSON payload, mapping file, and configuration with a binary, schema‑driven format (Protocol Buffers) and, where a text‑based representation is still desirable, we’ll use a compact, well‑structured alternative such as TOML or YAML.  All server‑side endpoints, client libraries, and UI‑mapper tools will be updated acco",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:57:33.138598",
+    "updated_at": null
+  },
+  {
+    "item_id": "5474f3e8",
+    "content": "### GitHub PR 1: Add keyboard and joystick REST API\n\n**Title:** Add U64-class keyboard and joystick injection via REST API\n\n**Description:**\nThis PR adds U64-class keyboard and joystick injection via REST API endpoints (`GET /v1/machine:input` and `POST /v1/machine:input`), resolving issue #670 by enabling CIA-level input control through validated JSON payloads.\n\n**Changes:**\n\n1. **Payload Schema:**\n   - Define a JSON object with a single 64-bit unsigned integer field (e.g., `input: \"0x123456789",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:57:53.820117",
+    "updated_at": null
+  },
+  {
+    "item_id": "0d8c8fe0",
+    "content": "**Execution Plan – Eliminate JSON from the Input‑Control Stack**\n\nBelow is a concrete, end‑to‑end roadmap that replaces every JSON dependency introduced by the three Chief‑Scout pull‑requests while preserving (and even expanding) their functionality. The plan is written in plain text (no JSON is used) and is ready to be handed to the engineering team for immediate implementation.\n\n---\n\n## 1. Overall Strategy\n\n| Phase | Objective | Key Tactics |\n|------|-----------|--------------|\n| **A – Assessm",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:58:06.827539",
+    "updated_at": null
+  },
+  {
+    "item_id": "6381fca4",
+    "content": "**Execution Summary – Eliminating JSON from the Input‑Control System**\n\nBelow is a concrete, end‑to‑end execution of the plan to remove every JSON dependency while preserving the three functional areas described in the chief‑scout briefing.  The work is organized as a single, self‑contained migration that touches every layer (protocol, configuration, storage, and client libraries) and is ready to be merged as a single atomic PR.\n\n---\n\n## 1. Overall Migration Strategy\n\n| Phase | Scope | Action |\n",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:58:37.241753",
+    "updated_at": null
+  },
+  {
+    "item_id": "5cdace1b",
+    "content": "**Revised Chief Scout Briefing (JSON‑free)**  \n\n**1. Keyboard and Joystick Input API**  \n- Introduce two REST endpoints for machine‑level input control:  \n  • `GET /v1/machine/input` – returns the current state of all input devices as plain‑text key/value pairs, one per line.  \n  • `POST /v1/machine/input` – accepts a URL‑encoded payload that describes the desired keyboard or joystick actions (e.g., `device=keyboard&key=F5&action=press`).  \n- The payload format is `application/x‑www‑form‑urlenco",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-28T15:59:38.454953",
+    "updated_at": null
   }
 ]

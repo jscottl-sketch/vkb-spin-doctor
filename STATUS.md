@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-28 (OCB-I) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-28 (mcc-instructions-keeper) | **Updated by:** Claude Code WCCS
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -170,8 +170,7 @@
 | OCB-I Phase 8 (Loop Behaviour → LLOW) | Loop Behaviour absorbed into LLOW section as collapsible accordion. All 8 loop action LELs present. Loop presets saved to localStorage. |
 | OCB-I Phase 9 (Section Reorganiser) | All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab. |
 | OCB-I Phase 10 (MOT) | 108/108 ALL CLEAR 2026-05-28 |
-| mcc-instructions-keeper | data/instructions_db.json + 2 endpoints (/api/instructions + /api/instructions/<id>) + ? popups in MCC. Skill file at skills/mcc-instructions-keeper/SKILL.md — upload to Project Files manually. |
-| OCB-H Phase 7
+| mcc-instructions-keeper | data/instructions_db.json (132 entries) + /api/instructions endpoints + 7 ? help buttons in MCC headers + showInstructions() JS. Skill file uploaded to Project Files 2026-05-28. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -248,7 +247,7 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ## NEXT PRIORITIES
 1. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
 2. Add GROQ + Cloudflare keys to .env (manual — security rule)
-3. MCC MOT re-run after OCB-E additions (verify all new elements pass)
+3. OCB-B — Body Map visual + Auto-Fix Engine + Real-Time updates (Health Suite)
 4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
 5. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
 6. Post on r/LocalLLaMA when Star Citizen benchmark passes

@@ -1,0 +1,668 @@
+OLD SAVES SCAN REPORT
+Generated: 2026-05-27 08:58:42
+Total files scanned: 106
+Flagged (possible chat/session data): 92
+
+============================================================
+FLAGGED FILES
+============================================================
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\2026-05-25-build2.md
+  Size: 3410 bytes  |  Modified: 2026-05-25T00:35:59
+  > # Session Log — 2026-05-25 — Build 2 Complete
+  > 
+  > ## Summary
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\2026-05-25-housekeeping.md
+  Size: 3625 bytes  |  Modified: 2026-05-25T01:32:16
+  > # Session Log — Housekeeping Run
+  > **Date:** 2026-05-25 | **Type:** Housekeeping | **ALP Budget:** 30%
+  > 
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_2026-05-25_09-53.md
+  Size: 1585 bytes  |  Modified: 2026-05-25T09:54:30
+  > # MOT Report — 2026-05-25 09:53
+  > 
+  > **Verdict: ALL CLEAR — 108/108 PASS**
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_2026-05-25_medical.md
+  Size: 5811 bytes  |  Modified: 2026-05-25T10:47:09
+  > # Session Log — MCC Full Medical 2026-05-25
+  > **Tool:** mcc_medical.py (Doctor CLAC)  
+  > **Run time:** ~6 minutes 40 seconds  
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_run_raw.txt
+  Size: 6147 bytes  |  Modified: 2026-05-25T09:54:11
+  > 
+  > ==============================================================
+  >   MCC FULL MOT -- Mission Control System Test
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_25may2026.txt
+  Size: 160 bytes  |  Modified: 2026-05-25T01:02:45
+  > SESSION 25 May 2026 - SIF delivered, Build 2 test 68 checks, 17 WCBB fixes, Knowledge Bank WCBB-15-16-17, CLAC block ready BUILD2_TEST_WCBB_KNOWLEDGE_CLAC.md 
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build4_2026-05-26.md
+  Size: 1669 bytes  |  Modified: 2026-05-26T22:01:13
+  > # Session Log — Build 4 — 2026-05-26
+  > 
+  > ## Summary
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build4b_2026-05-27.md
+  Size: 3226 bytes  |  Modified: 2026-05-27T07:32:18
+  > # Session: Build 4b — MCC Health Suite Consolidation + Sidebar Nav
+  > **Date:** 2026-05-27  
+  > **MOT Result:** 109/109 (100%) — ALL CLEAR
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build5a_2026-05-27.md
+  Size: 2315 bytes  |  Modified: 2026-05-27T07:46:23
+  > # Session Log — Build 5a — 2026-05-27
+  > 
+  > ## Tasks Completed
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-16_session.md
+  Size: 1358 bytes  |  Modified: 2026-05-16T09:14:55
+  > # Session Log — 16 May 2026
+  > 
+  > **Source:** chat_latest.txt (15 May 2026 overnight session)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc.md
+  Size: 1491 bytes  |  Modified: 2026-05-17T18:57:19
+  > # Session Log — 17 May 2026 (Claude Code)
+  > 
+  > **Handover:** v15 → v16
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc2.md
+  Size: 2399 bytes  |  Modified: 2026-05-17T20:31:54
+  > # Session Log — 17 May 2026 (Claude Code — Session 2)
+  > 
+  > **Handover:** v16 → v17
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc3.md
+  Size: 1201 bytes  |  Modified: 2026-05-17T21:18:22
+  > # Session Log — 17 May 2026 (Claude Code — Session 3)
+  > 
+  > **Handover:** v18 → v19
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc4.md
+  Size: 3375 bytes  |  Modified: 2026-05-17T22:48:58
+  > # Session Log — 17 May 2026 (Claude Code — Session 4)
+  > 
+  > **Handover:** v19 → v20
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17_session.md
+  Size: 1238 bytes  |  Modified: 2026-05-17T09:39:05
+  > # Session Log — 17 May 2026
+  > 
+  > **Handover:** v24 → v25
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc1.md
+  Size: 2877 bytes  |  Modified: 2026-05-18T12:06:22
+  > # Session Log — 2026-05-18-cc1
+  > 
+  > **Date:** 18 May 2026
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc2.md
+  Size: 3078 bytes  |  Modified: 2026-05-18T14:17:02
+  > # Session Log — 2026-05-18-cc2
+  > 
+  > **Session:** Claude Code session 2, 18 May 2026
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc3.md
+  Size: 1598 bytes  |  Modified: 2026-05-18T17:21:35
+  > # Session Log — 2026-05-18-cc3
+  > 
+  > **Handover:** v33 → v34
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc4.md
+  Size: 1832 bytes  |  Modified: 2026-05-18T17:36:06
+  > # Session Log — 2026-05-18-cc4
+  > 
+  > **Handover:** v34 → v35
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc5.md
+  Size: 2547 bytes  |  Modified: 2026-05-18T21:17:06
+  > # Session Log -- 2026-05-18-cc5
+  > 
+  > **Handover:** v36 -> v37
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc6.md
+  Size: 3019 bytes  |  Modified: 2026-05-18T21:38:33
+  > # Session Log -- 2026-05-18-cc6
+  > 
+  > **Handover:** v37 -> v38
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc1.md
+  Size: 1208 bytes  |  Modified: 2026-05-19T01:13:04
+  > # Session Log — 2026-05-19 (Claude Code session 1)
+  > **Handover:** v38 → v39
+  > 
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc2.md
+  Size: 1027 bytes  |  Modified: 2026-05-19T11:42:21
+  > # Session Log — 2026-05-19 (Claude Code session 2)
+  > 
+  > **Session type:** Claude Code
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc3.md
+  Size: 1539 bytes  |  Modified: 2026-05-19T12:18:03
+  > # Session Log — 2026-05-19 (Claude Code session 3)
+  > 
+  > **Version:** v41 → v42
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc4.md
+  Size: 3935 bytes  |  Modified: 2026-05-19T19:53:28
+  > # Session Log — 2026-05-19 (Claude Code session 4 + WCCS)
+  > 
+  > **Handover:** v42 → v43
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-20-cc1.md
+  Size: 1454 bytes  |  Modified: 2026-05-20T20:37:18
+  > # Session Log -- 2026-05-20-cc1
+  > 
+  > **Handover:** v42 -> v43
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-24-cc1.md
+  Size: 7888 bytes  |  Modified: 2026-05-24T20:56:53
+  > # Session Log — 2026-05-24 (Claude Code session 1)
+  > 
+  > **Date:** 2026-05-24
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-24-cc2.md
+  Size: 2368 bytes  |  Modified: 2026-05-24T21:01:53
+  > # Session Log — 2026-05-24 (Claude Code session 2)
+  > 
+  > **Date:** 2026-05-24
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-18_cc4.md
+  Size: 1531 bytes  |  Modified: 2026-05-18T18:24:50
+  > # Session Log — 2026-05-18 cc4
+  > 
+  > **Focus:** Meta-loop, real-data injection fix, mcu_optimizer, MCC design, ACCA codes
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-18b.md
+  Size: 1284 bytes  |  Modified: 2026-05-18T12:49:12
+  > # Session Log — 2026-05-18 (Chat session 2)
+  > 
+  > **Handover:** v31 → v32
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-19.md
+  Size: 1325 bytes  |  Modified: 2026-05-19T02:13:46
+  > # Session Log — 2026-05-19 (Chat — Master Project strategy)
+  > 
+  > **Session type:** Chat (not Claude Code)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-19_2.md
+  Size: 955 bytes  |  Modified: 2026-05-19T22:46:36
+  > # Session Log — 2026-05-19
+  > 
+  > **Handover:** v43 -> v44
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-20.md
+  Size: 1580 bytes  |  Modified: 2026-05-20T08:18:07
+  > # Session Log — 2026-05-20
+  > 
+  > **Session type:** Chat session (v44 truncation fix + handover redesign)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_log_2026-05-15.md
+  Size: 981 bytes  |  Modified: 2026-05-15T22:57:50
+  > # Session Log — 2026-05-15
+  > 
+  > ## Built / Fixed
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_saver_config.json
+  Size: 168 bytes  |  Modified: 2026-05-14T19:36:51
+  > {
+  >   "project_name": "VKB SpinDoctor",
+  >   "project_folder": "C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor",
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\SFL_UPGRADE_BRIEF.md
+  Size: 1045 bytes  |  Modified: 2026-05-13T11:42:13
+  > SFL UPGRADE — 3 FEATURES
+  > Rule: build one feature at a time. Test each before moving to next.
+  > Rule: do not modify sfl_agent.py while sfl_agent.py is running.
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_185544.md
+  Size: 6011 bytes  |  Modified: 2026-05-20T14:24:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_191631.md
+  Size: 6011 bytes  |  Modified: 2026-05-20T14:24:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_191810.md
+  Size: 6011 bytes  |  Modified: 2026-05-20T14:24:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_192120.md
+  Size: 6011 bytes  |  Modified: 2026-05-20T14:24:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_192251.md
+  Size: 6011 bytes  |  Modified: 2026-05-20T14:24:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260521_002358.md
+  Size: 6435 bytes  |  Modified: 2026-05-20T19:23:07
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_115754.md
+  Size: 6670 bytes  |  Modified: 2026-05-21T00:24:16
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-21 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_130923.md
+  Size: 6770 bytes  |  Modified: 2026-05-23T11:58:12
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_135227.md
+  Size: 6770 bytes  |  Modified: 2026-05-23T13:09:41
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_174254.md
+  Size: 7613 bytes  |  Modified: 2026-05-23T13:52:46
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_180726.md
+  Size: 7879 bytes  |  Modified: 2026-05-23T17:43:15
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_221014.md
+  Size: 8472 bytes  |  Modified: 2026-05-23T18:07:51
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_225341.md
+  Size: 6136 bytes  |  Modified: 2026-05-23T22:10:14
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-20 | **Updated by:** manual (slim-and-split migration)
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_004016.md
+  Size: 8564 bytes  |  Modified: 2026-05-23T23:24:28
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** WCCS Recovery
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_084735.md
+  Size: 8576 bytes  |  Modified: 2026-05-24T08:18:22
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_140841.md
+  Size: 9266 bytes  |  Modified: 2026-05-24T09:02:42
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_145110.md
+  Size: 9266 bytes  |  Modified: 2026-05-24T09:02:42
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192406.md
+  Size: 9266 bytes  |  Modified: 2026-05-24T09:02:42
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192435.md
+  Size: 9306 bytes  |  Modified: 2026-05-24T19:24:30
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192808.md
+  Size: 9306 bytes  |  Modified: 2026-05-24T19:24:55
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192835.md
+  Size: 9368 bytes  |  Modified: 2026-05-24T19:28:30
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192931.md
+  Size: 9368 bytes  |  Modified: 2026-05-24T19:29:00
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193000.md
+  Size: 9368 bytes  |  Modified: 2026-05-24T19:29:53
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193340.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:30:20
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193407.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:34:02
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194032.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:34:28
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194555.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:41:00
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194622.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:46:15
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_202518.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T19:46:47
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_202545.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T20:25:39
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203050.md
+  Size: 9150 bytes  |  Modified: 2026-05-24T20:26:05
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203117.md
+  Size: 9213 bytes  |  Modified: 2026-05-24T20:31:09
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203431.md
+  Size: 9213 bytes  |  Modified: 2026-05-24T20:31:35
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203458.md
+  Size: 9213 bytes  |  Modified: 2026-05-24T20:34:53
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_204002.md
+  Size: 9213 bytes  |  Modified: 2026-05-24T20:35:19
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_204030.md
+  Size: 9213 bytes  |  Modified: 2026-05-24T20:40:24
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_210041.md
+  Size: 12608 bytes  |  Modified: 2026-05-24T20:48:45
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_210749.md
+  Size: 12608 bytes  |  Modified: 2026-05-24T20:48:45
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_212437.md
+  Size: 12608 bytes  |  Modified: 2026-05-24T20:48:45
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_212539.md
+  Size: 12608 bytes  |  Modified: 2026-05-24T20:48:45
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-24 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_010129.md
+  Size: 13668 bytes  |  Modified: 2026-05-25T00:37:27
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** Build 2 session
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_021357.md
+  Size: 13668 bytes  |  Modified: 2026-05-25T00:37:27
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** Build 2 session
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_110905.md
+  Size: 13668 bytes  |  Modified: 2026-05-25T00:37:27
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** Build 2 session
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_112655.md
+  Size: 13668 bytes  |  Modified: 2026-05-25T00:37:27
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** Build 2 session
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_154048.md
+  Size: 12304 bytes  |  Modified: 2026-05-25T11:27:21
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_bad_166_20260527.md
+  Size: 12296 bytes  |  Modified: 2026-05-27T07:49:20
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-25 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_pre_build1_fix.md
+  Size: 6259 bytes  |  Modified: 2026-05-23T23:10:09
+  > # STATUS — VKB Spin Doctor
+  > **Last updated:** 2026-05-23 | **Updated by:** aafl_wccs.py
+  > **Companion files:** INDEX.md | HISTORY.md | ACCA.md
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v40.md
+  Size: 53796 bytes  |  Modified: 2026-05-19T02:13:37
+  > # VKB Spin Doctor — Project Handover v40 (MASTER)
+  > 
+  > **Owner:** Scott (Croydon, England)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v41.md
+  Size: 55380 bytes  |  Modified: 2026-05-19T11:42:05
+  > # VKB Spin Doctor — Project Handover v41 (MASTER)
+  > 
+  > **Owner:** Scott (Croydon, England)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v43.md
+  Size: 63588 bytes  |  Modified: 2026-05-20T20:37:18
+  > # VKB Spin Doctor — Project Handover v43 (MASTER)
+  > 
+  > **Owner:** Scott (Croydon, England)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v44.md
+  Size: 28592 bytes  |  Modified: 2026-05-19T22:46:36
+  > # VKB Spin Doctor — Project Handover v44 (MASTER)
+  > 
+  > **Owner:** Scott (Croydon, England)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v45.md
+  Size: 68240 bytes  |  Modified: 2026-05-20T08:17:51
+  > # VKB Spin Doctor — Project Handover v45 (MASTER)
+  > 
+  > **Owner:** Scott (Croydon, England)
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\Knowledge_Engine_Schema_v1.md
+  Size: 9366 bytes  |  Modified: 2026-05-15T01:31:48
+  > # Knowledge Engine — Database Schema v1
+  > 
+  > **Project:** VKB Spin Doctor / AAFL / Software of Everything
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\electron\node_modules\lodash\_baseSum.js
+  Size: 600 bytes  |  Modified: 2026-05-25T19:22:28
+  > /**
+  >  * The base implementation of `_.sum` and `_.sumBy` without support for
+  >  * iteratee shorthands.
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\chat_latest_test.txt
+  Size: 256 bytes  |  Modified: 2026-05-20T14:33:21
+  > ### 2026-05-20 (CLAC session — handover split migration)
+  > Key decisions: Migrated v45 to split structure. Built aafl_wccs.py. Permanent WCCS fix in place.
+  > New ACCA codes: None this session.
+
+[FLAGGED] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\chat_latest.txt
+  Size: 1526 bytes  |  Modified: 2026-05-27T07:48:29
+  > SESUM — 27 May 2026
+  > Chat: Current status check + MCC Build 4/5 fixes
+  > What happened:
+
+============================================================
+ALL FILES SCANNED
+============================================================
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\2026-05-25-build2.md  (3410b  2026-05-25T00:35:59)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\2026-05-25-housekeeping.md  (3625b  2026-05-25T01:32:16)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_2026-05-25_09-53.md  (1585b  2026-05-25T09:54:30)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_2026-05-25_medical.md  (5811b  2026-05-25T10:47:09)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_run_raw.txt  (6147b  2026-05-25T09:54:11)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\mot_ux_clarity_pass_2026-05-25.txt  (12296b  2026-05-25T10:22:43)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_25may2026.txt  (160b  2026-05-25T01:02:45)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build4_2026-05-26.md  (1669b  2026-05-26T22:01:13)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build4b_2026-05-27.md  (3226b  2026-05-27T07:32:18)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\session_logs\session_build5a_2026-05-27.md  (2315b  2026-05-27T07:46:23)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\PROGRESS_TONIGHT.md  (1031b  2026-05-15T09:55:54)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-16_session.md  (1358b  2026-05-16T09:14:55)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc.md  (1491b  2026-05-17T18:57:19)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc2.md  (2399b  2026-05-17T20:31:54)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc3.md  (1201b  2026-05-17T21:18:22)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17-cc4.md  (3375b  2026-05-17T22:48:58)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-17_session.md  (1238b  2026-05-17T09:39:05)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc1.md  (2877b  2026-05-18T12:06:22)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc2.md  (3078b  2026-05-18T14:17:02)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc3.md  (1598b  2026-05-18T17:21:35)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc4.md  (1832b  2026-05-18T17:36:06)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc5.md  (2547b  2026-05-18T21:17:06)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-18-cc6.md  (3019b  2026-05-18T21:38:33)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc1.md  (1208b  2026-05-19T01:13:04)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc2.md  (1027b  2026-05-19T11:42:21)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc3.md  (1539b  2026-05-19T12:18:03)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-19-cc4.md  (3935b  2026-05-19T19:53:28)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-20-cc1.md  (1454b  2026-05-20T20:37:18)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-24-cc1.md  (7888b  2026-05-24T20:56:53)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\2026-05-24-cc2.md  (2368b  2026-05-24T21:01:53)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-18_cc4.md  (1531b  2026-05-18T18:24:50)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-18b.md  (1284b  2026-05-18T12:49:12)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-19.md  (1325b  2026-05-19T02:13:46)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-19_2.md  (955b  2026-05-19T22:46:36)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_2026-05-20.md  (1580b  2026-05-20T08:18:07)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_logs\session_log_2026-05-15.md  (981b  2026-05-15T22:57:50)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\session_saver_config.json  (168b  2026-05-14T19:36:51)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\SFL_UPGRADE_BRIEF.md  (1045b  2026-05-13T11:42:13)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_185544.md  (6011b  2026-05-20T14:24:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_191631.md  (6011b  2026-05-20T14:24:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_191810.md  (6011b  2026-05-20T14:24:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_192120.md  (6011b  2026-05-20T14:24:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260520_192251.md  (6011b  2026-05-20T14:24:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260521_002358.md  (6435b  2026-05-20T19:23:07)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_115754.md  (6670b  2026-05-21T00:24:16)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_130923.md  (6770b  2026-05-23T11:58:12)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_135227.md  (6770b  2026-05-23T13:09:41)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_174254.md  (7613b  2026-05-23T13:52:46)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_180726.md  (7879b  2026-05-23T17:43:15)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_221014.md  (8472b  2026-05-23T18:07:51)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260523_225341.md  (6136b  2026-05-23T22:10:14)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_004016.md  (8564b  2026-05-23T23:24:28)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_084735.md  (8576b  2026-05-24T08:18:22)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_140841.md  (9266b  2026-05-24T09:02:42)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_145110.md  (9266b  2026-05-24T09:02:42)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192406.md  (9266b  2026-05-24T09:02:42)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192435.md  (9306b  2026-05-24T19:24:30)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192808.md  (9306b  2026-05-24T19:24:55)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192835.md  (9368b  2026-05-24T19:28:30)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_192931.md  (9368b  2026-05-24T19:29:00)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193000.md  (9368b  2026-05-24T19:29:53)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193340.md  (9150b  2026-05-24T19:30:20)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_193407.md  (9150b  2026-05-24T19:34:02)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194032.md  (9150b  2026-05-24T19:34:28)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194555.md  (9150b  2026-05-24T19:41:00)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_194622.md  (9150b  2026-05-24T19:46:15)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_202518.md  (9150b  2026-05-24T19:46:47)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_202545.md  (9150b  2026-05-24T20:25:39)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203050.md  (9150b  2026-05-24T20:26:05)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203117.md  (9213b  2026-05-24T20:31:09)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203431.md  (9213b  2026-05-24T20:31:35)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_203458.md  (9213b  2026-05-24T20:34:53)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_204002.md  (9213b  2026-05-24T20:35:19)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_204030.md  (9213b  2026-05-24T20:40:24)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_210041.md  (12608b  2026-05-24T20:48:45)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_210749.md  (12608b  2026-05-24T20:48:45)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_212437.md  (12608b  2026-05-24T20:48:45)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260524_212539.md  (12608b  2026-05-24T20:48:45)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_010129.md  (13668b  2026-05-25T00:37:27)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_021357.md  (13668b  2026-05-25T00:37:27)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_110905.md  (13668b  2026-05-25T00:37:27)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_112655.md  (13668b  2026-05-25T00:37:27)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_20260525_154048.md  (12304b  2026-05-25T11:27:21)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_bad_166_20260527.md  (12296b  2026-05-27T07:49:20)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\STATUS_pre_build1_fix.md  (6259b  2026-05-23T23:10:09)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\v45_reference.md  (16342b  2026-05-20T14:37:40)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v40.md  (53796b  2026-05-19T02:13:37)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v41.md  (55380b  2026-05-19T11:42:05)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v43.md  (63588b  2026-05-20T20:37:18)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v44.md  (28592b  2026-05-19T22:46:36)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\archive_dead\VKB_SpinDoctor_Handover_v45.md  (68240b  2026-05-20T08:17:51)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_output\bridge_result.json  (1412b  2026-05-24T20:47:24)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_output\latest.txt  (2750b  2026-05-26T21:12:57)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_output\scout_compare.json  (1865b  2026-05-25T10:25:54)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_output\second_opinion.txt  (1411b  2026-05-25T13:28:25)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_output\watchdog_loop_log.txt  (320b  2026-05-26T20:10:56)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\Knowledge_Engine_Schema_v1.md  (9366b  2026-05-15T01:31:48)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\Universal_Input_Device_Database.md  (9429b  2026-05-12T22:57:56)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\loop_output\queue_log_2026-05-18_22-00.txt  (63b  2026-05-18T22:21:32)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\electron\node_modules\lodash\_baseSum.js  (600b  2026-05-25T19:22:28)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\chat_latest_test.txt  (256b  2026-05-20T14:33:21)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\loop_output\queue_log_2026-05-18_10-45.txt  (289b  2026-05-18T10:47:35)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\aafl_log.txt  (55812b  2026-05-27T07:49:20)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\data\cost_log.txt  (15230b  2026-05-27T07:02:36)
+[FLAG] C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\chat_latest.txt  (1526b  2026-05-27T07:48:29)
+       C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\loop_output\queue_log_2026-05-19_12-09.txt  (169b  2026-05-19T12:18:10)

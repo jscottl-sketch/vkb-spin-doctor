@@ -1,6 +1,7 @@
 {
-  "daily": 1.0,
+  "daily": 0.5,
   "weekly": 5.0,
   "monthly": 20.0,
-  "roi_value": 10.0
+  "roi_value": 10.0,
+  "_test": true
 }

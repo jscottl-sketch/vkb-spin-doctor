@@ -6,7 +6,7 @@
     "youtube": true,
     "forum": true
   },
-  "goal": "test",
+  "goal": "labeled keybindings for games",
   "game_filter": "all",
   "hardware_filter": "any",
   "search_type": "keybinds",
@@ -74,5 +74,7 @@
       "date_filter": "all"
     }
   ],
-  "mode": "discovery"
+  "mode": "discovery",
+  "_test": true,
+  "_persist_test": true
 }

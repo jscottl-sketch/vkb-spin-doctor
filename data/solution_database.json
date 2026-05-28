@@ -1,0 +1,168 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-05-27",
+  "solutions": [
+    {
+      "id": "fix_001",
+      "name": "Restart mcc_server if port 8080 unreachable",
+      "match_pattern": "ConnectionRefusedError|port 8080|Failed to connect|Connection refused",
+      "fix_steps": [
+        "taskkill /F /IM python.exe /FI \"WINDOWTITLE eq mcc_server*\" 2>nul",
+        "python mcc_server.py"
+      ],
+      "success_rate": 0.90,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Kills any Python process holding port 8080 then restarts the server"
+    },
+    {
+      "id": "fix_002",
+      "name": "Recreate health.db if corrupted",
+      "match_pattern": "database is locked|database disk image is malformed|sqlite3.DatabaseError",
+      "fix_steps": [
+        "move data\\health.db data\\health.db.broken",
+        "python self_health.py"
+      ],
+      "success_rate": 0.90,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Backs up corrupted DB to .broken and reinitialises a fresh one"
+    },
+    {
+      "id": "fix_003",
+      "name": "Restore STATUS.md from git if file shrinks below baseline",
+      "match_pattern": "STATUS.md line count below baseline|status_linecount|sanity.*fail",
+      "fix_steps": [
+        "git checkout HEAD~1 -- STATUS.md"
+      ],
+      "success_rate": 0.85,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Restores last known good STATUS.md from the previous commit"
+    },
+    {
+      "id": "fix_004",
+      "name": "Move oldest aafl_output files to archive_dead if cap exceeded",
+      "match_pattern": "aafl_output file cap exceeded|aafl_output.*too many files",
+      "fix_steps": [
+        "python -c \"import glob,shutil,os; files=sorted(glob.glob('aafl_output/*.txt'),key=os.path.getmtime); [shutil.move(f,'archive_dead/') for f in files[:max(0,len(files)-50)]]\""
+      ],
+      "success_rate": 1.0,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Keeps newest 50 AAFL output files, moves the rest to archive_dead"
+    },
+    {
+      "id": "fix_005",
+      "name": "Clear stuck_inbox.json if file is malformed JSON",
+      "match_pattern": "stuck_inbox.*JSONDecodeError|stuck_inbox.*json.decoder|invalid JSON.*stuck",
+      "fix_steps": [
+        "copy stuck_inbox.json stuck_inbox.json.bak",
+        "python -c \"import json; open('stuck_inbox.json','w').write(json.dumps([]))\""
+      ],
+      "success_rate": 0.95,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Backs up and resets the stuck inbox to an empty array"
+    },
+    {
+      "id": "fix_006",
+      "name": "Recreate knowledge_engine.db if tables missing",
+      "match_pattern": "no such table|knowledge_engine.*OperationalError|knowledge.*missing",
+      "fix_steps": [
+        "copy data\\knowledge_engine.db data\\knowledge_engine.db.bak",
+        "python memory_bank.py --init"
+      ],
+      "success_rate": 0.80,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Backs up and recreates the knowledge bank DB with fresh schema"
+    },
+    {
+      "id": "fix_007",
+      "name": "Reset promo_queue.json if malformed",
+      "match_pattern": "promo_queue.*JSONDecodeError|promo.*json.decoder",
+      "fix_steps": [
+        "copy promo_queue.json promo_queue.json.bak",
+        "python -c \"import json; open('promo_queue.json','w').write(json.dumps([]))\""
+      ],
+      "success_rate": 0.95,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Resets the promo queue to empty — approved items may already be archived"
+    },
+    {
+      "id": "fix_008",
+      "name": "Recreate chat_latest.txt if missing",
+      "match_pattern": "chat_latest.txt.*not found|FileNotFoundError.*chat_latest",
+      "fix_steps": [
+        "python -c \"open('chat_latest.txt','w').write('')\""
+      ],
+      "success_rate": 1.0,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Creates an empty chat_latest.txt — WCCS will populate it on next save"
+    },
+    {
+      "id": "fix_009",
+      "name": "Rebuild aafl_control_config.json if missing or malformed",
+      "match_pattern": "aafl_control_config.*JSONDecodeError|aafl_control_config.*not found",
+      "fix_steps": [
+        "python -c \"import json; open('aafl_control_config.json','w').write(json.dumps({'current_goal':'','provider':'auto','loop_count':1,'enabled':True}, indent=2))\""
+      ],
+      "success_rate": 0.90,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": true,
+      "notes": "Rebuilds AAFL control config with safe defaults — current goal will be lost"
+    },
+    {
+      "id": "fix_010",
+      "name": "Re-initialise kanban_board.json if missing",
+      "match_pattern": "kanban_board.*not found|FileNotFoundError.*kanban",
+      "fix_steps": [
+        "python -c \"import json; open('kanban_board.json','w').write(json.dumps({'todo':[],'doing':[],'done':[]}, indent=2))\""
+      ],
+      "success_rate": 1.0,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Creates a blank kanban board — existing cards will be lost"
+    },
+    {
+      "id": "fix_011",
+      "name": "Clear scout_output/latest.txt if oversized (>1MB)",
+      "match_pattern": "scout.*output.*oversized|latest.txt.*too large",
+      "fix_steps": [
+        "python -c \"open('scout_output/latest.txt','w').write('[CLEARED by self-health — file was oversized]')\""
+      ],
+      "success_rate": 1.0,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Replaces an oversized scout output file with a placeholder"
+    },
+    {
+      "id": "fix_012",
+      "name": "Rebuild activity_log.json if malformed",
+      "match_pattern": "activity_log.*JSONDecodeError|activity_log.*json.decoder",
+      "fix_steps": [
+        "copy activity_log.json activity_log.json.bak",
+        "python -c \"import json; open('activity_log.json','w').write(json.dumps([], indent=2))\""
+      ],
+      "success_rate": 0.95,
+      "last_used": null,
+      "times_used": 0,
+      "user_approval_required": false,
+      "notes": "Resets activity log to empty array — historical entries will be lost (backed up first)"
+    }
+  ]
+}

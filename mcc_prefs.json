@@ -1,5 +1,8 @@
 {
-  "theme": "light",
-  "tutorial": false,
-  "first_run": true
+  "theme": "dark",
+  "tutorial": true,
+  "first_run": true,
+  "_medical_test": true,
+  "_ep_test": true,
+  "_persist_test": true
 }

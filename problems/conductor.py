@@ -46,7 +46,9 @@ Call refresh() between scans — it clears the cached tasklist snapshot
 so the next detect() reads a fresh process list.
 """
 
+import json
 import subprocess
+from pathlib import Path
 
 CREATE_NO_WINDOW = 0x08000000  # subprocess flag — suppress console flash on Windows
 
@@ -148,161 +150,10 @@ def _make_companion_check(label, executables, reason):
     return detect, fix
 
 
-# ── Group A — Companion software (Fix Chain 3) ───────────────────────────────
+# ── Group A/B — Companion + input mapper checks (data now in conductor_problems.json)
+# _make_companion_check is still used by _build_problems() below.
 
-# P-001  Logitech G HUB
-detect_p001, fix_p001 = _make_companion_check(
-    label="Logitech G HUB",
-    executables=("lghub.exe", "lghub_agent.exe", "lghub_updater.exe"),
-    reason=(
-        "G HUB can intercept input from non-Logitech devices and is known "
-        "to add up to 1 second of input lag on the first key press of a "
-        "session. If your stick or wheel feels sluggish, this is the most "
-        "common cause."
-    ),
-)
-
-# P-002  Logitech Gaming Software (legacy LGS)
-detect_p002, fix_p002 = _make_companion_check(
-    label="Logitech Gaming Software (LGS, legacy)",
-    executables=("lcore.exe", "logitechgaminglogiledcore.exe", "lcorewine.exe"),
-    reason=(
-        "LGS is the older Logitech driver. Running it alongside G HUB or "
-        "with non-Logitech input devices causes input conflicts and bind "
-        "loss. If you also have G HUB installed, uninstall LGS entirely."
-    ),
-)
-
-# P-003  Razer Synapse
-detect_p003, fix_p003 = _make_companion_check(
-    label="Razer Synapse",
-    executables=("razer synapse.exe", "razer synapse 3.exe", "razersynapse.exe",
-                 "razer central.exe"),
-    reason=(
-        "Synapse hooks every USB HID device, not just Razer ones. It is a "
-        "frequent cause of joystick remap failure, double-input bugs, and "
-        "delayed first key press in flight sims."
-    ),
-)
-
-# P-004  Corsair iCUE
-detect_p004, fix_p004 = _make_companion_check(
-    label="Corsair iCUE",
-    executables=("icue.exe", "icueservice.exe", "icuelaunch.exe"),
-    reason=(
-        "iCUE's input layer can fight with non-Corsair joysticks and wheels, "
-        "and is a known source of phantom button presses and stuck axes."
-    ),
-)
-
-# P-005  SteelSeries GG / Engine
-detect_p005, fix_p005 = _make_companion_check(
-    label="SteelSeries GG / Engine",
-    executables=("steelseriesgg.exe", "steelseriesengine3.exe",
-                 "ssengineservice.exe"),
-    reason=(
-        "SteelSeries GG enumerates all HID devices and can disrupt third-"
-        "party joystick/wheel input even when no SteelSeries hardware is in "
-        "use."
-    ),
-)
-
-# P-006  ASUS Armoury Crate
-detect_p006, fix_p006 = _make_companion_check(
-    label="ASUS Armoury Crate",
-    executables=("armourycrate.exe", "armourycrate.service.exe",
-                 "armourycrate.usersessionhelper.exe", "asusoptimization.exe"),
-    reason=(
-        "Armoury Crate has a well-documented reputation for adding system-"
-        "wide input lag and interfering with USB enumeration. If your stick "
-        "is detected intermittently this is the first suspect."
-    ),
-)
-
-# P-007  MSI Center / Dragon Center
-detect_p007, fix_p007 = _make_companion_check(
-    label="MSI Center / Dragon Center",
-    executables=("msi.centralserver.exe", "msi_center.exe", "dragoncenter.exe"),
-    reason=(
-        "MSI's RGB and fan-control layer hooks into USB power management. "
-        "Reports of joysticks losing power and being re-enumerated mid-game "
-        "trace back to this."
-    ),
-)
-
-# P-008  Thrustmaster TARGET
-detect_p008, fix_p008 = _make_companion_check(
-    label="Thrustmaster TARGET (T.A.R.G.E.T.)",
-    executables=("targetgui.exe", "target.exe", "t.a.r.g.e.t. gui.exe"),
-    reason=(
-        "TARGET creates a virtual joystick that replaces your real one. If "
-        "you're using a VKB or non-Thrustmaster stick and TARGET is running, "
-        "the game will see TARGET's virtual device instead of your real "
-        "stick."
-    ),
-)
-
-# P-009  VKB DevCfg open during a game session
-detect_p009, fix_p009 = _make_companion_check(
-    label="VKB DevCfg",
-    executables=("vkbdevcfg.exe", "vkbdevcfg-c.exe"),
-    reason=(
-        "Leaving VKB DevCfg open while playing can intercept the HID stream "
-        "from your VKB stick. Use DevCfg to configure, then CLOSE it before "
-        "launching the game."
-    ),
-)
-
-
-# ── Group B — Input mapper conflicts ─────────────────────────────────────────
-
-# P-010  DS4Windows (PlayStation controller mapper)
-detect_p010, fix_p010 = _make_companion_check(
-    label="DS4Windows",
-    executables=("ds4windows.exe",),
-    reason=(
-        "DS4Windows is needed to use a DualShock 4 / DualSense as a real "
-        "joystick — but if Steam Input is ALSO enabled, both will inject "
-        "input and the controller will fight itself. Pick one: DS4Windows "
-        "OR Steam Input, not both."
-    ),
-)
-
-# P-011  Xpadder / JoyToKey
-detect_p011, fix_p011 = _make_companion_check(
-    label="Xpadder / JoyToKey",
-    executables=("xpadder.exe", "joytokey.exe"),
-    reason=(
-        "These tools translate joystick movements into keyboard / mouse "
-        "events. If a game already supports your stick natively, running "
-        "these on top creates double inputs and phantom keystrokes."
-    ),
-)
-
-# P-012  Joystick Gremlin / vJoy
-detect_p012, fix_p012 = _make_companion_check(
-    label="Joystick Gremlin / vJoy feeder",
-    executables=("joystick_gremlin.exe", "vjoyconf.exe", "vjoymonitor.exe"),
-    reason=(
-        "Joystick Gremlin and vJoy are power-user remappers that publish a "
-        "virtual joystick. Make sure the game is reading from the VIRTUAL "
-        "stick, not your physical one — otherwise you'll get double inputs "
-        "across both devices."
-    ),
-)
-
-# P-013  X360CE (Xbox 360 controller emulator)
-detect_p013, fix_p013 = _make_companion_check(
-    label="X360CE",
-    executables=("x360ce.exe", "x360ce_x64.exe"),
-    reason=(
-        "X360CE makes any input device look like an Xbox 360 pad. If left "
-        "running globally it will hijack your joystick / wheel in games "
-        "that expect a native flight-stick. Only run X360CE per-game."
-    ),
-)
-
-# P-014  Steam.exe running (Steam Input overlay)
+# ── P-014  Steam.exe running (Steam Input overlay) ────────────────────────────
 def detect_p014():
     return "warn" if _which_running("steam.exe") else "ok"
 
@@ -324,65 +175,8 @@ def fix_p014():
     )
 
 
-# ── Group C — Overlay processes (input lag) ──────────────────────────────────
-
-# P-015  NVIDIA GeForce Experience overlay
-detect_p015, fix_p015 = _make_companion_check(
-    label="NVIDIA GeForce Experience overlay",
-    executables=("nvidia geforce experience.exe", "nvidia share.exe",
-                 "nvcontainer.exe"),
-    reason=(
-        "The in-game overlay adds polling overhead that shows up as "
-        "occasional input stutter on high-rate joysticks (1000 Hz). The "
-        "driver itself is fine — only the overlay needs disabling."
-    ),
-)
-
-# P-016  AMD Adrenalin overlay
-detect_p016, fix_p016 = _make_companion_check(
-    label="AMD Adrenalin overlay",
-    executables=("radeonsoftware.exe", "amdrsserv.exe", "amdrsserv64.exe"),
-    reason=(
-        "Adrenalin's overlay (Alt+R) and instant-replay layer can add "
-        "input lag, particularly on flight sims at high polling rates. "
-        "Disable the overlay; keep the driver."
-    ),
-)
-
-# P-017  Discord overlay
-detect_p017, fix_p017 = _make_companion_check(
-    label="Discord (with overlay)",
-    executables=("discord.exe",),
-    reason=(
-        "Discord's in-game overlay hooks DirectInput and is a recurring "
-        "cause of joystick stutter and dropped inputs. Discord itself is "
-        "safe — only the overlay needs turning off."
-    ),
-)
-
-# P-018  OBS Studio / Streamlabs
-detect_p018, fix_p018 = _make_companion_check(
-    label="OBS Studio / Streamlabs",
-    executables=("obs64.exe", "obs32.exe", "streamlabs obs.exe",
-                 "streamlabs desktop.exe"),
-    reason=(
-        "Game-capture sources hook the rendering pipeline and can add a "
-        "frame or two of input lag. Acceptable when streaming — but if you "
-        "left OBS running by accident, close it."
-    ),
-)
-
-# P-019  Xbox Game Bar
-detect_p019, fix_p019 = _make_companion_check(
-    label="Xbox Game Bar",
-    executables=("gamebar.exe", "gamebarftserver.exe", "gamebarpresencewriter.exe"),
-    reason=(
-        "Game Bar hooks every running game window and captures gamepad "
-        "input by default. Press Windows key + G to confirm it's open, "
-        "then disable: Settings -> Gaming -> Game Bar -> Off."
-    ),
-)
-
+# ── Group C/D — Overlay + launch order (data now in conductor_problems.json)
+# Special function implementations are below.
 
 # ── Group D — Launch order & services ────────────────────────────────────────
 
@@ -505,84 +299,40 @@ def fix_p022():
 
 
 # ── PROBLEM REGISTRY ─────────────────────────────────────────────────────────
-# Engine and GUI iterate this list. Drop-in: no registration call needed
-# beyond appending here.
+# Problem DEFINITIONS live in conductor_problems.json (same directory).
+# This function loads them at import time and wires up detect/fix callables.
 
-PROBLEMS = [
-    # Group A — Companion software (Fix Chain 3)
-    {"id": "P-001", "category": "companion_software",
-     "title": "Logitech G HUB running",
-     "detect": detect_p001, "fix": fix_p001},
-    {"id": "P-002", "category": "companion_software",
-     "title": "Logitech Gaming Software (legacy LGS) running",
-     "detect": detect_p002, "fix": fix_p002},
-    {"id": "P-003", "category": "companion_software",
-     "title": "Razer Synapse running",
-     "detect": detect_p003, "fix": fix_p003},
-    {"id": "P-004", "category": "companion_software",
-     "title": "Corsair iCUE running",
-     "detect": detect_p004, "fix": fix_p004},
-    {"id": "P-005", "category": "companion_software",
-     "title": "SteelSeries GG / Engine running",
-     "detect": detect_p005, "fix": fix_p005},
-    {"id": "P-006", "category": "companion_software",
-     "title": "ASUS Armoury Crate running",
-     "detect": detect_p006, "fix": fix_p006},
-    {"id": "P-007", "category": "companion_software",
-     "title": "MSI Center / Dragon Center running",
-     "detect": detect_p007, "fix": fix_p007},
-    {"id": "P-008", "category": "companion_software",
-     "title": "Thrustmaster TARGET running",
-     "detect": detect_p008, "fix": fix_p008},
-    {"id": "P-009", "category": "companion_software",
-     "title": "VKB DevCfg open during game session",
-     "detect": detect_p009, "fix": fix_p009},
+def _build_problems():
+    data_file = Path(__file__).parent / "conductor_problems.json"
+    with open(data_file, encoding="utf-8") as f:
+        definitions = json.load(f)
 
-    # Group B — Input mapper conflicts
-    {"id": "P-010", "category": "input_mapper",
-     "title": "DS4Windows running",
-     "detect": detect_p010, "fix": fix_p010},
-    {"id": "P-011", "category": "input_mapper",
-     "title": "Xpadder / JoyToKey running",
-     "detect": detect_p011, "fix": fix_p011},
-    {"id": "P-012", "category": "input_mapper",
-     "title": "Joystick Gremlin / vJoy running",
-     "detect": detect_p012, "fix": fix_p012},
-    {"id": "P-013", "category": "input_mapper",
-     "title": "X360CE running",
-     "detect": detect_p013, "fix": fix_p013},
-    {"id": "P-014", "category": "input_mapper",
-     "title": "Steam overlay intercepting input",
-     "detect": detect_p014, "fix": fix_p014},
+    _special = {
+        "P-014": (detect_p014, fix_p014),
+        "P-020": (detect_p020, fix_p020),
+        "P-021": (detect_p021, fix_p021),
+        "P-022": (detect_p022, fix_p022),
+    }
 
-    # Group C — Overlay processes (input lag)
-    {"id": "P-015", "category": "overlay",
-     "title": "NVIDIA GeForce Experience overlay running",
-     "detect": detect_p015, "fix": fix_p015},
-    {"id": "P-016", "category": "overlay",
-     "title": "AMD Adrenalin overlay running",
-     "detect": detect_p016, "fix": fix_p016},
-    {"id": "P-017", "category": "overlay",
-     "title": "Discord overlay running",
-     "detect": detect_p017, "fix": fix_p017},
-    {"id": "P-018", "category": "overlay",
-     "title": "OBS Studio / Streamlabs running",
-     "detect": detect_p018, "fix": fix_p018},
-    {"id": "P-019", "category": "overlay",
-     "title": "Xbox Game Bar running",
-     "detect": detect_p019, "fix": fix_p019},
+    problems = []
+    for defn in definitions:
+        if defn["type"] == "companion":
+            detect, fix = _make_companion_check(
+                defn["label"], defn["executables"], defn["reason"]
+            )
+        else:
+            detect, fix = _special[defn["id"]]
+        problems.append({
+            "id":       defn["id"],
+            "category": defn["category"],
+            "title":    defn["title"],
+            "detect":   detect,
+            "fix":      fix,
+        })
+    return problems
 
-    # Group D — Launch order & services
-    {"id": "P-020", "category": "launch_order",
-     "title": "Launch order — plug devices in before launching",
-     "detect": detect_p020, "fix": fix_p020},
-    {"id": "P-021", "category": "service",
-     "title": "HidHide Cloak service stopped",
-     "detect": detect_p021, "fix": fix_p021},
-    {"id": "P-022", "category": "compounded",
-     "title": "Multiple companion apps running together",
-     "detect": detect_p022, "fix": fix_p022},
-]
+
+PROBLEMS = _build_problems()
 
 
 # ── Convenience: scan all and print a report ─────────────────────────────────

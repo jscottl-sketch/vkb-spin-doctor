@@ -1,0 +1,79 @@
+{
+  "missions": [
+    {
+      "id": "vkb-spin-doctor",
+      "name": "VKB Spin Doctor",
+      "description": "Universal joystick/HOTAS fixer. Any hardware, any game.",
+      "status": "active",
+      "started": "2026-05",
+      "folder": "C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor",
+      "tags": [
+        "hardware",
+        "gaming",
+        "aafl-benchmark"
+      ],
+      "notes": "First AAFL benchmark project. Star Citizen v0.2 is next milestone."
+    },
+    {
+      "id": "aafl-engine",
+      "name": "AAFL Engine",
+      "description": "AI Agent Feedback Loop — the real project. Competes with LangGraph/CrewAI.",
+      "status": "active",
+      "started": "2026-05",
+      "folder": "C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor",
+      "tags": [
+        "ai",
+        "automation",
+        "core"
+      ],
+      "notes": "Primary project. Everything else is a sub-project of this."
+    },
+    {
+      "id": "mission-control",
+      "name": "Mission Control (MCC)",
+      "description": "The cockpit. Bidirectional dashboard for all AAFL projects.",
+      "status": "active",
+      "started": "2026-05",
+      "folder": "C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor",
+      "tags": [
+        "dashboard",
+        "ui",
+        "cross-cutting"
+      ],
+      "notes": "21 tabs. Build 2 complete. MOT 108/108."
+    },
+    {
+      "id": "kb-profiles",
+      "name": "Keybinding Profile Library",
+      "description": "Community keybind profiles for all supported games/hardware.",
+      "status": "active",
+      "started": "2026-05",
+      "folder": "C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\keybind_profiles",
+      "tags": [
+        "gaming",
+        "community",
+        "spin-doctor"
+      ],
+      "notes": "v0.5 built. Chief Scout swarm feeds this."
+    },
+    {
+      "id": "b6b1d8d9"
+    },
+    {
+      "id": "e926d2e4"
+    },
+    {
+      "id": "d79cd797"
+    },
+    {
+      "id": "adb47aaa"
+    },
+    {
+      "id": "a73ab678"
+    },
+    {
+      "id": "cd48f5e2"
+    }
+  ],
+  "archived": []
+}
