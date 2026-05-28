@@ -4,11 +4,18 @@ Real-time CPU / RAM / GPU / Disk / Network / AI-process monitor.
 Standalone: python system_monitor.py
 """
 import json
+import os
+import shutil
 import subprocess
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
+
+HERE = Path(__file__).parent
+
+# HC-06: baseline RSS at session start (set on first call)
+_session_start_rss_mb: float = 0.0
 
 try:
     import psutil
@@ -220,6 +227,58 @@ class SystemMonitor:
             "readings_to_throttle": round(readings_to_throttle, 1),
         }
 
+    def check_disk_space(self) -> dict:
+        """HC-03: Check free space on C: and D:. Warn if either < 10GB free."""
+        results = []
+        status = "PASS"
+        for drive in ("C:\\", "D:\\"):
+            try:
+                usage = shutil.disk_usage(drive)
+                free_gb = round(usage.free / 1024 ** 3, 1)
+                label = f"{drive} {free_gb}GB free"
+                if free_gb < 10:
+                    label += " (WARN: <10GB)"
+                    status = "WARN"
+                results.append(label)
+            except Exception:
+                results.append(f"{drive} unavailable")
+        return {"name": "HC-03 Disk Space", "status": status,
+                "detail": " | ".join(results)}
+
+    def track_memory_rss(self) -> dict:
+        """HC-06: Log current process RSS to data/memory_log.json. Warn if grown > 500MB."""
+        global _session_start_rss_mb
+        if not _PSUTIL:
+            return {"name": "HC-06 Memory RSS", "status": "FAIL",
+                    "detail": "psutil not installed"}
+        try:
+            import psutil as _ps
+            rss_mb = round(_ps.Process(os.getpid()).memory_info().rss / 1024 ** 2, 1)
+            if _session_start_rss_mb == 0.0:
+                _session_start_rss_mb = rss_mb
+
+            log_path = HERE / "data" / "memory_log.json"
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            entries = []
+            if log_path.exists():
+                try:
+                    entries = json.loads(log_path.read_text(encoding="utf-8"))
+                except Exception:
+                    entries = []
+            entries.append({"ts": datetime.now().isoformat(timespec="seconds"), "rss_mb": rss_mb})
+            if len(entries) > 100:
+                entries = entries[-100:]
+            log_path.write_text(json.dumps(entries, indent=2), encoding="utf-8")
+
+            growth = round(rss_mb - _session_start_rss_mb, 1)
+            detail = f"RSS: {rss_mb}MB (start: {_session_start_rss_mb}MB, growth: +{growth}MB)"
+            if growth > 500:
+                detail += " — WARNING: >500MB growth since session start"
+                return {"name": "HC-06 Memory RSS", "status": "WARN", "detail": detail}
+            return {"name": "HC-06 Memory RSS", "status": "PASS", "detail": detail}
+        except Exception as exc:
+            return {"name": "HC-06 Memory RSS", "status": "FAIL", "detail": f"Error: {exc}"}
+
     def get_full_snapshot(self) -> dict:
         cpu = self.get_cpu()
         ram = self.get_ram()
@@ -227,6 +286,8 @@ class SystemMonitor:
         ai  = self.get_ai_allocation()
         disk = self.get_disk_io_instant()
         thermal = self.predict_thermal()
+        disk_space = self.check_disk_space()
+        memory_rss = self.track_memory_rss()
 
         # Composite health score 0–100
         cpu_score = max(0, 100 - cpu.get("overall_pct", 0))
@@ -266,6 +327,8 @@ class SystemMonitor:
             "health_score":    health_score,
             "bottleneck":      bottleneck,
             "game_ai_conflict": conflict,
+            "disk_space_check": disk_space,
+            "memory_rss_check": memory_rss,
         }
 
 

@@ -64,4 +64,6 @@
 | STORM | Summary To Output Results Memory — dedup engine for avoiding repeat work | 2026-05-28 |
 | AASKC | Autonomous AI Simultaneous Knowledge Connection — the product name for the full platform (AAFL + MCC + LLOW + Scout) | 2026-05-28 |
 
+| CLACHR | CLACH Relay — full CLACH → MCC → Labour AI → MCC → CLACH circuit. Delegate labour tasks to free providers, copy results back to Claude Chat. | 2026-05-28 |
+
 <!-- END_OF_FILE -->

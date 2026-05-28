@@ -561,6 +561,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/instructions/"):
                 element_id = path[len("/api/instructions/"):]
                 self._handle_api_instructions_element(element_id)
+            # ── OCB-J: Safety Status + CLACHR + AFNA ──────────────────────────
+            elif path == "/api/safety-status":
+                self._handle_safety_status()
+            elif path == "/api/clachr/queue":
+                self._handle_clachr_queue()
+            elif path == "/api/clachr/results":
+                self._handle_clachr_results()
+            elif path == "/api/stuck/afna-suggestions":
+                self._handle_stuck_afna_suggestions()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -769,6 +778,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_llow_run()
             elif path == "/api/llow/dry-run":
                 self._handle_llow_dry_run()
+            elif path == "/api/clachr/dispatch":
+                self._handle_clachr_dispatch()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -801,6 +812,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         elif path.startswith("/api/llow/workflow/"):
             name = urllib.parse.unquote(path[len("/api/llow/workflow/"):])
             self._handle_llow_delete_workflow(name)
+        elif path == "/api/clachr/clear":
+            self._handle_clachr_clear()
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -5500,6 +5513,216 @@ def _handle_api_instructions_element(self, element_id: str):
 
 MCCHandler._handle_api_instructions         = _handle_api_instructions          # type: ignore[attr-defined]
 MCCHandler._handle_api_instructions_element = _handle_api_instructions_element  # type: ignore[attr-defined]
+
+
+# ── OCB-J: Safety Shield endpoint ────────────────────────────────────────────
+
+def _handle_safety_status(self):
+    """GET /api/safety-status — runs HC-02, HC-09, HC-10, HC-03 + allow_paid check."""
+    import re as _re
+    checks = []
+
+    # HC-02: API Keys (never log values)
+    api_keys = ["ANTHROPIC_API_KEY", "GROQ_API_KEY", "CLOUDFLARE_API_KEY", "CLOUDFLARE_ACCOUNT_ID"]
+    present = [k for k in api_keys if os.environ.get(k)]
+    missing = [k for k in api_keys if not os.environ.get(k)]
+    checks.append({
+        "name":   "API Keys",
+        "status": "PASS" if not missing else "WARN",
+        "detail": (f"Present: {len(present)}/{len(api_keys)}" +
+                   (f" — Missing: {', '.join(missing)}" if missing else "")),
+    })
+
+    # HC-09: Cost Cap
+    try:
+        cfg_data = json.loads(AAFL_SETTINGS.read_text(encoding="utf-8")) if AAFL_SETTINGS.exists() else {}
+        cap_found = None
+        for key in ("cost_cap", "cost_cap_per_goal_usd", "cost_cap_per_goal_gbp"):
+            val = cfg_data.get(key)
+            if val is not None and float(val) > 0:
+                cap_found = (key, val)
+                break
+        if cap_found:
+            checks.append({"name": "Cost Cap", "status": "PASS",
+                           "detail": f"{cap_found[0]} = {cap_found[1]}"})
+        else:
+            checks.append({"name": "Cost Cap", "status": "FAIL",
+                           "detail": "No cost_cap key found or value is 0"})
+    except Exception as exc:
+        checks.append({"name": "Cost Cap", "status": "FAIL", "detail": str(exc)})
+
+    # HC-10: Watchdog Wiring (split into Watchdog + Cost Guard pills)
+    lm_path = HERE / "loop_manager.py"
+    if lm_path.exists():
+        lm_text = lm_path.read_text(encoding="utf-8", errors="replace")
+        wd_import = bool(_re.search(r'from\s+aafl_watchdog\b|import\s+aafl_watchdog\b', lm_text))
+        wd_call   = bool(_re.search(r'_watchdog_run_cycle|_watchdog_check', lm_text))
+        cg_import = bool(_re.search(r'from\s+cost_guard\b|import\s+cost_guard\b', lm_text))
+        cg_call   = bool(_re.search(r'CostGuard\s*\(|guard\.check|guard\.record', lm_text))
+
+        if wd_import and wd_call:
+            checks.append({"name": "Watchdog", "status": "PASS",
+                           "detail": "aafl_watchdog imported and called"})
+        else:
+            miss = []
+            if not wd_import: miss.append("import missing")
+            if not wd_call:   miss.append("call missing")
+            checks.append({"name": "Watchdog", "status": "FAIL",
+                           "detail": f"aafl_watchdog: {', '.join(miss)}"})
+
+        if cg_import and cg_call:
+            checks.append({"name": "Cost Guard", "status": "PASS",
+                           "detail": "cost_guard imported and called"})
+        else:
+            miss = []
+            if not cg_import: miss.append("import missing")
+            if not cg_call:   miss.append("call missing")
+            checks.append({"name": "Cost Guard", "status": "FAIL",
+                           "detail": f"cost_guard: {', '.join(miss)}"})
+    else:
+        checks.append({"name": "Watchdog",   "status": "FAIL", "detail": "loop_manager.py not found"})
+        checks.append({"name": "Cost Guard", "status": "FAIL", "detail": "loop_manager.py not found"})
+
+    # HC-03: Disk Space
+    disk_results = []
+    disk_status = "PASS"
+    for drive in ("C:\\", "D:\\"):
+        try:
+            free_gb = round(shutil.disk_usage(drive).free / 1024 ** 3, 1)
+            label = f"{drive} {free_gb}GB"
+            if free_gb < 10:
+                label += " ⚠"
+                disk_status = "WARN"
+            disk_results.append(label)
+        except Exception:
+            disk_results.append(f"{drive} N/A")
+    checks.append({"name": "Disk Space", "status": disk_status,
+                   "detail": " | ".join(disk_results)})
+
+    # allow_paid check
+    try:
+        cfg_data = json.loads(AAFL_SETTINGS.read_text(encoding="utf-8")) if AAFL_SETTINGS.exists() else {}
+        allow_paid = cfg_data.get("allow_paid", False)
+        if allow_paid:
+            checks.append({"name": "Claude Blocked", "status": "WARN",
+                           "detail": "allow_paid = True — paid API can run"})
+        else:
+            checks.append({"name": "Claude Blocked", "status": "PASS",
+                           "detail": "allow_paid = False — Claude blocked (safe)"})
+    except Exception as exc:
+        checks.append({"name": "Claude Blocked", "status": "FAIL", "detail": str(exc)})
+
+    overall = "SAFE" if not any(c["status"] == "FAIL" for c in checks) else "DANGER"
+    self._send_json({"overall": overall, "checks": checks})
+
+
+MCCHandler._handle_safety_status = _handle_safety_status  # type: ignore[attr-defined]
+
+
+# ── OCB-J: CLACHR Relay endpoints ─────────────────────────────────────────────
+
+def _handle_clachr_queue(self):
+    """GET /api/clachr/queue — returns goal_queue.txt as JSON array."""
+    tasks = []
+    if GOAL_QUEUE.exists():
+        try:
+            for line in GOAL_QUEUE.read_text(encoding="utf-8", errors="replace").splitlines():
+                stripped = line.strip()
+                if stripped and not stripped.startswith("#"):
+                    tasks.append(stripped)
+        except Exception:
+            pass
+    self._send_json(tasks)
+
+
+def _handle_clachr_results(self):
+    """GET /api/clachr/results — latest 20 files from aafl_output/."""
+    results = []
+    if AAFL_OUTPUT.exists():
+        files = sorted(
+            [f for f in AAFL_OUTPUT.iterdir() if f.is_file()],
+            key=lambda f: f.stat().st_mtime, reverse=True,
+        )[:20]
+        for f in files:
+            try:
+                content = f.read_text(encoding="utf-8", errors="replace")
+                ts = datetime.datetime.fromtimestamp(f.stat().st_mtime).isoformat(timespec="seconds")
+                status = "DONE"
+                if "[ERROR]" in content or "[FAIL]" in content.upper():
+                    status = "FAILED"
+                elif "[RUNNING]" in content:
+                    status = "RUNNING"
+                results.append({
+                    "goal":      f.stem,
+                    "result":    content[:500],
+                    "timestamp": ts,
+                    "status":    status,
+                })
+            except Exception:
+                continue
+    self._send_json(results)
+
+
+def _handle_clachr_dispatch(self):
+    """POST /api/clachr/dispatch — runs queue_runner.py as non-blocking subprocess."""
+    runner = HERE / "queue_runner.py"
+    if not runner.exists():
+        self._send_json({"status": "error", "detail": "queue_runner.py not found"}, 404)
+        return
+    task_count = 0
+    if GOAL_QUEUE.exists():
+        try:
+            lines = [l.strip() for l in GOAL_QUEUE.read_text(encoding="utf-8").splitlines()
+                     if l.strip() and not l.strip().startswith("#")]
+            task_count = len(lines)
+        except Exception:
+            pass
+    try:
+        subprocess.Popen(
+            [PYTHON, str(runner)],
+            cwd=str(HERE),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        self._send_json({"status": "dispatched", "task_count": task_count})
+    except Exception as exc:
+        self._send_json({"status": "error", "detail": str(exc)}, 500)
+
+
+def _handle_clachr_clear(self):
+    """DELETE /api/clachr/clear — empties goal_queue.txt."""
+    try:
+        GOAL_QUEUE.write_text("", encoding="utf-8")
+        self._send_json({"status": "cleared"})
+    except Exception as exc:
+        self._send_json({"status": "error", "detail": str(exc)}, 500)
+
+
+MCCHandler._handle_clachr_queue    = _handle_clachr_queue     # type: ignore[attr-defined]
+MCCHandler._handle_clachr_results  = _handle_clachr_results   # type: ignore[attr-defined]
+MCCHandler._handle_clachr_dispatch = _handle_clachr_dispatch  # type: ignore[attr-defined]
+MCCHandler._handle_clachr_clear    = _handle_clachr_clear     # type: ignore[attr-defined]
+
+
+# ── OCB-J: AFNA Suggestions endpoint ─────────────────────────────────────────
+
+AFNA_STRATEGIES_FILE = HERE / "afna_strategies.json"
+
+
+def _handle_stuck_afna_suggestions(self):
+    """GET /api/stuck/afna-suggestions — returns full strategies array from afna_strategies.json."""
+    try:
+        if not AFNA_STRATEGIES_FILE.exists():
+            self._send_json({"error": "afna_strategies.json not found"}, 404)
+            return
+        data = json.loads(AFNA_STRATEGIES_FILE.read_text(encoding="utf-8"))
+        strategies = data.get("strategies", data) if isinstance(data, dict) else data
+        self._send_json(strategies)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_stuck_afna_suggestions = _handle_stuck_afna_suggestions  # type: ignore[attr-defined]
 
 
 def main():

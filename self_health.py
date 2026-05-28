@@ -12,6 +12,9 @@ Usage:
 import argparse
 import datetime
 import json
+import os
+import shutil
+import socket
 import sqlite3
 import time
 import urllib.error
@@ -24,6 +27,8 @@ REGISTRY_FILE     = HERE / "data" / "element_registry.json"
 HEALTH_DB         = HERE / "data" / "health.db"
 CONFIG_FILE       = HERE / "data" / "self_health_config.json"
 STUCK_INBOX_FILE  = HERE / "stuck_inbox.json"
+AAFL_CONFIG_FILE  = HERE / "aafl_config.json"
+MEMORY_BANK_DB    = HERE / "memory_bank.db"
 MCC_BASE          = "http://127.0.0.1:8080"
 REQUEST_TIMEOUT   = 8   # seconds per test request
 
@@ -251,6 +256,10 @@ class SelfHealthRunner:
         started   = datetime.datetime.now().isoformat(timespec="seconds")
         elements  = self.registry
 
+        # Run HC-series system checks first
+        print(f"[self_health] Running system health checks (HC series)...")
+        system_checks = self.run_checks()
+
         try:
             self.db.execute(
                 "INSERT INTO health_runs (run_id, started_at, trigger_source) VALUES (?,?,?)",
@@ -308,6 +317,7 @@ class SelfHealthRunner:
             "critical_failures": critical_failures,
             "started_at":        started,
             "finished_at":       finished,
+            "system_checks":     system_checks,
         }
 
         if critical_failures and cfg.get("escalate_to_stuck_inbox", True):
@@ -464,6 +474,102 @@ class SelfHealthRunner:
             STUCK_INBOX_FILE.write_text(json.dumps(inbox, indent=2), encoding="utf-8")
         except Exception as exc:
             print(f"[self_health] Failed to escalate to stuck inbox: {exc}")
+
+
+    # ── System Health Checks (HC series) ─────────────────────────────────────
+
+    def check_dependencies(self) -> dict:
+        """HC-01: Verify required Python packages are importable."""
+        packages = ["litellm", "psutil", "mss", "flask", "sqlite3"]
+        missing = []
+        for pkg in packages:
+            try:
+                __import__(pkg)
+            except ImportError:
+                missing.append(pkg)
+        if missing:
+            return {"name": "HC-01 Dependencies", "status": "FAIL",
+                    "detail": f"Missing: {', '.join(missing)}"}
+        return {"name": "HC-01 Dependencies", "status": "PASS",
+                "detail": f"All present: {', '.join(packages)}"}
+
+    def check_api_keys(self) -> dict:
+        """HC-02: Check environment variables for API keys. Never logs values."""
+        keys = ["ANTHROPIC_API_KEY", "GROQ_API_KEY", "CLOUDFLARE_API_KEY", "CLOUDFLARE_ACCOUNT_ID"]
+        present = [k for k in keys if os.environ.get(k)]
+        missing = [k for k in keys if not os.environ.get(k)]
+        detail = (
+            f"PRESENT: {', '.join(present) or 'none'} | "
+            f"MISSING: {', '.join(missing) or 'none'}"
+        )
+        return {"name": "HC-02 API Keys",
+                "status": "PASS" if not missing else "WARN",
+                "detail": detail}
+
+    def check_sqlite_integrity(self) -> dict:
+        """HC-04: PRAGMA integrity_check on memory_bank.db."""
+        db_path = MEMORY_BANK_DB
+        if not db_path.exists():
+            db_path = HERE / "data" / "memory_bank.db"
+        if not db_path.exists():
+            return {"name": "HC-04 SQLite Integrity", "status": "FAIL",
+                    "detail": "memory_bank.db not found"}
+        try:
+            conn = sqlite3.connect(str(db_path))
+            result = conn.execute("PRAGMA integrity_check").fetchone()
+            conn.close()
+            if result and result[0] == "ok":
+                return {"name": "HC-04 SQLite Integrity", "status": "PASS",
+                        "detail": "integrity_check: ok"}
+            return {"name": "HC-04 SQLite Integrity", "status": "FAIL",
+                    "detail": f"integrity_check: {result[0] if result else 'no result'}"}
+        except Exception as exc:
+            return {"name": "HC-04 SQLite Integrity", "status": "FAIL",
+                    "detail": f"Error: {exc}"}
+
+    def check_ports(self) -> dict:
+        """HC-08: Check localhost:1234 (LM Studio) and localhost:8080 (MCC)."""
+        port_checks = [(1234, "LM Studio"), (8080, "MCC")]
+        results = []
+        for port, label in port_checks:
+            try:
+                with socket.create_connection(("127.0.0.1", port), timeout=1):
+                    results.append(f"{label}:{port} OPEN")
+            except Exception:
+                results.append(f"{label}:{port} CLOSED")
+        return {"name": "HC-08 Ports", "status": "PASS", "detail": " | ".join(results)}
+
+    def check_cost_cap(self) -> dict:
+        """HC-09: Verify cost_cap key exists and value > 0 in aafl_config.json."""
+        if not AAFL_CONFIG_FILE.exists():
+            return {"name": "HC-09 Cost Cap", "status": "FAIL",
+                    "detail": "aafl_config.json not found"}
+        try:
+            cfg = json.loads(AAFL_CONFIG_FILE.read_text(encoding="utf-8"))
+            for key in ("cost_cap", "cost_cap_per_goal_usd", "cost_cap_per_goal_gbp"):
+                val = cfg.get(key)
+                if val is not None and float(val) > 0:
+                    return {"name": "HC-09 Cost Cap", "status": "PASS",
+                            "detail": f"{key} = {val}"}
+            return {"name": "HC-09 Cost Cap", "status": "FAIL",
+                    "detail": "No cost_cap key found or value is 0"}
+        except Exception as exc:
+            return {"name": "HC-09 Cost Cap", "status": "FAIL",
+                    "detail": f"Error: {exc}"}
+
+    def run_checks(self) -> list:
+        """Run all HC-series system health checks. Returns list of results."""
+        checks = [
+            self.check_dependencies(),
+            self.check_api_keys(),
+            self.check_sqlite_integrity(),
+            self.check_ports(),
+            self.check_cost_cap(),
+        ]
+        for c in checks:
+            icon = "✓" if c["status"] == "PASS" else ("⚠" if c["status"] == "WARN" else "✗")
+            print(f"[HC] {icon} {c['name']}: {c['status']} — {c['detail']}")
+        return checks
 
 
 def main():

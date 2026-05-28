@@ -4,6 +4,7 @@ Run: python work_checker.py
 Output: data/work_report.json
 """
 
+import hashlib
 import json
 import os
 import re
@@ -219,6 +220,79 @@ class WorkChecker:
                 lines.append(f"{i}. {item}")
         return "\n".join(lines)
 
+    def check_file_integrity(self) -> dict:
+        """HC-05: SHA-256 baseline for loop_manager.py and aafl_core.py."""
+        targets = [ROOT / "loop_manager.py", ROOT / "aafl_core.py"]
+        hashes_file = ROOT / "data" / "file_hashes.json"
+        current = {}
+        for f in targets:
+            current[f.name] = hashlib.sha256(f.read_bytes()).hexdigest() if f.exists() else None
+
+        if not hashes_file.exists():
+            hashes_file.parent.mkdir(exist_ok=True)
+            hashes_file.write_text(json.dumps(current, indent=2), encoding="utf-8")
+            return {"name": "HC-05 File Integrity", "status": "PASS",
+                    "detail": f"Baseline written for: {list(current.keys())}"}
+
+        try:
+            baseline = json.loads(hashes_file.read_text(encoding="utf-8"))
+        except Exception as exc:
+            return {"name": "HC-05 File Integrity", "status": "FAIL",
+                    "detail": f"Could not read baseline: {exc}"}
+
+        mismatches = [f for f, h in current.items() if baseline.get(f) != h]
+        if mismatches:
+            return {"name": "HC-05 File Integrity", "status": "WARN",
+                    "detail": f"Hash mismatch (changed): {', '.join(mismatches)}"}
+        return {"name": "HC-05 File Integrity", "status": "PASS",
+                "detail": "All hashes match baseline"}
+
+    def check_loop_output_cap(self) -> dict:
+        """HC-07: If aafl_output/ > 50 files, move oldest 10 to aafl_output/archive/."""
+        out_dir = ROOT / "aafl_output"
+        if not out_dir.exists():
+            return {"name": "HC-07 Loop Output Cap", "status": "PASS",
+                    "detail": "aafl_output/ does not exist"}
+        files = sorted(
+            [f for f in out_dir.iterdir() if f.is_file()],
+            key=lambda f: f.stat().st_mtime,
+        )
+        count = len(files)
+        if count <= 50:
+            return {"name": "HC-07 Loop Output Cap", "status": "PASS",
+                    "detail": f"{count} files — under cap"}
+        archive = out_dir / "archive"
+        archive.mkdir(exist_ok=True)
+        archived = 0
+        for f in files[:10]:
+            try:
+                f.rename(archive / f.name)
+                archived += 1
+            except Exception:
+                pass
+        return {"name": "HC-07 Loop Output Cap", "status": "PASS",
+                "detail": f"Archived {archived} oldest files to aafl_output/archive/ ({count} total before)"}
+
+    def check_watchdog_wiring(self) -> dict:
+        """HC-10: Confirm aafl_watchdog and cost_guard are both imported and called in loop_manager.py."""
+        lm = ROOT / "loop_manager.py"
+        if not lm.exists():
+            return {"name": "HC-10 Watchdog Wiring", "status": "FAIL",
+                    "detail": "loop_manager.py not found"}
+        text = lm.read_text(encoding="utf-8", errors="replace")
+        checks = {
+            "aafl_watchdog import": bool(re.search(r'from\s+aafl_watchdog\b|import\s+aafl_watchdog\b', text)),
+            "aafl_watchdog call":   bool(re.search(r'_watchdog_run_cycle|_watchdog_check', text)),
+            "cost_guard import":    bool(re.search(r'from\s+cost_guard\b|import\s+cost_guard\b', text)),
+            "cost_guard call":      bool(re.search(r'CostGuard\s*\(|guard\.check|guard\.record', text)),
+        }
+        missing = [k for k, v in checks.items() if not v]
+        if missing:
+            return {"name": "HC-10 Watchdog Wiring", "status": "FAIL",
+                    "detail": f"Missing: {', '.join(missing)}"}
+        return {"name": "HC-10 Watchdog Wiring", "status": "PASS",
+                "detail": "aafl_watchdog and cost_guard both imported and called"}
+
     def generate_report(self):
         sessions = self.scan_sesum_files()
         completed_items, lost_items, stuck_items = self.compare_to_status()
@@ -255,6 +329,15 @@ class WorkChecker:
             "alp_message": alp_msg,
         }
 
+        system_checks = {
+            "file_integrity":   self.check_file_integrity(),
+            "loop_output_cap":  self.check_loop_output_cap(),
+            "watchdog_wiring":  self.check_watchdog_wiring(),
+        }
+        for c in system_checks.values():
+            icon = "✓" if c["status"] == "PASS" else ("⚠" if c["status"] == "WARN" else "✗")
+            print(f"[WC] {icon} {c['name']}: {c['status']} — {c['detail']}")
+
         report = {
             "report_date": datetime.date.today().isoformat(),
             "sessions_scanned": len(sessions),
@@ -266,6 +349,7 @@ class WorkChecker:
             "last_session_score": last_score,
             "last_session_incomplete": last_incomplete,
             "requeue_block": requeue,
+            "system_checks": system_checks,
             "sessions": [
                 {
                     "date": s.get("date", s["filename"]),

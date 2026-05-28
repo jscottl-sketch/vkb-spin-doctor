@@ -1,0 +1,159 @@
+
+==============================================================
+  MCC FULL MOT -- Mission Control System Test
+  2026-05-28 19:00:28
+==============================================================
+
+==============================================================
+  GROUP A — File Existence
+==============================================================
+  [OK] File: spin_doctor.py: exists
+  [OK] File: sfl_agent.py: exists
+  [OK] File: aafl_core.py: exists
+  [OK] File: loop_manager.py: exists
+  [OK] File: evaluator.py: exists
+  [OK] File: researcher.py: exists
+  [OK] File: memory_bank.py: exists
+  [OK] File: meta_loop.py: exists
+  [OK] File: chief_scout.py: exists
+  [OK] File: mcu_optimizer.py: exists
+  [OK] File: dashboard_builder.py: exists
+  [OK] File: task_router.py: exists
+  [OK] File: aafl_wccs.py: exists
+  [OK] File: aafl_watchdog.py: exists
+  [OK] File: cost_guard.py: exists
+  [OK] File: merge_sessions.py: exists
+  [OK] File: queue_runner.py: exists
+  [OK] File: mcc_server.py: exists
+  [OK] File: problems/conductor.py: exists
+  [OK] File: problems/win_hardener.py: exists
+  [OK] File: problems/ed_bind_reset.py: exists
+  [OK] Doc: INDEX.md: exists
+  [OK] Doc: STATUS.md: exists
+  [OK] Doc: HISTORY.md: exists
+  [OK] Doc: ACCA.md: exists
+  [OK] Doc: ALP_Database.md: exists
+  [OK] Folder: health_results/: exists
+  [OK] Folder: dashboard_data/: exists
+  [OK] Folder: session_logs/: exists
+  [OK] Folder: archive_dead/: exists
+
+==============================================================
+  GROUP B — Python Imports
+==============================================================
+  [OK] import aafl_core: OK
+  [OK] import loop_manager: OK
+  [OK] import evaluator: OK
+  [OK] import researcher: OK
+  [OK] import memory_bank: OK
+  [OK] import meta_loop: OK
+  [OK] import chief_scout: OK
+  [OK] import mcu_optimizer: OK
+  [OK] import dashboard_builder: OK
+  [OK] import task_router: OK
+  [OK] import provider_health: OK
+  [OK] import spin_doctor: OK
+  [OK] import sfl_agent: OK
+
+==============================================================
+  GROUP C — MCC HTML Structure
+==============================================================
+  [OK] Tab: Home: found
+  [OK] Tab: Kanban: found
+  [OK] Tab: Costs: found
+  [OK] Tab: Scout Control: found
+  [OK] Tab: AAFL Control: found
+  [OK] Tab: WCCS: found
+  [OK] Tab: Health Suite: found
+  [OK] Tab: ACCA: found
+  [OK] Feature: Stuck Inbox: found
+  [OK] Feature: Run Now button: found
+  [OK] Feature: Cost Predictor: found
+  [OK] Feature: Memory Inspector: found
+  [OK] Feature: Promo Queue: found
+  [OK] Feature: ACCA Tab: found
+  [OK] Feature: ALP Counter (merged into AAFL Control): found
+  [OK] Feature: Keyboard Shortcuts: found
+  [OK] Feature: Provider Health (in Health Suite): found
+  [OK] Feature: Activity Feed (in WCCS): found
+  [OK] Feature: Undo system: JS function found
+  [OK] Feature: Sunday Merge: keyword found
+  [OK] Save Feature: Save Timeline: found
+  [OK] Save Feature: Rewind panel: found
+  [OK] Save Feature: Diff Viewer: found
+  [OK] Save Feature: Session Log Browser: found
+  [OK] Save Feature: HISTORY Search: found
+  [OK] Save Feature: Auto-WCCS Toggle: found
+  [OK] Save Feature: WCCS Save button: found
+
+==============================================================
+  GROUP D — MCC Server Endpoints
+==============================================================
+  Port 8080 already in use — testing existing server.
+  [OK] GET / (HTML): HTTP 200
+  [OK] GET /health-status (JSON): HTTP 200
+  [OK] GET /dashboard-data/ (JSON): HTTP 200
+  [OK] GET /status (JSON): HTTP 200
+  [OK] GET /dashboard-data/kanban.json: HTTP 200
+  [OK] GET /dashboard-data/costs.json: HTTP 200
+
+==============================================================
+  GROUP E — Home Screen Cards
+==============================================================
+  [OK] Card JS ref: Provider Health: referenced
+  [OK] Card data file: provider_health.json: exists
+  [OK] Card JS ref: AAFL Last Run: referenced
+  [OK] Card data file: aafl_runs.json: exists
+  [OK] Card JS ref: Scout Status: referenced
+  [OK] Card data file: scout.json: exists
+  [OK] Card JS ref: Kanban Summary: referenced
+  [OK] Card data file: kanban.json: exists
+  [OK] Card JS ref: Cost Today: referenced
+  [OK] Card data file: costs.json: exists
+  [OK] Card JS ref: WCCS Last Save: referenced
+  [OK] Card data file: wccs.json: exists
+  [OK] Card JS ref: AAFL Control: referenced
+  [OK] Card data file: aafl_control.json: exists
+  [OK] 3 empty slot cards (JS loop): JS loop found
+  [OK] Cards have onclick navigation: found
+
+==============================================================
+  GROUP F — Provider Health System
+==============================================================
+  [OK] provider_health.py exists: exists
+  [OK] health_results/ folder: exists
+  [OK] latest_health.json valid JSON: 14 providers
+  [OK] tier1_results.json: exists
+  [OK] tier2_results.json: exists
+  [OK] tier3_results.json: exists
+  [OK] cost_log.csv: exists
+
+==============================================================
+  GROUP G — AAFL Core
+==============================================================
+  [OK] task_router.classify(): tier=AAFL
+  [OK] evaluator.evaluate(): score=7.0
+  [OK] memory_bank.store(): uid=1b401001-21f7-47
+  [OK] memory_bank cleanup: test row removed
+  [OK] researcher.research() exists: callable
+
+==============================================================
+  GROUP H — Data Integrity
+==============================================================
+  [OK] INDEX.md has RESUME COMMAND: found
+  [OK] STATUS.md has NEXT PRIORITIES: found
+  [OK] STATUS.md has WHO IS SCOTT: found
+  [OK] ALP_Database.md >=12 entries (found: 48): 48 rows
+
+==============================================================
+  FINAL MOT REPORT
+==============================================================
+  Total:   108
+  Passed:  108 (100.0%)
+  Failed:  0
+
+  Report saved: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\health_results\full_mot_report.json
+
+  VERDICT: ALL CLEAR
+==============================================================
+

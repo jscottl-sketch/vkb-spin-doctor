@@ -252,6 +252,15 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 /* ── HOME INSTRUMENTS (PHASE 3) ── */
 .home-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0 4px}
 .home-act-btn{min-width:132px;text-align:center;font-size:12px;flex:1 1 132px}
+/* Safety Shield (OCB-J) */
+@keyframes safeGlow{0%,100%{box-shadow:0 0 6px #2a7,0 0 12px #2a7}50%{box-shadow:0 0 14px #4f4,0 0 28px #4f4}}
+@keyframes dangerFlash{0%,100%{box-shadow:0 0 6px #a22,0 0 12px #a22}50%{box-shadow:0 0 16px #f44,0 0 32px #f44;background:#2a0a0a}}
+.safety-badge-safe{background:#0d1f0d!important;border-color:#2a7!important;color:#4f4!important;animation:safeGlow 2.5s ease-in-out infinite}
+.safety-badge-danger{background:#1f0d0d!important;border-color:#a22!important;color:#f88!important;animation:dangerFlash 1s ease-in-out infinite}
+.safety-pill{font-size:11px;padding:3px 10px;border-radius:12px;background:#111;border:1px solid #333;color:#888;white-space:nowrap;cursor:default}
+.safety-pill-pass{background:#0a1a0a;border-color:#2a7;color:#6f6}
+.safety-pill-warn{background:#1a1500;border-color:#885500;color:#fa0}
+.safety-pill-fail{background:#1a0a0a;border-color:#722;color:#f66}
 .home-instruments{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
 .inst-card{background:#111;border:1px solid #1c1c1c;border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:130px;flex:1 1 130px;cursor:pointer;transition:.15s}
 .inst-card:hover{border-color:#4af;background:#141414;transform:translateY(-1px)}
@@ -1313,6 +1322,23 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 <div class="tab-pane" id="tab-home" data-tab="home" style="display:none!important">
   <div class="pane-scroll">
 
+    <!-- ── SAFETY SHIELD (OCB-J Task 2) ── -->
+    <div id="safety-shield" style="background:#0a0a12;border:1px solid #333;border-radius:8px;padding:14px 16px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div id="safety-badge" style="font-size:1.2em;font-weight:bold;padding:6px 18px;border-radius:20px;min-width:200px;text-align:center;background:#0d1f0d;border:1px solid #2a7;color:#4f4">🟢 SAFE TO RUN</div>
+        <button class="btn" onclick="runSafetyCheck()" style="font-size:11px;padding:4px 12px" title="Immediately re-runs all safety checks against the server">Run Check Now</button>
+        <span id="safety-last-check" style="font-size:10px;color:#555;margin-left:auto"></span>
+      </div>
+      <div id="safety-pills" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <span class="safety-pill" data-check="Watchdog">Watchdog ⬜</span>
+        <span class="safety-pill" data-check="Cost Guard">Cost Guard ⬜</span>
+        <span class="safety-pill" data-check="Cost Cap">Cost Cap ⬜</span>
+        <span class="safety-pill" data-check="Claude Blocked">Claude Blocked ⬜</span>
+        <span class="safety-pill" data-check="API Keys">API Keys ⬜</span>
+        <span class="safety-pill" data-check="Disk Space">Disk Space ⬜</span>
+      </div>
+    </div>
+
     <!-- PHASE 3: Quick Action Buttons -->
     <div class="home-actions">
       <button class="btn home-act-btn" onclick="runHealthCheck()" data-tip="Runs provider_health.py (~30s) — checks all AI providers and updates the health gauge">🏥 Run Health Check</button>
@@ -1429,26 +1455,40 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       <button class="btn" onclick="copyProjectFile('history')" title="Copy the full contents of HISTORY.md to your clipboard — paste into Claude.ai Project Files to give Claude your full session history">📋 Copy HISTORY.md</button>
     </div>
 
-    <!-- Task Inbox (Task 3) -->
-    <div class="wccs-section-title" style="margin-top:18px">Task Inbox</div>
-    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px;margin-top:-4px">Paste tasks from Claude chat here — one per line — then add them to the AAFL queue</div>
+    <!-- CLACHR Relay — Task Dispatch (OCB-J Task 3) -->
+    <div class="wccs-section-title" style="margin-top:18px">CLACHR Relay — Task Dispatch</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px;margin-top:-4px">Paste tasks from Claude Chat. Each line = one task. Free AI labourers do the work.</div>
     <div style="font-size:11px;color:#4af;margin-bottom:8px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:4px;padding:6px 10px">
       <b style="color:#6f6">Step 1</b> — Paste tasks below (one per line) &nbsp;→&nbsp;
       <b style="color:#6f6">Step 2</b> — Click <em>Add to Queue</em> &nbsp;→&nbsp;
-      <b style="color:#6f6">Step 3</b> — Click <em>Run Queue</em> to start AAFL
+      <b style="color:#6f6">Step 3</b> — Click <em>Dispatch All</em> to send to AI labourers
     </div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <label style="font-size:11px;color:#888">What do you want AAFL to work on? (paste tasks from Chat here — one per line)</label>
-      <textarea id="task-inbox-input" placeholder="e.g. Research best VKB throttle grip settings&#10;Find optimal Star Citizen flight model settings&#10;Check Reddit for joystick deadzone advice" style="width:100%;height:72px;background:#0a0a0a;border:1px solid #333;color:#ddd;font:13px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:vertical" title="Paste tasks from your Claude chat here — one goal per line. Each line becomes a separate AAFL goal."></textarea>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn" onclick="taskInboxAdd()" title="Adds each line as a separate goal for AAFL to run — they appear in the Current Queue below">+ Add to Queue</button>
-        <button class="btn" onclick="taskInboxRunQueue()" style="background:#0d1f0d;border-color:#2a7;color:#4af" title="Starts AAFL running through all queued goals automatically — runs them one after another">▶ Run Queue</button>
+      <label style="font-size:11px;color:#888">What do you want AAFL to work on? (paste tasks from Claude Chat — one per line)</label>
+      <textarea id="task-inbox-input" placeholder="e.g. Research best VKB throttle grip settings&#10;Find optimal Star Citizen flight model settings&#10;Check Reddit for joystick deadzone advice" style="width:100%;height:72px;background:#0a0a0a;border:1px solid #333;color:#ddd;font:13px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:vertical" title="Paste tasks from Claude Chat here — one goal per line. Each line becomes a separate AAFL goal."></textarea>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn" onclick="taskInboxAdd()" title="Adds each line as a separate goal for AAFL to run">+ Add to Queue</button>
+        <button class="btn" onclick="taskInboxRunQueue()" style="background:#0d1f0d;border-color:#2a7;color:#4af" title="Starts AAFL running through all queued goals">▶ Run Queue</button>
+        <button class="btn" onclick="clachrDispatch()" style="background:#0d0d1f;border-color:#66a;color:#aaf" title="Dispatches all queued tasks to queue_runner.py (non-blocking)">🚀 Dispatch All</button>
+        <button class="btn" onclick="clearClachrRelay()" style="background:#1a0a0a;border-color:#744;color:#f88;font-size:11px" title="Clears goal_queue.txt and resets relay display">🗑 Clear Relay</button>
         <span id="task-inbox-msg" style="font-size:11px;color:#4af"></span>
       </div>
+
+      <!-- Live Queue / Progress -->
       <div class="wccs-section-title" style="margin-top:4px;font-size:11px">Current Queue</div>
-      <div style="font-size:0.8em;opacity:0.6;margin-top:-6px;margin-bottom:4px">Goals waiting to run — AAFL works through these in order</div>
+      <div style="font-size:0.8em;opacity:0.6;margin-top:-6px;margin-bottom:4px">Goals waiting to run — polls every 5s</div>
       <div id="task-inbox-queue" style="background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:8px;font-size:12px;min-height:36px;max-height:140px;overflow-y:auto">
         <span style="color:#555">Loading…</span>
+      </div>
+
+      <!-- CLACHR Results -->
+      <div class="wccs-section-title" style="margin-top:10px;font-size:11px">Results</div>
+      <div style="font-size:0.8em;opacity:0.6;margin-top:-6px;margin-bottom:4px">Completed task outputs — polls every 10s</div>
+      <div style="display:flex;gap:8px;margin-bottom:6px">
+        <button class="btn" onclick="copyClachrResults()" style="font-size:11px;padding:3px 10px" title="Copies all results formatted as TASK/RESULT blocks — paste back into Claude Chat">📋 Copy Results</button>
+      </div>
+      <div id="clachr-results" style="background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:8px;font-size:12px;min-height:40px;max-height:200px;overflow-y:auto">
+        <span style="color:#555">No results yet</span>
       </div>
     </div>
   </div>
@@ -9317,6 +9357,8 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   b2Init().catch(()=>{});
   loadTaskInboxQueue();
+  _startSafetyPoller();
+  _startClachrPollers();
 });
 
 // ── Task 3: Scout Results poller ─────────────────────────────────────────────
@@ -9429,23 +9471,158 @@ function _startScoutResultsPoller() {
   _scoutResultsTimer = setInterval(loadScoutResults, 10000);
 }
 
-// ── Task 3: Task Inbox ────────────────────────────────────────────────────────
+// ── OCB-J: Safety Shield ─────────────────────────────────────────────────────
 
-async function loadTaskInboxQueue() {
+let _safetyTimer = null;
+
+async function loadSafetyStatus() {
+  try {
+    const d = await apiFetch('/api/safety-status');
+    const badge = document.getElementById('safety-badge');
+    const last  = document.getElementById('safety-last-check');
+    if (!badge) return;
+
+    const safe = d.overall === 'SAFE';
+    badge.textContent = safe ? '🟢 SAFE TO RUN' : '🔴 DO NOT RUN OVERNIGHT';
+    badge.className = '';
+    badge.classList.add(safe ? 'safety-badge-safe' : 'safety-badge-danger');
+    if (last) last.textContent = 'Last checked: ' + new Date().toLocaleTimeString();
+
+    // Update pills
+    const pills = document.querySelectorAll('.safety-pill');
+    pills.forEach(pill => {
+      const checkName = pill.getAttribute('data-check');
+      const check = (d.checks || []).find(c => c.name === checkName);
+      if (!check) return;
+      const icon = check.status === 'PASS' ? '🟢' : (check.status === 'WARN' ? '🟡' : '🔴');
+      pill.textContent = checkName + ' ' + icon;
+      pill.className = 'safety-pill';
+      pill.classList.add(check.status === 'PASS' ? 'safety-pill-pass' : (check.status === 'WARN' ? 'safety-pill-warn' : 'safety-pill-fail'));
+      pill.title = check.detail || '';
+    });
+  } catch(e) {
+    // silently skip if MCC not running
+  }
+}
+
+async function runSafetyCheck() {
+  await loadSafetyStatus();
+}
+
+function _startSafetyPoller() {
+  if (_safetyTimer) clearInterval(_safetyTimer);
+  loadSafetyStatus();
+  _safetyTimer = setInterval(loadSafetyStatus, 15000);
+}
+
+// ── OCB-J: CLACHR Relay ───────────────────────────────────────────────────────
+
+let _clachrQueueTimer = null;
+let _clachrResultsTimer = null;
+let _clachrResultsData = [];
+
+async function loadClachrQueue() {
   const qDiv = document.getElementById('task-inbox-queue');
   if (!qDiv) return;
   try {
-    const d = await apiFetch('/api/task-inbox');
-    if (!d.goals || d.goals.length === 0) {
+    const tasks = await apiFetch('/api/clachr/queue');
+    if (!Array.isArray(tasks) || tasks.length === 0) {
       qDiv.innerHTML = '<span style="color:#555">Queue is empty</span>';
     } else {
-      qDiv.innerHTML = d.goals.map((g, i) =>
-        `<div style="padding:3px 0;border-bottom:1px solid #1a1a1a;color:#ccc">${i + 1}. ${esc(g)}</div>`
+      qDiv.innerHTML = tasks.map((t, i) =>
+        `<div style="padding:3px 0;border-bottom:1px solid #1a1a1a;color:#ccc">${i+1}. ${esc(t)}</div>`
       ).join('');
     }
   } catch(e) {
     qDiv.innerHTML = '<span style="color:#555">Error loading queue</span>';
   }
+}
+
+async function loadClachrResults() {
+  const rDiv = document.getElementById('clachr-results');
+  if (!rDiv) return;
+  try {
+    const results = await apiFetch('/api/clachr/results');
+    _clachrResultsData = Array.isArray(results) ? results : [];
+    if (_clachrResultsData.length === 0) {
+      rDiv.innerHTML = '<span style="color:#555">No results yet</span>';
+      return;
+    }
+    rDiv.innerHTML = _clachrResultsData.map(r => {
+      const statusColor = r.status === 'DONE' ? '#4f4' : (r.status === 'FAILED' ? '#f66' : '#fa0');
+      return `<div style="border:1px solid #222;border-radius:4px;padding:6px 8px;margin-bottom:6px;background:#0d0d0d">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;font-weight:bold;color:#aaa">${esc(r.goal)}</span>
+          <span style="font-size:10px;color:${statusColor};margin-left:auto">${r.status}</span>
+          <span style="font-size:10px;color:#444">${r.timestamp || ''}</span>
+        </div>
+        <div style="font-size:11px;color:#888;white-space:pre-wrap;max-height:80px;overflow-y:auto">${esc(r.result)}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    rDiv.innerHTML = '<span style="color:#555">Error loading results</span>';
+  }
+}
+
+async function clachrDispatch() {
+  const msg = document.getElementById('task-inbox-msg');
+  try {
+    const d = await apiFetch('/api/clachr/dispatch', { method: 'POST' });
+    if (d.status === 'dispatched') {
+      if (msg) { msg.textContent = `🚀 Dispatched ${d.task_count} task(s)`; msg.style.color = '#aaf'; setTimeout(() => msg.textContent = '', 4000); }
+    } else {
+      if (msg) { msg.textContent = 'Error: ' + (d.detail || d.status); msg.style.color = '#f84'; }
+    }
+  } catch(e) {
+    if (msg) { msg.textContent = 'Dispatch error: ' + e; msg.style.color = '#f84'; }
+  }
+}
+
+async function copyClachrResults() {
+  if (!_clachrResultsData.length) { alert('No results to copy.'); return; }
+  const text = _clachrResultsData.map(r =>
+    `TASK: ${r.goal}\nRESULT: ${r.result}\n---`
+  ).join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  } catch(e) {
+    alert('Copy failed — try manually selecting text: ' + e);
+  }
+}
+
+async function clearClachrRelay() {
+  if (!confirm('Clear the task queue and reset the relay display?')) return;
+  try {
+    await apiFetch('/api/clachr/clear', { method: 'DELETE' });
+    const msg = document.getElementById('task-inbox-msg');
+    if (msg) { msg.textContent = '🗑 Relay cleared'; msg.style.color = '#f88'; setTimeout(() => msg.textContent = '', 3000); }
+    loadClachrQueue();
+    _clachrResultsData = [];
+    const rDiv = document.getElementById('clachr-results');
+    if (rDiv) rDiv.innerHTML = '<span style="color:#555">No results yet</span>';
+  } catch(e) {
+    alert('Clear failed: ' + e);
+  }
+}
+
+function _startClachrPollers() {
+  if (_clachrQueueTimer)   clearInterval(_clachrQueueTimer);
+  if (_clachrResultsTimer) clearInterval(_clachrResultsTimer);
+  loadClachrQueue();
+  loadClachrResults();
+  _clachrQueueTimer   = setInterval(loadClachrQueue,   5000);
+  _clachrResultsTimer = setInterval(loadClachrResults, 10000);
+}
+
+// ── Task 3: Task Inbox ────────────────────────────────────────────────────────
+
+async function loadTaskInboxQueue() {
+  // Delegates to CLACHR queue loader (OCB-J)
+  await loadClachrQueue();
 }
 
 async function taskInboxAdd() {
