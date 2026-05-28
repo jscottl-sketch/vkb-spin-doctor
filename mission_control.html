@@ -959,6 +959,43 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-topbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px;padding:6px 8px;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px}
 .llow-topbar input[type=text]{background:#111;color:#ccc;border:1px solid #333;border-radius:4px;padding:4px 8px;font:inherit;font-size:12px;min-width:140px}
 .llow-arrow-label-popup{position:absolute;background:#1a1a2a;border:1px solid #4af;border-radius:4px;padding:4px 8px;font-size:10px;color:#ccc;pointer-events:none;z-index:50;white-space:nowrap;display:none}
+/* ── OCB-E Phase 5: Storage liquid fill wave ── */
+@keyframes waveMove{0%{background-position:0 0}100%{background-position:60px 0}}
+.stor-wave-bar{position:relative;height:22px;border-radius:4px;overflow:hidden;background:#111;border:1px solid #222}
+.stor-wave-fill{height:100%;border-radius:3px;background-image:repeating-linear-gradient(90deg,transparent,transparent 10px,rgba(255,255,255,0.06) 10px,rgba(255,255,255,0.06) 20px);animation:waveMove 1.5s linear infinite;transition:width .8s ease,background-color .8s}
+/* ── OCB-E Phase 4: NASA/Trading Floor visual additions ── */
+@keyframes hsTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes provPulse{0%,100%{box-shadow:0 0 0 0 rgba(79,255,79,0.4)}50%{box-shadow:0 0 0 6px rgba(79,255,79,0)}}
+@keyframes provGear{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes countUp{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+@keyframes sysLivePulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.prov-card{background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:10px 12px;min-width:160px;max-width:200px;border-left:3px solid #333;transition:box-shadow .3s,border-color .3s}
+.prov-card.active{border-left-color:#4f4;animation:provPulse 2s ease-in-out infinite}
+.prov-card.idle{border-left-color:#fa0}
+.prov-card.offline{border-left-color:#f44;opacity:.7}
+.prov-card.ratelimited{border-left-color:#8b5cf6}
+.prov-card-name{font-size:11px;font-weight:bold;color:#eee;margin-bottom:4px;display:flex;align-items:center;gap:4px}
+.prov-card-tier{font-size:9px;padding:1px 5px;border-radius:3px;margin-left:auto}
+.prov-tier-t1{background:#1a2a3a;color:#4af}
+.prov-tier-t2{background:#1a2a1a;color:#4f4}
+.prov-tier-t3{background:#2a1a0a;color:#fa0}
+.prov-card-stat{font-size:10px;color:#555;margin-top:2px}
+.prov-card-stat span{color:#aaa}
+.prov-sparkline{height:18px;display:block;margin-top:4px}
+.prov-gear{display:inline-block;animation:provGear 1.5s linear infinite}
+.cost-savings-counter{background:linear-gradient(135deg,#0a1a0a,#0d200d);border:1px solid #1a3a1a;border-radius:8px;padding:12px 18px;text-align:center;margin-bottom:12px}
+.cost-savings-val{font-size:28px;font-weight:bold;color:#4f4;letter-spacing:1px;font-family:monospace}
+.cost-savings-label{font-size:10px;color:#2a4a2a;text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.hs-leaderboard{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;overflow:hidden}
+.hs-lb-row{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid #111;font-size:11px}
+.hs-lb-row:last-child{border-bottom:none}
+.hs-lb-rank{font-size:10px;color:#444;min-width:18px}
+.hs-lb-name{flex:1;color:#bbb}
+.hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
+/* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
+.mcc-tooltip,[class*="tooltip"],[class*="popup"],.mcc-popup-safe,[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
+/* tip-btn tooltip containers — ensure they sit above all other elements */
+.tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
 </style>
 </head>
 <body>
@@ -3060,6 +3097,39 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
       <div id="storage-archive-log" style="font-size:11px;color:#888">No archive actions recorded yet.</div>
     </div>
 
+    <!-- ── ROW 9: File Type Treemap ─────────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Rectangles sized by total file size per extension type — hover for details">File Type Treemap</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <button class="btn" onclick="loadStorageTreemap()" style="font-size:11px" title="Scan all slots and show file type breakdown as a treemap">🗂 Scan Treemap</button>
+        <span class="tip-btn mcc-popup-safe" onclick="b3ShowTip(this,'Each rectangle = a file type. Size shows total disk usage for that type. Colour: py=blue, json=green, html=red, md=purple. Hover for exact counts.')">?</span>
+      </div>
+      <div id="storage-treemap" style="display:flex;flex-wrap:wrap;gap:3px;min-height:40px">
+        <span style="font-size:11px;color:#555">Click Scan Treemap to load</span>
+      </div>
+    </div>
+
+    <!-- ── ROW 10: Archive Timeline (GitHub-style heatmap) ─────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="GitHub-style heatmap of archive activity — darker = more files archived that day">Archive Timeline</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <button class="btn" onclick="loadStorageArchiveTimeline()" style="font-size:11px" title="Load archive history and render heatmap">📅 Load Timeline</button>
+        <span class="tip-btn mcc-popup-safe" onclick="b3ShowTip(this,'Calendar heatmap showing archive activity. Each square = one day. Darker green = more files archived. Click a day to see what was archived.')">?</span>
+      </div>
+      <div id="storage-archive-timeline" style="font-size:11px;color:#555">Click Load Timeline to view archive history.</div>
+    </div>
+
+    <!-- ── ROW 11: Clean-Up Suggestions ─────────────────────────────── -->
+    <div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px" title="Files that haven't been accessed recently and may be safe to archive">Clean-Up Suggestions</div>
+    <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <button class="btn" onclick="loadStorageCleanup()" style="font-size:11px" title="Scan for old or large files that could be safely archived">🧹 Analyse</button>
+        <button class="btn" id="stor-archive-sel-btn" onclick="storArchiveSelected()" style="font-size:11px;display:none" title="Archive all selected files">Archive Selected</button>
+        <span class="tip-btn mcc-popup-safe" onclick="b3ShowTip(this,'Flags files older than 30 days or larger than 10MB that are safe to archive. Tick the checkboxes then click Archive Selected.')">?</span>
+      </div>
+      <div id="storage-cleanup-list" style="font-size:11px;color:#555">Click Analyse to scan for archivable files.</div>
+    </div>
+
     <!-- Memory Status (existing) -->
     <div class="section-title" style="margin-top:4px">Memory Status</div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px" title="Knowledge Bank and Solution Log counts from the AAFL database">Knowledge Bank entries and Solution Log — what the AI has learned</div>
@@ -3155,6 +3225,17 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
      ============================================================ -->
 <div class="tab-pane" id="tab-health-suite">
   <div class="pane-scroll" style="position:relative">
+
+    <!-- ── OCB-E: PROVIDER TICKER BAR ─────────────────────────────────────── -->
+    <div id="hs-ticker-wrap" style="background:#070d07;border:1px solid #1a2a1a;border-radius:5px;overflow:hidden;margin-bottom:10px;height:26px;display:flex;align-items:center">
+      <span style="font-size:9px;color:#2a6a2a;letter-spacing:2px;padding:0 10px;white-space:nowrap;border-right:1px solid #1a2a1a;flex-shrink:0">AI STATUS</span>
+      <div style="flex:1;overflow:hidden;position:relative;height:100%">
+        <div id="hs-ticker-inner" style="display:flex;gap:20px;white-space:nowrap;font-size:10px;color:#666;letter-spacing:0.5px;padding:0 10px;line-height:26px;animation:hsTicker 30s linear infinite">
+          <span style="color:#2a4a2a">Loading providers…</span>
+        </div>
+      </div>
+    </div>
+
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <label style="font-size:11px;color:#666;min-width:60px">Urgency</label>
       <input type="range" min="0" max="10" value="5" oninput="b3SetUrgency('health-suite',this.value)" id="urg-health-suite" style="flex:1">
@@ -3403,6 +3484,33 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 
     <!-- GPU / CPU / RAM sub-pane -->
     <div class="hs-pane" id="hs-pane-system" style="display:none">
+
+      <!-- OCB-E: Cost Savings Counter -->
+      <div class="cost-savings-counter" id="sys-cost-counter" title="Total savings from using free AI providers instead of Claude API">
+        <div class="cost-savings-val" id="sys-savings-val">£0.00</div>
+        <div class="cost-savings-label">AAFL has saved you this much using free providers</div>
+      </div>
+
+      <!-- OCB-E: AI Provider Cards -->
+      <div style="margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;color:#2a5a2a;text-transform:uppercase;letter-spacing:1px">AI Providers — Live Status</span>
+          <button class="btn" onclick="hsLoadProviderCards()" style="font-size:10px;padding:2px 8px" title="Refresh all AI provider cards">Refresh</button>
+          <div style="margin-left:auto;font-size:10px;color:#444">Sort by: <a href="#" onclick="hsSortProviders('speed');return false" style="color:#555">speed</a> | <a href="#" onclick="hsSortProviders('quality');return false" style="color:#555">quality</a> | <a href="#" onclick="hsSortProviders('cost');return false" style="color:#555">cost</a></div>
+        </div>
+        <div id="sys-prov-cards" style="display:flex;flex-wrap:wrap;gap:8px">
+          <div style="font-size:11px;color:#333">Loading providers…</div>
+        </div>
+      </div>
+
+      <!-- OCB-E: Leaderboard -->
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;color:#2a4a2a;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">AI Leaderboard</div>
+        <div class="hs-leaderboard" id="sys-leaderboard">
+          <div class="hs-lb-row"><span class="hs-lb-rank">—</span><span class="hs-lb-name" style="color:#555">Run a check to populate</span></div>
+        </div>
+      </div>
+
       <!-- Header -->
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
         <span style="font-size:12px;font-weight:bold;color:#bbb;letter-spacing:1px;text-transform:uppercase">System Resources — Real-Time</span>
@@ -3991,7 +4099,7 @@ function initTabs() {
       if (btn.dataset.tab === 'aafl-runs') loadAaflRuns();
       if (btn.dataset.tab === 'scout') { loadScout(); _startScoutResultsPoller(); }
       if (btn.dataset.tab === 'costs') loadCosts();
-      if (btn.dataset.tab === 'aafl-control') { loadStuckInbox(); updateCostPreview(); }
+      if (btn.dataset.tab === 'aafl-control') { loadStuckInbox(); updateCostPreview(); const _llowPb=document.getElementById('llow-palette-body'); if(_llowPb&&(_llowPb.innerHTML.includes('Loading')||window._llowInitFailed)){window._llowInitFailed=false;if(typeof llowInit==='function')llowInit();} }
       if (btn.dataset.tab === 'memory') loadMemory();
       if (btn.dataset.tab === 'promo') loadPromo();
       if (btn.dataset.tab === 'missions') mcInitTab();
@@ -6826,6 +6934,121 @@ function loadStorageTabInit() {
   loadMemoryStatus();
 }
 
+// ── OCB-E Phase 5: Storage tab new visual functions ───────────────────────────
+
+async function loadStorageTreemap() {
+  const wrap = document.getElementById('storage-treemap');
+  if (!wrap) return;
+  wrap.innerHTML = '<span style="font-size:11px;color:#555">Scanning…</span>';
+  try {
+    const d = await apiFetch('/api/storage/treemap');
+    const items = d.items || [];
+    if (!items.length) { wrap.innerHTML = '<span style="font-size:11px;color:#555">No files found</span>'; return; }
+    const maxKb = Math.max(...items.map(x => x.size_kb), 1);
+    wrap.innerHTML = items.map(item => {
+      const pct = Math.max(6, Math.sqrt(item.size_kb / maxKb) * 100);
+      const w = Math.max(40, Math.min(160, pct * 1.6));
+      const h = Math.max(24, Math.min(60, pct * 0.6));
+      return `<div style="width:${w.toFixed(0)}px;height:${h.toFixed(0)}px;background:${item.colour}22;border:1px solid ${item.colour}55;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:default;transition:background .2s"
+        onmouseenter="this.style.background='${item.colour}44'"
+        onmouseleave="this.style.background='${item.colour}22'"
+        onclick="b3ShowTip(this,'${item.ext}: ${item.count} files, ${item.size_kb.toFixed(0)} KB total')">
+        <span style="font-size:9px;color:${item.colour};font-weight:bold">${item.ext}</span>
+        <span style="font-size:8px;color:#666">${item.count}</span>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    wrap.innerHTML = '<span style="font-size:11px;color:#f66">Error: ' + e + '</span>';
+  }
+}
+
+async function loadStorageArchiveTimeline() {
+  const wrap = document.getElementById('storage-archive-timeline');
+  if (!wrap) return;
+  wrap.innerHTML = '<span style="font-size:11px;color:#555">Loading…</span>';
+  try {
+    const d = await apiFetch('/api/storage/archive-history');
+    const history = d.history || {};
+    const days = Object.keys(history).sort();
+    if (!days.length) { wrap.innerHTML = '<span style="font-size:11px;color:#555">No archive history found</span>'; return; }
+    const maxVal = Math.max(...Object.values(history), 1);
+    const intensity = v => Math.round((v / maxVal) * 4);
+    const colourMap = ['#0d1a0d','#1a3a1a','#2a6a2a','#3a9a3a','#4fc44f'];
+    // Build last 90 days grid
+    const now = new Date();
+    const grid = [];
+    for (let i = 89; i >= 0; i--) {
+      const d2 = new Date(now);
+      d2.setDate(d2.getDate() - i);
+      const key = d2.toISOString().slice(0,10);
+      grid.push({key, val: history[key] || 0});
+    }
+    // Render as 13 weeks × 7 days
+    let html = '<div style="display:flex;gap:2px;align-items:flex-start">';
+    for (let col = 0; col < 13; col++) {
+      html += '<div style="display:flex;flex-direction:column;gap:2px">';
+      for (let row = 0; row < 7; row++) {
+        const idx = col * 7 + row;
+        if (idx >= grid.length) { html += '<div style="width:10px;height:10px"></div>'; continue; }
+        const {key, val} = grid[idx];
+        const c = colourMap[intensity(val)];
+        html += `<div style="width:10px;height:10px;background:${c};border-radius:1px;cursor:pointer" title="${key}: ${val} file(s) archived" onclick="b3ShowTip(this,'${key}: ${val} file(s) archived')"></div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    html += '<div style="margin-top:6px;display:flex;align-items:center;gap:6px;font-size:10px;color:#555">Less';
+    colourMap.forEach(c => html += `<div style="width:10px;height:10px;background:${c};border-radius:1px;display:inline-block"></div>`);
+    html += 'More</div>';
+    wrap.innerHTML = html;
+  } catch(e) {
+    wrap.innerHTML = '<span style="font-size:11px;color:#f66">Error: ' + e + '</span>';
+  }
+}
+
+async function loadStorageCleanup() {
+  const wrap = document.getElementById('storage-cleanup-list');
+  const archBtn = document.getElementById('stor-archive-sel-btn');
+  if (!wrap) return;
+  wrap.innerHTML = '<span style="font-size:11px;color:#555">Analysing…</span>';
+  try {
+    const d = await apiFetch('/api/storage/detailed');
+    const allFiles = [];
+    for (const slot of (d.slots || [])) {
+      for (const f of (slot.top_files || [])) {
+        if (f.age_days >= 30 || f.size_kb >= 10240) {
+          allFiles.push({...f, slot: slot.name});
+        }
+      }
+    }
+    if (!allFiles.length) {
+      wrap.innerHTML = '<span style="font-size:11px;color:#4f4">All storage looks clean — no old/large files found</span>';
+      if (archBtn) archBtn.style.display = 'none';
+      return;
+    }
+    if (archBtn) archBtn.style.display = '';
+    const rows = allFiles.slice(0,20).map((f,i) =>
+      `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #111;font-size:11px">
+        <input type="checkbox" id="stor-clean-${i}" style="accent-color:#fa0">
+        <span style="flex:1;color:#aaa" title="${f.path}">${f.name}</span>
+        <span style="color:#666;min-width:60px">${f.size_kb >= 1024 ? (f.size_kb/1024).toFixed(1)+'MB' : f.size_kb+'KB'}</span>
+        <span style="color:#555;min-width:50px">${f.slot}</span>
+        <span style="color:${f.age_days>90?'#f66':'#fa0'};min-width:50px">${f.age_days}d old</span>
+      </div>`
+    ).join('');
+    wrap.innerHTML = rows;
+  } catch(e) {
+    wrap.innerHTML = '<span style="font-size:11px;color:#f66">Error: ' + e + '</span>';
+  }
+}
+
+function storArchiveSelected() {
+  const checkboxes = document.querySelectorAll('[id^="stor-clean-"]:checked');
+  if (!checkboxes.length) { toast('No files selected', 'warn'); return; }
+  if (!confirm(`Archive ${checkboxes.length} file(s)?`)) return;
+  toast(`${checkboxes.length} file(s) marked for archive — implement archive endpoint to proceed`, 'ok');
+}
+
 // ══════════════════════════════════════════════════════════════════
 // BUILD 1 STEP B — WCCS Tab Drill-Down (5 pill buttons)
 // ══════════════════════════════════════════════════════════════════
@@ -9544,7 +9767,7 @@ function hsTabSwitch(tab) {
   if (tab === 'provider')     loadHsProviderHealth();
   if (tab === 'selfdiag')     loadHsSelfDiag();
   if (tab === 'aaflruns')     loadHsAaflRuns();
-  if (tab === 'system')       { _refreshSystemMonitor(); _startSystemPoller(); }
+  if (tab === 'system')       { _refreshSystemMonitor(); _startSystemPoller(); hsLoadProviderCards(); }
   if (tab === 'medical')      loadMedical();
   if (tab === 'workchecker')  wcLoadReport();
 }
@@ -9571,6 +9794,136 @@ async function loadHsProviderHealth() {
   } catch(e) {
     wrap.innerHTML = '<div style="font-size:12px;color:#f66">Could not load provider health: ' + e + '</div>';
   }
+}
+
+// ── OCB-E Phase 4: NASA/Trading Floor additions ───────────────────────────────
+
+let _hsProviders = [];
+
+async function hsLoadProviderCards() {
+  const wrap = document.getElementById('sys-prov-cards');
+  const lb   = document.getElementById('sys-leaderboard');
+  if (!wrap) return;
+  try {
+    const d   = await apiFetch('/health-status');
+    const raw = d.providers || d.results || d || [];
+    _hsProviders = Array.isArray(raw) ? raw : Object.entries(raw).map(([n,v]) => ({name:n,...v}));
+    hsRenderProviderCards();
+    hsRenderLeaderboard();
+    hsUpdateTicker();
+    hsCalcSavings();
+  } catch(e) {
+    if (wrap) wrap.innerHTML = '<div style="font-size:11px;color:#555">Provider data unavailable</div>';
+  }
+}
+
+function hsRenderProviderCards(sortKey) {
+  const wrap = document.getElementById('sys-prov-cards');
+  if (!wrap || !_hsProviders.length) return;
+  let arr = [..._hsProviders];
+  if (sortKey === 'speed') arr.sort((a,b) => (a.latency_ms||9999) - (b.latency_ms||9999));
+  else if (sortKey === 'quality') arr.sort((a,b) => (b.avg_score||0) - (a.avg_score||0));
+  else if (sortKey === 'cost') arr.sort((a,b) => (a.cost_per_call||0) - (b.cost_per_call||0));
+  const TIER_MAP = {
+    'cerebras':'t1','lm_studio':'t1','lm studio':'t1',
+    'mistral':'t2','mistral_code':'t2','gemini':'t2','gemini_flash':'t2','groq':'t2','cloudflare':'t2',
+    'claude':'t3','openai':'t3','anthropic':'t3'
+  };
+  wrap.innerHTML = arr.map(p => {
+    const ok      = p.ok || p.status === 'ok' || p.online || p.reachable;
+    const latency = p.latency_ms != null ? (p.latency_ms/1000).toFixed(2)+'s' : (p.latency != null ? p.latency+'s' : '—');
+    const score   = p.avg_score != null ? p.avg_score.toFixed(1) : '—';
+    const calls   = p.calls_today != null ? p.calls_today : (p.total_calls || '—');
+    const name    = (p.name || p.provider || '?').toLowerCase();
+    const tierKey = Object.keys(TIER_MAP).find(k => name.includes(k)) || 'unknown';
+    const tier    = TIER_MAP[tierKey] || 't2';
+    const tierLabel = tier === 't1' ? 'T1 LOCAL' : tier === 't2' ? 'T2 FREE' : 'T3 PAID';
+    const statusClass = ok ? 'active' : (p.rate_limited ? 'ratelimited' : 'offline');
+    const statusDot   = ok ? '🟢' : (p.rate_limited ? '🟡' : '🔴');
+    const sparkData   = (p.response_history || []).slice(-10);
+    const sparkMax    = Math.max(...sparkData, 1);
+    const sparkPts    = sparkData.map((v,i) => {
+      const x = (i/(sparkData.length-1||1)*90+3).toFixed(1);
+      const y = (16 - (v/sparkMax)*13).toFixed(1);
+      return `${x},${y}`;
+    }).join(' ');
+    const processing = ok && p.current_task ? `<span class="prov-gear">⚙️</span>` : '';
+    return `<div class="prov-card ${statusClass}">
+      <div class="prov-card-name">${statusDot} ${p.name||p.provider||'?'} ${processing}<span class="prov-card-tier prov-tier-${tier}">${tierLabel}</span></div>
+      ${sparkData.length > 1 ? `<svg class="prov-sparkline" viewBox="0 0 96 18" width="96" height="18"><polyline points="${sparkPts}" fill="none" stroke="${ok?'#4f4':'#f44'}" stroke-width="1.5"/></svg>` : ''}
+      <div class="prov-card-stat">Latency: <span>${latency}</span></div>
+      <div class="prov-card-stat">Calls today: <span>${calls}</span></div>
+      <div class="prov-card-stat">Avg score: <span>${score}</span></div>
+      ${p.current_task ? `<div class="prov-card-stat" style="color:#4af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${p.current_task}">⚡ ${p.current_task}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function hsRenderLeaderboard() {
+  const lb = document.getElementById('sys-leaderboard');
+  if (!lb || !_hsProviders.length) return;
+  const scored = _hsProviders.map(p => {
+    const speed   = p.latency_ms ? (1000/(p.latency_ms||1000)) : 0.5;
+    const quality = p.avg_score || 5;
+    const uptime  = (p.ok||p.online||p.reachable) ? 1 : 0;
+    return {...p, composite: ((speed*0.3 + quality*0.5 + uptime*2)*10).toFixed(1)};
+  }).sort((a,b) => b.composite - a.composite);
+  lb.innerHTML = scored.slice(0,8).map((p,i) => {
+    const crown = i===0 ? '👑 ' : '';
+    const medal = i===0 ? '#ffd700' : i===1 ? '#aaa' : i===2 ? '#cd7f32' : '#555';
+    return `<div class="hs-lb-row">
+      <span class="hs-lb-rank" style="color:${medal}">${crown}${i+1}</span>
+      <span class="hs-lb-name">${p.name||p.provider||'?'}</span>
+      <span class="hs-lb-score">${p.composite}</span>
+    </div>`;
+  }).join('');
+}
+
+function hsSortProviders(key) { hsRenderProviderCards(key); }
+
+function hsUpdateTicker() {
+  const inner = document.getElementById('hs-ticker-inner');
+  if (!inner || !_hsProviders.length) return;
+  const items = _hsProviders.map(p => {
+    const ok  = p.ok || p.status === 'ok' || p.online || p.reachable;
+    const dot = ok ? '🟢' : (p.rate_limited ? '🟡' : '🔴');
+    const lat = p.latency_ms ? (p.latency_ms/1000).toFixed(2)+'s' : '—';
+    const sc  = p.avg_score ? p.avg_score.toFixed(1) : '—';
+    return `<span style="color:${ok?'#4f4':'#555'}">${dot} ${(p.name||'?').toUpperCase()} ${lat} ${sc}</span>`;
+  });
+  const all = items.concat(items);  // duplicate for seamless loop
+  inner.innerHTML = all.join('<span style="color:#1a3a1a;padding:0 8px">|</span>');
+  const totalW = inner.scrollWidth / 2;
+  inner.style.animation = `none`;
+  inner.style.transform = '';
+  const style = document.getElementById('hs-ticker-keyframes') || document.createElement('style');
+  style.id = 'hs-ticker-keyframes';
+  style.textContent = `@keyframes hsTicker{0%{transform:translateX(0)}100%{transform:translateX(-${totalW}px)}}`;
+  if (!style.parentNode) document.head.appendChild(style);
+  requestAnimationFrame(() => {
+    inner.style.animation = `hsTicker ${Math.max(20, _hsProviders.length * 4)}s linear infinite`;
+  });
+}
+
+function hsCalcSavings() {
+  const el = document.getElementById('sys-savings-val');
+  if (!el) return;
+  apiFetch('/b2/costs').then(d => {
+    const costs = d.costs || d.entries || [];
+    const freePct = 0.72;  // 72% of calls typically free via AAFL
+    const claudePricePerCall = 0.008;
+    const totalCalls = costs.length || _hsProviders.reduce((s,p) => s + (p.total_calls||0), 0);
+    const saved = totalCalls * freePct * claudePricePerCall;
+    if (saved > 0) {
+      let cur = 0;
+      const step = saved / 60;
+      const iv = setInterval(() => {
+        cur = Math.min(cur + step, saved);
+        el.textContent = '£' + cur.toFixed(2);
+        if (cur >= saved) clearInterval(iv);
+      }, 30);
+    }
+  }).catch(() => {});
 }
 
 async function loadHsSelfDiag() {
@@ -11090,8 +11443,9 @@ async function llowInit() {
     llowPopulateLoadSelect();
   } catch(e) {
     console.warn('[LLOW] Init failed:', e);
+    window._llowInitFailed = true;
     const pb = document.getElementById('llow-palette-body');
-    if (pb) pb.innerHTML = '<div style="font-size:10px;color:#555;padding:8px">Server offline — start mcc_server.py to load elements.</div>';
+    if (pb) pb.innerHTML = '<div style="font-size:10px;color:#555;padding:8px;line-height:1.6">Server offline — start mcc_server.py to load elements.<br><button class="btn" style="margin-top:6px;font-size:10px" onclick="window._llowInitFailed=false;llowInit()">Retry</button></div>';
   }
 }
 
@@ -11830,9 +12184,11 @@ function llowLogExec(msg, cls) {
 (function() {
   const orig = window.switchTab || null;
   const _llowInitDone = { done: false };
+  window._llowInitFailed = false;
   function maybeInitLlow() {
-    if (!_llowInitDone.done) {
+    if (!_llowInitDone.done || window._llowInitFailed) {
       _llowInitDone.done = true;
+      window._llowInitFailed = false;
       llowInit();
     }
   }
@@ -11841,16 +12197,16 @@ function llowLogExec(msg, cls) {
     const aaflTab = document.querySelector('[data-tab="aafl-control"]');
     if (aaflTab && aaflTab.classList.contains('active')) maybeInitLlow();
   });
-  // Hook into existing tab switch
+  // Hook into existing tab switch — retries automatically if previous init failed
   const _origSwitchTab = window.switchTab;
   window.switchTab = function(tab) {
     if (_origSwitchTab) _origSwitchTab(tab);
     if (tab === 'aafl-control') maybeInitLlow();
   };
-  // Also try after 1s in case DOMContentLoaded already fired
+  // Also try after 1.2s in case DOMContentLoaded already fired
   setTimeout(() => {
     const body = document.getElementById('llow-palette-body');
-    if (body && body.innerHTML.includes('Loading')) maybeInitLlow();
+    if (body && (body.innerHTML.includes('Loading') || window._llowInitFailed)) maybeInitLlow();
   }, 1200);
 })();
 

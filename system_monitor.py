@@ -28,6 +28,10 @@ _AI_PROCS = {"lm studio", "python", "node", "mcc_server", "loop_manager", "aafl"
 # Track last 10 GPU temps for thermal prediction
 _gpu_temp_history: list[float] = []
 
+# Non-blocking disk IO cache (avoids sleep in each call)
+_last_disk_counters = None
+_last_disk_time: float = 0.0
+
 
 class SystemMonitor:
 
@@ -120,6 +124,30 @@ class SystemMonitor:
 
         return result
 
+    def get_disk_io_instant(self) -> dict:
+        """Non-blocking disk IO — uses cached counters from previous call."""
+        global _last_disk_counters, _last_disk_time
+        if not _PSUTIL:
+            return {"ok": False, "error": "psutil not installed"}
+        try:
+            now = time.time()
+            c = psutil.disk_io_counters()
+            if _last_disk_counters is None or _last_disk_time == 0.0:
+                _last_disk_counters = c
+                _last_disk_time = now
+                return {"ok": True, "read_mb_s": 0.0, "write_mb_s": 0.0}
+            elapsed = max(now - _last_disk_time, 0.01)
+            result = {
+                "ok":        True,
+                "read_mb_s": round((c.read_bytes  - _last_disk_counters.read_bytes)  / 1024**2 / elapsed, 2),
+                "write_mb_s": round((c.write_bytes - _last_disk_counters.write_bytes) / 1024**2 / elapsed, 2),
+            }
+            _last_disk_counters = c
+            _last_disk_time = now
+            return result
+        except Exception as exc:
+            return {"ok": False, "error": str(exc)}
+
     def get_disk_io(self) -> dict:
         if not _PSUTIL:
             return {"ok": False, "error": "psutil not installed"}
@@ -197,6 +225,7 @@ class SystemMonitor:
         ram = self.get_ram()
         gpu = self.get_gpu()
         ai  = self.get_ai_allocation()
+        disk = self.get_disk_io_instant()
         thermal = self.predict_thermal()
 
         # Composite health score 0–100
@@ -231,6 +260,7 @@ class SystemMonitor:
             "cpu":             cpu,
             "ram":             ram,
             "gpu":             gpu,
+            "disk":            disk,
             "ai_allocation":   ai,
             "thermal":         thermal,
             "health_score":    health_score,

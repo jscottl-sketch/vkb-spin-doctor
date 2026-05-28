@@ -152,13 +152,12 @@ def test_group_c():
     tab_checks = {
         "home":          "Home",
         "kanban":        "Kanban",
-        "autolog":       "Activity Feed",
-        "aafl-runs":     "AAFL Runs",
+        # "aafl-runs" tab merged into AAFL Control in Build 5 — no longer a standalone tab
         "costs":         "Costs",
         "scout":         "Scout Control",
         "aafl-control":  "AAFL Control",
         "wccs":          "WCCS",
-        "providerhealth":"Provider Health",
+        "health-suite":  "Health Suite",
         "acca":          "ACCA",
     }
     for tab_id, label in tab_checks.items():
@@ -167,14 +166,16 @@ def test_group_c():
 
     # 10 features — static IDs where possible, JS search for dynamic elements
     feature_ids = {
-        "stuck-inbox-list": "Stuck Inbox",
-        "btn-run-now":      "Run Now button",
-        "cost-preview":     "Cost Predictor",
-        "tab-memory":       "Memory Inspector",
-        "tab-promo":        "Promo Queue",
-        "tab-acca":         "ACCA Tab",
-        "tab-alp":          "ALP Counter",
-        "kb-overlay":       "Keyboard Shortcuts",
+        "stuck-inbox-list":  "Stuck Inbox",
+        "btn-run-now":       "Run Now button",
+        "cost-preview":      "Cost Predictor",
+        "tab-memory":        "Memory Inspector",
+        "tab-promo":         "Promo Queue",
+        "tab-acca":          "ACCA Tab",
+        "alp-entry-input":   "ALP Counter (merged into AAFL Control)",
+        "kb-overlay":        "Keyboard Shortcuts",
+        "hs-pane-provider":  "Provider Health (in Health Suite)",
+        "wpanel-activity":   "Activity Feed (in WCCS)",
     }
     for el_id, label in feature_ids.items():
         found = el_id in scanner.element_ids
