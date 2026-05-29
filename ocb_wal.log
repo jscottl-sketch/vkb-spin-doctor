@@ -1,0 +1,6 @@
+# OCB Write-Ahead Log — append only. Never delete entries.
+[2026-05-29 18:40:27] INIT: ocb_wal.log created
+[2026-05-29 18:44:25] INTENT: OCB-K-Build3 Phase SNAPSHOT — Pre-mission snapshot saved: STATUS_pre_OCB-K-Build3_20260529_184425.md
+[2026-05-29 18:44:25] INTENT: OCB-K-Build3 Phase START — Costs tab, Scout improvements, LLOW enhancements
+[2026-05-29 18:44:38] INTENT: OCB-K-Build3 Phase SNAPSHOT — Pre-mission snapshot saved: STATUS_pre_OCB-K-Build3_20260529_184438.md
+[2026-05-29 18:44:38] INTENT: OCB-K-Build3 Phase START — Costs tab, Scout improvements, LLOW enhancements

@@ -1,0 +1,9 @@
+{
+  "queue": [
+    {"id": "OCB-K-Build3", "description": "Costs tab, Scout improvements, LLOW enhancements", "status": "pending"},
+    {"id": "StarCitizen-v02", "description": "Star Citizen benchmark via AAFL autonomous run", "status": "pending"}
+  ],
+  "completed": ["OCB-K-Build2"],
+  "last_ocb": "OCB-K Build 2",
+  "last_mot": "108/108 ALL CLEAR 2026-05-29"
+}

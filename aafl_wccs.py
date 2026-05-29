@@ -268,6 +268,15 @@ def main():
     else:
         print("[PRE-FLIGHT] chat_latest.txt found")
     chat_text = read_text(chat_path)
+    # LIFEGUARD PROTOCOL — pre-save snapshot via ocb_runner.py
+    if not args.dry_run:
+        subprocess.run([sys.executable, "ocb_runner.py", "--complete", "WCCS-autosave"],
+                       capture_output=True, cwd=ROOT)
+    # Detect MOT all-clear in chat summary and sync STATUS_MASTER if found
+    if not args.dry_run and ("108/108" in chat_text or "ALL CLEAR" in chat_text):
+        subprocess.run([sys.executable, "ocb_runner.py", "--sync-master"],
+                       capture_output=True, cwd=ROOT)
+        print("[LIFEGUARD] MOT all-clear detected — STATUS_MASTER.md synced")
     current_status = read_text(STATUS)
     if not current_status:
         print("[FATAL] STATUS.md not found. Run handover split first.")

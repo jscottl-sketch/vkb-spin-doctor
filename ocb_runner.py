@@ -4,6 +4,7 @@ Parses an OCB block and executes each phase/task using free AI providers.
 Called by mcc_server.py via POST /api/ocb/run.
 """
 
+import argparse
 import json
 import os
 import py_compile
@@ -39,6 +40,15 @@ KNOWN_FILES = [
 OCB_STATUS_FILE  = HERE / "data" / "ocb_status.json"
 CLACHR_RESPONSE  = HERE / "data" / "clachr_response.json"
 MOT_SCRIPT       = HERE / "mcc_full_mot.py"
+
+# Lifeguard Protocol paths
+STATUS_FILE      = HERE / "STATUS.md"
+STATUS_MASTER    = HERE / "STATUS_MASTER.md"
+WAL_LOG          = HERE / "ocb_wal.log"
+OCB_QUEUE        = HERE / "data" / "ocb_queue.json"
+STUCK_INBOX      = HERE / "data" / "stuck_inbox.json"
+SNAPSHOTS_DIR    = HERE / "status_snapshots"
+SESSION_LOGS_DIR = HERE / "session_logs"
 
 _PHASE_SEP = re.compile(
     r'[═=═]{3,}\s*PHASE\s+(\d+)\s*[—\-—]+\s*(.+?)\s*[═=═]{3,}',
@@ -276,6 +286,61 @@ def _log_entry(status_obj: dict, phase: int, task: int, message: str):
         status_obj["log"] = status_obj["log"][-300:]
 
 
+# ── Git safety helpers ────────────────────────────────────────────────────────
+
+def _git_stash_save(status: dict) -> bool:
+    """Run git stash before any edits. Returns True if changes were actually stashed."""
+    print("🔒 Stashing current state before edit...")
+    _log_entry(status, 0, 0, "🔒 Stashing current state before edit...")
+    _write_status(status)
+    try:
+        result = subprocess.run(
+            ["git", "stash"],
+            capture_output=True, text=True, cwd=str(HERE), timeout=30,
+        )
+        output = (result.stdout + result.stderr).strip()
+        stashed = "saved working directory" in output.lower()
+        _log_entry(status, 0, 0, f"git stash: {output[:120]}" if output else "git stash: (no output)")
+        _write_status(status)
+        return stashed
+    except Exception as exc:
+        _log_entry(status, 0, 0, f"git stash error: {str(exc)[:80]}")
+        _write_status(status)
+        return False
+
+
+def _git_stash_drop(status: dict):
+    """Drop the top stash after MOT pass — changes are good, discard the safety copy."""
+    print("✅ MOT passed — stash dropped, changes kept")
+    _log_entry(status, 0, 0, "✅ MOT passed — stash dropped, changes kept")
+    try:
+        result = subprocess.run(
+            ["git", "stash", "drop"],
+            capture_output=True, text=True, cwd=str(HERE), timeout=30,
+        )
+        output = (result.stdout + result.stderr).strip()
+        _log_entry(status, 0, 0, f"git stash drop: {output[:120]}")
+    except Exception as exc:
+        _log_entry(status, 0, 0, f"git stash drop error: {str(exc)[:80]}")
+    _write_status(status)
+
+
+def _git_stash_pop(status: dict):
+    """Pop the top stash after MOT fail — auto-rollback to the pre-edit state."""
+    print("🔴 MOT failed — rolling back to safe state automatically")
+    _log_entry(status, 0, 0, "🔴 MOT failed — rolling back to safe state automatically")
+    try:
+        result = subprocess.run(
+            ["git", "stash", "pop"],
+            capture_output=True, text=True, cwd=str(HERE), timeout=30,
+        )
+        output = (result.stdout + result.stderr).strip()
+        _log_entry(status, 0, 0, f"git stash pop: {output[:120]}")
+    except Exception as exc:
+        _log_entry(status, 0, 0, f"git stash pop error: {str(exc)[:80]}")
+    _write_status(status)
+
+
 # ── Orchestrator ──────────────────────────────────────────────────────────────
 
 def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
@@ -315,6 +380,8 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         "completed_at":   "",
     }
     _write_status(status)
+
+    _stashed = _git_stash_save(status)
 
     files_changed = set()
     phases_done   = []
@@ -414,7 +481,8 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         _write_status(status)
 
     # Run MOT test suite
-    mot_score = ""
+    mot_score      = ""
+    mot_returncode = -1
     if not _is_cancelled(run_id):
         _log_entry(status, 0, 0, "Running MOT test suite…")
         _write_status(status)
@@ -423,6 +491,7 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
                 [sys.executable, str(MOT_SCRIPT)],
                 capture_output=True, text=True, timeout=180, cwd=str(HERE),
             )
+            mot_returncode = result.returncode
             output = result.stdout + result.stderr
             # Try to extract the concise score line
             for line in output.splitlines():
@@ -440,6 +509,14 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         except Exception as exc:
             mot_score = f"MOT error: {str(exc)[:60]}"
             _log_entry(status, 0, 0, mot_score)
+
+    # Git stash safety: drop on MOT pass, pop (rollback) on MOT fail
+    if _stashed and not _is_cancelled(run_id):
+        mot_passed = mot_returncode == 0 or "all clear" in mot_score.lower()
+        if mot_passed:
+            _git_stash_drop(status)
+        else:
+            _git_stash_pop(status)
 
     status["mot_score"]   = mot_score
     completed_at          = datetime.now().isoformat(timespec="seconds")
@@ -472,10 +549,360 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
     return status
 
 
-# ── Self-test ─────────────────────────────────────────────────────────────────
+# ── Lifeguard Protocol helpers ────────────────────────────────────────────────
+
+def _lp_now_ts():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def _lp_now_file():
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+def _lp_now_date():
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+# ── 1. WAL LOG ─────────────────────────────────────────────────────────────────
+
+def wal_log(ocb_id, phase, intent, status="INTENT"):
+    """Append one line to ocb_wal.log — append only, never delete."""
+    line = f"[{_lp_now_ts()}] {status}: {ocb_id} Phase {phase} — {intent}\n"
+    with open(WAL_LOG, "a", encoding="utf-8") as f:
+        f.write(line)
+
+
+# ── 2. PRE-MISSION SNAPSHOT ────────────────────────────────────────────────────
+
+def pre_mission_snapshot(ocb_id):
+    """Copy STATUS.md to status_snapshots/STATUS_pre_{ocb_id}_{timestamp}.md"""
+    SNAPSHOTS_DIR.mkdir(exist_ok=True)
+    if not STATUS_FILE.exists():
+        print("  WARNING: STATUS.md not found — snapshot skipped")
+        return None
+    ts = _lp_now_file()
+    filename = f"STATUS_pre_{ocb_id}_{ts}.md"
+    dest = SNAPSHOTS_DIR / filename
+    shutil.copy2(STATUS_FILE, dest)
+    wal_log(ocb_id, "SNAPSHOT", f"Pre-mission snapshot saved: {filename}")
+    print(f"  Pre-mission snapshot saved: {filename}")
+    return dest
+
+
+# ── 3. POST-PHASE BEACON ──────────────────────────────────────────────────────
+
+def post_phase_beacon(ocb_id, phase, summary):
+    """Write a 5-line beacon file and log COMPLETE to WAL."""
+    SESSION_LOGS_DIR.mkdir(exist_ok=True)
+    date = _lp_now_date()
+    filename = f"ocb_beacon_{ocb_id}_{phase}_{date}.md"
+    dest = SESSION_LOGS_DIR / filename
+    content = (
+        f"date: {_lp_now_ts()}\n"
+        f"ocb_id: {ocb_id}\n"
+        f"phase: {phase}\n"
+        f"summary: {summary}\n"
+        f"status: COMPLETE\n"
+    )
+    with open(dest, "w", encoding="utf-8") as f:
+        f.write(content)
+    wal_log(ocb_id, phase, summary, status="COMPLETE")
+    print(f"  Post-phase beacon saved: {filename}")
+
+
+# ── 4. DISTRESS SAVE ──────────────────────────────────────────────────────────
+
+def distress_save(ocb_id, phase, error_msg):
+    """Snapshot STATUS.md with FAIL prefix, flag stuck inbox, log FAILURE to WAL."""
+    SNAPSHOTS_DIR.mkdir(exist_ok=True)
+    ts = _lp_now_file()
+    filename = f"STATUS_FAIL_{ocb_id}_{phase}_{ts}.md"
+    dest = SNAPSHOTS_DIR / filename
+    if STATUS_FILE.exists():
+        shutil.copy2(STATUS_FILE, dest)
+
+    wal_log(ocb_id, phase, error_msg, status="FAILURE")
+
+    if STUCK_INBOX.exists():
+        try:
+            with open(STUCK_INBOX, "r", encoding="utf-8") as f:
+                inbox = json.load(f)
+            if not isinstance(inbox, list):
+                inbox = [inbox]
+        except (json.JSONDecodeError, ValueError):
+            inbox = []
+        inbox.append({
+            "source": "OCBR",
+            "ocb_id": ocb_id,
+            "phase": phase,
+            "error": error_msg,
+            "timestamp": _lp_now_ts(),
+            "severity": "high"
+        })
+        with open(STUCK_INBOX, "w", encoding="utf-8") as f:
+            json.dump(inbox, f, indent=2)
+
+    print("  DISTRESS SAVE triggered — snapshot + stuck inbox flagged")
+    print(f"  Snapshot: {filename}")
+
+
+# ── 5. SYNC MASTER COPY ───────────────────────────────────────────────────────
+
+def sync_master_copy():
+    """Overwrite STATUS_MASTER.md with current STATUS.md + updated header."""
+    if not STATUS_FILE.exists():
+        print("  ERROR: STATUS.md not found — sync aborted")
+        return
+    with open(STATUS_FILE, "r", encoding="utf-8") as f:
+        status_content = f.read()
+    header = (
+        "# STATUS MASTER COPY — Golden backup. Only rewritten after MOT all-clear (108/108). Do not edit manually.\n"
+        f"Last synced: {_lp_now_date()} | Source: STATUS.md\n\n"
+    )
+    with open(STATUS_MASTER, "w", encoding="utf-8") as f:
+        f.write(header + status_content)
+    wal_log("MASTER", "SYNC", "STATUS_MASTER updated after MOT all-clear", status="COMPLETE")
+    print("  STATUS_MASTER.md synced — golden copy updated")
+
+
+# ── 6. RECOVER ────────────────────────────────────────────────────────────────
+
+def recover(ocb_id=None):
+    """List snapshots and WAL entries since chosen snapshot. Print recovery plan."""
+    if not SNAPSHOTS_DIR.exists():
+        print("  No status_snapshots/ directory found.")
+        return
+    snapshots = sorted(SNAPSHOTS_DIR.glob("STATUS_pre_*.md"))
+    if not snapshots:
+        print("  No pre-mission snapshots found.")
+        return
+    if ocb_id:
+        candidates = [s for s in snapshots if f"STATUS_pre_{ocb_id}_" in s.name]
+        if not candidates:
+            print(f"  No snapshots found for OCB ID: {ocb_id}")
+            return
+        chosen = candidates[-1]
+    else:
+        chosen = snapshots[-1]
+
+    parts = chosen.stem.split("_")
+    try:
+        snap_ts_str = f"{parts[-2]}_{parts[-1]}"
+        snap_dt = datetime.strptime(snap_ts_str, "%Y%m%d_%H%M%S")
+        snap_ts_readable = snap_dt.strftime("%Y-%m-%d %H:%M:%S")
+    except (ValueError, IndexError):
+        snap_ts_readable = "unknown"
+        snap_dt = None
+
+    print(f"\n  === RECOVERY PLAN ===")
+    print(f"  Restore from: {chosen.name}")
+    print(f"  Snapshot timestamp: {snap_ts_readable}")
+
+    wal_entries = []
+    if WAL_LOG.exists():
+        with open(WAL_LOG, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if snap_dt is not None:
+                    try:
+                        entry_dt = datetime.strptime(line[1:20], "%Y-%m-%d %H:%M:%S")
+                        if entry_dt > snap_dt:
+                            wal_entries.append(line)
+                    except ValueError:
+                        pass
+                else:
+                    wal_entries.append(line)
+
+    print(f"  WAL entries after snapshot: {len(wal_entries)}")
+    if wal_entries:
+        print("\n  WAL entries to replay:")
+        for e in wal_entries:
+            print(f"    {e}")
+
+    print(f"\n  To restore manually:")
+    print(f"    copy status_snapshots\\{chosen.name} STATUS.md")
+    print(f"  Then review the {len(wal_entries)} WAL entries above and re-apply any completed work.")
+    print(f"  === END RECOVERY PLAN ===\n")
+
+
+# ── 7. GENERATE CLAC BLOCK ────────────────────────────────────────────────────
+
+def generate_clac_block(ocb_id, description):
+    """Print a formatted CLAC instruction block stub."""
+    border = "=" * 64
+    print(f"\n  {border}")
+    print(f"  CLAC BLOCK -- {ocb_id}")
+    print(f"  {border}")
+    print(f"  DSP? (claude --dangerously-skip-permissions)")
+    print(f"  {border}")
+    print(f"\n  Read STATUS.md and INDEX.md.")
+    print(f"  Build: {description}")
+    print(f"  Run MOT after: python mcc_full_mot.py")
+    print(f"  Report pass/fail. WCCS triggered automatically.\n")
+
+
+# ── 8. RUN OCB ────────────────────────────────────────────────────────────────
+
+def run_ocb(ocb_id, description):
+    """Step 1: snapshot, Step 2: WAL log, Step 3: CLAC block."""
+    print(f"\n  === OCB RUNNER: {ocb_id} ===")
+    pre_mission_snapshot(ocb_id)
+    wal_log(ocb_id, "START", description)
+    generate_clac_block(ocb_id, description)
+    print(f"  Ready. Run the CLAC block above.")
+    print(f"  When done, call: python ocb_runner.py --complete {ocb_id}\n")
+
+
+# ── QUEUE HELPERS ─────────────────────────────────────────────────────────────
+
+def _load_queue():
+    if not OCB_QUEUE.exists():
+        return {"queue": [], "completed": [], "last_ocb": "", "last_mot": ""}
+    with open(OCB_QUEUE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def _save_queue(data):
+    with open(OCB_QUEUE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+def _find_in_queue(ocb_id):
+    q = _load_queue()
+    for item in q.get("queue", []):
+        if item["id"] == ocb_id:
+            return item
+    return None
+
+
+# ── CLI COMMANDS ───────────────────────────────────────────────────────────────
+
+def _cli_list():
+    q = _load_queue()
+    pending = [i for i in q.get("queue", []) if i.get("status") == "pending"]
+    print(f"\n  === OCB QUEUE — PENDING ({len(pending)}) ===")
+    for item in pending:
+        print(f"  [{item['id']}] {item['description']}")
+    completed = q.get("completed", [])
+    if completed:
+        print(f"\n  Completed: {', '.join(completed)}")
+    print(f"  Last OCB: {q.get('last_ocb', 'none')}")
+    print(f"  Last MOT: {q.get('last_mot', 'none')}\n")
+
+
+def _cli_run(ocb_id):
+    item = _find_in_queue(ocb_id)
+    if not item:
+        print(f"  ERROR: {ocb_id} not found in ocb_queue.json")
+        print("  Use --list to see available OCBs")
+        sys.exit(1)
+    run_ocb(ocb_id, item["description"])
+
+
+def _cli_complete(ocb_id):
+    print(f"\n  === COMPLETE: {ocb_id} ===")
+    try:
+        summary = input("  Enter phase summary (or press Enter to skip): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        summary = ""
+    if not summary:
+        summary = f"{ocb_id} phase completed"
+    post_phase_beacon(ocb_id, "COMPLETE", summary)
+
+    try:
+        mot_result = input("  MOT result (e.g. 108/108 ALL CLEAR, or skip): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        mot_result = ""
+    if mot_result:
+        wal_log(ocb_id, "MOT", mot_result, status="MOT")
+        if "ALL CLEAR" in mot_result or "108/108" in mot_result:
+            print("\n  MOT all-clear detected — syncing master copy...")
+            sync_master_copy()
+            q = _load_queue()
+            q["queue"] = [i for i in q.get("queue", []) if i["id"] != ocb_id]
+            if ocb_id not in q.get("completed", []):
+                q.setdefault("completed", []).append(ocb_id)
+            q["last_ocb"] = ocb_id
+            q["last_mot"] = f"{mot_result} {_lp_now_date()}"
+            _save_queue(q)
+    print("  Done.\n")
+
+
+def _cli_sync_master():
+    print("\n  === SYNC MASTER COPY ===")
+    sync_master_copy()
+
+
+def _cli_recover(ocb_id=None):
+    recover(ocb_id)
+
+
+def _cli_status():
+    print("\n  === OCBR STATUS ===")
+    if SNAPSHOTS_DIR.exists():
+        snaps = sorted(SNAPSHOTS_DIR.glob("STATUS_pre_*.md"))
+        if snaps:
+            print(f"  Last snapshot:   {snaps[-1].name}")
+        else:
+            print("  Last snapshot:   none")
+    else:
+        print("  Snapshots dir:   not found")
+
+    if STATUS_MASTER.exists():
+        mtime = datetime.fromtimestamp(STATUS_MASTER.stat().st_mtime)
+        print(f"  STATUS_MASTER:   last written {mtime.strftime('%Y-%m-%d %H:%M:%S')}")
+    else:
+        print("  STATUS_MASTER:   not found")
+
+    if WAL_LOG.exists():
+        with open(WAL_LOG, "r", encoding="utf-8") as f:
+            lines = [l.rstrip() for l in f if l.strip() and not l.startswith("#")]
+        recent = lines[-10:]
+        print(f"\n  Last {len(recent)} WAL entries:")
+        for line in recent:
+            print(f"    {line}")
+    else:
+        print("  WAL log:         not found")
+    print()
+
+
+# ── MAIN ──────────────────────────────────────────────────────────────────────
+
+def _lifeguard_cli():
+    parser = argparse.ArgumentParser(
+        description="OCBR — OCB Runner Lifeguard Protocol v0.1",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--run", metavar="OCB_ID", help="Start an OCB from the queue")
+    parser.add_argument("--complete", metavar="OCB_ID", help="Mark an OCB phase complete")
+    parser.add_argument("--sync-master", action="store_true", help="Sync STATUS_MASTER.md from STATUS.md")
+    parser.add_argument("--recover", metavar="OCB_ID", nargs="?", const="__all__",
+                        help="Show recovery plan (optional: filter by OCB ID)")
+    parser.add_argument("--list", action="store_true", help="List pending OCBs in queue")
+    parser.add_argument("--status", action="store_true", help="Show WAL entries + snapshot + master age")
+    return parser
+
+
+# ── Self-test / CLI entry point ───────────────────────────────────────────────
 
 if __name__ == "__main__":
-    sample = """
+    parser = _lifeguard_cli()
+    args, _unknown = parser.parse_known_args()
+
+    if args.run:
+        _cli_run(args.run)
+    elif args.complete:
+        _cli_complete(args.complete)
+    elif args.sync_master:
+        _cli_sync_master()
+    elif args.recover is not None:
+        ocb_id_arg = None if args.recover == "__all__" else args.recover
+        _cli_recover(ocb_id_arg)
+    elif args.list:
+        _cli_list()
+    elif args.status:
+        _cli_status()
+    else:
+        # Legacy self-test when no args given
+        sample = """
 ═══ PHASE 1 — TEST PHASE ═══
 
 1. Add a comment to aafl_core.py saying hello world
@@ -485,19 +912,20 @@ if __name__ == "__main__":
 
 3. Check that mission_control.html exists
 """
-    print("parse_ocb_block test:")
-    phases = parse_ocb_block(sample)
-    for p in phases:
-        print(f"  Phase {p['phase_num']}: {p['phase_name']} — {len(p['tasks'])} tasks")
-        for t in p["tasks"]:
-            print(f"    {t['num']}. {t['text']}")
-    print(f"\nidentify_affected_file tests:")
-    tests = [
-        "Add a new button to mission_control.html",
-        "Fix the handler in mcc_server.py",
-        "Update the routing table in aafl_core.py",
-        "Some generic task with no file mentioned",
-    ]
-    for txt in tests:
-        print(f"  '{txt[:50]}' -> {identify_affected_file(txt).name}")
-    print("\nocb_runner.py self-test complete.")
+        print("parse_ocb_block test:")
+        phases = parse_ocb_block(sample)
+        for p in phases:
+            print(f"  Phase {p['phase_num']}: {p['phase_name']} — {len(p['tasks'])} tasks")
+            for t in p["tasks"]:
+                print(f"    {t['num']}. {t['text']}")
+        print(f"\nidentify_affected_file tests:")
+        tests = [
+            "Add a new button to mission_control.html",
+            "Fix the handler in mcc_server.py",
+            "Update the routing table in aafl_core.py",
+            "Some generic task with no file mentioned",
+        ]
+        for txt in tests:
+            print(f"  '{txt[:50]}' -> {identify_affected_file(txt).name}")
+        print("\nocb_runner.py self-test complete.")
+        print("\nLifeguard Protocol v0.1 — use: python ocb_runner.py --status | --list | --run <ID>")

@@ -67,3 +67,4 @@
 | 53 | 2026-05-29 | legacy | test chat text for recovery check | None |
 | WATCHDOG | 2026-05-29 12:06 | - | Capture: none | FAIL |
 | 54 | 2026-05-29 | v66 -> v67 | OCB-O OCB Runner: ocb_runner.py (503 lines), OCB Runner panel in WCCS tab, 5 /api/ocb/* endpoints, real-time phase badges + live log + progress bar. 108/108 MOT ALL CLEAR. | None |
+| 55 | 2026-05-29 | v67 -> v68 | OCBR Lifeguard Protocol v0.1: status_snapshots/, STATUS_MASTER.md, ocb_wal.log, data/ocb_queue.json, ocb_runner.py +8 lifeguard functions + argparse CLI, aafl_wccs.py wired with pre-save snapshots + MOT auto-sync. | OCBR = OCB Runner Lifeguard Protocol |
