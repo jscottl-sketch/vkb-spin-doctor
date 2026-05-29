@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-29 (OCB-K Build 2) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-29 (OCB-O + OCB-P defined) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -190,6 +190,8 @@
 | OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05) | Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown. |
 | OCB-K Build 2 Phase 4 (AAFL Control B2-06+B2-08+B2-09) | All already built (Step Mode, Pause, Benchmark Runner, Second Opinion AI). |
 | OCB-K Build 2 Phase 5 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
+| OCB-O (OCB Runner) | ocb_runner.py 503 lines, 5 methods. MCC panel: textarea+Parse+Run+live log+badges. 5 /api/ocb/* endpoints. First test: engine works (Codestral parsed+MOT exit 0) but HTML edit broke tabs. Rolled back to v67. Needs safety layer. |
+| MCC v67 rollback | git checkout -- mission_control.html — frozen MCC fix |
 | OCB-H
 
 ## CURRENT STATUS — PENDING
@@ -235,6 +237,8 @@
 | xAI Grok signup | console.x.ai → add GROQ_API_KEY to .env manually |
 | n8n investigation | n8n self-hosted as potential AAFL foundation. Flagged May 2026. Never investigated. |
 | Dead file archive | model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41/v43 handovers → archive_dead/ 2026-05-24 |
+| OCB-P (9 items) | OCB Runner safety: git stash + HTML check + auto-rollback. Run script task type. Code Editor bridge. LLOW Results panel. LLOW Task Input LEL. Side slider ghost text fix. Mission Viewer visual info. Sidebar nested dropdowns. LEL options grid. |
+| CLACR system | MCC↔CLACH language protocol — designed, not yet built |
 
 ---
 

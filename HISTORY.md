@@ -2422,3 +2422,21 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 **New ACCA codes:** None
 
 **Files changed:** mcc_server.py, mission_control.html, system_monitor.py, aafl_core.py (unchanged — no ask() needed), STATUS.md, HISTORY.md, CLAUDE.md (new), data/project_awareness.json (new), data/mcc_settings.json (new), data/help_history.json (new)
+
+---
+
+### 2026-05-29 (Claude Code session — OCB-O + OCB-P)
+
+**What happened:** OCB-O (OCB Runner) built and first-tested. ocb_runner.py (503 lines, 5 methods, full pipeline), MCC panel (textarea + Parse + Run + live log + phase badges), 5 /api/ocb/* endpoints in mcc_server.py. First live test: Codestral parsed the block, extracted lines 1737-2036, edited mission_control.html, MOT exited 0 — but the HTML edit broke all surrounding tabs (all went blank). Rolled back to v67 via git checkout -- mission_control.html. Verdict: engine works, needs safety layer before it can be trusted.
+
+**OCB-P parking lot defined (9 items):** OCB Runner safety (git stash + HTML structural check + auto-rollback), Run script task type, Code Editor ↔ OCB Runner bridge, LLOW Results panel (per-node cards + flow highlighting + diff view), LLOW Task Input LEL (type task, DND file, options), side slider ghost text bug fix, Mission Viewer more visual info, sidebar nested dropdowns with tab links, LEL options on/off grid.
+
+**CLACR system designed:** MCC↔CLACH language protocol — designed, not yet built.
+
+**New ACCA codes:** RRCLACH (Request Report from CLACH), CLACHR (updated definition — CLACH Relay circuit), CLACRB (CLAC Report Back Scrutiniser), RRBS (Random Review Brainstorm), DND (Drag and Drop). Added to ACCA.md.
+
+**MOT:** 108/108 ALL CLEAR (v67 rollback confirmed stable)
+
+**Files changed:** ocb_runner.py (new), mcc_server.py, STATUS.md, HISTORY.md, ACCA.md
+
+<!-- END_OF_FILE -->

@@ -76,4 +76,9 @@
 | WCAP | Work Checker Action Plan — top 5 next priorities from STATUS.md with Delegate → MCCM buttons | 2026-05-29 |
 | ACCATICK | ACCA Ticker Bar — persistent bottom bar scrolling all ACCA shorthand codes; click to expand inline | 2026-05-29 |
 
+| RRCLACH | Request Report from CLACH — first message in the CLACH relay chain, initiating a task request | 2026-05-29 |
+| CLACRB | CLAC Report Back Scrutiniser — validates the returned result and loops back if not acceptable | 2026-05-29 |
+| RRBS | Random Review Brainstorm — spontaneous review session across any part of the project | 2026-05-29 |
+| DND | Drag and Drop | 2026-05-29 |
+
 <!-- END_OF_FILE -->
