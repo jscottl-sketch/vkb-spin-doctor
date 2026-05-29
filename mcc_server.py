@@ -638,6 +638,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/ocb/status/"):
                 run_id = path[len("/api/ocb/status/"):]
                 self._handle_ocb_status(run_id)
+            # ── MCCM / Chief Detective ─────────────────────────────────────────
+            elif path == "/api/mccm/status":
+                self._handle_mccm_status()
+            elif path == "/api/mccm/detective":
+                self._handle_mccm_detective()
+            elif path == "/api/mccm/alerts":
+                self._handle_mccm_alerts()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -880,6 +887,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/ocb/archive/"):
                 run_id = path[len("/api/ocb/archive/"):]
                 self._handle_ocb_archive(run_id)
+            elif path == "/api/rrclach/save":
+                self._handle_rrclach_save()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7167,10 +7176,13 @@ MCCHandler._handle_ocb_parse = _handle_ocb_parse  # type: ignore[attr-defined]
 def _handle_ocb_run(self):
     """POST /api/ocb/run — launch OCB run in background thread."""
     try:
-        body       = json.loads(self._read_body() or "{}")
-        ocb_text   = (body.get("ocb_text") or "").strip()
-        provider   = (body.get("provider") or "auto").strip()
-        max_retries = int(body.get("max_retries", 3))
+        body                = json.loads(self._read_body() or "{}")
+        ocb_text            = (body.get("ocb_text") or "").strip()
+        provider            = (body.get("provider") or "auto").strip()
+        max_retries         = int(body.get("max_retries", 3))
+        acceptance_criteria = body.get("acceptance_criteria", [])
+        if not isinstance(acceptance_criteria, list):
+            acceptance_criteria = []
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
             return
@@ -7179,7 +7191,8 @@ def _handle_ocb_run(self):
         t = threading.Thread(
             target=ocb_runner.run_all,
             args=(ocb_text, run_id),
-            kwargs={"max_retries": max_retries, "provider": provider},
+            kwargs={"max_retries": max_retries, "provider": provider,
+                    "acceptance_criteria": acceptance_criteria},
             daemon=True,
         )
         t.start()
@@ -7244,6 +7257,98 @@ def _handle_ocb_archive(self, run_id: str):
 
 
 MCCHandler._handle_ocb_archive = _handle_ocb_archive  # type: ignore[attr-defined]
+
+
+def _handle_rrclach_save(self):
+    """POST /api/rrclach/save — write rrclach_request.json with ocb_text + acceptance_criteria."""
+    try:
+        body                = json.loads(self._read_body() or "{}")
+        ocb_text            = (body.get("ocb_text") or "").strip()
+        acceptance_criteria = body.get("acceptance_criteria", [])
+        if not isinstance(acceptance_criteria, list):
+            acceptance_criteria = []
+        if not ocb_text:
+            self._send_json({"error": "ocb_text is required"}, 400)
+            return
+        payload = {
+            "ocb_text":            ocb_text,
+            "acceptance_criteria": acceptance_criteria,
+            "saved_at":            datetime.datetime.now().isoformat(timespec="seconds"),
+        }
+        rrclach_file = HERE / "data" / "rrclach_request.json"
+        import shutil as _sh
+        import tempfile as _tf
+        fd, tmp = _tf.mkstemp(dir=str(rrclach_file.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+        _sh.move(tmp, str(rrclach_file))
+        self._send_json({"ok": True, "saved_to": "data/rrclach_request.json",
+                         "criteria_count": len(acceptance_criteria)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_rrclach_save = _handle_rrclach_save  # type: ignore[attr-defined]
+
+
+# ── MCCM / Chief Detective endpoints ─────────────────────────────────────────
+
+MCCM_PERMS_FILE = HERE / "data" / "mccm_permissions.json"
+
+
+def _handle_mccm_status(self):
+    """GET /api/mccm/status — run mccm_agent.py --overview and return JSON."""
+    try:
+        proc = subprocess.run(
+            [FULL_PYTHON, str(HERE / "mccm_agent.py"), "--overview"],
+            capture_output=True, text=True, timeout=30, cwd=str(HERE),
+        )
+        power = 1
+        try:
+            if MCCM_PERMS_FILE.exists():
+                data = json.loads(MCCM_PERMS_FILE.read_text(encoding="utf-8"))
+                power = data.get("mccm_power_level", 1)
+        except Exception:
+            pass
+        self._send_json({"status": proc.stdout, "power_level": power})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_mccm_status = _handle_mccm_status  # type: ignore[attr-defined]
+
+
+def _handle_mccm_detective(self):
+    """GET /api/mccm/detective — return latest detective_report_{date}.json."""
+    try:
+        data_dir = HERE / "data"
+        reports  = sorted(data_dir.glob("detective_report_*.json"), reverse=True)
+        if not reports:
+            self._send_json({"error": "No detective report found. Run wccs_detective.py --investigate first."}, 404)
+            return
+        report = json.loads(reports[0].read_text(encoding="utf-8"))
+        self._send_json(report)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_mccm_detective = _handle_mccm_detective  # type: ignore[attr-defined]
+
+
+def _handle_mccm_alerts(self):
+    """GET /api/mccm/alerts — return pending Scott interrupts."""
+    try:
+        if not MCCM_PERMS_FILE.exists():
+            self._send_json([])
+            return
+        data = json.loads(MCCM_PERMS_FILE.read_text(encoding="utf-8"))
+        pending = [i for i in data.get("scott_interrupts", []) if i.get("status") == "PENDING_SCOTT"]
+        self._send_json(pending)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_mccm_alerts = _handle_mccm_alerts  # type: ignore[attr-defined]
 
 
 def main():

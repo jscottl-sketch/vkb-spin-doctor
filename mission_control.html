@@ -1974,8 +1974,181 @@ body{padding-bottom:28px}
       </div>
     </div>
 
+    <!-- ── RRCLACH PANEL — Generate a validated OCB run request ── -->
+    <div class="wccs-section-title" style="margin-top:24px">RRCLACH — Generate Run Request</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">Define your OCB block + acceptance criteria, then generate rrclach_request.json</div>
+    <div class="ocb-section">
+      <label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Instructions (OCB block)</label>
+      <textarea id="rrclach-instructions" class="ocb-textarea"
+        placeholder="Paste OCB block here — e.g. ═══ PHASE 1 — MY FEATURE ═══&#10;&#10;1. Add a button to mission_control.html"
+        spellcheck="false"></textarea>
+      <label style="font-size:11px;color:#888;display:block;margin:10px 0 4px">Acceptance Criteria (one per line)</label>
+      <textarea id="rrclach-criteria" class="ocb-textarea" style="height:80px"
+        placeholder="e.g. green pill renders&#10;all tabs load&#10;MOT 108/108"
+        spellcheck="false"></textarea>
+      <div class="ocb-controls" style="margin-top:10px">
+        <button class="btn" onclick="generateRRCLACH()" title="Write rrclach_request.json with OCB block + acceptance criteria">⚡ Generate RRCLACH</button>
+        <span id="rrclach-status" style="font-size:11px;color:#888;margin-left:auto"></span>
+      </div>
+    </div>
+
+    <!-- ── CHIEF DETECTIVE + MCCM ── -->
+    <div class="wccs-section-title" style="margin-top:24px">🔍 Chief Detective + MCCM</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px">Scan all project sources for gaps, cross-reference dates, and propose STATUS.md updates</div>
+
+    <!-- Row 1: Action buttons -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+      <button class="btn" onclick="detectiveInvestigate()" title="Read the latest detective report — run wccs_detective.py --investigate first if you haven't">🔍 Run Investigation</button>
+      <button class="btn" onclick="mccmRunCycle()" style="background:#1a2a1a;color:#6f6;border-color:#2a4a2a" title="Run the MCCM cycle — approves pending AI dispatch requests, escalates high-priority gaps">🤖 Run MCCM Cycle</button>
+      <!-- Row 2: Power level badge -->
+      <span id="mccm-power-badge" style="font-size:12px;font-weight:bold;padding:3px 10px;border-radius:12px;background:#222;color:#666;border:1px solid #333">Level ?/4</span>
+    </div>
+
+    <!-- Row 3: Results panel -->
+    <div id="detective-results" style="max-height:200px;overflow-y:auto;background:#080808;border:1px solid #1a1a2a;border-radius:4px;padding:10px;font:11px 'Consolas','Courier New',monospace;color:#aaa;white-space:pre-wrap;word-break:break-word;margin-bottom:10px">
+      Click "Run Investigation" to load the latest detective report.
+    </div>
+
+    <!-- Proposed STATUS.md updates -->
+    <div id="detective-proposed-wrap" style="display:none;margin-bottom:10px">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;color:#4af;font-weight:bold">Proposed STATUS.md additions:</span>
+        <button class="btn" style="font-size:11px;padding:2px 8px" onclick="detectiveCopyProposed()" title="Copy proposed rows to clipboard">📋 Copy</button>
+      </div>
+      <div id="detective-proposed" style="background:#0a0a0a;border:1px solid #1a2a1a;border-radius:4px;padding:8px;font:11px 'Consolas','Courier New',monospace;color:#9cf;white-space:pre-wrap;word-break:break-word;max-height:140px;overflow-y:auto"></div>
+    </div>
+
+    <!-- Row 4: Scott Alerts -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:#888">Scott Alerts:</span>
+      <span id="mccm-alert-badge" style="display:none;font-size:12px;font-weight:bold;padding:2px 8px;border-radius:10px;background:#3a0000;color:#f66;border:1px solid #622;animation:pulse 1.5s infinite">0 pending</span>
+      <span id="mccm-alert-clear" style="font-size:11px;color:#666">No alerts</span>
+    </div>
+    <div id="mccm-alerts-list" style="display:none;max-height:140px;overflow-y:auto;margin-bottom:8px"></div>
+
   </div>
 </div>
+
+<script>
+// ── Chief Detective + MCCM panel ──────────────────────────────────────────
+(function(){
+  function _powerColour(lvl){
+    return lvl===4?'#f44':lvl===3?'#fa0':lvl===2?'#4af':'#666';
+  }
+  function _powerBg(lvl){
+    return lvl===4?'#3a0000':lvl===3?'#2a1a00':lvl===2?'#001a2a':'#1a1a1a';
+  }
+  function _setPower(lvl){
+    var b=document.getElementById('mccm-power-badge');
+    if(!b)return;
+    b.textContent='Level '+lvl+'/4';
+    b.style.color=_powerColour(lvl);
+    b.style.background=_powerBg(lvl);
+    b.style.borderColor=_powerColour(lvl);
+  }
+  function _loadPower(){
+    fetch('/api/mccm/status').then(function(r){return r.json();}).then(function(d){
+      _setPower(d.power_level||1);
+    }).catch(function(){});
+  }
+  function _loadAlerts(){
+    fetch('/api/mccm/alerts').then(function(r){return r.json();}).then(function(list){
+      if(!Array.isArray(list))list=[];
+      var badge=document.getElementById('mccm-alert-badge');
+      var clear=document.getElementById('mccm-alert-clear');
+      var wrap=document.getElementById('mccm-alerts-list');
+      if(!badge||!clear||!wrap)return;
+      if(list.length===0){
+        badge.style.display='none';
+        clear.style.display='';
+        clear.textContent='No alerts';
+        wrap.style.display='none';
+        wrap.innerHTML='';
+        return;
+      }
+      badge.style.display='';
+      badge.textContent=list.length+' pending';
+      clear.style.display='none';
+      wrap.style.display='';
+      wrap.innerHTML=list.map(function(a,i){
+        return '<div style="display:flex;gap:8px;align-items:flex-start;padding:4px 6px;background:#0a0000;border-bottom:1px solid #1a0000;font-size:11px">'
+          +'<span style="color:#f66;font-weight:bold;white-space:nowrap">['+((a.urgency||'?').toUpperCase())+']</span>'
+          +'<span style="color:#aaa;flex:1">'+escapeHtml(a.reason||'')+'</span>'
+          +'<button class="btn" style="font-size:10px;padding:1px 6px;flex-shrink:0" onclick="mccmDismissAlert('+i+')">Dismiss</button>'
+          +'</div>';
+      }).join('');
+    }).catch(function(){});
+  }
+  window.detectiveInvestigate=function(){
+    var panel=document.getElementById('detective-results');
+    if(panel)panel.textContent='Loading detective report…';
+    fetch('/api/mccm/detective').then(function(r){return r.json();}).then(function(d){
+      if(d.error){
+        if(panel)panel.textContent='Error: '+d.error;
+        return;
+      }
+      var confirmed=Object.keys(d.CONFIRMED||{}).length;
+      var uncertain=Object.keys(d.UNCERTAIN||{}).length;
+      var unknown=(d.UNKNOWN||[]).length;
+      var gaps=(d.GAPS||[]).length;
+      var incon=(d.INCONSISTENCIES||[]).length;
+      var proposed=(d.PROPOSED_UPDATES||[]);
+      var txt='CONFIRMED: '+confirmed+' facts\n'
+        +'UNCERTAIN: '+uncertain+' items\n'
+        +'UNKNOWN gaps: '+unknown+'\n'
+        +'Total gaps: '+gaps+'\n'
+        +'Inconsistencies: '+incon+'\n'
+        +'Sources scanned: '+(d.sources_scanned||[]).length+'\n'
+        +'Generated: '+(d.generated_at||'?');
+      if(panel)panel.textContent=txt;
+      _setPower(d.power_level||1);
+      var pw=document.getElementById('detective-proposed-wrap');
+      var pd=document.getElementById('detective-proposed');
+      if(proposed.length>0){
+        if(pw)pw.style.display='';
+        if(pd)pd.textContent=proposed.join('\n');
+      } else {
+        if(pw)pw.style.display='none';
+      }
+    }).catch(function(e){
+      if(panel)panel.textContent='Failed to load: '+e;
+    });
+    _loadPower();
+    _loadAlerts();
+  };
+  window.mccmRunCycle=function(){
+    var panel=document.getElementById('detective-results');
+    if(panel)panel.textContent='Running MCCM cycle…';
+    fetch('/api/mccm/status').then(function(r){return r.json();}).then(function(d){
+      if(panel)panel.textContent=(d.status||'').trim()||'MCCM cycle complete.';
+      _setPower(d.power_level||1);
+      _loadAlerts();
+    }).catch(function(e){
+      if(panel)panel.textContent='MCCM error: '+e;
+    });
+  };
+  window.detectiveCopyProposed=function(){
+    var el=document.getElementById('detective-proposed');
+    if(!el)return;
+    navigator.clipboard.writeText(el.textContent).then(function(){
+      var btn=el.previousElementSibling&&el.previousElementSibling.querySelector('button');
+      if(btn){var t=btn.textContent;btn.textContent='✅ Copied!';setTimeout(function(){btn.textContent=t;},1500);}
+    }).catch(function(){});
+  };
+  window.mccmDismissAlert=function(idx){
+    // Client-side dismiss only (no server delete endpoint for now)
+    _loadAlerts();
+  };
+  // Load on tab switch
+  document.addEventListener('DOMContentLoaded',function(){
+    _loadPower();
+    _loadAlerts();
+  });
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+})();
+</script>
 
 <!-- ── DIFF TAB ── -->
 <!-- Diff Viewer: access via WCCS tab → Diff Viewer pill -->
@@ -9432,6 +9605,28 @@ async function ocbArchiveRun() {
     else toast('Archive failed: ' + (d.error || '?'), 'error');
   } catch(e) {
     toast('Archive failed: ' + e.message, 'error');
+  }
+}
+
+// ── RRCLACH Panel ─────────────────────────────────────────────────
+async function generateRRCLACH() {
+  const instructions = (document.getElementById('rrclach-instructions') || {}).value || '';
+  const criteriaRaw  = (document.getElementById('rrclach-criteria') || {}).value || '';
+  const statusEl     = document.getElementById('rrclach-status');
+  if (!instructions.trim()) { toast('Paste an OCB block in Instructions first', 'error'); return; }
+  const acceptance_criteria = criteriaRaw.split('\n')
+    .map(s => s.trim()).filter(s => s.length > 0);
+  try {
+    const d = await apiFetch('/api/rrclach/save', {
+      method: 'POST',
+      body: JSON.stringify({ ocb_text: instructions.trim(), acceptance_criteria }),
+    });
+    if (d.error) { toast('RRCLACH save failed: ' + d.error, 'error'); return; }
+    const msg = 'Saved — ' + (d.criteria_count || 0) + ' criteria';
+    if (statusEl) statusEl.textContent = msg;
+    toast(msg, 'ok');
+  } catch(e) {
+    toast('RRCLACH failed: ' + e.message, 'error');
   }
 }
 

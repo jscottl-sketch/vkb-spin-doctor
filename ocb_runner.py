@@ -17,6 +17,9 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+import clacker_safety
+import clacker_validator
+
 HERE = Path(__file__).parent
 
 KNOWN_FILES = [
@@ -235,9 +238,14 @@ def apply_result(filepath: Path, start_line: int, end_line: int, new_section: st
                 fh.write(new_content)
 
             if filepath.suffix == ".py":
-                try:
-                    py_compile.compile(tmp, doraise=True)
-                except py_compile.PyCompileError:
+                ok, err = clacker_safety.check_py(tmp)
+                if not ok:
+                    os.unlink(tmp)
+                    return False
+
+            if filepath.suffix == ".html":
+                ok, err = clacker_safety.check_html(tmp)
+                if not ok:
                     os.unlink(tmp)
                     return False
 
@@ -344,20 +352,23 @@ def _git_stash_pop(status: dict):
 # ── Orchestrator ──────────────────────────────────────────────────────────────
 
 def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
-            provider: str = "auto") -> dict:
+            provider: str = "auto", acceptance_criteria: list = None) -> dict:
     """
     Parse and execute an entire OCB block.
     Writes progress to data/ocb_status.json throughout.
     Returns the final status dict.
     """
+    if acceptance_criteria is None:
+        acceptance_criteria = []
     phases = parse_ocb_block(ocb_text)
     now    = datetime.now().isoformat(timespec="seconds")
 
     status = {
-        "run_id":        run_id,
-        "started_at":    now,
-        "provider":      provider,
-        "max_retries":   max_retries,
+        "run_id":               run_id,
+        "started_at":           now,
+        "provider":             provider,
+        "max_retries":          max_retries,
+        "acceptance_criteria":  acceptance_criteria,
         "phases": [
             {
                 "phase_num":  p["phase_num"],
@@ -381,13 +392,16 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
     }
     _write_status(status)
 
-    _stashed = _git_stash_save(status)
+    stash_ref = clacker_safety.pre_run(run_id, str(HERE))
+    _log_entry(status, 0, 0, f"🔒 git stash push pre-ocb-{run_id}: {stash_ref[:80] if stash_ref else '(nothing stashed)'}")
+    _write_status(status)
 
     files_changed = set()
     phases_done   = []
     phases_failed = []
 
-    for pi, phase in enumerate(phases):
+    try:
+      for pi, phase in enumerate(phases):
         if _is_cancelled(run_id):
             status["status"] = "CANCELLED"
             _write_status(status)
@@ -480,6 +494,13 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
 
         _write_status(status)
 
+    except Exception as exc:
+        status["status"] = "ROLLED_BACK"
+        _log_entry(status, 0, 0, f"ROLLED_BACK: unhandled exception — {str(exc)[:120]}")
+        _write_status(status)
+        clacker_safety.post_run_failure(run_id, str(HERE), stash_ref)
+        raise
+
     # Run MOT test suite
     mot_score      = ""
     mot_returncode = -1
@@ -510,13 +531,31 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
             mot_score = f"MOT error: {str(exc)[:60]}"
             _log_entry(status, 0, 0, mot_score)
 
-    # Git stash safety: drop on MOT pass, pop (rollback) on MOT fail
-    if _stashed and not _is_cancelled(run_id):
+    # Run acceptance criteria validator
+    validator_result = {}
+    if not _is_cancelled(run_id):
+        try:
+            validator_result = clacker_validator.validate(
+                acceptance_criteria,
+                sorted(files_changed),
+                mot_score,
+                str(HERE),
+            )
+            _log_entry(status, 0, 0,
+                       f"Validator: {validator_result.get('status','?')} — {validator_result.get('notes','')}")
+        except Exception as exc:
+            _log_entry(status, 0, 0, f"Validator error: {str(exc)[:80]}")
+
+    # CLACKER stash safety: drop on MOT pass, pop (rollback) on MOT fail
+    if not _is_cancelled(run_id):
         mot_passed = mot_returncode == 0 or "all clear" in mot_score.lower()
         if mot_passed:
-            _git_stash_drop(status)
+            clacker_safety.post_run_success(run_id, str(HERE))
+            _log_entry(status, 0, 0, "✅ MOT passed — stash dropped, changes kept")
         else:
-            _git_stash_pop(status)
+            clacker_safety.post_run_failure(run_id, str(HERE), stash_ref)
+            _log_entry(status, 0, 0, "🔴 MOT failed — rolled back to pre-OCB state")
+    _write_status(status)
 
     status["mot_score"]   = mot_score
     completed_at          = datetime.now().isoformat(timespec="seconds")
@@ -529,14 +568,16 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
 
     # Write CLACHR response for the CLACHR panel auto-poll
     clachr = {
-        "session_id":    run_id,
-        "status":        status["status"],
-        "phases_done":   phases_done,
-        "phases_failed": phases_failed,
-        "files_changed": sorted(files_changed),
-        "mot_score":     mot_score,
-        "completed_at":  completed_at,
-        "notes":         "",
+        "session_id":         run_id,
+        "status":             status["status"],
+        "phases_done":        phases_done,
+        "phases_failed":      phases_failed,
+        "files_changed":      sorted(files_changed),
+        "mot_score":          mot_score,
+        "completed_at":       completed_at,
+        "acceptance_criteria": acceptance_criteria,
+        "validator":          validator_result,
+        "notes":              validator_result.get("notes", ""),
     }
     try:
         tmp = str(CLACHR_RESPONSE) + ".tmp"
