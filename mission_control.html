@@ -9896,7 +9896,7 @@ function b2RunCmpSelect(idx, checked) {
     // Deselect oldest
     const oldest = _b2RunsCompareSelected.values().next().value;
     _b2RunsCompareSelected.delete(oldest);
-    document.querySelector(`.run-cmp-cb[data-idx="${oldest}"]`)?.checked = false;
+    const _oldCb = document.querySelector(`.run-cmp-cb[data-idx="${oldest}"]`); if (_oldCb) _oldCb.checked = false;
     b2CompareByCheckboxes();
   }
 }
@@ -15854,6 +15854,17 @@ function llowLogExec(msg, cls) {
 
 // ── OCB-I/OCB-O Phase 6: LLOW Fullscreen ─────────────────────────────────────
 
+// Guard: on page load, if fullscreen class is stuck on (shouldn't happen but safety net)
+document.addEventListener('DOMContentLoaded', () => {
+  const wrap = document.getElementById('acc-llow');
+  if (wrap && wrap.classList.contains('llow-fs-active') && !document.fullscreenElement) {
+    wrap.classList.remove('llow-fs-active');
+    wrap.removeAttribute('style');
+    const btn = document.getElementById('llow-fs-btn');
+    if (btn) { btn.textContent = '↗'; }
+  }
+});
+
 function llowToggleFullscreen() {
   const wrap = document.getElementById('acc-llow');
   if (!wrap) return;
@@ -15965,7 +15976,7 @@ function llowGetLoopBehav() {
   return { loop_infinite: inf, loop_count: inf ? 0 : cnt, end_condition: end, loop_actions: actions };
 }
 
-const _llowLoopPresets = JSON.parse(localStorage.getItem('llow_loop_presets') || '{}');
+let _llowLoopPresets = {}; try { _llowLoopPresets = JSON.parse(localStorage.getItem('llow_loop_presets') || '{}'); } catch(_e) {}
 
 function llowSaveLoopPreset() {
   const name = document.getElementById('llow-loop-preset-name')?.value?.trim();
@@ -17320,5 +17331,48 @@ function cePresetCodeTask() {
 
 </div><!-- end content-area -->
 </div><!-- end main-layout -->
+
+<!-- ── EMERGENCY RESET BUTTON (permanent safety feature) ── -->
+<button id="mcc-emergency-reset" onclick="mccEmergencyReset()"
+  style="position:fixed;bottom:10px;left:10px;z-index:99999;background:#a33;border:2px solid #f44;color:#fff;font-size:12px;font-weight:bold;padding:6px 12px;border-radius:6px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.8);opacity:.7;transition:opacity .2s"
+  onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='.7'"
+  title="Emergency reset — clears all stuck overlays and resets MCC to home state">⟳ Reset MCC</button>
+<script>
+function mccEmergencyReset() {
+  // Close all overlays and modals
+  ['kb-overlay','cmdpal-overlay','confirm-overlay'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('visible'); el.style.display = ''; }
+  });
+  // Remove any floating popups
+  ['instr-popup','ctx-menu','llow-jb-edit-popup','llow-lel-opts-popup','ai-prov-tooltip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('visible'); el.style.display = 'none'; }
+  });
+  // Remove any dynamically created popups
+  document.querySelectorAll('.mcc-popup-safe[id], #acca-expand').forEach(el => {
+    if (el.id !== 'mcc-emergency-reset') el.style.display = 'none';
+  });
+  // Reset LLOW fullscreen if stuck
+  const llowWrap = document.getElementById('acc-llow');
+  if (llowWrap && llowWrap.classList.contains('llow-fs-active')) {
+    llowWrap.classList.remove('llow-fs-active');
+    llowWrap.removeAttribute('style');
+    const fsBtn = document.getElementById('llow-fs-btn');
+    if (fsBtn) { fsBtn.textContent = '↗'; }
+  }
+  // Navigate to WCCS tab
+  if (typeof goToTab === 'function') goToTab('wccs');
+  else {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    const wccsBtn = document.querySelector('.tab-btn[data-tab="wccs"]');
+    const wccsPane = document.getElementById('tab-wccs');
+    if (wccsBtn) wccsBtn.classList.add('active');
+    if (wccsPane) wccsPane.classList.add('active');
+  }
+}
+</script>
+
 </body>
 </html>
