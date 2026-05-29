@@ -44,15 +44,24 @@ class SystemMonitor:
 
     def get_cpu(self) -> dict:
         if not _PSUTIL:
-            return {"ok": False, "error": "psutil not installed"}
-        per_core = psutil.cpu_percent(interval=0.1, percpu=True)
-        freq     = psutil.cpu_freq()
-        top5     = sorted(
-            [{"pid": p.info["pid"], "name": p.info["name"], "cpu": p.info["cpu_percent"]}
-             for p in psutil.process_iter(["pid", "name", "cpu_percent"])
-             if p.info["cpu_percent"] and p.info["cpu_percent"] > 0],
-            key=lambda x: x["cpu"], reverse=True
-        )[:5]
+            return {"ok": True, "overall_pct": 0.0, "per_core_pct": [], "freq_mhz": 0, "top_processes": []}
+        try:
+            per_core = psutil.cpu_percent(interval=0.1, percpu=True)
+        except Exception:
+            per_core = []
+        try:
+            freq = psutil.cpu_freq()
+        except Exception:
+            freq = None
+        try:
+            top5 = sorted(
+                [{"pid": p.info["pid"], "name": p.info["name"], "cpu": p.info["cpu_percent"]}
+                 for p in psutil.process_iter(["pid", "name", "cpu_percent"])
+                 if p.info["cpu_percent"] and p.info["cpu_percent"] > 0],
+                key=lambda x: x["cpu"], reverse=True
+            )[:5]
+        except Exception:
+            top5 = []
         return {
             "ok":           True,
             "overall_pct":  round(sum(per_core) / len(per_core), 1) if per_core else 0.0,
@@ -63,15 +72,21 @@ class SystemMonitor:
 
     def get_ram(self) -> dict:
         if not _PSUTIL:
-            return {"ok": False, "error": "psutil not installed"}
-        vm = psutil.virtual_memory()
-        top5 = sorted(
-            [{"pid": p.info["pid"], "name": p.info["name"],
-              "ram_mb": round(p.info["memory_info"].rss / 1024**2, 1) if p.info["memory_info"] else 0}
-             for p in psutil.process_iter(["pid", "name", "memory_info"])
-             if p.info["memory_info"]],
-            key=lambda x: x["ram_mb"], reverse=True
-        )[:5]
+            return {"ok": True, "total_gb": 0.0, "used_gb": 0.0, "free_gb": 0.0, "percent": 0.0, "top_processes": []}
+        try:
+            vm = psutil.virtual_memory()
+        except Exception:
+            return {"ok": True, "total_gb": 0.0, "used_gb": 0.0, "free_gb": 0.0, "percent": 0.0, "top_processes": []}
+        try:
+            top5 = sorted(
+                [{"pid": p.info["pid"], "name": p.info["name"],
+                  "ram_mb": round(p.info["memory_info"].rss / 1024**2, 1) if p.info["memory_info"] else 0}
+                 for p in psutil.process_iter(["pid", "name", "memory_info"])
+                 if p.info["memory_info"]],
+                key=lambda x: x["ram_mb"], reverse=True
+            )[:5]
+        except Exception:
+            top5 = []
         return {
             "ok":          True,
             "total_gb":    round(vm.total / 1024**3, 2),

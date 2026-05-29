@@ -617,9 +617,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-L: Phase 5 — Help tab ─────────────────────────────────────
             elif path == "/api/help/history":
                 self._handle_help_history()
+            # ── OCB-O: Health run history from health.db ───────────────────────
+            elif path == "/api/health/history":
+                self._handle_health_run_history()
             # ── OCB-L: Phase 6 — Settings persistence ─────────────────────────
             elif path == "/api/settings":
                 self._handle_settings_get()
+            # ── OCB-O: Watchdog status ─────────────────────────────────────────
+            elif path == "/api/watchdog/status":
+                self._handle_watchdog_status()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -5683,6 +5689,66 @@ def _handle_safety_status(self):
 
 
 MCCHandler._handle_safety_status = _handle_safety_status  # type: ignore[attr-defined]
+
+
+# ── OCB-O: Watchdog status ────────────────────────────────────────────────────
+
+def _handle_watchdog_status(self):
+    """GET /api/watchdog/status — checks if aafl_watchdog.py is running via psutil."""
+    running = False
+    pid = None
+    try:
+        import psutil as _psutil
+        for p in _psutil.process_iter(["pid", "name", "cmdline"]):
+            try:
+                cmd = " ".join(p.info.get("cmdline") or [])
+                if "aafl_watchdog" in cmd:
+                    running = True
+                    pid = p.info["pid"]
+                    break
+            except Exception:
+                continue
+    except Exception:
+        pass
+    self._send_json({"running": running, "pid": pid})
+
+
+MCCHandler._handle_watchdog_status = _handle_watchdog_status  # type: ignore[attr-defined]
+
+
+# ── OCB-O: Health run history ─────────────────────────────────────────────────
+
+def _handle_health_run_history(self):
+    """GET /api/health/history — last 10+ runs from health.db health_runs table."""
+    import sqlite3 as _sq
+    rows = []
+    try:
+        if SH_HEALTH_DB.exists():
+            conn = _sq.connect(str(SH_HEALTH_DB))
+            conn.row_factory = _sq.Row
+            for r in conn.execute(
+                "SELECT * FROM health_runs ORDER BY started_at DESC LIMIT 20"
+            ):
+                d = dict(r)
+                total = (d.get("passed") or 0) + (d.get("failed") or 0) + (d.get("warned") or 0)
+                score = round(((d.get("passed") or 0) / max(total, 1)) * 100) if total else 0
+                rows.append({
+                    "fitness_score": score,
+                    "run_at":        d.get("finished_at") or d.get("started_at", ""),
+                    "verdict":       f"Self-health: {d.get('passed',0)} passed, {d.get('failed',0)} failed",
+                    "passed":        d.get("passed") or 0,
+                    "failed":        d.get("failed") or 0,
+                    "warned":        d.get("warned") or 0,
+                    "source":        "health.db",
+                })
+            conn.close()
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc), "history": []})
+        return
+    self._send_json({"ok": True, "history": rows[::-1]})  # oldest first
+
+
+MCCHandler._handle_health_run_history = _handle_health_run_history  # type: ignore[attr-defined]
 
 
 # ── OCB-J: CLACHR Relay endpoints ─────────────────────────────────────────────

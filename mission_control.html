@@ -253,6 +253,23 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 /* ── HOME INSTRUMENTS (PHASE 3) ── */
 .home-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding:8px 0 4px}
 .home-act-btn{min-width:132px;text-align:center;font-size:12px;flex:1 1 132px}
+/* Vertical section resize handles (OCB-O item 14) */
+.v-resize-handle{width:100%;height:6px;cursor:row-resize;background:transparent;display:flex;align-items:center;justify-content:center;margin:2px 0;flex-shrink:0;user-select:none}
+.v-resize-handle:hover{background:rgba(74,175,255,.1)}
+.v-resize-handle::after{content:'';width:32px;height:2px;border-radius:1px;background:#2a2a2a}
+.v-resize-handle:hover::after{background:#4af}
+/* LLOW Alt+drag connect (OCB-O) */
+.llow-connect-src{box-shadow:0 0 0 2px #4af,0 0 12px rgba(74,175,255,.5)!important;cursor:crosshair!important}
+/* Watchdog indicator (OCB-O) */
+@keyframes wdPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+#watchdog-dot.wd-on{background:#2a7!important;animation:wdPulse 2s ease-in-out infinite}
+#watchdog-dot.wd-off{background:#a33!important;animation:none}
+/* Global search (OCB-O) */
+.gs-result-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;border-bottom:1px solid #1a1a1a;font-size:12px;transition:background .1s}
+.gs-result-item:hover,.gs-result-item.selected{background:#1a2a3a}
+.gs-result-title{font-weight:bold;color:#ddd;flex:1}
+.gs-result-tab{font-size:10px;color:#4af;background:#0a1a2a;border:1px solid #1a3a4a;border-radius:3px;padding:1px 5px;white-space:nowrap;flex-shrink:0}
+.gs-result-desc{font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
 /* Safety Shield (OCB-J) */
 @keyframes safeGlow{0%,100%{box-shadow:0 0 6px #2a7,0 0 12px #2a7}50%{box-shadow:0 0 14px #4f4,0 0 28px #4f4}}
 @keyframes dangerFlash{0%,100%{box-shadow:0 0 6px #a22,0 0 12px #a22}50%{box-shadow:0 0 16px #f44,0 0 32px #f44;background:#2a0a0a}}
@@ -682,9 +699,11 @@ body.tutorial-on [data-tutorial]{position:relative}
 }
 body{font-size:var(--b3-font-size);color:var(--b3-text-color)}
 
-/* Tutorial "?" buttons */
-.tip-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#1a1a2a;border:1px solid #333;color:#777;font-size:10px;font-weight:bold;cursor:pointer;vertical-align:middle;margin-left:4px;flex-shrink:0;transition:.15s;position:relative}
-.tip-btn:hover{background:#222;border-color:#4af;color:#4af}
+/* Tutorial "?" buttons — OCB-O: max 14px, never overlap content */
+.tip-btn{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:#1a1a2a;border:1px solid #333;color:#777;font-size:9px;font-weight:bold;cursor:pointer;vertical-align:middle;margin-left:4px;flex-shrink:0;transition:.15s;position:relative;opacity:.6;line-height:1}
+.tip-btn:hover{background:#222;border-color:#4af;color:#4af;opacity:1}
+/* Sidebar ? icons: right-align (OCB-O) */
+.sb-section .tip-btn,.sb-nav-item .tip-btn{margin-left:auto;flex-shrink:0}
 .tip-box{position:absolute;z-index:9999;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;pointer-events:none;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%)}
 /* ── OCB-A: Self-health popup safety — applied globally ── */
 .mcc-popup-safe{z-index:9999!important;position:fixed!important;max-width:320px}
@@ -1221,6 +1240,20 @@ body{padding-bottom:28px}
   <input type="number" id="auto-interval" value="30" style="display:none">
   <span id="auto-badge-hdr" class="auto-badge auto-off" style="display:none">OFF</span>
   <button id="tutorial-toggle-btn" class="theme-toggle-btn" onclick="b2ToggleTutorial()" style="display:none">Tutorial</button>
+  <!-- Global Search Bar (OCB-O) -->
+  <div id="global-search-wrap" style="position:relative;flex:0 1 260px">
+    <input id="global-search-input" type="text" placeholder="Search MCC — buttons, ACCA codes… (Ctrl+K)"
+      style="width:100%;background:#111;border:1px solid #2a2a2a;color:#ccc;padding:5px 10px 5px 28px;border-radius:4px;font:inherit;font-size:12px"
+      oninput="globalSearchFilter()" onkeydown="globalSearchKey(event)" autocomplete="off">
+    <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#444;font-size:12px;pointer-events:none">🔍</span>
+    <div id="global-search-results" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:9999;background:#141414;border:1px solid #2a2a2a;border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.7);max-height:320px;overflow-y:auto"></div>
+  </div>
+  <!-- Watchdog indicator (OCB-O) -->
+  <span id="watchdog-indicator" style="display:flex;align-items:center;gap:5px;font-size:11px;cursor:default;white-space:nowrap"
+    data-tip="Safety watchdog active — safe for overnight runs">
+    <span id="watchdog-dot" style="width:8px;height:8px;border-radius:50%;background:#555;flex-shrink:0"></span>
+    <span id="watchdog-label" style="color:#555">WATCHDOG —</span>
+  </span>
   <!-- Theme toggle -->
   <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="b2ToggleTheme()" data-tip="Toggle dark/light theme — Dark mode uses dark backgrounds, Light mode uses white">🌙 Dark</button>
   <div class="refresh-wrap">
@@ -1363,9 +1396,9 @@ body{padding-bottom:28px}
 <!-- ── CONTENT AREA (tab bar + panes) ── -->
 <div class="content-area">
 
-<!-- TAB BAR (Home removed — now in sidebar) -->
-<div class="tab-bar">
-  <button class="tab-btn" data-tab="help" data-tip="Ask any question about the project — AI answers using your local or free providers">🔍 Help</button>
+<!-- TAB BAR (Home removed — now in sidebar; Help removed — OCB-O) -->
+<div class="tab-bar" id="main-tab-bar">
+  <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
   <button class="tab-btn active" data-tab="wccs" data-tip="Save your session — paste chat notes here and click Save Session Now">💾 WCCS</button>
   <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
   <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
@@ -1384,6 +1417,7 @@ body{padding-bottom:28px}
   <button class="tab-btn" data-tab="promo" data-tip="High-scoring AI results (≥9.0) waiting for your approval or rejection before archiving">⭐ Promo</button>
   <button class="tab-btn" data-tab="missions" data-tip="Mission registry — all active AAFL projects with status, tags, and progress notes">🎯 Missions</button>
   <span id="kb-icon" title="Keyboard shortcuts (Shift+?)" style="margin-left:auto;padding:6px 10px;cursor:pointer;color:#555;font-size:14px;user-select:none" onclick="showKbHelp()">⌨</span>
+  <button class="btn tab-scroll-arrow" id="tab-scroll-right" onclick="tabBarScroll(1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-left:1px solid #222;background:#161616;color:#888;flex-shrink:0">▶</button>
 </div>
 
 <!-- ── HOME TAB (content moved to sidebar — kept as fallback pane) ── -->
@@ -4569,6 +4603,17 @@ body{padding-bottom:28px}
           <span style="font-size:9px;color:#6f6" title="RAM % of total">■ RAM</span>
         </div>
       </div>
+
+      <!-- ROW 6: AI Process Allocation (OCB-O item 13) -->
+      <div style="margin-top:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px">AI Process Allocation — Live</span>
+          <span style="font-size:9px;color:#333;margin-left:auto">Updates every 5s</span>
+        </div>
+        <div id="ai-alloc-bars" style="display:flex;flex-direction:column;gap:5px">
+          <div style="font-size:11px;color:#333">Loading…</div>
+        </div>
+      </div>
     </div>
 
     <!-- Medical sub-pane -->
@@ -4602,7 +4647,7 @@ body{padding-bottom:28px}
       <!-- OCB-M Phase 7: Patient Fit for Service drill-down -->
       <div class="med-drill" id="med-pfs-wrap" onclick="medTogglePFS()" title="Click to expand patient fitness analysis — last 10 scores, trend, worst component, recommended action">
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px">🩺 Patient Fit for Service</span>
+          <span style="font-size:11px;font-weight:bold;color:#888;text-transform:uppercase;letter-spacing:1px">🩺 MCC System — Fit for Service</span>
           <span id="med-pfs-badge" style="font-size:11px;color:#555;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:3px;padding:1px 8px">—</span>
           <span style="font-size:10px;color:#444;margin-left:auto">Click to expand ▼</span>
           <span id="med-pfs-chevron" style="color:#444;font-size:12px;transform-origin:center;transition:transform .2s">▼</span>
@@ -5124,8 +5169,94 @@ function initTabs() {
       if (btn.dataset.tab === 'aafl-control') { loadStuckSummary(); }
       if (btn.dataset.tab === 'medical') loadMedical();
       if (btn.dataset.tab === 'help') helpInitTab();
+      // Scroll active tab into view and update arrows (OCB-O)
+      setTimeout(tabBarScrollActiveIntoView, 50);
     });
   });
+}
+
+// ── TAB BAR SCROLL (OCB-O item 15) ────────────────────────────────────────────
+
+function tabBarScroll(dir) {
+  const bar = document.getElementById('main-tab-bar');
+  if (!bar) return;
+  bar.scrollBy({ left: dir * 200, behavior: 'smooth' });
+  setTimeout(tabBarUpdateScrollArrows, 200);
+}
+
+function tabBarUpdateScrollArrows() {
+  const bar = document.getElementById('main-tab-bar');
+  const lBtn = document.getElementById('tab-scroll-left');
+  const rBtn = document.getElementById('tab-scroll-right');
+  if (!bar || !lBtn || !rBtn) return;
+  const overflowing = bar.scrollWidth > bar.clientWidth + 4;
+  lBtn.style.display = overflowing && bar.scrollLeft > 4 ? 'flex' : 'none';
+  rBtn.style.display = overflowing && bar.scrollLeft < bar.scrollWidth - bar.clientWidth - 4 ? 'flex' : 'none';
+}
+
+function tabBarScrollActiveIntoView() {
+  const active = document.querySelector('.tab-btn.active');
+  if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  setTimeout(tabBarUpdateScrollArrows, 200);
+}
+
+// Init tab bar scroll
+(function() {
+  const bar = document.getElementById('main-tab-bar');
+  if (bar) {
+    bar.addEventListener('scroll', tabBarUpdateScrollArrows);
+    window.addEventListener('resize', tabBarUpdateScrollArrows);
+    setTimeout(tabBarUpdateScrollArrows, 500);
+  }
+})();
+
+// ── VERTICAL SECTION SLIDERS (OCB-O item 14) ──────────────────────────────────
+
+function vResizeInit(handleEl) {
+  const tabKey = handleEl.dataset.tab || 'default';
+  const prevEl = handleEl.previousElementSibling;
+  const nextEl = handleEl.nextElementSibling;
+  if (!prevEl || !nextEl) return;
+
+  // Restore saved sizes
+  try {
+    const saved = JSON.parse(localStorage.getItem('vresize_' + tabKey) || 'null');
+    if (saved && saved.prev) { prevEl.style.flexBasis = saved.prev; prevEl.style.flexGrow = '0'; }
+    if (saved && saved.next) { nextEl.style.flexBasis = saved.next; nextEl.style.flexGrow = '0'; }
+  } catch(_) {}
+
+  let startY = 0, startPrevH = 0, startNextH = 0;
+  handleEl.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    startY = e.clientY;
+    startPrevH = prevEl.getBoundingClientRect().height;
+    startNextH = nextEl.getBoundingClientRect().height;
+    const onMove = (ev) => {
+      const dy = ev.clientY - startY;
+      const newPrev = Math.max(40, startPrevH + dy);
+      const newNext = Math.max(40, startNextH - dy);
+      prevEl.style.flexBasis = newPrev + 'px';
+      prevEl.style.flexGrow = '0';
+      nextEl.style.flexBasis = newNext + 'px';
+      nextEl.style.flexGrow = '0';
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      try {
+        localStorage.setItem('vresize_' + tabKey, JSON.stringify({
+          prev: prevEl.style.flexBasis, next: nextEl.style.flexBasis
+        }));
+      } catch(_) {}
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+
+// Init all resize handles in DOM
+function vResizeInitAll() {
+  document.querySelectorAll('.v-resize-handle').forEach(vResizeInit);
 }
 
 // ── TIMELINE ──────────────────────────────────────────────────────────────────
@@ -5596,6 +5727,140 @@ async function checkServerAlive() {
   }
 }
 
+// ── OCB-O: Global Search (item 3) ────────────────────────────────────────────
+
+let _gsIndex = [];
+let _gsSelIdx = -1;
+
+async function _gsBuildIndex() {
+  _gsIndex = [];
+  // Instructions DB
+  try {
+    const d = await apiFetch('/api/instructions');
+    (d.instructions || d || []).forEach(ins => {
+      _gsIndex.push({ title: ins.id || ins.title || '?', desc: (ins.content || ins.description || '').slice(0, 80), tab: ins.tab || 'acca', type: 'instruction' });
+    });
+  } catch(_) {}
+  // ACCA codes
+  try {
+    const d = await apiFetch('/acca-codes');
+    (d.codes || []).forEach(c => {
+      _gsIndex.push({ title: c.code, desc: c.meaning || '', tab: 'acca', type: 'acca' });
+    });
+  } catch(_) {}
+  // Element registry
+  try {
+    const d = await apiFetch('/api/llow/elements');
+    const cats = d.categories || {};
+    Object.values(cats).forEach(cat => {
+      (cat.elements || []).forEach(el => {
+        _gsIndex.push({ title: el.id || el.name, desc: el.desc || el.name || '', tab: 'aafl-control', type: 'llow' });
+      });
+    });
+  } catch(_) {}
+  // Tab names as navigable items
+  document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+    _gsIndex.push({ title: btn.textContent.trim(), desc: 'Navigate to this tab', tab: btn.dataset.tab, type: 'nav' });
+  });
+}
+
+function globalSearchFilter() {
+  const q = (document.getElementById('global-search-input')?.value || '').trim().toLowerCase();
+  const wrap = document.getElementById('global-search-results');
+  if (!wrap) return;
+  if (!q) { wrap.style.display = 'none'; return; }
+  const results = _gsIndex.filter(item =>
+    (item.title + ' ' + item.desc).toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!results.length) { wrap.style.display = 'none'; return; }
+  _gsSelIdx = -1;
+  const typeIcon = { instruction: '📖', acca: '⚡', llow: '🔄', nav: '📂' };
+  wrap.innerHTML = results.map((r, i) =>
+    `<div class="gs-result-item" data-tab="${esc(r.tab)}" data-idx="${i}" onclick="gsSelectItem(${i})" onmouseover="gsHighlight(${i})">
+      <span style="font-size:13px;flex-shrink:0">${typeIcon[r.type]||'🔍'}</span>
+      <span class="gs-result-title">${esc(r.title)}</span>
+      <span class="gs-result-desc">${esc(r.desc)}</span>
+      <span class="gs-result-tab">${esc(r.tab)}</span>
+    </div>`
+  ).join('');
+  wrap._results = results;
+  wrap.style.display = 'block';
+}
+
+function gsHighlight(idx) {
+  _gsSelIdx = idx;
+  document.querySelectorAll('#global-search-results .gs-result-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+}
+
+function gsSelectItem(idx) {
+  const wrap = document.getElementById('global-search-results');
+  if (!wrap || !wrap._results) return;
+  const item = wrap._results[idx];
+  if (!item) return;
+  wrap.style.display = 'none';
+  document.getElementById('global-search-input').value = '';
+  goToTab(item.tab);
+}
+
+function globalSearchKey(e) {
+  const wrap = document.getElementById('global-search-results');
+  if (!wrap || wrap.style.display === 'none') { if (e.key === 'Escape') e.target.blur(); return; }
+  const items = wrap.querySelectorAll('.gs-result-item');
+  if (e.key === 'ArrowDown') { e.preventDefault(); gsHighlight(Math.min(_gsSelIdx + 1, items.length - 1)); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); gsHighlight(Math.max(_gsSelIdx - 1, 0)); }
+  else if (e.key === 'Enter') { if (_gsSelIdx >= 0) gsSelectItem(_gsSelIdx); }
+  else if (e.key === 'Escape') { wrap.style.display = 'none'; e.target.blur(); }
+}
+
+// Ctrl+K opens global search
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'k') {
+    e.preventDefault();
+    const inp = document.getElementById('global-search-input');
+    if (inp) { inp.focus(); inp.select(); }
+  }
+});
+
+// Close search on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#global-search-wrap')) {
+    const wrap = document.getElementById('global-search-results');
+    if (wrap) wrap.style.display = 'none';
+  }
+});
+
+// Build index after page load (delayed to not block)
+setTimeout(_gsBuildIndex, 3000);
+
+// ── OCB-O: Watchdog indicator ─────────────────────────────────────────────────
+
+async function _updateWatchdog() {
+  const dot   = document.getElementById('watchdog-dot');
+  const label = document.getElementById('watchdog-label');
+  if (!dot || !label) return;
+  try {
+    const d = await apiFetch('/api/watchdog/status');
+    if (d.running) {
+      dot.className   = 'wd-on';
+      label.style.color = '#4f4';
+      label.textContent = 'WATCHDOG ON';
+    } else {
+      dot.className   = 'wd-off';
+      label.style.color = '#a33';
+      label.textContent = 'WATCHDOG OFF';
+    }
+  } catch(_) {
+    dot.className   = '';
+    dot.style.background = '#555';
+    label.style.color = '#555';
+    label.textContent = 'WATCHDOG —';
+  }
+}
+setInterval(_updateWatchdog, 10000);
+setTimeout(_updateWatchdog, 2000);
+
 async function connectData() {
   const btn = document.getElementById('btn-connect');
   if (!btn || btn.disabled) return;
@@ -5611,6 +5876,7 @@ async function connectData() {
       loadHomeScreen();
       loadHomeInstruments();
       startProcessPoller();   // start sidebar process monitor
+      setTimeout(_gsBuildIndex, 1500);  // build global search index after connect (OCB-O)
     } else {
       throw new Error('offline');
     }
@@ -7024,14 +7290,55 @@ async function loadAcca() {
   }
 }
 
+// OCB-O: ACCA code category classifier
+function _accaCategory(c) {
+  const code = (c.code || '').toUpperCase();
+  const meaning = (c.meaning || '').toLowerCase();
+  // Save/WCCS (orange)
+  if (/WCCS|SESUM|ACP|SAVE|SESSION|WRITE.*SAVE/.test(code) || /wccs|session save|write.*save/.test(meaning)) return 'save';
+  // Build/Code (green)
+  if (/^(AAFL|OCB|MOT|MCC|WRS|WRC|CLAC|LLOW|LEL|LLC|STORM|AASKC|IBR|RIBS|CNP|FFUE)$/.test(code) || /build|code|loop|workflow|element|canvas|sprint/.test(meaning)) return 'build';
+  // AI/Provider (purple)
+  if (/^(AI|ALP|AFNA|AIO|LM|CAWPA|CA|ACCA)$/.test(code) || /ai|provider|model|cerebras|mistral|gemini|groq|claude|token|cost/.test(meaning)) return 'ai';
+  // Navigation/UI (blue)
+  if (/^(SS|SFL|MCU|UI|MCC|CLACH|CLAC|DSP|PROF|WENTO)$/.test(code) || /navigate|dashboard|tab|button|screenshot|interface|update|copy|paste/.test(meaning)) return 'nav';
+  // Status/Mode (yellow)
+  if (/^(NRM|TBLM|DDM|BGM|BPM|EM|DSP|SBS|FFUE|BI|DRR|DWR|YO|SIB|SIF|WYM|CR|WMBW|WCBB|WS|WSF)$/.test(code) || /mode|status|summarise|brief|full|confidence|skip|flag|wrong|better|begin|deep|battle/.test(meaning)) return 'status';
+  return 'other';
+}
+const _ACCA_CAT_STYLE = {
+  nav:    {bg:'#0a1a2a', border:'#1a3a6a', col:'#4af',  label:'NAV/UI'},
+  build:  {bg:'#0a1a0a', border:'#1a4a1a', col:'#4f4',  label:'BUILD'},
+  save:   {bg:'#1a0f00', border:'#4a2a00', col:'#fa0',  label:'SAVE'},
+  ai:     {bg:'#150a1a', border:'#3a1a5a', col:'#c4f',  label:'AI'},
+  status: {bg:'#1a1a00', border:'#4a4a00', col:'#ff4',  label:'MODE'},
+  other:  {bg:'transparent', border:'transparent', col:'#fc8', label:''},
+};
+// OCB-O: colour legend HTML
+function _accaLegendRow() {
+  return '<tr><td colspan="3" style="padding:6px 8px;background:#111;border-bottom:1px solid #222">' +
+    Object.entries(_ACCA_CAT_STYLE).filter(([k]) => k !== 'other').map(([k, s]) =>
+      `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;font-size:10px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${s.bg};border:1px solid ${s.border}"></span><span style="color:${s.col}">${s.label}</span></span>`
+    ).join('') + '</td></tr>';
+}
+
 function renderAccaTable(codes) {
   const tbody = document.getElementById('acca-tbody');
   if (!tbody) return;
-  tbody.innerHTML = codes.length ? codes.map(c =>
-    '<tr><td style="font-weight:bold;color:#fc8">' + esc(c.code) + '</td>' +
-    '<td>' + esc(c.meaning) + '</td>' +
-    '<td>' + esc(c.added) + '</td></tr>'
-  ).join('') : '<tr><td colspan="3" style="text-align:center;color:#555">No ACCA codes found</td></tr>';
+  if (!codes.length) {
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#555">No ACCA codes found</td></tr>';
+    return;
+  }
+  const rows = codes.map(c => {
+    const cat = _accaCategory(c);
+    const s = _ACCA_CAT_STYLE[cat] || _ACCA_CAT_STYLE.other;
+    const catBadge = s.label ? `<span style="font-size:9px;padding:1px 5px;border-radius:2px;background:${s.bg};border:1px solid ${s.border};color:${s.col};margin-left:5px">${s.label}</span>` : '';
+    return `<tr style="background:${s.bg};border-left:3px solid ${s.border}">` +
+      `<td style="font-weight:bold;color:${s.col};padding:4px 8px">${esc(c.code)}${catBadge}</td>` +
+      `<td style="padding:4px 8px">${esc(c.meaning)}</td>` +
+      `<td style="padding:4px 8px;color:#555;font-size:11px">${esc(c.added)}</td></tr>`;
+  });
+  tbody.innerHTML = _accaLegendRow() + rows.join('');
 }
 
 function filterAcca(q) {
@@ -7807,6 +8114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.removeAttribute('title');
   });
   init().then(() => { _lastPollAt = Date.now(); });
+  vResizeInitAll();  // init vertical section resize handles (OCB-O)
   loadPresets();
   loadWorkflows();
 });
@@ -10793,12 +11101,19 @@ async function loadMedical() {
   const verdictLbl = document.getElementById('med-verdict-label');
   const verdictTs  = document.getElementById('med-verdict-ts');
 
-  // Load history
+  // Load history — fall back to health.db runs if no medical history yet (OCB-O)
   try {
     const h = await apiFetch('/api/medical-history');
-    _medRenderHistory(h.history || []);
-    if (h.history && h.history.length) {
-      const last = h.history[h.history.length - 1];
+    let hist = h.history || [];
+    if (!hist.length) {
+      try {
+        const hdb = await apiFetch('/api/health/history');
+        hist = hdb.history || [];
+      } catch(_) {}
+    }
+    _medRenderHistory(hist);
+    if (hist.length) {
+      const last = hist[hist.length - 1];
       _medUpdateBadge(last.fitness_score);
     }
   } catch(e) { /* server may not be running */ }
@@ -11448,7 +11763,7 @@ function hsTabSwitch(tab) {
   if (tab === 'provider')     loadHsProviderHealth();
   if (tab === 'selfdiag')     loadHsSelfDiag();
   if (tab === 'aaflruns')     loadHsAaflRuns();
-  if (tab === 'system')       { _refreshSystemMonitor(); _startSystemPoller(); hsLoadProviderCards(); }
+  if (tab === 'system')       { _refreshSystemMonitor(); _startSystemPoller(); _startAllocPoller(); hsLoadProviderCards(); }
   if (tab === 'medical')      loadMedical();
   if (tab === 'workchecker')  wcLoadReport();
 }
@@ -11486,9 +11801,28 @@ async function hsLoadProviderCards() {
   const lb   = document.getElementById('sys-leaderboard');
   if (!wrap) return;
   try {
-    const d   = await apiFetch('/health-status');
-    const raw = d.providers || d.results || d || [];
-    _hsProviders = Array.isArray(raw) ? raw : Object.entries(raw).map(([n,v]) => ({name:n,...v}));
+    // Try health-status first; fall back to enriched provider-health endpoint (OCB-O)
+    let raw = [];
+    try {
+      const d = await apiFetch('/health-status');
+      raw = d.providers || d.results || [];
+      if (!Array.isArray(raw)) raw = Object.entries(raw).map(([n,v]) => ({name:n,...v}));
+    } catch(_) {}
+    if (!raw.length) {
+      try {
+        const d2 = await apiFetch('/api/provider-health');
+        raw = d2.providers || [];
+      } catch(_) {}
+    }
+    // Also merge enriched data to ensure all 14 providers are shown
+    try {
+      const d3 = await apiFetch('/api/provider-health');
+      const enriched = d3.providers || [];
+      if (enriched.length > raw.length) raw = enriched;
+    } catch(_) {}
+    _hsProviders = raw;
+    // Normalise: ensure avg_score is 0 not null for display (OCB-O)
+    _hsProviders = _hsProviders.map(p => ({...p, avg_score: p.avg_score ?? 0}));
     hsRenderProviderCards();
     hsRenderLeaderboard();
     hsUpdateTicker();
@@ -11543,15 +11877,19 @@ function hsRenderProviderCards(sortKey) {
 
 function hsRenderLeaderboard() {
   const lb = document.getElementById('sys-leaderboard');
-  if (!lb || !_hsProviders.length) return;
+  if (!lb) return;
+  if (!_hsProviders.length) {
+    lb.innerHTML = '<div class="hs-lb-row"><span class="hs-lb-rank">—</span><span class="hs-lb-name" style="color:#555">Connect &amp; refresh to populate</span></div>';
+    return;
+  }
   const scored = _hsProviders.map(p => {
-    const speed   = p.latency_ms ? (1000/(p.latency_ms||1000)) : 0.5;
-    const quality = p.avg_score || 5;
-    const uptime  = (p.ok||p.online||p.reachable) ? 1 : 0;
-    return {...p, composite: parseFloat(((speed*0.3 + quality*0.5 + uptime*2)*10).toFixed(1))};
-  }).sort((a,b) => b.composite - a.composite);
-  const topScore = scored[0]?.composite || 1;
-  lb.innerHTML = scored.slice(0,8).map((p,i) => {
+    const speed   = p.latency_ms ? (1000 / Math.max(p.latency_ms, 1)) : 0.5;
+    const quality = (p.avg_score || 0);
+    const uptime  = (p.ok || p.online || p.reachable || p.status === 'LIVE') ? 1 : 0;
+    return {...p, composite: parseFloat(((speed * 0.3 + quality * 0.5 + uptime * 2) * 10).toFixed(1))};
+  }).sort((a, b) => b.composite - a.composite);
+  const topScore = Math.max(scored[0]?.composite || 1, 1);
+  lb.innerHTML = scored.slice(0, 14).map((p, i) => {
     const crown = i===0 ? '👑 ' : i===1 ? '🥈 ' : i===2 ? '🥉 ' : '';
     const medal = i===0 ? '#ffd700' : i===1 ? '#c0c0c0' : i===2 ? '#cd7f32' : '#555';
     const barW  = Math.round((p.composite / topScore) * 100);
@@ -11611,9 +11949,13 @@ async function updateAiStatusBar() {
 
   const cards = _aiBarProviders.map((p, idx) => {
     const st = p.status || 'UNKNOWN';
-    const dotCol = st === 'LIVE' ? '#4f4' : st === 'NO_KEY' ? '#fa0' : '#555';
-    const pulse   = st === 'LIVE' ? `<span class="ai-prov-pulse" style="background:${dotCol}"></span>` : `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${dotCol};margin-right:5px;vertical-align:middle"></span>`;
-    const lat = p.latency_ms ? p.latency_ms + 'ms' : '';
+    const lat_ms = p.latency_ms || 0;
+    // Pulse dot: green <500ms, amber <2000ms, red >2000ms or offline
+    const pulseCol = st !== 'LIVE' ? '#555' : lat_ms < 500 ? '#4f4' : lat_ms < 2000 ? '#fa0' : '#f44';
+    const dotAnim  = st === 'LIVE' ? `animation:aiPulse 2s ease-in-out infinite` : '';
+    const pulse    = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pulseCol};${dotAnim};flex-shrink:0"></span>`;
+    const lat      = lat_ms ? lat_ms + 'ms' : '';
+    const latCol   = lat_ms < 500 ? '#4f4' : lat_ms < 2000 ? '#fa0' : '#f44';
     const modelShort = (p.model_loaded || '').replace(/^[^/]+\//, '').slice(0, 20);
     const locBadge = _aiBarLocBadge(p.location || 'CLOUD_FREE');
     const vramBar  = (p.location === 'LOCAL_GPU' && p.vram_mb != null)
@@ -11621,9 +11963,9 @@ async function updateAiStatusBar() {
       : '';
     return `<span class="ai-prov-chip" onclick="aiBarCardClick(${idx}, event)"
       style="display:inline-flex;flex-direction:column;justify-content:center;padding:3px 8px;min-height:38px;cursor:pointer;opacity:${st==='OFFLINE'?0.5:1}"
-      title="${p.name} — ${st}">
+      title="${p.name} — ${st}${lat ? ' · ' + lat : ''}">
       <div style="display:flex;align-items:center;gap:3px;white-space:nowrap">
-        ${pulse}<strong style="font-size:10px">${(p.name||'?').split(' ').slice(-1)[0].toUpperCase()}</strong>${locBadge}${lat ? `<span style="font-size:9px;color:#555;margin-left:4px">${lat}</span>` : ''}
+        ${pulse}<strong style="font-size:10px">${(p.name||'?').split(' ').slice(-1)[0].toUpperCase()}</strong>${locBadge}${lat ? `<span style="font-size:9px;color:${latCol};margin-left:4px">${lat}</span>` : ''}
       </div>
       ${modelShort ? `<div style="font-size:9px;color:#555;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${modelShort}</div>` : ''}
       ${vramBar}
@@ -11678,8 +12020,8 @@ document.addEventListener('click', () => {
   if (tip) tip.style.display = 'none';
 });
 
-// Auto-refresh AI bar every 20s
-setInterval(updateAiStatusBar, 20000);
+// Auto-refresh AI bar every 15s (OCB-O)
+setInterval(updateAiStatusBar, 15000);
 setTimeout(updateAiStatusBar, 2000);  // initial load after page ready
 
 function hsUpdateTicker() {
@@ -12134,6 +12476,57 @@ function _stopSystemPoller() {
   if (_sysPollerTimer) { clearInterval(_sysPollerTimer); _sysPollerTimer = null; }
   const badge = document.getElementById('sys-live-badge');
   if (badge) badge.style.opacity = '0';
+}
+
+// ── OCB-O item 13: AI Process Allocation bars ─────────────────────────────────
+const _ALLOC_PROC_COLOURS = { mcc_server: '#4af', aafl_loop: '#fa0', scout: '#6f6', queue_runner: '#c4f', python: '#888', node: '#4af' };
+let _allocPollerTimer = null;
+
+async function _refreshAiAlloc() {
+  const el = document.getElementById('ai-alloc-bars');
+  if (!el) return;
+  try {
+    const d = await apiFetch('/api/system/ai-allocation');
+    const procs = (d.processes || []).slice(0, 8);
+    if (!procs.length) {
+      el.innerHTML = '<div style="font-size:11px;color:#333">No AI processes running</div>';
+      return;
+    }
+    const maxCpu = Math.max(...procs.map(p => p.cpu_pct || 0), 1);
+    const maxRam = Math.max(...procs.map(p => p.ram_mb || 0), 1);
+    el.innerHTML = procs.map(p => {
+      const nameKey = Object.keys(_ALLOC_PROC_COLOURS).find(k => (p.name || '').toLowerCase().includes(k)) || 'python';
+      const col = _ALLOC_PROC_COLOURS[nameKey] || '#888';
+      const cpuW = Math.round(((p.cpu_pct || 0) / maxCpu) * 100);
+      const ramW = Math.round(((p.ram_mb || 0) / maxRam) * 100);
+      return `<div style="background:#111;border:1px solid #1a1a1a;border-radius:4px;padding:6px 10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:11px;color:${col};font-weight:bold;min-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name||'?')}</span>
+          <span style="font-size:10px;color:#555">PID ${p.pid||'—'}</span>
+          <span style="font-size:10px;color:#4af;margin-left:auto">${(p.cpu_pct||0).toFixed(1)}% CPU</span>
+          <span style="font-size:10px;color:#6f6">${Math.round(p.ram_mb||0)} MB</span>
+          ${p.gpu_mb != null ? `<span style="font-size:10px;color:#fa0">${p.gpu_mb} MB GPU</span>` : ''}
+        </div>
+        <div style="height:4px;background:#0a0a0a;border-radius:2px;margin-bottom:3px;overflow:hidden">
+          <div style="height:100%;width:${cpuW}%;background:${col};border-radius:2px;transition:width .5s"></div>
+        </div>
+        <div style="height:3px;background:#0a0a0a;border-radius:2px;overflow:hidden">
+          <div style="height:100%;width:${ramW}%;background:#6f6;border-radius:2px;transition:width .5s"></div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    if (el) el.innerHTML = '<div style="font-size:11px;color:#555">Allocation data unavailable</div>';
+  }
+}
+
+function _startAllocPoller() {
+  if (_allocPollerTimer) return;
+  _refreshAiAlloc();
+  _allocPollerTimer = setInterval(_refreshAiAlloc, 5000);
+}
+function _stopAllocPoller() {
+  if (_allocPollerTimer) { clearInterval(_allocPollerTimer); _allocPollerTimer = null; }
 }
 
 async function sysFreeUp(pid) {
@@ -12661,6 +13054,7 @@ function contextMenu(e, items) {
 // BUILD 4 — SIDEBAR NAVIGATION TREE
 // ══════════════════════════════════════════════════════════════════
 
+// OCB-O item 11: all tabs mirrored in sidebar nav tree
 const _NAV_TREE = [
   {id:'wccs', label:'💾 WCCS', children:[
     {id:'wccs:autosave', label:'Auto-Save Log',  drill:'autosave'},
@@ -12672,21 +13066,29 @@ const _NAV_TREE = [
   ]},
   {id:'kanban',           label:'📋 Kanban'},
   {id:'aafl-runs',        label:'🔄 AAFL Runs'},
-  {id:'scout',            label:'🔭 Scout'},
-  {id:'aafl-control',     label:'⚙️ AAFL Control'},
+  {id:'scout',            label:'🔭 Scout Swarm'},
+  {id:'aafl-control',     label:'⚙️ AAFL Control', children:[
+    {id:'aafl:loop',      label:'Loop Settings'},
+    {id:'aafl:llow',      label:'LLOW Canvas'},
+    {id:'aafl:workflow',  label:'Workflows'},
+  ]},
   {id:'memory',           label:'🧠 Memory'},
-  {id:'costs',            label:'💰 Costs'},
-  {id:'alp',              label:'🛡️ ALP'},
+  {id:'costs',            label:'💰 Costs + ALP'},
   {id:'storage',          label:'💽 Storage'},
   {id:'health-suite', label:'💊 Health Suite', children:[
-    {id:'hs:provider', label:'🏥 Provider Health',   hsTab:'provider'},
-    {id:'hs:selfdiag', label:'🔧 Self-Diagnosis',    hsTab:'selfdiag'},
-    {id:'hs:aaflruns', label:'🔄 AAFL & Scout Runs', hsTab:'aaflruns'},
-    {id:'hs:system',   label:'💻 GPU/CPU/RAM',       hsTab:'system'},
-    {id:'hs:medical',  label:'🩺 Medical',           hsTab:'medical'},
+    {id:'hs:provider',    label:'🏥 Provider Health',   hsTab:'provider'},
+    {id:'hs:selfdiag',    label:'🔧 Self-Diagnosis',    hsTab:'selfdiag'},
+    {id:'hs:aaflruns',    label:'🔄 AAFL & Scout Runs', hsTab:'aaflruns'},
+    {id:'hs:system',      label:'💻 GPU/CPU/RAM',       hsTab:'system'},
+    {id:'hs:medical',     label:'🩺 Medical',           hsTab:'medical'},
+    {id:'hs:workchecker', label:'✅ Work Checker',      hsTab:'workchecker'},
+  ]},
+  {id:'missions',         label:'🎯 Missions', children:[
+    {id:'mis:kb',         label:'🎮 KB Profiles'},
+    {id:'mis:proj',       label:'📊 Project Brain'},
+    {id:'mis:spin',       label:'🌀 Spin Doctor'},
   ]},
   {id:'acca',             label:'⚡ Instructions & Codes'},
-  {id:'keybind-profiles', label:'🎮 KB Profiles'},
   {id:'design',           label:'🎨 Design'},
   {id:'promo',            label:'⭐ Promo'},
 ];
@@ -14338,6 +14740,15 @@ function llowRenderCanvas() {
     div.addEventListener('mousedown', (e) => {
       if (e.target.classList.contains('llow-port')) return;
       e.stopPropagation();
+      // OCB-O: Alt+mousedown = start connection-draw mode from node centre
+      if (e.altKey) {
+        LLOW.arrowFrom = step.id;
+        const fromPos = llowGetPortPos(step.id, 'out');
+        LLOW.arrowPreview = { x1: fromPos.x, y1: fromPos.y, x2: fromPos.x, y2: fromPos.y };
+        div.classList.add('llow-connect-src');
+        llowLogExec('Connection started — Alt+release on target node to connect', 'running');
+        return;
+      }
       // OCB-M Phase 1: don't call llowSelectStep from mousedown — it triggers llowRenderCanvas
       // which destroys the current div before dblclick fires, breaking native dblclick detection.
       // Selection now happens in the click handler (with manual dbl-click detection).
@@ -14351,6 +14762,13 @@ function llowRenderCanvas() {
       div.classList.add('llow-dragging');
       const lay = document.getElementById('llow-nodes-layer');
       if (lay) lay.classList.add('llow-drag-active');
+    });
+    // OCB-O: mouseup on node — complete Alt+drag connection
+    div.addEventListener('mouseup', (e) => {
+      if (LLOW.arrowFrom && LLOW.arrowFrom !== step.id) {
+        e.stopPropagation();
+        llowNodeMouseUpConnect(e, step.id);
+      }
     });
     div.addEventListener('contextmenu', (e) => {
       e.preventDefault();
@@ -14814,6 +15232,8 @@ function llowOnCanvasMouseMove(e) {
 }
 
 function llowOnCanvasMouseUp(e) {
+  // OCB-O: clean up Alt+drag connect-draw mode
+  document.querySelectorAll('.llow-connect-src').forEach(n => n.classList.remove('llow-connect-src'));
   if (LLOW.dragNode) {
     // OCB-H: remove ghost styling from dragged node
     const draggedNode = document.getElementById('llow-node-' + LLOW.dragNode.stepId);
@@ -14823,6 +15243,28 @@ function llowOnCanvasMouseUp(e) {
     LLOW.dragNode = null;
     if (LLOW.sel && LLOW.selType === 'step') llowSelectStep(LLOW.sel);
   }
+}
+
+// OCB-O: handle node mouseup for Alt+drag connections
+function llowNodeMouseUpConnect(e, targetId) {
+  if (!LLOW.arrowFrom || LLOW.arrowFrom === targetId) {
+    LLOW.arrowFrom = null;
+    LLOW.arrowPreview = null;
+    llowRenderCanvas();
+    return;
+  }
+  const usedArrowType = LLOW.pendingArrowType || 'continue';
+  const arrowId = 'arrow-' + Math.random().toString(36).slice(2, 10);
+  LLOW.wf.arrows.push({ id: arrowId, from: LLOW.arrowFrom, to: targetId, arrow_type: usedArrowType, params: {} });
+  LLOW.pendingArrowType = 'continue';
+  llowUpdateArrowBadge();
+  const adef = LLOW.arrowDefs.find(a => a.id === usedArrowType) || {};
+  llowLogExec(`Connected: ${adef.name || usedArrowType}`, 'pass');
+  LLOW.arrowFrom = null;
+  LLOW.arrowPreview = null;
+  document.querySelectorAll('.llow-port').forEach(p => p.classList.remove('active'));
+  llowRenderCanvas();
+  llowSelectArrow(arrowId);
 }
 
 function llowOnCanvasClick(e) {
@@ -15093,24 +15535,32 @@ function llowLogExec(msg, cls) {
   }, 1200);
 })();
 
-// ── OCB-I Phase 6: LLOW Fullscreen ───────────────────────────────────────────
+// ── OCB-I/OCB-O Phase 6: LLOW Fullscreen ─────────────────────────────────────
 
 function llowToggleFullscreen() {
-  const body = document.querySelector('.aafl-acc-body', document.getElementById('acc-llow'));
   const wrap = document.getElementById('acc-llow');
   if (!wrap) return;
   const isFs = wrap.classList.contains('llow-fs-active');
+  const btn  = document.getElementById('llow-fs-btn');
   if (isFs) {
     wrap.classList.remove('llow-fs-active');
-    document.getElementById('llow-fs-btn').textContent = '↗';
-    document.getElementById('llow-fs-btn').title = 'Fullscreen LLOW canvas — expand to fill browser viewport';
+    wrap.removeAttribute('style');
+    if (btn) { btn.textContent = '↗'; btn.title = 'Fullscreen LLOW canvas — expand to fill browser viewport'; }
     llowLogExec('Fullscreen off', 'pass');
   } else {
     wrap.classList.add('llow-fs-active');
-    document.getElementById('llow-fs-btn').textContent = '↙';
-    document.getElementById('llow-fs-btn').title = 'Exit fullscreen (or press Escape)';
+    // Force full-viewport via inline styles (overrides any inherited overflow/clip) (OCB-O)
+    wrap.setAttribute('style',
+      'position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:10000;' +
+      'background:#070707;display:flex;flex-direction:column;padding:10px;overflow:hidden');
+    if (btn) { btn.textContent = '↙'; btn.title = 'Exit fullscreen (or press Escape)'; }
     llowLogExec('Fullscreen on — press Escape or click ↙ to exit', 'pass');
   }
+  // Force canvas resize after toggle
+  setTimeout(() => {
+    llowRenderCanvas();
+    llowRenderMinimap();
+  }, 50);
 }
 
 document.addEventListener('keydown', (e) => {

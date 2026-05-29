@@ -47,3 +47,10 @@
 | 35 | 2026-05-29 | v62 (last handover — Phase 5) | OCB-N: Scout Swarm LEL (DATA SOURCES palette, live counter/status/time-limit), project_timeline_builder.py, Work Checker 3 panels (Timeline/Checklist/Action Plan), ACCA ticker bar, removed legacy handover writes. 108/108 MOT. | SWARM, PTL, WCTL, WCCL, WCAP, ACCATICK |
 | 35 | 2026-05-29 | v60 -> v61 | {} | None |
 | 36 | 2026-05-29 | v61 -> v62 | test chat text for recovery check | None |
+| 37 | 2026-05-29 | v62 -> v63 | OCB-O: Safety Watchdog indicator, Global Search (Ctrl+K), Help tab removed, LLOW Alt+drag connect + fullscreen fix, GPU/CPU error→0, Leaderboard populate fix, AI bar 15s+colour latency, Medical label+health.db history, sidebar all-tabs, ACCA colour table, AI Alloc panel, v-resize handles, tab scroll arrows. 2 new endpoints. 108/108 MOT. | None |
+| 37 | 2026-05-29 | legacy | {} | None |
+| 38 | 2026-05-29 | legacy | test chat text for recovery check | None |
+| 39 | 2026-05-29 | legacy | test chat text for recovery check | None |
+| 40 | 2026-05-29 | legacy | test chat text for recovery check[2026-05-29 01:02:15] test capture text [2026-0 | None |
+| 41 | 2026-05-29 | legacy | {} | None |
+| 42 | 2026-05-29 | legacy | test chat text for recovery check | None |
