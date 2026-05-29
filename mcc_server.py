@@ -626,6 +626,11 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-O: Watchdog status ─────────────────────────────────────────
             elif path == "/api/watchdog/status":
                 self._handle_watchdog_status()
+            # ── OCB-O: Code Editor ────────────────────────────────────────────
+            elif path == "/api/code/files":
+                self._handle_code_files()
+            elif path == "/api/code/read":
+                self._handle_code_read()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -852,6 +857,11 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-L: Phase 6 — Settings persistence ────────────────────────
             elif path == "/api/settings":
                 self._handle_settings_post()
+            # ── OCB-O: Code Editor ────────────────────────────────────────────
+            elif path == "/api/code/save":
+                self._handle_code_save()
+            elif path == "/api/code/run":
+                self._handle_code_run()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -6949,6 +6959,171 @@ MCCHandler._handle_wc_checklist   = _handle_wc_checklist    # type: ignore[attr-
 MCCHandler._handle_wc_action_plan = _handle_wc_action_plan  # type: ignore[attr-defined]
 MCCHandler._handle_wc_check_item  = _handle_wc_check_item   # type: ignore[attr-defined]
 MCCHandler._handle_wc_delegate    = _handle_wc_delegate     # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-O: Code Editor API endpoints
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import tempfile as _tempfile_mod
+
+_CE_SKIP = {"__pycache__", "backups", "archive_dead", ".git", "node_modules", ".claude"}
+
+
+def _handle_code_files(self):
+    """GET /api/code/files?path=X — directory listing as JSON tree."""
+    qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+    rel = qs.get("path", [""])[0].strip().lstrip("/\\")
+    target = (HERE / rel).resolve() if rel else HERE.resolve()
+    if not str(target).startswith(str(HERE.resolve())):
+        self._send_json({"error": "Access denied"}, 403)
+        return
+    if not target.exists():
+        self._send_json({"error": "Not found"}, 404)
+        return
+
+    def _entry(p):
+        try:
+            st = p.stat()
+            return {
+                "name": p.name,
+                "path": str(p.relative_to(HERE)).replace("\\", "/"),
+                "type": "dir" if p.is_dir() else "file",
+                "size": st.st_size if p.is_file() else None,
+                "mtime": int(st.st_mtime),
+                "ext":  p.suffix.lstrip(".").lower() if p.is_file() else None,
+            }
+        except Exception:
+            return {"name": p.name, "type": "file",
+                    "path": str(p.relative_to(HERE)).replace("\\", "/")}
+
+    if target.is_file():
+        self._send_json(_entry(target))
+        return
+
+    entries = []
+    try:
+        for child in sorted(target.iterdir(),
+                            key=lambda p: (0 if p.is_dir() else 1, p.name.lower())):
+            if child.name.startswith(".") or child.name in _CE_SKIP:
+                continue
+            e = _entry(child)
+            if child.is_dir():
+                e["children"] = []
+            entries.append(e)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+        return
+    self._send_json({
+        "path": str(target.relative_to(HERE)).replace("\\", "/") if target != HERE else "",
+        "entries": entries,
+    })
+
+
+MCCHandler._handle_code_files = _handle_code_files  # type: ignore[attr-defined]
+
+
+def _handle_code_read(self):
+    """GET /api/code/read?file=X — reads file content (max 2 MB)."""
+    qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+    rel = qs.get("file", [""])[0].strip().lstrip("/\\")
+    if not rel:
+        self._send_json({"error": "No file specified"}, 400)
+        return
+    target = (HERE / rel).resolve()
+    if not str(target).startswith(str(HERE.resolve())):
+        self._send_json({"error": "Access denied"}, 403)
+        return
+    if not target.is_file():
+        self._send_json({"error": "File not found"}, 404)
+        return
+    size = target.stat().st_size
+    if size > 2 * 1024 * 1024:
+        self._send_json({"error": f"File too large ({size//1024}KB) to open in editor", "size": size}, 400)
+        return
+    try:
+        content = target.read_text(encoding="utf-8", errors="replace")
+        self._send_json({"file": rel, "content": content, "size": size,
+                         "ext": target.suffix.lstrip(".").lower()})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_code_read = _handle_code_read  # type: ignore[attr-defined]
+
+
+def _handle_code_save(self):
+    """POST /api/code/save — atomic file write. Body: {file, content}."""
+    try:
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length).decode("utf-8"))
+        rel = (body.get("file") or "").strip().lstrip("/\\")
+        content = body.get("content", "")
+        if not rel:
+            self._send_json({"error": "No file specified"}, 400)
+            return
+        target = (HERE / rel).resolve()
+        if not str(target).startswith(str(HERE.resolve())):
+            self._send_json({"error": "Access denied"}, 403)
+            return
+        target.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_path = _tempfile_mod.mkstemp(dir=str(target.parent), suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8", newline="") as f:
+                f.write(content)
+            import shutil as _sh
+            _sh.move(tmp_path, str(target))
+        except Exception:
+            try:
+                os.unlink(tmp_path)
+            except Exception:
+                pass
+            raise
+        self._send_json({"ok": True, "file": rel, "size": len(content.encode("utf-8"))})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_code_save = _handle_code_save  # type: ignore[attr-defined]
+
+
+def _handle_code_run(self):
+    """POST /api/code/run — runs a .py file, returns stdout/stderr."""
+    try:
+        length = int(self.headers.get("Content-Length", 0))
+        body = json.loads(self.rfile.read(length).decode("utf-8"))
+        rel = (body.get("file") or "").strip().lstrip("/\\")
+        if not rel:
+            self._send_json({"error": "No file specified"}, 400)
+            return
+        target = (HERE / rel).resolve()
+        if not str(target).startswith(str(HERE.resolve())):
+            self._send_json({"error": "Access denied"}, 403)
+            return
+        if not target.is_file():
+            self._send_json({"error": "File not found"}, 404)
+            return
+        if target.suffix.lower() != ".py":
+            self._send_json({"error": "Only .py files can be run here"}, 400)
+            return
+        result = subprocess.run(
+            [PYTHON, str(target)],
+            capture_output=True, text=True, timeout=30, cwd=str(HERE),
+        )
+        self._send_json({
+            "ok":         result.returncode == 0,
+            "returncode": result.returncode,
+            "stdout":     result.stdout[-8000:]   if result.stdout else "",
+            "stderr":     result.stderr[-4000:]   if result.stderr else "",
+        })
+    except subprocess.TimeoutExpired:
+        self._send_json({"ok": False, "error": "Script timed out after 30s",
+                         "stdout": "", "stderr": ""})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_code_run = _handle_code_run  # type: ignore[attr-defined]
 
 
 def main():
