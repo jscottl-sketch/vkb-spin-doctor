@@ -506,6 +506,10 @@ body.tutorial-on [data-tutorial]{position:relative}
 .kanban-dep-badge{font-size:9px;background:#2a1a1a;color:#f88;border-radius:3px;padding:1px 5px}
 .kanban-bulk-bar{background:#111;border:1px solid #222;border-radius:6px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;display:none}
 .kanban-bulk-bar.visible{display:flex}
+.kanban-card.blocked{opacity:.55;border-color:#3a2a1a!important}
+.kanban-subtask-bar{height:4px;background:#222;border-radius:2px;margin-top:5px;overflow:hidden}
+.kanban-subtask-bar-fill{height:4px;background:#4af;border-radius:2px;transition:width .3s}
+.kanban-dep-chain{font-size:10px;color:#f88;background:#1a0808;border:1px solid #3a1a1a;border-radius:3px;padding:3px 7px;margin-top:4px}
 /* ── B2 Activity Feed ── */
 .act-filter-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
 .act-filter-btn{background:#1a1a1a;border:1px solid #2a2a2a;color:#888;padding:3px 10px;border-radius:12px;cursor:pointer;font-size:11px;transition:.15s}
@@ -1761,23 +1765,27 @@ body{padding-bottom:28px}
       <div class="home-ctrl" style="flex-wrap:wrap;gap:6px">
         <button class="btn" onclick="b2LoadActivity()" title="Reload the activity log from the server">Refresh</button>
         <button class="btn" onclick="b2AiSummariseActivity()" id="btn-ai-summarise" style="font-size:11px;background:#1a1a2a;color:#aaf" title="Send the activity log to an AI and get a plain-English summary of what happened today">🤖 AI Summarise</button>
-        <button class="btn" onclick="b2ExportActivity()" style="font-size:11px" title="Download the current filtered activity log as a .txt file">📄 Export .txt</button>
+        <input type="date" id="act-export-from" style="background:#111;border:1px solid #333;color:#888;padding:3px 6px;border-radius:4px;font-size:10px" title="Export start date">
+        <input type="date" id="act-export-to" style="background:#111;border:1px solid #333;color:#888;padding:3px 6px;border-radius:4px;font-size:10px" title="Export end date">
+        <button class="btn" onclick="b2ExportActivity()" style="font-size:11px" title="Download filtered activity log — uses date range if set, otherwise all entries">📄 Export</button>
         <span class="home-last-refresh" id="activity-ts"></span>
       </div>
       <div style="font-size:0.8em;opacity:0.6;margin-bottom:6px">Every AAFL run, save, scout, and error in one feed — use the filters below to narrow down what you see</div>
       <div class="act-filter-bar" id="b2-act-filters">
         <button class="act-filter-btn active" data-filter="all" onclick="b2ActFilter(this,'all')" title="Show every activity entry">All</button>
-        <button class="act-filter-btn" data-filter="kanban" onclick="b2ActFilter(this,'kanban')" title="Show only Kanban card changes">Kanban</button>
-        <button class="act-filter-btn" data-filter="aafl" onclick="b2ActFilter(this,'aafl')" title="Show only AAFL goal runs">AAFL</button>
+        <button class="act-filter-btn" data-filter="aafl-run" onclick="b2ActFilter(this,'aafl-run')" title="Show only AAFL goal runs">AAFL Run</button>
         <button class="act-filter-btn" data-filter="scout" onclick="b2ActFilter(this,'scout')" title="Show only Scout web search events">Scout</button>
         <button class="act-filter-btn" data-filter="wccs" onclick="b2ActFilter(this,'wccs')" title="Show only WCCS session save events">WCCS</button>
-        <button class="act-filter-btn" data-filter="costs" onclick="b2ActFilter(this,'costs')" title="Show only cost and spending events">Costs</button>
-        <button class="act-filter-btn" data-filter="errors" onclick="b2ActFilter(this,'errors')" title="Show only errors and failures — useful for debugging">Errors</button>
-        <button class="act-filter-btn" data-filter="manual" onclick="b2ActFilter(this,'manual')" title="Show only events you triggered manually">Manual</button>
-        <button class="act-filter-btn" data-filter="auto" onclick="b2ActFilter(this,'auto')" title="Show only events triggered automatically by the system">Auto</button>
-        <button class="act-filter-btn" data-filter="today" onclick="b2ActFilter(this,'today')" title="Show only events from today">Today</button>
-        <button class="act-filter-btn" data-filter="week" onclick="b2ActFilter(this,'week')" title="Show only events from the last 7 days">This Week</button>
-        <button class="act-filter-btn" data-filter="month" onclick="b2ActFilter(this,'month')" title="Show only events from the last 30 days">This Month</button>
+        <button class="act-filter-btn" data-filter="error" onclick="b2ActFilter(this,'error')" title="Show only errors and failures">Error</button>
+        <button class="act-filter-btn" data-filter="warning" onclick="b2ActFilter(this,'warning')" title="Show only warnings">Warning</button>
+        <button class="act-filter-btn" data-filter="info" onclick="b2ActFilter(this,'info')" title="Show only informational entries">Info</button>
+        <button class="act-filter-btn" data-filter="kanban" onclick="b2ActFilter(this,'kanban')" title="Show only Kanban card changes">Kanban</button>
+        <button class="act-filter-btn" data-filter="medical" onclick="b2ActFilter(this,'medical')" title="Show only Medical health events">Medical</button>
+        <button class="act-filter-btn" data-filter="storage" onclick="b2ActFilter(this,'storage')" title="Show only Storage events">Storage</button>
+        <button class="act-filter-btn" data-filter="provider" onclick="b2ActFilter(this,'provider')" title="Show only AI provider events">Provider</button>
+        <button class="act-filter-btn" data-filter="user" onclick="b2ActFilter(this,'user')" title="Show only user-triggered events">User</button>
+        <button class="act-filter-btn" data-filter="system" onclick="b2ActFilter(this,'system')" title="Show only system/auto events">System</button>
+        <button class="act-filter-btn" onclick="b2ActClear()" style="background:#1a1a0a;color:#fa0;border-color:#3a3a1a" title="Reset all filters back to All">Clear</button>
       </div>
       <div id="b2-ai-summary-out" style="background:#0a0a1a;border:1px solid #2a2a4a;border-radius:6px;padding:8px;font-size:12px;color:#aaf;margin-bottom:8px;display:none"></div>
       <div id="b2-activity-list" style="max-height:calc(100vh - 320px);overflow-y:auto">
@@ -1918,7 +1926,7 @@ body{padding-bottom:28px}
       <!-- B2-02: Templates -->
       <button class="btn" onclick="b2KanbanTemplate('bug')" style="font-size:11px" title="Add a new card pre-filled with the standard bug report fields">🐛 Bug Template</button>
       <button class="btn" onclick="b2KanbanTemplate('feature')" style="font-size:11px" title="Add a new card pre-filled with the standard feature request fields">✨ Feature Template</button>
-      <button class="btn" onclick="b2KanbanTemplate('research')" style="font-size:11px" title="Add a new card pre-filled with the standard research task fields">🔬 Research Template</button>
+      <button class="btn" onclick="b2KanbanTemplate('aafl')" style="font-size:11px" title="Add a new card pre-filled with standard AAFL goal sub-tasks">🤖 AAFL Goal Template</button>
       <!-- B2-02: Bulk actions -->
       <button class="btn" id="btn-bulk-toggle" onclick="b2ToggleBulkMode()" style="font-size:11px" title="Enable bulk selection mode — tick multiple cards then move, tag, or delete them all at once">☑ Bulk Mode</button>
       <!-- B2-02: Archive viewer -->
@@ -1928,7 +1936,11 @@ body{padding-bottom:28px}
     <!-- B2-02: Bulk action bar -->
     <div class="kanban-bulk-bar" id="kanban-bulk-bar">
       <span style="font-size:12px;color:#888" id="kanban-sel-count">0 selected</span>
-      <button class="btn" onclick="b2BulkMove('done')" style="font-size:11px" title="Move all selected cards to the Done column">→ Done</button>
+      <select id="kanban-bulk-col" style="background:#111;border:1px solid #333;color:#ccc;padding:3px 6px;border-radius:4px;font-size:11px" title="Column to move selected cards into">
+        <option value="todo">→ To Do</option><option value="doing">→ Doing</option><option value="done">→ Done</option>
+      </select>
+      <button class="btn" onclick="b2BulkMoveToCol()" style="font-size:11px" title="Move all selected cards to the chosen column">Move</button>
+      <button class="btn" onclick="b2BulkArchive()" style="font-size:11px;background:#1a1a2a;color:#aaf" title="Archive all selected cards — viewable via the Archive button">📦 Archive</button>
       <button class="btn" onclick="b2BulkTag()" style="font-size:11px" title="Add a tag to all selected cards at once">🏷 Tag</button>
       <button class="btn btn-danger" onclick="b2BulkDelete()" style="font-size:11px" title="Permanently delete all selected cards — cannot be undone">🗑 Delete</button>
     </div>
@@ -9348,22 +9360,48 @@ function b2RenderCard(card, col) {
   const id = esc(card.id || '');
   const tags = (card.tags||[]).map(t=>`<span class="kanban-tag">${esc(t)}</span>`).join('');
   const deps = card.blocks_ids && card.blocks_ids.length ? `<span class="kanban-dep-badge">blocks ${card.blocks_ids.length}</span>` : '';
-  const blockedBy = card.blocked_by && card.blocked_by.length ? `<span class="kanban-dep-badge" style="background:#1a2a0a;color:#8f8">needs ${card.blocked_by.length}</span>` : '';
-  const subtasks = (card.subtasks||[]).map(s=>`<div class="kanban-subtask"><input type="checkbox" ${s.done?'checked':''} onchange="b2ToggleSubtask('${id}','${esc(s.id||'')}',this.checked)"><span style="${s.done?'text-decoration:line-through;opacity:.5':''}">${esc(s.text)}</span></div>`).join('');
+  // Unmet dependencies — find any blocked_by IDs that refer to non-done cards
+  const unmetDeps = (card.blocked_by||[]).filter(depId => {
+    for (const c of Object.keys(_b2KanbanData)) {
+      if (c==='done'||c==='archive') continue;
+      if ((_b2KanbanData[c]||[]).find(cc=>cc.id===depId)) return true;
+    }
+    return false;
+  });
+  const isBlocked = unmetDeps.length > 0;
+  const lockedIcon = isBlocked ? `<span title="Blocked — unmet dependencies">🔒</span>` : '';
+  const blockedBy = isBlocked ? `<span class="kanban-dep-badge" style="background:#1a2a0a;color:#f88">blocked ${unmetDeps.length}</span>` : ((card.blocked_by||[]).length ? `<span class="kanban-dep-badge" style="background:#0a1a0a;color:#8f8">deps met ✓</span>` : '');
+  // Subtask progress bar
+  const sts = card.subtasks||[];
+  const stDone = sts.filter(s=>s.done).length;
+  const stPct = sts.length ? Math.round(stDone/sts.length*100) : 0;
+  const progressBar = sts.length ? `<div class="kanban-subtask-bar" title="${stDone}/${sts.length} subtasks done"><div class="kanban-subtask-bar-fill" style="width:${stPct}%"></div></div>` : '';
+  const subtasks = sts.map(s=>`<div class="kanban-subtask"><input type="checkbox" ${s.done?'checked':''} onchange="b2ToggleSubtask('${id}','${esc(s.id||'')}',this.checked)"><span style="${s.done?'text-decoration:line-through;opacity:.5':''}">${esc(s.text)}</span></div>`).join('');
+  // Dependency chain: show titles of blocking cards
+  const depChain = isBlocked ? `<div class="kanban-dep-chain">Needs: ${unmetDeps.map(depId=>{
+    for (const c of Object.keys(_b2KanbanData)) {
+      const cc = (_b2KanbanData[c]||[]).find(x=>x.id===depId);
+      if (cc) return esc(cc.title||depId);
+    }
+    return esc(depId);
+  }).join(', ')}</div>` : '';
   const bulkCb = _b2BulkMode ? `<input type="checkbox" class="kanban-card-cb" data-id="${id}" style="position:absolute;top:6px;right:6px" onchange="b2CardSelect('${id}',this.checked)">` : '';
-  const cantDone = col==='doing' && card.blocked_by && card.blocked_by.length ? 'opacity:.6;pointer-events:none;' : '';
-  return `<div class="kanban-card${_b2SelectedCards.has(card.id)?' selected':''}" id="kc-${id}" style="${cantDone}">
+  const blockedClass = isBlocked ? ' blocked' : '';
+  return `<div class="kanban-card${_b2SelectedCards.has(card.id)?' selected':''}${blockedClass}" id="kc-${id}">
     ${bulkCb}
-    <div class="kanban-card-title">${esc(card.title||'Untitled')}</div>
+    <div class="kanban-card-title">${lockedIcon}${esc(card.title||'Untitled')}</div>
     <div class="kanban-card-meta">${esc(card.col||col)} | ${esc((card.created||'').slice(0,10))}</div>
     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${tags}${deps}${blockedBy}</div>
-    ${subtasks ? `<div style="margin-top:4px">${subtasks}</div>` : ''}
+    ${sts.length ? `<div style="margin-top:4px;font-size:10px;color:#666">${stDone}/${sts.length} subtasks${progressBar}</div>` : ''}
+    ${subtasks ? `<div style="margin-top:2px">${subtasks}</div>` : ''}
+    ${depChain}
     ${card.notes ? `<div style="font-size:10px;color:#666;margin-top:3px;font-style:italic">${esc(card.notes)}</div>` : ''}
-    <div style="margin-top:6px;display:flex;gap:4px;font-size:10px">
-      ${col!=='done'?`<button class="btn" onclick="b2MoveCard('${id}','done')" style="padding:1px 6px;font-size:10px">→Done</button>`:''}
+    <div style="margin-top:6px;display:flex;gap:4px;font-size:10px;flex-wrap:wrap">
+      ${col!=='done'?`<button class="btn" onclick="b2MoveCard('${id}','done')" style="padding:1px 6px;font-size:10px" ${isBlocked?'disabled title="Unmet dependencies"':''}>→Done</button>`:''}
       ${col==='todo'?`<button class="btn" onclick="b2MoveCard('${id}','doing')" style="padding:1px 6px;font-size:10px">→Doing</button>`:''}
       <button class="btn btn-danger" onclick="b2DeleteCard('${id}')" style="padding:1px 6px;font-size:10px">✕</button>
       <button class="btn" onclick="b2AddSubtask('${id}')" style="padding:1px 6px;font-size:10px">+task</button>
+      <button class="btn" onclick="b2SetDep('${id}')" style="padding:1px 6px;font-size:10px;background:#1a1a2a;color:#88f" title="Set which card this card depends on">🔗 dep</button>
     </div>
   </div>`;
 }
@@ -9454,6 +9492,68 @@ async function b2BulkMove(toCol) {
   _b2SelectedCards.clear();
 }
 
+async function b2BulkMoveToCol() {
+  const col = document.getElementById('kanban-bulk-col')?.value || 'done';
+  if (!_b2SelectedCards.size) { toast('Nothing selected','error'); return; }
+  const count = _b2SelectedCards.size;
+  for (const id of [..._b2SelectedCards]) await b2MoveCard(id, col);
+  _b2SelectedCards.clear();
+  toast('Moved '+count+' cards to '+col);
+}
+
+async function b2BulkArchive() {
+  if (!_b2SelectedCards.size) { toast('Nothing selected','error'); return; }
+  const toArchive = [..._b2SelectedCards];
+  for (const id of toArchive) {
+    for (const col of Object.keys(_b2KanbanData)) {
+      if (col==='archive') continue;
+      const idx = (_b2KanbanData[col]||[]).findIndex(c=>c.id===id);
+      if (idx>=0) {
+        const card = _b2KanbanData[col].splice(idx,1)[0];
+        card.done_at = card.done_at || new Date().toISOString();
+        (_b2KanbanData.archive = _b2KanbanData.archive||[]).push(card);
+        break;
+      }
+    }
+  }
+  _b2SelectedCards.clear();
+  b2RenderKanban();
+  await b2SaveKanban();
+  toast('Archived '+toArchive.length+' cards');
+}
+
+function b2SetDep(cardId) {
+  // Build list of all cards (excluding self) for selection
+  const options = [];
+  for (const col of ['todo','doing','done']) {
+    for (const c of (_b2KanbanData[col]||[])) {
+      if (c.id !== cardId) options.push({id:c.id, title:c.title, col});
+    }
+  }
+  if (!options.length) { toast('No other cards to depend on','error'); return; }
+  const choice = prompt('Set dependency — enter card ID or number from list:\n'+options.map((o,i)=>`${i+1}. [${o.col}] ${o.title} (${o.id})`).join('\n'));
+  if (!choice) return;
+  const num = parseInt(choice);
+  const depCard = (!isNaN(num) && num>=1 && num<=options.length) ? options[num-1] : options.find(o=>o.id===choice);
+  if (!depCard) { toast('Card not found','error'); return; }
+  for (const col of Object.keys(_b2KanbanData)) {
+    const card = (_b2KanbanData[col]||[]).find(c=>c.id===cardId);
+    if (card) {
+      card.blocked_by = card.blocked_by||[];
+      if (!card.blocked_by.includes(depCard.id)) card.blocked_by.push(depCard.id);
+      // Also add to the dep card's blocks_ids
+      for (const col2 of Object.keys(_b2KanbanData)) {
+        const dc = (_b2KanbanData[col2]||[]).find(c=>c.id===depCard.id);
+        if (dc) { dc.blocks_ids = dc.blocks_ids||[]; if (!dc.blocks_ids.includes(cardId)) dc.blocks_ids.push(cardId); break; }
+      }
+      break;
+    }
+  }
+  b2RenderKanban();
+  b2SaveKanban();
+  toast('Dependency set: '+depCard.title.slice(0,30));
+}
+
 async function b2BulkDelete() {
   if (!_b2SelectedCards.size) { toast('Nothing selected','error'); return; }
   if (!confirm('Delete '+_b2SelectedCards.size+' cards?')) return;
@@ -9475,10 +9575,11 @@ function b2BulkTag() {
 }
 
 function b2KanbanTemplate(type) {
+  const pfx = Date.now();
   const tpls = {
-    bug:      {title:'Bug: [describe]', tags:['bug'], subtasks:[{id:'st1',text:'Reproduce',done:false},{id:'st2',text:'Identify root cause',done:false},{id:'st3',text:'Fix + test',done:false}]},
-    feature:  {title:'Feature: [describe]', tags:['feature'], subtasks:[{id:'st1',text:'Design',done:false},{id:'st2',text:'Implement',done:false},{id:'st3',text:'Test',done:false}]},
-    research: {title:'Research: [topic]', tags:['research'], subtasks:[{id:'st1',text:'Gather sources',done:false},{id:'st2',text:'Summarise findings',done:false}]},
+    bug:     {title:'Bug: [describe]', tags:['bug'], subtasks:[{id:'st'+pfx+'1',text:'Reproduce',done:false},{id:'st'+pfx+'2',text:'Identify root cause',done:false},{id:'st'+pfx+'3',text:'Fix + test',done:false}]},
+    feature: {title:'Feature: [describe]', tags:['feature'], subtasks:[{id:'st'+pfx+'1',text:'Design',done:false},{id:'st'+pfx+'2',text:'Implement',done:false},{id:'st'+pfx+'3',text:'Test',done:false}]},
+    aafl:    {title:'AAFL Goal: [goal]', tags:['aafl'], subtasks:[{id:'st'+pfx+'1',text:'Define goal clearly',done:false},{id:'st'+pfx+'2',text:'Run AAFL loop',done:false},{id:'st'+pfx+'3',text:'Review + store result',done:false},{id:'st'+pfx+'4',text:'Update STATUS.md',done:false}]},
   };
   const tpl = tpls[type];
   if (!tpl) return;
@@ -9542,18 +9643,13 @@ async function b2LoadActivity() {
 function b2RenderActivity() {
   const el = document.getElementById('b2-activity-list');
   if (!el) return;
-  const now = Date.now();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const week = new Date(today); week.setDate(week.getDate()-7);
-  const month = new Date(today); month.setMonth(month.getMonth()-1);
-  const icons = {kanban:'📋',aafl:'🔄',scout:'🔭',wccs:'💾',costs:'💰',errors:'🔴',manual:'👤',auto:'🤖',system:'⚙️'};
+  const icons = {'aafl-run':'🔄','aafl':'🔄',scout:'🔭',wccs:'💾',error:'🔴',errors:'🔴',warning:'⚠️',info:'ℹ️',kanban:'📋',medical:'🩺',storage:'🗄️',provider:'🤖',user:'👤',system:'⚙️',costs:'💰'};
   const filtered = _b2ActivityLog.filter(e => {
     if (_b2ActivityFilter==='all') return true;
-    if (_b2ActivityFilter==='today') return new Date(e.ts) >= today;
-    if (_b2ActivityFilter==='week') return new Date(e.ts) >= week;
-    if (_b2ActivityFilter==='month') return new Date(e.ts) >= month;
-    if (_b2ActivityFilter==='manual') return e.trigger==='manual';
-    if (_b2ActivityFilter==='auto') return e.trigger==='auto';
+    if (_b2ActivityFilter==='aafl-run') return e.cat==='aafl' || e.cat==='aafl-run';
+    if (_b2ActivityFilter==='error') return e.cat==='error' || e.cat==='errors';
+    if (_b2ActivityFilter==='user') return e.trigger==='manual' || e.cat==='user';
+    if (_b2ActivityFilter==='system') return e.trigger==='auto' || e.cat==='system';
     return e.cat === _b2ActivityFilter;
   });
   if (!filtered.length) { el.innerHTML = '<div class="empty-msg">No activity for this filter.</div>'; return; }
@@ -9564,6 +9660,14 @@ function b2RenderActivity() {
       <span class="act-msg">${esc(e.msg)}</span>
       <span class="act-cat">${esc(e.cat)}</span>
     </div>`).join('');
+}
+
+function b2ActClear() {
+  _b2ActivityFilter = 'all';
+  document.querySelectorAll('#b2-act-filters .act-filter-btn').forEach(b=>b.classList.remove('active'));
+  const allBtn = document.querySelector('#b2-act-filters [data-filter="all"]');
+  if (allBtn) allBtn.classList.add('active');
+  b2RenderActivity();
 }
 
 function b2ActFilter(btn, filter) {
@@ -9588,10 +9692,19 @@ async function b2AiSummariseActivity() {
 }
 
 function b2ExportActivity() {
-  const lines = _b2ActivityLog.map(e=>`[${e.ts}] [${e.cat}] [${e.trigger}] ${e.msg}`).join('\n');
+  const fromVal = document.getElementById('act-export-from')?.value;
+  const toVal   = document.getElementById('act-export-to')?.value;
+  const fromTs  = fromVal ? new Date(fromVal).getTime() : 0;
+  const toTs    = toVal   ? new Date(toVal + 'T23:59:59').getTime() : Infinity;
+  const entries = _b2ActivityLog.filter(e => {
+    const t = new Date(e.ts).getTime();
+    return t >= fromTs && t <= toTs;
+  });
+  const lines = entries.map(e=>`[${e.ts}] [${e.cat}] [${e.trigger||''}] ${e.msg}`).join('\n');
   const blob = new Blob([lines], {type:'text/plain'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'activity_export_'+new Date().toISOString().slice(0,10)+'.txt';
+  const suffix = fromVal ? `_${fromVal}_to_${toVal||'now'}` : '_'+new Date().toISOString().slice(0,10);
+  a.download = 'activity_export'+suffix+'.txt';
   a.click(); URL.revokeObjectURL(a.href);
 }
 
@@ -9602,9 +9715,18 @@ let _b2RunsData = [];
 
 function b2ToggleCompare() {
   _b2CompareMode = !_b2CompareMode;
-  document.getElementById('b2-compare-panel').style.display = _b2CompareMode ? '' : 'none';
-  document.getElementById('btn-compare-mode').textContent = _b2CompareMode ? '✕ Close Compare' : '⚖ Compare Runs';
-  if (_b2CompareMode) b2PopulateRunSelects();
+  const panel = document.getElementById('b2-compare-panel');
+  if (panel) panel.style.display = _b2CompareMode ? '' : 'none';
+  const btn = document.getElementById('btn-compare-mode');
+  if (btn) btn.textContent = _b2CompareMode ? '✕ Close Compare' : '⚖ Compare Runs';
+  const btn2 = document.getElementById('btn-compare-mode2');
+  if (btn2) btn2.textContent = _b2CompareMode ? '✕ Close Compare' : '⚖ Compare Runs';
+  if (_b2CompareMode) {
+    b2PopulateRunSelects();
+    // Hint: checkboxes on each row also trigger compare automatically
+    const hint = document.getElementById('b2-compare-result');
+    if (hint && !_b2RunsCompareSelected?.size) hint.innerHTML = '<div style="font-size:11px;color:#666">Tip: tick checkboxes on run rows above — compare triggers automatically when 2 are selected. Or use dropdowns below.</div>';
+  }
 }
 
 async function b2PopulateRunSelects() {
@@ -9644,17 +9766,35 @@ async function b2ShowFailureAnalysis() {
     const d = await apiFetch('/b2/aafl-runs');
     const runs = d.runs || [];
     const failed = runs.filter(r => (r.score||0) < 5 || r.error);
-    const byError = {};
+    const byError = {}, byPhase = {}, byProvider = {};
     for (const r of failed) {
-      const key = (r.error||'Low score').slice(0,40);
-      byError[key] = (byError[key]||0)+1;
+      const errKey = (r.error||'Low score').slice(0,50);
+      byError[errKey] = (byError[errKey]||0)+1;
+      const phase = r.failed_phase || r.phase || 'unknown';
+      byPhase[phase] = (byPhase[phase]||0)+1;
+      const prov = r.provider || 'unknown';
+      byProvider[prov] = (byProvider[prov]||0)+1;
     }
     if (!failed.length) { content.innerHTML = '<div style="color:#6f6">No failed runs — all scores ≥5</div>'; return; }
-    content.innerHTML = `<div style="margin-bottom:6px">Total failures: ${failed.length} / ${runs.length}</div>` +
-      Object.entries(byError).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <div style="flex:1;font-size:11px;color:#f88">${esc(k)}</div>
-          <div style="background:#a33;border-radius:3px;height:6px;width:${Math.round(v/failed.length*100)}%;max-width:150px"></div>
+    // Suggested fix heuristic
+    const topPhase = Object.entries(byPhase).sort((a,b)=>b[1]-a[1])[0];
+    const topProv  = Object.entries(byProvider).sort((a,b)=>b[1]-a[1])[0];
+    const suggest = topPhase ? `Most failures in <b>${esc(topPhase[0])}</b> phase (${topPhase[1]}×)` +
+      (topProv ? ` via <b>${esc(topProv[0])}</b> — try switching provider` : '') : '';
+    content.innerHTML =
+      `<div style="margin-bottom:6px;color:#ccc">Failures: <b style="color:#f88">${failed.length}</b> / ${runs.length} runs</div>` +
+      (suggest ? `<div style="background:#1a0808;border:1px solid #3a1a1a;border-radius:4px;padding:6px 8px;margin-bottom:8px;font-size:11px">💡 Suggested fix: ${suggest}</div>` : '') +
+      `<div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">By phase</div>` +
+      Object.entries(byPhase).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <div style="min-width:70px;font-size:11px;color:#f88">${esc(k)}</div>
+          <div style="background:#a33;border-radius:3px;height:5px;width:${Math.round(v/failed.length*100)}%;max-width:120px"></div>
+          <div style="font-size:10px;color:#888">${v}×</div>
+        </div>`).join('') +
+      `<div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 4px">Common errors</div>` +
+      Object.entries(byError).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([k,v])=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <div style="flex:1;font-size:11px;color:#c66">${esc(k)}</div>
           <div style="font-size:10px;color:#888">${v}×</div>
         </div>`).join('');
   } catch(e) { content.innerHTML = 'Error: '+e.message; }
@@ -9671,11 +9811,32 @@ async function b2ShowSuccessPatterns() {
     const runs = d.runs || [];
     const good = runs.filter(r => (r.score||0) >= 8);
     if (!good.length) { content.innerHTML = '<div style="color:#888">No high-scoring runs yet (need score ≥8)</div>'; return; }
-    const byProv = {};
-    for (const r of good) { (byProv[r.provider||'unknown'] = byProv[r.provider||'unknown']||[]).push(r.score||0); }
-    const sorted = Object.entries(byProv).map(([p,scores])=>({p,avg:scores.reduce((a,b)=>a+b,0)/scores.length,count:scores.length})).sort((a,b)=>b.avg-a.avg);
-    content.innerHTML = `<div style="margin-bottom:6px">High-scoring runs: ${good.length}</div>` +
-      sorted.map(s=>`<div style="margin-bottom:4px;font-size:11px"><span style="color:#4af;min-width:100px;display:inline-block">${esc(s.p)}</span> avg ${s.avg.toFixed(1)} (${s.count} runs)</div>`).join('');
+    const byProv = {}, byGoalType = {}, byHour = {};
+    const goalTypePatterns = [{re:/star citizen/i,t:'Star Citizen'},{re:/war thunder/i,t:'War Thunder'},{re:/code|fix|bug/i,t:'Code Task'},{re:/research|find|search/i,t:'Research'},{re:/explain|what|how/i,t:'Q&A'}];
+    for (const r of good) {
+      (byProv[r.provider||'unknown'] = byProv[r.provider||'unknown']||[]).push(r.score||0);
+      const goal = r.goal||r.problem||'';
+      let gtype = 'Other';
+      for (const p of goalTypePatterns) { if (p.re.test(goal)) { gtype=p.t; break; } }
+      (byGoalType[gtype] = byGoalType[gtype]||[]).push(r.score||0);
+      const ts = r.timestamp||r.created_at||'';
+      if (ts) {
+        const h = new Date(ts).getHours();
+        const slot = h<6?'Night (0–5)':(h<12?'Morning (6–11)':(h<18?'Afternoon (12–17)':'Evening (18–23)'));
+        (byHour[slot] = byHour[slot]||[]).push(r.score||0);
+      }
+    }
+    const pByProv = Object.entries(byProv).map(([p,sc])=>({p,avg:sc.reduce((a,b)=>a+b,0)/sc.length,count:sc.length})).sort((a,b)=>b.avg-a.avg);
+    const pByType = Object.entries(byGoalType).map(([t,sc])=>({t,avg:sc.reduce((a,b)=>a+b,0)/sc.length,count:sc.length})).sort((a,b)=>b.avg-a.avg);
+    const pByHour = Object.entries(byHour).map(([slot,sc])=>({slot,avg:sc.reduce((a,b)=>a+b,0)/sc.length,count:sc.length})).sort((a,b)=>b.avg-a.avg);
+    content.innerHTML =
+      `<div style="margin-bottom:8px;color:#ccc">High-scoring runs (≥8): <b style="color:#6f6">${good.length}</b></div>` +
+      `<div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Best providers</div>` +
+      pByProv.map(s=>`<div style="margin-bottom:3px;font-size:11px;display:flex;gap:8px"><span style="color:#4af;min-width:110px">${esc(s.p)}</span><span style="color:#6f6">avg ${s.avg.toFixed(1)}</span><span style="color:#666">(${s.count}×)</span></div>`).join('') +
+      `<div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 4px">Best goal types</div>` +
+      pByType.map(s=>`<div style="margin-bottom:3px;font-size:11px;display:flex;gap:8px"><span style="color:#aaf;min-width:110px">${esc(s.t)}</span><span style="color:#6f6">avg ${s.avg.toFixed(1)}</span><span style="color:#666">(${s.count}×)</span></div>`).join('') +
+      `<div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.5px;margin:8px 0 4px">Best time of day</div>` +
+      pByHour.map(s=>`<div style="margin-bottom:3px;font-size:11px;display:flex;gap:8px"><span style="color:#fa8;min-width:130px">${esc(s.slot)}</span><span style="color:#6f6">avg ${s.avg.toFixed(1)}</span><span style="color:#666">(${s.count}×)</span></div>`).join('');
   } catch(e) { content.innerHTML = 'Error: '+e.message; }
 }
 
@@ -9690,18 +9851,23 @@ function b2FilterRunsByTag(tag) {
   });
 }
 
+let _b2RunsCompareSelected = new Set();
+
 function loadAaflRuns() {
   apiFetch('/b2/aafl-runs').then(d => {
     _b2RunsData = d.runs || [];
+    _b2RunsCompareSelected.clear();
     const el = document.getElementById('aafl-runs-content');
     if (!el) return;
     if (!_b2RunsData.length) { el.innerHTML = '<div class="empty-msg">No AAFL runs in database yet.</div>'; return; }
-    el.innerHTML = '<table class="data-table" id="aafl-runs-table"><thead><tr><th>Goal</th><th>Score</th><th>Provider</th><th>Time</th><th>Tags</th><th>Notes</th></tr></thead><tbody>' +
+    el.innerHTML = '<table class="data-table" id="aafl-runs-table"><thead><tr><th style="width:24px"></th><th>Goal</th><th>Score</th><th>Provider</th><th>Time</th><th>Tags</th><th>Notes</th></tr></thead><tbody>' +
       _b2RunsData.map((r,i)=>{
         const tags = (r.tags||[]).join(', ');
+        const scoreC = (r.score||0)>=8?'#6f6':(r.score||0)>=6?'#fc8':'#f88';
         return `<tr data-tags="${esc(tags)}" data-idx="${i}" onclick="b2ToggleRunDetail(event,${i})" style="cursor:pointer">
+          <td onclick="event.stopPropagation()"><input type="checkbox" class="run-cmp-cb" data-idx="${i}" onchange="b2RunCmpSelect(${i},this.checked)" title="Select for compare"></td>
           <td>${esc((r.goal||r.problem||'').slice(0,60))}</td>
-          <td style="color:${(r.score||0)>=8?'#6f6':(r.score||0)>=6?'#fc8':'#f88'}">${r.score||'?'}</td>
+          <td style="color:${scoreC}">${r.score||'?'}</td>
           <td>${esc(r.provider||'—')}</td>
           <td style="white-space:nowrap">${esc((r.timestamp||r.created_at||'').slice(0,16))}</td>
           <td><span style="font-size:10px;color:#4af">${esc(tags)||'—'}</span>
@@ -9715,9 +9881,55 @@ function loadAaflRuns() {
     b2RenderTagCloud();
     document.getElementById('aafl-runs-ts').textContent = 'Refreshed '+new Date().toLocaleTimeString();
   }).catch(() => {
-    // Fallback to dashboard data
     _loadDashCard('aafl_runs.json','aafl-runs-content','aafl-runs-ts');
   });
+}
+
+function b2RunCmpSelect(idx, checked) {
+  checked ? _b2RunsCompareSelected.add(idx) : _b2RunsCompareSelected.delete(idx);
+  // Auto-open compare panel when 2 are selected
+  if (_b2RunsCompareSelected.size === 2) {
+    const panel = document.getElementById('b2-compare-panel');
+    if (panel) panel.style.display = '';
+    b2CompareByCheckboxes();
+  } else if (_b2RunsCompareSelected.size > 2) {
+    // Deselect oldest
+    const oldest = _b2RunsCompareSelected.values().next().value;
+    _b2RunsCompareSelected.delete(oldest);
+    document.querySelector(`.run-cmp-cb[data-idx="${oldest}"]`)?.checked = false;
+    b2CompareByCheckboxes();
+  }
+}
+
+function b2CompareByCheckboxes() {
+  const [a, b] = [..._b2RunsCompareSelected];
+  const ra = _b2RunsData[a], rb = _b2RunsData[b];
+  if (!ra||!rb) return;
+  const out = document.getElementById('b2-compare-result');
+  if (!out) return;
+  const diffOut = (va,vb) => {
+    const sa = String(va||''), sb = String(vb||'');
+    const changed = sa !== sb;
+    return [
+      `<span style="color:${changed?'#4af':'#ccc'}">${esc(sa.slice(0,80))}</span>`,
+      `<span style="color:${changed?'#fa0':'#ccc'}">${esc(sb.slice(0,80))}</span>`,
+      changed ? ' ⚡' : ''
+    ];
+  };
+  const rows = [
+    ['Goal', ra.goal||ra.problem||'', rb.goal||rb.problem||''],
+    ['Score', ra.score||'?', rb.score||'?'],
+    ['Provider', ra.provider||'?', rb.provider||'?'],
+    ['Time', (ra.timestamp||ra.created_at||'').slice(0,16), (rb.timestamp||rb.created_at||'').slice(0,16)],
+    ['Duration', ra.duration ? ra.duration+'s' : '—', rb.duration ? rb.duration+'s' : '—'],
+  ];
+  out.innerHTML = `<table style="font-size:11px;width:100%;border-collapse:collapse">
+    <tr><th style="color:#888;text-align:left;padding:3px 8px">Field</th><th style="color:#4af;padding:3px 8px">Run A (#${a})</th><th style="color:#fa0;padding:3px 8px">Run B (#${b})</th></tr>
+    ${rows.map(([label,va,vb])=>{
+      const [da,db,chg] = diffOut(va,vb);
+      return `<tr><td style="padding:3px 8px;color:#888">${label}${chg}</td><td style="padding:3px 8px">${da}</td><td style="padding:3px 8px">${db}</td></tr>`;
+    }).join('')}
+  </table>`;
 }
 
 async function b2EditRunTags(idx) {

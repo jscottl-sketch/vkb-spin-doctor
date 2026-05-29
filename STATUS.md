@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-29 (OCB-N) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-29 (OCB-K Build 2) | **Updated by:** Claude Code
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -185,6 +185,11 @@
 | OCB-N Phase 4 (ACCA Ticker) | Persistent bottom bar scrolling all ACCA codes. Click-to-expand. Auto-loads on connect. Colour coded. Auto-reload every 5min. |
 | OCB-N Phase 5 (Remove handover writes) | wccs_runner.py no longer creates VKB_SpinDoctor_Handover_vXX.md files. STATUS/HISTORY/ACCA are source of truth. |
 | OCB-N Phase 6 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
+| OCB-K Build 2 Phase 1 (Kanban B2-01+B2-02) | Sub-task progress bar on cards. 🔒 icon + muted colour for blocked cards. Dependency chain display on card. "Blocked by" set via dep button (numbered list prompt). AAFL Goal template (replaced Research). Bulk Archive action. Bulk Move to any column (selector). b2SetDep(), b2BulkArchive(), b2BulkMoveToCol() functions. |
+| OCB-K Build 2 Phase 2 (Activity Feed B2-03) | 12 filter buttons updated to spec: AAFL Run/Scout/WCCS/Error/Warning/Info/Kanban/Medical/Storage/Provider/User/System. "Clear" button added. Export date range picker (from/to date inputs). b2ActClear() function. |
+| OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05) | Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown. |
+| OCB-K Build 2 Phase 4 (AAFL Control B2-06+B2-08+B2-09) | All already built (Step Mode, Pause, Benchmark Runner, Second Opinion AI). |
+| OCB-K Build 2 Phase 5 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -259,13 +264,12 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 ---
 
 ## NEXT PRIORITIES
-1. Run MOT 108/108 after OCB-N — confirm all checks PASS
+1. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements (parking lot)
 2. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
 3. Add GROQ + Cloudflare keys to .env (manual — security rule)
 4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
-5. Build 2 CLAC block (23 parking lot features — B2-07 now done via OCB-C)
-6. Post on r/LocalLLaMA when Star Citizen benchmark passes
-7. LiteLLM full integration — replace direct provider calls with LiteLLM router
-8. Electron wrapper for packaging
+5. Post on r/LocalLLaMA when Star Citizen benchmark passes
+6. LiteLLM full integration — replace direct provider calls with LiteLLM router
+7. Electron wrapper for packaging
 
 <!-- END_OF_FILE -->

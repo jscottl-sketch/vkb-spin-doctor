@@ -59,3 +59,6 @@
 | 45 | 2026-05-29 | legacy | test chat text for recovery check | None |
 | 46 | 2026-05-29 | legacy | test chat text for recovery check | None |
 | 47 | 2026-05-29 | v63 -> v64 | OCB-O Code Pipeline: Monaco Code Editor tab (file browser/run .py/CLAC generator/AAFL bridge/Open in LLOW), 3 LLOW coding workflows (write_new_feature/fix_bug/refactor_file), 4 /api/code/* endpoints. 108/108 MOT. | None |
+| 48 | 2026-05-29 | legacy | {} | None |
+| 49 | 2026-05-29 | legacy | test chat text for recovery check | None |
+| 50 | 2026-05-29 | v64 -> v65 | OCB-K Build 2: Kanban progress bars/🔒 deps/AAFL Goal template/bulk archive+move, Activity Feed 12 spec filters+Clear+date range export, AAFL Runs row-checkbox compare+failure phase analysis+success time-of-day. 108/108 MOT. | None |
