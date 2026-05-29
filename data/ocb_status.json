@@ -1,0 +1,15 @@
+{
+  "run_id": "",
+  "started_at": "",
+  "provider": "",
+  "max_retries": 3,
+  "phases": [],
+  "current_phase": 0,
+  "current_task": 0,
+  "log": [],
+  "mot_score": "",
+  "status": "idle",
+  "cancelled": false,
+  "files_changed": [],
+  "completed_at": ""
+}

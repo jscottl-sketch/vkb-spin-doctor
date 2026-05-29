@@ -107,6 +107,36 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .feature-name{font-size:13px;font-weight:bold;color:#eee;margin-bottom:2px}
 .feature-desc{font-size:12px;color:#777}
 
+/* ── OCB RUNNER ── */
+.ocb-section{background:#0d0d0d;border:1px solid #1a2a3a;border-radius:6px;padding:14px;margin-bottom:12px}
+.ocb-textarea{width:100%;height:180px;background:#050505;border:1px solid #2a3a4a;color:#cde;font:12px 'Consolas','Courier New',monospace;padding:8px;border-radius:4px;resize:vertical;line-height:1.5;box-sizing:border-box}
+.ocb-textarea:focus{outline:none;border-color:#4af}
+.ocb-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+.ocb-phase-list{display:none;margin-top:10px}
+.ocb-phase-row{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:4px;background:#0a0a0a;border:1px solid #1a1a1a;margin-bottom:4px;transition:.2s}
+.ocb-phase-row.running{border-color:#4af;background:#05101a}
+.ocb-phase-row.done{border-color:#1a4;background:#04100a}
+.ocb-phase-row.failed{border-color:#a44;background:#130505}
+.ocb-phase-row.skipped{border-color:#864;background:#120e04}
+.ocb-phase-num{font-size:11px;color:#888;min-width:22px;font-weight:bold}
+.ocb-phase-name{flex:1;font-size:12px;color:#ccc}
+.ocb-badge{font-size:10px;font-weight:bold;padding:2px 8px;border-radius:10px;min-width:60px;text-align:center}
+.ocb-badge-pending{background:#222;color:#888}
+.ocb-badge-running{background:#0a2a4a;color:#4af;animation:ocbPulse 1s infinite}
+.ocb-badge-done{background:#0a2a0a;color:#4f4}
+.ocb-badge-failed{background:#2a0a0a;color:#f44}
+.ocb-badge-skipped{background:#2a1a00;color:#fa0}
+@keyframes ocbPulse{0%,100%{opacity:1}50%{opacity:.5}}
+.ocb-progress-bar{height:6px;background:#111;border-radius:3px;margin-top:8px;overflow:hidden}
+.ocb-progress-fill{height:100%;background:linear-gradient(90deg,#1a8,#4af);transition:width .4s}
+.ocb-log-area{height:160px;overflow-y:auto;background:#030303;border:1px solid #1a2a3a;border-radius:4px;padding:6px;font:11px 'Consolas','Courier New',monospace;color:#8bc;margin-top:8px;white-space:pre-wrap;word-break:break-word}
+.ocb-log-line{margin:0;line-height:1.5}
+.ocb-log-controls{display:flex;gap:8px;margin-top:6px}
+.ocb-select{background:#0a0a0a;border:1px solid #2a3a4a;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit}
+.btn-ocb-run{background:#166;border:none;color:#fff;font:bold 13px inherit;padding:7px 20px;border-radius:4px;cursor:pointer;transition:.15s}
+.btn-ocb-run:hover{background:#1a8}
+.btn-ocb-run:disabled{background:#333;color:#666;cursor:not-allowed}
+
 /* ── DIFF TAB ── */
 .diff-controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .diff-controls select{background:#111;border:1px solid #333;color:#ccc;padding:4px 8px;border-radius:4px;font:inherit;max-width:240px}
@@ -1895,6 +1925,53 @@ body{padding-bottom:28px}
         <span id="sesum-saved-label" style="font-size:11px;color:#6f6"></span>
       </div>
       <div id="sesum-result" style="background:#0a0a0a;border:1px solid #1a2a1a;border-radius:4px;padding:10px;font-size:12px;font-family:'Consolas','Courier New',monospace;color:#9cf;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow-y:auto"></div>
+    </div>
+
+    <!-- ── OCB RUNNER ── -->
+    <div class="wccs-section-title" style="margin-top:24px">OCB Runner — Paste &amp; Execute a Build Block</div>
+    <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">Paste an OCB block, click Parse Phases to preview, then Run OCB to execute it via free AI</div>
+
+    <!-- A: Input area -->
+    <div class="ocb-section">
+      <textarea id="ocb-input" class="ocb-textarea"
+        placeholder="Paste OCB block here — e.g. ═══ PHASE 1 — MY FEATURE ═══&#10;&#10;1. Add a button to mission_control.html&#10;2. Add the handler to mcc_server.py"
+        spellcheck="false"></textarea>
+      <div class="ocb-controls">
+        <select id="ocb-provider" class="ocb-select" title="AI provider for code edits">
+          <option value="auto">Auto-best (free tier)</option>
+          <option value="codestral">Codestral</option>
+          <option value="mistral">Mistral</option>
+          <option value="gemini">Gemini Flash</option>
+        </select>
+        <label style="font-size:12px;color:#888">Retries:</label>
+        <input type="number" id="ocb-retries" min="1" max="5" value="3"
+          style="width:48px;background:#0a0a0a;border:1px solid #2a3a4a;color:#ccc;padding:4px 6px;border-radius:4px;font:inherit"
+          title="Max retry attempts per task if AI returns empty or apply fails">
+        <button class="btn" onclick="ocbParse()" title="Parse the OCB block and show phase list without running anything">Parse Phases</button>
+        <button class="btn-ocb-run" id="btn-ocb-run" onclick="ocbRun()" title="Parse and execute the full OCB block using free AI">▶ Run OCB</button>
+        <button class="btn" onclick="ocbCancel()" id="btn-ocb-cancel" style="display:none;background:#3a0a0a;color:#f88;border-color:#622" title="Cancel the running OCB">■ Cancel</button>
+        <span id="ocb-run-status" style="font-size:11px;color:#888;margin-left:auto"></span>
+      </div>
+    </div>
+
+    <!-- B: Phase list -->
+    <div class="ocb-phase-list" id="ocb-phase-list">
+      <div style="font-size:11px;color:#888;margin-bottom:6px">Phases — <span id="ocb-phase-count">0</span> total</div>
+      <div id="ocb-phase-rows"></div>
+      <div class="ocb-progress-bar">
+        <div class="ocb-progress-fill" id="ocb-progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- C: Live output log -->
+    <div id="ocb-log-wrap" style="display:none;margin-top:10px">
+      <div style="font-size:11px;color:#888;margin-bottom:4px">Live log — <span id="ocb-log-ts"></span></div>
+      <div class="ocb-log-area" id="ocb-log-area"></div>
+      <div class="ocb-log-controls">
+        <button class="btn" style="font-size:11px" onclick="ocbCopyLog()" title="Copy the full log text to clipboard">📋 Copy log</button>
+        <button class="btn" style="font-size:11px" onclick="ocbArchiveRun()" id="btn-ocb-archive" title="Move this run's log to archive_dead folder">📦 Archive run</button>
+        <span id="ocb-mot-score" style="font-size:12px;color:#4af;margin-left:auto;font-weight:bold"></span>
+      </div>
     </div>
 
   </div>
@@ -9172,6 +9249,189 @@ async function wccsRunDiff() {
       }).join('') + '</table>';
   } catch(e) {
     sumEl.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// OCB RUNNER
+// ══════════════════════════════════════════════════════════════════
+
+let _ocbRunId      = null;
+let _ocbPollTimer  = null;
+let _ocbPhaseData  = [];
+
+async function ocbParse() {
+  const text = document.getElementById('ocb-input').value.trim();
+  if (!text) { toast('Paste an OCB block first', 'error'); return; }
+  try {
+    const d = await apiFetch('/api/ocb/parse', {
+      method: 'POST',
+      body: JSON.stringify({ ocb_text: text }),
+    });
+    if (d.error) { toast('Parse error: ' + d.error, 'error'); return; }
+    _ocbPhaseData = d.phases || [];
+    ocbRenderPhases(_ocbPhaseData);
+    toast('Parsed ' + _ocbPhaseData.length + ' phase(s)', 'ok');
+  } catch(e) {
+    toast('Parse failed: ' + e.message, 'error');
+  }
+}
+
+function ocbRenderPhases(phases) {
+  const listEl  = document.getElementById('ocb-phase-list');
+  const rowsEl  = document.getElementById('ocb-phase-rows');
+  const countEl = document.getElementById('ocb-phase-count');
+  countEl.textContent = phases.length;
+  rowsEl.innerHTML = phases.map(p => {
+    const taskCount = (p.tasks || []).length;
+    return '<div class="ocb-phase-row" id="ocb-ph-' + p.phase_num + '">' +
+      '<span class="ocb-phase-num">P' + p.phase_num + '</span>' +
+      '<span class="ocb-phase-name">' + esc(p.phase_name) +
+        ' <span style="color:#555;font-size:10px">(' + taskCount + ' task' + (taskCount !== 1 ? 's' : '') + ')</span></span>' +
+      '<span class="ocb-badge ocb-badge-pending" id="ocb-badge-' + p.phase_num + '">PENDING</span>' +
+      '</div>';
+  }).join('');
+  listEl.style.display = phases.length ? 'block' : 'none';
+  document.getElementById('ocb-progress-fill').style.width = '0%';
+}
+
+function ocbUpdatePhases(phases) {
+  if (!phases || !phases.length) return;
+  let done = 0;
+  phases.forEach(p => {
+    const rowEl   = document.getElementById('ocb-ph-' + p.phase_num);
+    const badgeEl = document.getElementById('ocb-badge-' + p.phase_num);
+    if (!rowEl || !badgeEl) return;
+    const st = (p.status || 'PENDING').toUpperCase();
+    rowEl.className   = 'ocb-phase-row ' + st.toLowerCase();
+    badgeEl.className = 'ocb-badge ocb-badge-' + st.toLowerCase();
+    badgeEl.textContent = st;
+    if (st === 'DONE' || st === 'FAILED' || st === 'SKIPPED') done++;
+  });
+  const pct = phases.length ? Math.round(done / phases.length * 100) : 0;
+  document.getElementById('ocb-progress-fill').style.width = pct + '%';
+}
+
+async function ocbRun() {
+  const text     = document.getElementById('ocb-input').value.trim();
+  const provider = document.getElementById('ocb-provider').value;
+  const retries  = parseInt(document.getElementById('ocb-retries').value, 10) || 3;
+  if (!text) { toast('Paste an OCB block first', 'error'); return; }
+
+  // Parse first to show phase list
+  try {
+    const pd = await apiFetch('/api/ocb/parse', {
+      method: 'POST',
+      body: JSON.stringify({ ocb_text: text }),
+    });
+    if (!pd.error) {
+      _ocbPhaseData = pd.phases || [];
+      ocbRenderPhases(_ocbPhaseData);
+    }
+  } catch(e) { /* non-fatal */ }
+
+  // Launch run
+  try {
+    const d = await apiFetch('/api/ocb/run', {
+      method: 'POST',
+      body: JSON.stringify({ ocb_text: text, provider, max_retries: retries }),
+    });
+    if (d.error) { toast('Launch error: ' + d.error, 'error'); return; }
+    _ocbRunId = d.run_id;
+    document.getElementById('ocb-run-status').textContent = 'Run ID: ' + _ocbRunId;
+    document.getElementById('btn-ocb-run').disabled   = true;
+    document.getElementById('btn-ocb-cancel').style.display = 'inline-block';
+    document.getElementById('ocb-log-wrap').style.display   = 'block';
+    document.getElementById('ocb-log-area').textContent     = '';
+    document.getElementById('ocb-mot-score').textContent    = '';
+    ocbStartPoll();
+    toast('OCB run started', 'ok');
+  } catch(e) {
+    toast('Run failed: ' + e.message, 'error');
+  }
+}
+
+function ocbStartPoll() {
+  ocbStopPoll();
+  _ocbPollTimer = setInterval(ocbPoll, 3000);
+  ocbPoll();
+}
+
+function ocbStopPoll() {
+  if (_ocbPollTimer) { clearInterval(_ocbPollTimer); _ocbPollTimer = null; }
+}
+
+async function ocbPoll() {
+  if (!_ocbRunId) { ocbStopPoll(); return; }
+  try {
+    const d = await apiFetch('/api/ocb/status/' + _ocbRunId);
+    if (d.error) return;
+
+    // Update phase rows
+    if (d.phases && d.phases.length) {
+      if (!document.getElementById('ocb-ph-' + d.phases[0].phase_num)) {
+        ocbRenderPhases(d.phases);
+      }
+      ocbUpdatePhases(d.phases);
+    }
+
+    // Update log
+    const logEl = document.getElementById('ocb-log-area');
+    const log   = d.log || [];
+    logEl.innerHTML = log.map(l => '<div class="ocb-log-line">' + esc(l) + '</div>').join('');
+    logEl.scrollTop = logEl.scrollHeight;
+
+    // Timestamps
+    document.getElementById('ocb-log-ts').textContent =
+      d.started_at ? 'started ' + d.started_at.replace('T',' ') : '';
+
+    // MOT score
+    if (d.mot_score) {
+      document.getElementById('ocb-mot-score').textContent = 'MOT: ' + d.mot_score;
+    }
+
+    // Terminal states
+    const st = (d.status || '').toUpperCase();
+    if (st === 'DONE' || st === 'PARTIAL' || st === 'CANCELLED' || st === 'FAILED') {
+      ocbStopPoll();
+      document.getElementById('btn-ocb-run').disabled    = false;
+      document.getElementById('btn-ocb-cancel').style.display = 'none';
+      document.getElementById('ocb-run-status').textContent   = 'Status: ' + st;
+      const col = st === 'DONE' ? '#4f4' : st === 'PARTIAL' ? '#fa0' : '#f44';
+      document.getElementById('ocb-run-status').style.color   = col;
+      toast('OCB ' + st, st === 'DONE' ? 'ok' : 'error');
+    }
+  } catch(e) { /* ignore transient poll errors */ }
+}
+
+async function ocbCancel() {
+  if (!_ocbRunId) return;
+  try {
+    await apiFetch('/api/ocb/cancel/' + _ocbRunId, { method: 'POST' });
+    toast('Cancel requested', 'ok');
+  } catch(e) {
+    toast('Cancel failed: ' + e.message, 'error');
+  }
+}
+
+function ocbCopyLog() {
+  const logEl = document.getElementById('ocb-log-area');
+  const text  = logEl.innerText || logEl.textContent || '';
+  if (!text.trim()) { toast('No log to copy', 'error'); return; }
+  navigator.clipboard.writeText(text).then(
+    () => toast('Log copied', 'ok'),
+    () => toast('Copy failed', 'error')
+  );
+}
+
+async function ocbArchiveRun() {
+  if (!_ocbRunId) { toast('No run to archive', 'error'); return; }
+  try {
+    const d = await apiFetch('/api/ocb/archive/' + _ocbRunId, { method: 'POST' });
+    if (d.ok) toast('Run archived', 'ok');
+    else toast('Archive failed: ' + (d.error || '?'), 'error');
+  } catch(e) {
+    toast('Archive failed: ' + e.message, 'error');
   }
 }
 

@@ -87,6 +87,9 @@ LLOW_WORKFLOWS_DIR  = HERE / "data" / "llow_workflows"
 # ── OCB-N paths ───────────────────────────────────────────────────────────────
 TIMELINE_FILE       = HERE / "data" / "project_timeline.json"
 SCOUT_SWARM_STATE   = HERE / "data" / "scout_swarm_state.json"
+# ── OCB-O: OCB Runner paths ──────────────────────────────────────────────────
+OCB_STATUS_FILE     = HERE / "data" / "ocb_status.json"
+CLACHR_RESPONSE     = HERE / "data" / "clachr_response.json"
 
 # ── Self-Health paths (OCB-A / OCB-B) ────────────────────────────────────────
 SH_REGISTRY     = HERE / "data" / "element_registry.json"
@@ -631,6 +634,10 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_code_files()
             elif path == "/api/code/read":
                 self._handle_code_read()
+            # ── OCB-O: OCB Runner ─────────────────────────────────────────────
+            elif path.startswith("/api/ocb/status/"):
+                run_id = path[len("/api/ocb/status/"):]
+                self._handle_ocb_status(run_id)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -862,6 +869,17 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_code_save()
             elif path == "/api/code/run":
                 self._handle_code_run()
+            # ── OCB-O: OCB Runner ─────────────────────────────────────────────
+            elif path == "/api/ocb/parse":
+                self._handle_ocb_parse()
+            elif path == "/api/ocb/run":
+                self._handle_ocb_run()
+            elif path.startswith("/api/ocb/cancel/"):
+                run_id = path[len("/api/ocb/cancel/"):]
+                self._handle_ocb_cancel(run_id)
+            elif path.startswith("/api/ocb/archive/"):
+                run_id = path[len("/api/ocb/archive/"):]
+                self._handle_ocb_archive(run_id)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7124,6 +7142,108 @@ def _handle_code_run(self):
 
 
 MCCHandler._handle_code_run = _handle_code_run  # type: ignore[attr-defined]
+
+
+# ── OCB-O: OCB Runner endpoints ────────────────────────────────────────────────
+
+def _handle_ocb_parse(self):
+    """POST /api/ocb/parse — parse OCB block, return phase list."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        ocb_text = (body.get("ocb_text") or "").strip()
+        if not ocb_text:
+            self._send_json({"error": "ocb_text is required"}, 400)
+            return
+        from ocb_runner import parse_ocb_block
+        phases = parse_ocb_block(ocb_text)
+        self._send_json({"phases": phases, "phase_count": len(phases)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_parse = _handle_ocb_parse  # type: ignore[attr-defined]
+
+
+def _handle_ocb_run(self):
+    """POST /api/ocb/run — launch OCB run in background thread."""
+    try:
+        body       = json.loads(self._read_body() or "{}")
+        ocb_text   = (body.get("ocb_text") or "").strip()
+        provider   = (body.get("provider") or "auto").strip()
+        max_retries = int(body.get("max_retries", 3))
+        if not ocb_text:
+            self._send_json({"error": "ocb_text is required"}, 400)
+            return
+        run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        import ocb_runner
+        t = threading.Thread(
+            target=ocb_runner.run_all,
+            args=(ocb_text, run_id),
+            kwargs={"max_retries": max_retries, "provider": provider},
+            daemon=True,
+        )
+        t.start()
+        self._send_json({"run_id": run_id, "status": "started"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_run = _handle_ocb_run  # type: ignore[attr-defined]
+
+
+def _handle_ocb_status(self, run_id: str):
+    """GET /api/ocb/status/<run_id> — return current run status from ocb_status.json."""
+    try:
+        if not OCB_STATUS_FILE.exists():
+            self._send_json({"status": "idle", "run_id": "", "phases": [], "log": []})
+            return
+        data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8"))
+        # If run_id is given and doesn't match, still return (client may poll stale id)
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_status = _handle_ocb_status  # type: ignore[attr-defined]
+
+
+def _handle_ocb_cancel(self, run_id: str):
+    """POST /api/ocb/cancel/<run_id> — set cancelled flag in ocb_status.json."""
+    try:
+        if OCB_STATUS_FILE.exists():
+            data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8"))
+            data["cancelled"] = True
+            data["status"]    = "CANCELLED"
+            import tempfile as _tf
+            fd, tmp = _tf.mkstemp(dir=str(OCB_STATUS_FILE.parent), suffix=".tmp")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            import shutil as _sh
+            _sh.move(tmp, str(OCB_STATUS_FILE))
+        self._send_json({"cancelled": True, "run_id": run_id})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_cancel = _handle_ocb_cancel  # type: ignore[attr-defined]
+
+
+def _handle_ocb_archive(self, run_id: str):
+    """POST /api/ocb/archive/<run_id> — copy ocb_status.json to archive_dead/."""
+    try:
+        if not OCB_STATUS_FILE.exists():
+            self._send_json({"ok": False, "error": "No status file to archive"}, 404)
+            return
+        ARCHIVE_DIR.mkdir(exist_ok=True)
+        dest = ARCHIVE_DIR / f"ocb_run_{run_id}.json"
+        import shutil as _sh
+        _sh.copy2(str(OCB_STATUS_FILE), str(dest))
+        self._send_json({"ok": True, "archived_to": str(dest)})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_archive = _handle_ocb_archive  # type: ignore[attr-defined]
 
 
 def main():

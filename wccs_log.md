@@ -63,3 +63,7 @@
 | 49 | 2026-05-29 | legacy | test chat text for recovery check | None |
 | 50 | 2026-05-29 | v64 -> v65 | OCB-K Build 2: Kanban progress bars/🔒 deps/AAFL Goal template/bulk archive+move, Activity Feed 12 spec filters+Clear+date range export, AAFL Runs row-checkbox compare+failure phase analysis+success time-of-day. 108/108 MOT. | None |
 | 51 | 2026-05-29 | v65 -> v66 | MCC freeze fix: SyntaxError line 9899 (?.checked = false in b2RunCmpSelect) killed all JS in strict mode; fixed + fullscreen guard + localStorage safety + permanent Reset MCC button. 108/108 MOT. | None |
+| 52 | 2026-05-29 | legacy | {} | None |
+| 53 | 2026-05-29 | legacy | test chat text for recovery check | None |
+| WATCHDOG | 2026-05-29 12:06 | - | Capture: none | FAIL |
+| 54 | 2026-05-29 | v66 -> v67 | OCB-O OCB Runner: ocb_runner.py (503 lines), OCB Runner panel in WCCS tab, 5 /api/ocb/* endpoints, real-time phase badges + live log + progress bar. 108/108 MOT ALL CLEAR. | None |
