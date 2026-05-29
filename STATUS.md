@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-29 (OCB-K Build 2) | **Updated by:** Claude Code
+**Last updated:** 2026-05-29 (OCB-K Build 2) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -190,6 +190,7 @@
 | OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05) | Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown. |
 | OCB-K Build 2 Phase 4 (AAFL Control B2-06+B2-08+B2-09) | All already built (Step Mode, Pause, Benchmark Runner, Second Opinion AI). |
 | OCB-K Build 2 Phase 5 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
+| OCB-H
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

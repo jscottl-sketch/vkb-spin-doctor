@@ -930,6 +930,53 @@ None new.
 ## Files changed
 self_health.py, system_monitor.py, work_checker.py, mission_control.html, mcc_server.py, aafl_core.py, CLAUDE.md (new), data/project_awareness.json (new), data/mcc_settings.json (new), tests/mega_test.py (new)
 
+
+---
+
+### 2026-05-29
+
+# SESUM — 27-29 May 2026
+
+## MAY 27
+- STATUS.md restored (168/195 lines, 86%) from chat history
+- aafl_wccs.py: merged 3 session logs, read-merge-write
+- WCCS tab: 6 upgrades (line count warning, old saves scanner,
+  chat→SESUM, IBR scan, red banner → blue pulse glow, tooltips)
+- Missions tab added to MCC
+- UI shuffle: ALP/Memory tabs removed from top bar
+- Builds 4, 4b, 5a: Quick Ask, AAFL Results, Scout Search, Loop
+  Presets, Chain Builder, sidebar nav tree, unified query bar
+  — MOT 108-109/108-109 PASS
+
+## MAY 28 (MASSIVE SESSION)
+- OCB-A to OCB-I (40+ phases): LLOW full canvas engine
+  (38 elements, 15 connector types, 4 starter workflows),
+  Self-Health + Auto-Fix Body Map, AI Status Bar, Section
+  Reorganiser, LLOW Fullscreen, Storage visuals, Missions
+  progress bars, Design tab, Promo tab, Instructions system
+  (132 entries, 7 help buttons) — MOT 108/108 PASS x2
+- OCB-J: Safety Shield + CLACHR Relay dispatch circuit
+- OCB-K: Health checks (HC-01 to HC-10), mega test suite,
+  Project Brain, visual progress dashboard — HIT RATE LIMIT
+  MID-RUN (incomplete code left in mission_control.html)
+- OCB-L: System monitor red errors fixed, AI status bar
+  rebuilt, help search tab, settings persistence moved
+  to disk (replaces localStorage)
+- ACCA added: STORM, WRC, LLOW, AASKC, CLACHR
+- STATUS.md: two copies found/cleaned (258-line OCB-I kept)
+- Opus 4.8 released by Anthropic (same day)
+- ⚠️ STATUS.md does NOT yet include OCB-J/K/L
+
+## MAY 29 (TODAY)
+- MCC server confirmed on 8080 (not 5000)
+- MCC FROZEN — all buttons unclickable, stuck on WCCS tab
+- CURRENT STATUS: blocked until OCB-REPAIR completes
+
+## NEXT
+1. Run OCB-REPAIR CLAC block above
+2. Update STATUS.md with OCB-J/K/L entries (WCCS)
+3. Star Citizen v0.2 benchmark run
+
 <!-- END_OF_FILE -->
 
 
