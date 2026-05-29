@@ -4,5 +4,7 @@
   "cost_cap_per_goal_gbp": 0.04,
   "max_retries": 3,
   "retry_on_score_below": 6.0,
-  "preferred_currency": "GBP"
+  "preferred_currency": "GBP",
+  "provider_timeout": 30,
+  "provider_retry_count": 3
 }

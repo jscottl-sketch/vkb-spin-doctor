@@ -1,9 +1,30 @@
 {
   "theme": "dark",
   "tab_order": [],
-  "section_order_per_tab": {},
+  "section_order_per_tab": {
+    "aafl-control": [
+      "acc-llow",
+      "acc-scout-bridge",
+      "acc-workflow",
+      "acc-live-output",
+      "acc-run-now",
+      "acc-smart-suggester",
+      "acc-aafl-settings",
+      "acc-b2-06",
+      "acc-b2-08",
+      "acc-b2-09",
+      "acc-stuck-inbox",
+      "acc-aafl-run-history"
+    ]
+  },
   "open_sections": {},
-  "provider_preference_order": ["lmstudio_coder", "mistral_code", "gemini_flash", "cerebras", "openrouter"],
+  "provider_preference_order": [
+    "lmstudio_coder",
+    "mistral_code",
+    "gemini_flash",
+    "cerebras",
+    "openrouter"
+  ],
   "design_density": "comfortable",
   "animation_speed": 1,
   "tab_bar_style": "default",
@@ -15,5 +36,5 @@
   "text_color": "#cccccc",
   "bg_color": "#0d0d0d",
   "border_radius": "4",
-  "last_active_tab": "home"
+  "last_active_tab": "wccs"
 }

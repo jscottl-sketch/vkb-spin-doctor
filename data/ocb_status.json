@@ -1,15 +1,56 @@
 {
-  "run_id": "",
-  "started_at": "",
-  "provider": "",
+  "run_id": "20260529_170837",
+  "started_at": "2026-05-29T17:08:37",
+  "provider": "auto",
   "max_retries": 3,
-  "phases": [],
-  "current_phase": 0,
-  "current_task": 0,
-  "log": [],
-  "mot_score": "",
-  "status": "idle",
+  "phases": [
+    {
+      "phase_num": 1,
+      "phase_name": "TEST",
+      "status": "DONE",
+      "tasks": [
+        {
+          "num": 1,
+          "text": "In mission_control.html, find the OCB Runner section in the WCCS tab. At the ver",
+          "status": "DONE"
+        }
+      ]
+    },
+    {
+      "phase_num": 2,
+      "phase_name": "MOT",
+      "status": "DONE",
+      "tasks": [
+        {
+          "num": 2,
+          "text": "Run python mcc_full_mot.py. Must pass 108/108.",
+          "status": "DONE"
+        }
+      ]
+    }
+  ],
+  "current_phase": 2,
+  "current_task": 2,
+  "log": [
+    "[17:08:37] [P1] Starting: TEST",
+    "[17:08:37] [P1.T1] Task: In mission_control.html, find the OCB Runner section in the WCCS tab. ",
+    "[17:08:37] [P1.T1] Target: mission_control.html",
+    "[17:08:38] [P1.T1] Attempt 1: lines 1737\u20132036",
+    "[17:08:40] [P1.T1] DONE \u2014 mission_control.html updated",
+    "[17:08:40] [P2] Starting: MOT",
+    "[17:08:40] [P2.T2] Task: Run python mcc_full_mot.py. Must pass 108/108.",
+    "[17:08:40] [P2.T2] Target: mcc_full_mot.py",
+    "[17:08:40] [P2.T2] Attempt 1: lines 1\u2013559",
+    "[17:08:41] [P2.T2] DONE \u2014 mcc_full_mot.py updated",
+    "[17:08:41] [SYS] Running MOT test suite\u2026",
+    "[17:08:41] [SYS] MOT: exit 0"
+  ],
+  "mot_score": "exit 0",
+  "status": "DONE",
   "cancelled": false,
-  "files_changed": [],
-  "completed_at": ""
+  "files_changed": [
+    "mcc_full_mot.py",
+    "mission_control.html"
+  ],
+  "completed_at": "2026-05-29T17:08:41"
 }

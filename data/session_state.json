@@ -1,0 +1,33 @@
+{
+  "session_id": "",
+  "started_at": "",
+  "current_task": {
+    "type": "",
+    "description": "",
+    "subsystem": "",
+    "status": "idle",
+    "started_at": ""
+  },
+  "last_result": {
+    "task": "",
+    "status": "",
+    "mot_score": "",
+    "files_changed": [],
+    "completed_at": ""
+  },
+  "provider_health": {
+    "healthy_count": 0,
+    "total": 14,
+    "last_checked": ""
+  },
+  "watchdog_status": "OFF",
+  "last_save": {
+    "type": "",
+    "timestamp": "",
+    "file": ""
+  },
+  "aafl_score": null,
+  "cost_7d": null,
+  "active_ocb_run_id": "",
+  "next_priority": ""
+}

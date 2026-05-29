@@ -1,24 +1,8 @@
 [
   {
-    "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
-    "provider": "lmstudio_reason",
-    "first_seen": "2026-05-29T00:00:14",
-    "count": 1,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.serviceunavailableerror: geminiexception - {\n  \"error\": {\n    \"code\": 50",
-    "provider": "gemini_flash",
-    "first_seen": "2026-05-29T00:00:16",
-    "count": 1,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
+    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model is",
     "provider": "lmstudio_coder",
-    "first_seen": "2026-05-29T00:00:17",
+    "first_seen": "2026-05-29T12:04:02",
     "count": 1,
     "last_fix": null,
     "fix_worked": null
@@ -26,7 +10,63 @@
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_fast",
-    "first_seen": "2026-05-29T00:00:17",
+    "first_seen": "2026-05-29T17:08:40",
+    "count": 10,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model is",
+    "provider": "lmstudio_reason",
+    "first_seen": "2026-05-29T12:04:19",
+    "count": 1,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
+    "provider": "lmstudio_coder",
+    "first_seen": "2026-05-29T17:08:40",
+    "count": 9,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
+    "provider": "lmstudio_reason",
+    "first_seen": "2026-05-29T12:09:21",
+    "count": 7,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.ratelimiterror: litellm.ratelimiterror: geminiexception - {\n  \"error\": {",
+    "provider": "gemini_flash",
+    "first_seen": "2026-05-29T12:04:44",
+    "count": 1,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.serviceunavailableerror: geminiexception - {\n  \"error\": {\n    \"code\": 50",
+    "provider": "gemini_flash",
+    "first_seen": "2026-05-29T12:05:48",
+    "count": 1,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.ratelimiterror: ratelimiterror: cerebrasexception - we're experiencing h",
+    "provider": "cerebras",
+    "first_seen": "2026-05-29T12:05:48",
+    "count": 1,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.authenticationerror: authenticationerror: openrouterexception - {\"error\"",
+    "provider": "openrouter",
+    "first_seen": "2026-05-29T12:05:48",
     "count": 1,
     "last_fix": null,
     "fix_worked": null

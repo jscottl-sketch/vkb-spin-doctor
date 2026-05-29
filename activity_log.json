@@ -544,5 +544,485 @@
     "cat": "test",
     "msg": "ep test",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:32",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T00:24:32",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:32",
+    "cat": "integration",
+    "msg": "int_test_1780010672",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:33",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:41",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T00:24:41",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:41",
+    "cat": "integration",
+    "msg": "int_test_1780010681",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T00:24:42",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:33",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:00:33",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:33",
+    "cat": "integration",
+    "msg": "int_test_1780012833",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:34",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:42",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:00:42",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:42",
+    "cat": "integration",
+    "msg": "int_test_1780012842",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:43",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:55",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:00:56",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:56",
+    "cat": "integration",
+    "msg": "int_test_1780012856",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:00:57",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:01:04",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:01:04",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:01:04",
+    "cat": "integration",
+    "msg": "int_test_1780012864",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:01:05",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:12",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:02:13",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:13",
+    "cat": "integration",
+    "msg": "int_test_1780012933",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:13",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:02:14",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:14",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T01:02:14",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:14",
+    "cat": "integration",
+    "msg": "int_test_1780012934",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:15",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:15",
+    "cat": "integration",
+    "msg": "int_test_1780012935",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:15",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T01:02:16",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:14:58",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T04:14:58",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:14:59",
+    "cat": "integration",
+    "msg": "int_test_1780024498",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:14:59",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:15:07",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T04:15:07",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:15:07",
+    "cat": "integration",
+    "msg": "int_test_1780024507",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T04:15:08",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:12",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T05:47:13",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:13",
+    "cat": "integration",
+    "msg": "int_test_1780030033",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:14",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:29",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T05:47:46",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:46",
+    "cat": "integration",
+    "msg": "int_test_1780030066",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:47:47",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:49:54",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T05:49:55",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:49:55",
+    "cat": "integration",
+    "msg": "int_test_1780030195",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:49:56",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:49:59",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T05:50:00",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:50:00",
+    "cat": "integration",
+    "msg": "int_test_1780030200",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T05:50:01",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:04",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T06:30:04",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:04",
+    "cat": "integration",
+    "msg": "int_test_1780032604",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:05",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:13",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T06:30:13",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:13",
+    "cat": "integration",
+    "msg": "int_test_1780032613",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T06:30:14",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:03:49",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T12:03:50",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:03:50",
+    "cat": "integration",
+    "msg": "int_test_1780052630",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:03:51",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:03:58",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-29T12:03:59",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:03:59",
+    "cat": "integration",
+    "msg": "int_test_1780052639",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:04:00",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:29:46",
+    "cat": "wccs",
+    "msg": "WCCS save triggered",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T12:48:49",
+    "cat": "wccs",
+    "msg": "WCCS save triggered",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T17:22:34",
+    "cat": "wccs",
+    "msg": "WCCS save triggered",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-29T23:29:26",
+    "cat": "wccs",
+    "msg": "WCCS save triggered",
+    "trigger": "manual"
   }
 ]

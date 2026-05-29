@@ -7,7 +7,9 @@ Run standalone: python provider_health.py
 import csv
 import json
 import os
+import shutil
 import sqlite3
+import tempfile
 import time
 import datetime
 from pathlib import Path
@@ -322,6 +324,14 @@ def run_health_checks(providers=None, skip_paid=True) -> list[dict]:
     # Write latest_health.json
     _write_latest_json(results)
 
+    # Update session_state provider_health
+    healthy_n = sum(1 for r in results if r.get("alive"))
+    _update_session_state({"provider_health": {
+        "healthy_count": healthy_n,
+        "total": len(results),
+        "last_checked": datetime.datetime.now().isoformat(timespec="seconds"),
+    }})
+
     return results
 
 
@@ -564,6 +574,100 @@ def _write_latest_json(results: list[dict]):
         )
     except Exception as exc:
         print(f"[health] latest_health.json write failed: {exc}")
+
+
+# ── Session State helper ──────────────────────────────────────────────────────
+
+_SESSION_STATE = HERE / "data" / "session_state.json"
+_SS_DEFAULTS = {
+    "session_id": "", "started_at": "",
+    "current_task": {"type": "", "description": "", "subsystem": "", "status": "idle", "started_at": ""},
+    "last_result": {"task": "", "status": "", "mot_score": "", "files_changed": [], "completed_at": ""},
+    "provider_health": {"healthy_count": 0, "total": 14, "last_checked": ""},
+    "watchdog_status": "OFF",
+    "last_save": {"type": "", "timestamp": "", "file": ""},
+    "aafl_score": None, "cost_7d": None, "active_ocb_run_id": "", "next_priority": "",
+}
+
+
+def _update_session_state(patch: dict):
+    """Merge patch into data/session_state.json (atomic write, never full overwrite)."""
+    try:
+        state = json.loads(_SESSION_STATE.read_text(encoding="utf-8")) if _SESSION_STATE.exists() else dict(_SS_DEFAULTS)
+        state.update(patch)
+        fd, tmp = tempfile.mkstemp(dir=str(_SESSION_STATE.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2)
+        shutil.move(tmp, str(_SESSION_STATE))
+    except Exception:
+        pass
+
+
+# ── Diagnosis ─────────────────────────────────────────────────────────────────
+
+def run_diagnosis(providers=None) -> dict:
+    """
+    Minimal live test of each provider with prompt 'reply OK'.
+    Writes result to data/provider_diagnosis.json (atomic).
+    Returns {healthy, total, failures, providers}.
+    """
+    targets = providers or PROVIDERS
+    lm_up = _check_lmstudio()
+    results = {}
+    healthy_count = 0
+    failures = []
+
+    for p in targets:
+        pid = p["id"]
+        tier = p.get("tier", 2)
+        model = p["model"]
+
+        if p.get("embed_only"):
+            results[pid] = {"status": "SKIP", "latency_ms": 0, "error": "embed-only",
+                            "model_used": model, "tier": tier}
+            continue
+        if p.get("paid"):
+            results[pid] = {"status": "SKIP", "latency_ms": 0, "error": "paid provider blocked",
+                            "model_used": model, "tier": tier}
+            continue
+        if not _has_key(p):
+            results[pid] = {"status": "NO_KEY", "latency_ms": 0, "error": "no API key",
+                            "model_used": model, "tier": tier}
+            continue
+        is_local = "127.0.0.1" in (p.get("api_base") or "")
+        if is_local and not lm_up:
+            results[pid] = {"status": "OFFLINE", "latency_ms": 0, "error": "LM Studio not running",
+                            "model_used": model, "tier": tier}
+            continue
+
+        t0 = time.time()
+        try:
+            text, _ = _raw_call(p, "reply OK", timeout=15)
+            latency = round((time.time() - t0) * 1000)
+            results[pid] = {"status": "OK", "latency_ms": latency, "error": None,
+                            "model_used": model, "tier": tier}
+            healthy_count += 1
+        except Exception as exc:
+            latency = round((time.time() - t0) * 1000)
+            err = str(exc)[:120]
+            results[pid] = {"status": "FAIL", "latency_ms": latency, "error": err,
+                            "model_used": model, "tier": tier}
+            failures.append({"id": pid, "label": p.get("label", pid), "error": err})
+
+    diagnosis = {
+        "generated_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        "healthy": healthy_count,
+        "total": len(targets),
+        "failures": failures,
+        "providers": results,
+    }
+    out = HERE / "data" / "provider_diagnosis.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=str(out.parent), suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(diagnosis, f, indent=2)
+    shutil.move(tmp, str(out))
+    return diagnosis
 
 
 # ── Main CLI entry point ──────────────────────────────────────────────────────

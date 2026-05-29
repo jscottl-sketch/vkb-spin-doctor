@@ -4,5 +4,8 @@
   "first_run": true,
   "_medical_test": true,
   "_ep_test": true,
-  "_persist_test": true
+  "_persist_test": true,
+  "urgency": {
+    "health-suite": 5
+  }
 }

@@ -69,5 +69,68 @@
     "severity": "high",
     "source": "self_health",
     "resolved": false
+  },
+  {
+    "id": "sh_62a838e9_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T00:24:57",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_71decd20_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T01:00:58",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_d753c74d_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "HTTP 409",
+    "timestamp": "2026-05-29T01:01:20",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_3f05fe50_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T04:15:23",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_62653b13_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T05:47:46",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_f1d67a07_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T06:30:29",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
+  },
+  {
+    "id": "sh_580afbeb_wccs_save_btn",
+    "goal": "Self-Health: Save Session Now Button FAILED",
+    "error": "timed out",
+    "timestamp": "2026-05-29T12:04:15",
+    "severity": "high",
+    "source": "self_health",
+    "resolved": false
   }
 ]

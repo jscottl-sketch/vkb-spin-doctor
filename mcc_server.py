@@ -90,6 +90,18 @@ SCOUT_SWARM_STATE   = HERE / "data" / "scout_swarm_state.json"
 # ── OCB-O: OCB Runner paths ──────────────────────────────────────────────────
 OCB_STATUS_FILE     = HERE / "data" / "ocb_status.json"
 CLACHR_RESPONSE     = HERE / "data" / "clachr_response.json"
+# ── OCB-P: Unified session state ─────────────────────────────────────────────
+SESSION_STATE_FILE  = HERE / "data" / "session_state.json"
+PROVIDER_DIAG_FILE  = HERE / "data" / "provider_diagnosis.json"
+_SS_DEFAULTS = {
+    "session_id": "", "started_at": "",
+    "current_task": {"type": "", "description": "", "subsystem": "", "status": "idle", "started_at": ""},
+    "last_result": {"task": "", "status": "", "mot_score": "", "files_changed": [], "completed_at": ""},
+    "provider_health": {"healthy_count": 0, "total": 14, "last_checked": ""},
+    "watchdog_status": "OFF",
+    "last_save": {"type": "", "timestamp": "", "file": ""},
+    "aafl_score": None, "cost_7d": None, "active_ocb_run_id": "", "next_priority": "",
+}
 
 # ── Self-Health paths (OCB-A / OCB-B) ────────────────────────────────────────
 SH_REGISTRY     = HERE / "data" / "element_registry.json"
@@ -645,6 +657,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_mccm_detective()
             elif path == "/api/mccm/alerts":
                 self._handle_mccm_alerts()
+            # ── OCB-P: Unified session state ───────────────────────────────────
+            elif path == "/api/session-state":
+                self._handle_session_state_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -889,6 +904,18 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_archive(run_id)
             elif path == "/api/rrclach/save":
                 self._handle_rrclach_save()
+            # ── OCB-P: Unified session state POST ─────────────────────────────
+            elif path == "/api/session-state":
+                self._handle_session_state_post()
+            # ── OCB-P: Provider diagnosis ─────────────────────────────────────
+            elif path == "/api/provider-health/diagnose":
+                self._handle_provider_health_diagnose()
+            # ── OCB-P: Command bar ────────────────────────────────────────────
+            elif path == "/api/command-bar":
+                self._handle_command_bar()
+            # ── OCB-P: Watchdog start ─────────────────────────────────────────
+            elif path == "/api/watchdog/start":
+                self._handle_watchdog_start()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7174,18 +7201,49 @@ MCCHandler._handle_ocb_parse = _handle_ocb_parse  # type: ignore[attr-defined]
 
 
 def _handle_ocb_run(self):
-    """POST /api/ocb/run — launch OCB run in background thread."""
+    """POST /api/ocb/run — launch OCB run in background thread. Supports failed_phases_only flag."""
     try:
         body                = json.loads(self._read_body() or "{}")
-        ocb_text            = (body.get("ocb_text") or "").strip()
         provider            = (body.get("provider") or "auto").strip()
         max_retries         = int(body.get("max_retries", 3))
         acceptance_criteria = body.get("acceptance_criteria", [])
+        failed_phases_only  = bool(body.get("failed_phases_only", False))
+        original_run_id     = (body.get("run_id") or "").strip()
         if not isinstance(acceptance_criteria, list):
             acceptance_criteria = []
+
+        if failed_phases_only and original_run_id:
+            # Rebuild OCB text from failed phases only
+            import ocb_runner as _ocbr
+            ocb_text = ""
+            try:
+                if CLACHR_RESPONSE.exists():
+                    cr = json.loads(CLACHR_RESPONSE.read_text(encoding="utf-8"))
+                    orig_text = cr.get("ocb_text", "")
+                    failed_names = set(cr.get("phases_failed", []))
+                    if orig_text and failed_names:
+                        all_phases = _ocbr.parse_ocb_block(orig_text)
+                        filtered = [p for p in all_phases if p["phase_name"] in failed_names]
+                        if filtered:
+                            lines = []
+                            for p in filtered:
+                                lines.append(f"═══ PHASE {p['phase_num']} — {p['phase_name']} ═══")
+                                lines.append("")
+                                for t in p["tasks"]:
+                                    lines.append(f"{t['num']}. {t['text']}")
+                                lines.append("")
+                            ocb_text = "\n".join(lines)
+                if not ocb_text:
+                    ocb_text = (body.get("ocb_text") or "").strip()
+            except Exception:
+                ocb_text = (body.get("ocb_text") or "").strip()
+        else:
+            ocb_text = (body.get("ocb_text") or "").strip()
+
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
             return
+
         run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         import ocb_runner
         t = threading.Thread(
@@ -7260,7 +7318,7 @@ MCCHandler._handle_ocb_archive = _handle_ocb_archive  # type: ignore[attr-define
 
 
 def _handle_rrclach_save(self):
-    """POST /api/rrclach/save — write rrclach_request.json with ocb_text + acceptance_criteria."""
+    """POST /api/rrclach/save — write rrclach_request.json with ocb_text + acceptance_criteria + classification."""
     try:
         body                = json.loads(self._read_body() or "{}")
         ocb_text            = (body.get("ocb_text") or "").strip()
@@ -7270,10 +7328,21 @@ def _handle_rrclach_save(self):
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
             return
+        # Classify the OCB block
+        classification = {}
+        try:
+            import sys as _sys
+            if str(HERE) not in _sys.path:
+                _sys.path.insert(0, str(HERE))
+            from clacker_router import classify as _classify
+            classification = _classify(ocb_text)
+        except Exception:
+            pass
         payload = {
             "ocb_text":            ocb_text,
             "acceptance_criteria": acceptance_criteria,
             "saved_at":            datetime.datetime.now().isoformat(timespec="seconds"),
+            "classification":      classification,
         }
         rrclach_file = HERE / "data" / "rrclach_request.json"
         import shutil as _sh
@@ -7283,7 +7352,8 @@ def _handle_rrclach_save(self):
             json.dump(payload, f, indent=2)
         _sh.move(tmp, str(rrclach_file))
         self._send_json({"ok": True, "saved_to": "data/rrclach_request.json",
-                         "criteria_count": len(acceptance_criteria)})
+                         "criteria_count": len(acceptance_criteria),
+                         "classification": classification})
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)
 
@@ -7349,6 +7419,154 @@ def _handle_mccm_alerts(self):
 
 
 MCCHandler._handle_mccm_alerts = _handle_mccm_alerts  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-P: Unified Session State
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _session_state_read() -> dict:
+    """Read session_state.json or return defaults."""
+    try:
+        if SESSION_STATE_FILE.exists():
+            return json.loads(SESSION_STATE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return dict(_SS_DEFAULTS)
+
+
+def _session_state_write(state: dict):
+    """Atomic write of session_state.json."""
+    import tempfile as _tf
+    import shutil as _sh
+    SESSION_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = _tf.mkstemp(dir=str(SESSION_STATE_FILE.parent), suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+    _sh.move(tmp, str(SESSION_STATE_FILE))
+
+
+def _handle_session_state_get(self):
+    """GET /api/session-state — returns session_state.json (never 404)."""
+    self._send_json(_session_state_read())
+
+
+MCCHandler._handle_session_state_get = _handle_session_state_get  # type: ignore[attr-defined]
+
+
+def _handle_session_state_post(self):
+    """POST /api/session-state — merges partial update (dict.update), atomic write."""
+    try:
+        patch = json.loads(self._read_body() or "{}")
+        state = _session_state_read()
+        state.update(patch)
+        _session_state_write(state)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_session_state_post = _handle_session_state_post  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-P: Provider Health Diagnosis
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_provider_health_diagnose(self):
+    """POST /api/provider-health/diagnose — live-test all providers, write provider_diagnosis.json."""
+    try:
+        import sys as _sys
+        if str(HERE) not in _sys.path:
+            _sys.path.insert(0, str(HERE))
+        import provider_health as _ph
+        result = _ph.run_diagnosis()
+        self._send_json({
+            "healthy": result["healthy"],
+            "total": result["total"],
+            "failures": result["failures"],
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_provider_health_diagnose = _handle_provider_health_diagnose  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-P: Command Bar
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_HINT_MAP = {
+    "CODE":        "Go to WCCS tab → OCB Runner to execute",
+    "RESEARCH":    "Go to Scout tab to run web research",
+    "AAFL":        "Go to AAFL Runs tab → set goal and run",
+    "MAINTENANCE": "Go to WCCS tab → click Save WCCS",
+    "OPUS":        "Paste into Claude Chat for big-brain analysis",
+}
+
+def _handle_command_bar(self):
+    """POST /api/command-bar — classify instructions, update session_state current_task."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        instructions = (body.get("instructions") or "").strip()
+        if not instructions:
+            self._send_json({"error": "instructions required"}, 400)
+            return
+        import sys as _sys
+        if str(HERE) not in _sys.path:
+            _sys.path.insert(0, str(HERE))
+        from clacker_router import classify as _classify
+        cls = _classify(instructions)
+        task_type = cls.get("type", "OPUS")
+        hint = _HINT_MAP.get(task_type, "")
+        now = datetime.datetime.now().isoformat(timespec="seconds")
+        state = _session_state_read()
+        state["current_task"] = {
+            "type": task_type,
+            "description": instructions[:120],
+            "subsystem": cls.get("subsystem", ""),
+            "status": "routed",
+            "started_at": now,
+        }
+        _session_state_write(state)
+        self._send_json({
+            "classification": task_type,
+            "subsystem": cls.get("subsystem", ""),
+            "provider": cls.get("provider", ""),
+            "confidence": cls.get("confidence", 0.5),
+            "hint": hint,
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_command_bar = _handle_command_bar  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OCB-P: Watchdog Start
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _handle_watchdog_start(self):
+    """POST /api/watchdog/start — launch aafl_watchdog.py as a background process."""
+    try:
+        watchdog_script = HERE / "aafl_watchdog.py"
+        if not watchdog_script.exists():
+            self._send_json({"ok": False, "error": "aafl_watchdog.py not found"})
+            return
+        import subprocess as _sp
+        _sp.Popen([FULL_PYTHON, str(watchdog_script)],
+                  cwd=str(HERE), creationflags=0x00000008)  # DETACHED_PROCESS on Windows
+        state = _session_state_read()
+        state["watchdog_status"] = "ON"
+        _session_state_write(state)
+        self._send_json({"ok": True, "status": "started"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_watchdog_start = _handle_watchdog_start  # type: ignore[attr-defined]
 
 
 def main():

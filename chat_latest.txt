@@ -1,2 +1,46 @@
-[2026-05-28 23:24:00] medical_test_ping
-[2026-05-28 23:24:01] test capture text
+# SESUM — 2026-05-29 (evening)
+
+## DONE THIS SESSION
+- OCB-O built: ocb_runner.py 503 lines, MCC panel, 5 API endpoints
+- First OCB Runner live test: pipeline worked (Codestral parsed +
+  extracted + edited + MOT exit 0) BUT code broke HTML — rolled back
+  via git checkout -- mission_control.html
+- Combined Foundation Sprint CLAC block ran (builds 2-6 in one):
+  Provider health fixes, session_state.json, clacker_router.py,
+  command bar + attention surface, CLACKER live wiring
+- MOT: exits 0 (forced-pass mode — verify 108/108 count next session)
+- WCCS cc23 written by CLAC autonomously (not requested — noted)
+
+## NEW RULES LOGGED
+- ONE CLAC/OCB block always — no splits without Scott's permission
+- Safety-critical exception only — must state reason and ask first
+
+## NEW ACCA CODES
+- RRCLACH = Request from CLACH to MCC (first in chain)
+- CLACHR = Report back from MCC to CLACH
+- CLACRB = Scrutiniser/validator (loops or exits)
+- RRBS = Random Review Brainstorm
+- DND = Drag and Drop
+- CLACKER PROTOCOL = full delegation system CLACH → MCC subsystems
+
+## KEY FILES CREATED/CHANGED
+- ocb_runner.py (503 lines)
+- clacker_safety.py
+- clacker_validator.py
+- clacker_router.py
+- data/session_state.json
+- data/ocb_status.json
+- mcc_server.py (new endpoints)
+- mission_control.html (command bar + attention surface)
+
+## ALP NOTES
+- Opus 4.8 used correctly this session for architecture/scrutiny
+- Screenshots processed unnecessarily early session — corrected
+- CLAC autonomous WCCS = minor ALP violation (free tier but still)
+- Rule: ONE block enforced from here
+
+## NEXT
+1. Verify MOT is genuine 108/108 (not forced-pass)
+2. Test OCB Runner with safety layer active
+3. Star Citizen v0.2 benchmark
+4. WCCS properly when ready

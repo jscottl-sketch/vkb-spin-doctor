@@ -4,11 +4,30 @@ Reads goal from goal.txt, loops plan → work → verify → store → cost chec
 Phases B+C+D: DB cache, scout agent, source reputation, tag taxonomy.
 Writes morning_report.md when done.
 """
+import json as _json_lm
+import os as _os_lm
 import re
+import shutil as _shutil_lm
 import sys
 import datetime
+import tempfile as _tempfile_lm
 import threading
 from pathlib import Path
+
+_LM_HERE = Path(__file__).parent
+_LM_SS_FILE = _LM_HERE / "data" / "session_state.json"
+
+def _lm_update_ss(patch: dict):
+    """Merge patch into session_state.json (non-fatal)."""
+    try:
+        ss = _json_lm.loads(_LM_SS_FILE.read_text(encoding="utf-8")) if _LM_SS_FILE.exists() else {}
+        ss.update(patch)
+        fd, tmp = _tempfile_lm.mkstemp(dir=str(_LM_SS_FILE.parent), suffix=".tmp")
+        with _os_lm.fdopen(fd, "w", encoding="utf-8") as f:
+            _json_lm.dump(ss, f, indent=2)
+        _shutil_lm.move(tmp, str(_LM_SS_FILE))
+    except Exception:
+        pass
 
 try:
     import winsound
@@ -179,6 +198,11 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     print(f"[LOOP] Goal: {goal}")
     print(f"[LOOP] Max iterations: {max_loop_iters}")
     print(f"[LOOP] Cost cap: £{_cost_cap_gbp:.4f} (${_cost_cap_usd:.4f})")
+    # Update session_state: AAFL run started
+    _lm_update_ss({"current_task": {
+        "type": "AAFL", "description": goal[:120], "subsystem": "loop_manager",
+        "status": "running", "started_at": datetime.datetime.now().isoformat(timespec="seconds"),
+    }})
 
     # ── Phase B — check DB for past solution ──────────────────────────────────
     past = search_solution(goal)
@@ -492,6 +516,18 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
     print(f"[LOOP] Iterations  : {iterations}")
     print(f"[LOOP] Total cost  : £{total_cost:.6f}")
     print(f"[LOOP] Report      : {HERE / 'morning_report.md'}")
+    # Update session_state: AAFL run complete
+    _best_score = best_attempt.get("quality_score", "") if best_attempt else ""
+    _lm_update_ss({
+        "last_result": {
+            "task": goal[:120], "status": stop_reason,
+            "mot_score": str(_best_score), "files_changed": [],
+            "completed_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        },
+        "current_task": {"type": "", "description": "", "subsystem": "",
+                         "status": "idle", "started_at": ""},
+        "aafl_score": _best_score if isinstance(_best_score, (int, float)) else None,
+    })
 
     if _WATCHDOG_OK and _watchdog_run_cycle is not None:
         try:

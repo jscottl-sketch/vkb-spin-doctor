@@ -12,7 +12,7 @@
   "use_chief_scout": true,
   "use_db_cache": true,
   "use_meta_loop": false,
-  "current_goal": "__ep_test__",
+  "current_goal": "not json at all }{",
   "run_mode": "once",
   "provider_list": [
     {

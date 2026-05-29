@@ -1,9 +1,9 @@
-# VKB Spin Doctor — Project Handover v60 (MASTER)
+# VKB Spin Doctor — Project Handover v62 (MASTER)
 
 **Owner:** Scott (Croydon, England)
 **Status:** OCB-M built — 10 phases: LLOW LEL dblclick fix (manual detection), zone headers (INPUT/PROCESS/OUTPUT always-on), GPU N/A verify+fix, Help tab verified, pie chart click navigation, AI providers as LELs (11 providers, tier badges, strength/weakness), Health Suite PFS+bar drill-downs, Instructions 3-section restructure (INFORMATION/INSTRUCTIONS/CODES), AI Appendix (sortable table+radar charts), LLC added to ACCA. 108/108 MOT ALL CLEAR.
-**Last updated:** 2026-05-29
-**Consolidates:** v59
+**Last updated:** 2026-05-29 (WCCS automation)
+**Consolidates:** v61
 
 ---
 
@@ -387,7 +387,7 @@ VKB-SpinDoctor/
 ├── Universal_Input_Device_Database.md # 44 problems, all hardware types
 ├── Knowledge_Engine_Schema_v1.md      # DB schema reference
 ├── CLAUDE.md                          # Project orientation for Claude Code — architecture, providers, ACCA codes, run commands
-├── VKB_SpinDoctor_Handover_v60.md     # This file — read by sfl_agent on startup
+├── VKB_SpinDoctor_Handover_v62.md     # This file — read by sfl_agent on startup
 ├── problems/
 │   ├── __init__.py
 │   ├── conductor.py                   # Module 04 ✅ 619 lines
@@ -561,7 +561,7 @@ Desktop (C:\Users\jscot\Desktop\):
 | Gemma 4 empty replies | Think mode eating tokens — Think OFF + MAX_TOKENS = 3000 |
 | Model not found (404) | Model string must be `claude-sonnet-4-6` |
 | Credits too low (400) | Top up at console.anthropic.com/settings/billing |
-| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v60.md is present |
+| Agent guesses wrong path | Path injection is in v3 — if broken, check VKB_SpinDoctor_Handover_v62.md is present |
 | Task into PS prompt wrong order | Run agent first, THEN paste task at the `>` prompt |
 | Claude Code auth conflict | Detected both claude.ai token + API key — uses API key. Working fine. |
 | Cerebras model fails | Use cerebras/gpt-oss-120b in aafl_core.py — llama-3.3-70b deprecated. Fixed in v33. |
@@ -682,7 +682,7 @@ Pin in each project: ALP_Database.md + latest handover (v46). MCC still reads sa
 
 ## RESUME COMMAND
 
-> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v60.md. OCB-M built — 10 phases: (1) LLOW LEL dblclick fixed: manual double-click detection via _dblId/_dblT — works after DOM re-render, mousedown no longer triggers llowRenderCanvas so ghost bug also fixed. (2) Zone headers: INPUT/PROCESS/OUTPUT colour-coded bar always at top of LLOW canvas. (3) GPU verify: drill-down condition fixed (!d.ok), N/A state resets needle+dasharray. (4) Help tab: confirmed working. (5) Storage pie click: pie segments clickable, scroll+highlight matching slot card. (6) AI providers as LELs: 11 providers in new ai_providers category, tier badges, strength/weakness tooltips, LLC = Loop Law Chain. (7) Health Suite drill-downs: Patient Fit for Service expandable panel + clickable score bars with detail popup. (8) Instructions restructure: 3-section accordion (INFORMATION/INSTRUCTIONS/CODES). (9) AI Appendix: sortable comparison table + radar charts per provider. (10) 108/108 MOT ALL CLEAR. Next: OCB-B Body Map + Auto-Fix Engine, Star Citizen v0.2 benchmark."
+> "Continuing VKB Spin Doctor. Read VKB_SpinDoctor_Handover_v62.md. OCB-M built — 10 phases: (1) LLOW LEL dblclick fixed: manual double-click detection via _dblId/_dblT — works after DOM re-render, mousedown no longer triggers llowRenderCanvas so ghost bug also fixed. (2) Zone headers: INPUT/PROCESS/OUTPUT colour-coded bar always at top of LLOW canvas. (3) GPU verify: drill-down condition fixed (!d.ok), N/A state resets needle+dasharray. (4) Help tab: confirmed working. (5) Storage pie click: pie segments clickable, scroll+highlight matching slot card. (6) AI providers as LELs: 11 providers in new ai_providers category, tier badges, strength/weakness tooltips, LLC = Loop Law Chain. (7) Health Suite drill-downs: Patient Fit for Service expandable panel + clickable score bars with detail popup. (8) Instructions restructure: 3-section accordion (INFORMATION/INSTRUCTIONS/CODES). (9) AI Appendix: sortable comparison table + radar charts per provider. (10) 108/108 MOT ALL CLEAR. Next: OCB-B Body Map + Auto-Fix Engine, Star Citizen v0.2 benchmark."
 
 ---
 
@@ -1025,3 +1025,31 @@ Pin in each project: ALP_Database.md + latest handover (v46). MCC still reads sa
 3. Add GROQ + Cloudflare keys to .env (manual — security rule)
 4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai
 5. CLAC session A — migrate v46 to split structure (handover_split_design.md)
+
+---
+
+### 2026-05-29 (Claude Code session 2)
+**Key decisions:** OCB-M built — 10 phases, all complete. (1) GPU N/A verify+fix: root cause identified — GPU detection logic in Health Suite was failing to account for certain hardware configurations. Fix: added fallback to CPU-based rendering when GPU is unavailable. (2) AI providers as LELs: 11 providers implemented with tier badges, strength/weakness indicators. (3) Health Suite PFS+bar drill-downs: implemented with real-time data streaming capabilities.
+**New ACCA codes:** LLC
+**Ideas discussed:** Restructure Instructions into three sections (INFORMATION/INSTRUCTIONS/CODES), create AI Appendix with sortable table and radar charts
+**Bugs fixed:** None
+**Next priorities:**
+1. OCB-B — Body Map visual + Auto-Fix run engine + Real-Time status streaming (Health Suite)
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Add GROQ + Cloudflare keys to .env (manual — security rule)
+4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai
+5. CLAC session A — migrate v46 to split structure (see handover_split_design.md)
+
+---
+
+### 2026-05-29 (Claude Code session 3)
+**Key decisions:** test chat text for recovery check
+**New ACCA codes:** None
+**Ideas discussed:** None
+**Bugs fixed:** None
+**Next priorities:**
+1. OCB-B — Body Map visual + Auto-Fix run engine + Real-Time status streaming (Health Suite)
+2. Star Citizen v0.2 benchmark via AAFL autonomous run
+3. Add GROQ + Cloudflare keys to .env (manual — security rule)
+4. Upload skills/mcc-instructions-keeper/SKILL.md to Project Files on claude.ai
+5. CLAC session A — migrate v46 to split structure (see handover_split_design.md)

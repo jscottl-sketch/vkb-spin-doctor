@@ -1,6 +1,6 @@
 {
   "goal": "benchmark test",
-  "ts": "2026-05-28T15:59:49",
+  "ts": "2026-05-29T12:09:29",
   "results": [
     {
       "provider": "mistral",
@@ -30,7 +30,7 @@
       "provider": "cerebras",
       "run": 2,
       "ok": false,
-      "output": "\"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 688, in <module>\n    run_loop(max_loop_iters=1, max_llm_calls=10)\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\loop_manager.py\", line 338, in run_loop\n    weak     = [k for k, v in scores.items() if k != \"overall\" and v < 7.0]\n                                                                   ^^^^^^^\nTypeError: '<' not supported between instances of 'str' and 'float'\n"
+      "output": "Command '['C:\\\\Users\\\\jscot\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe', 'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\loop_manager.py', '--once', '--provider=cerebras']' timed out after 180 seconds"
     },
     {
       "provider": "cerebras",

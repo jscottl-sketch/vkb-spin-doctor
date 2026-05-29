@@ -1,10 +1,10 @@
 {
   "meta": {
-    "generated": "2026-05-28T15:56:47",
+    "generated": "2026-05-29T12:03:52",
     "generator": "dashboard_builder.py"
   },
   "tasks": {
-    "last_updated": "2026-05-28T15:56:47",
+    "last_updated": "2026-05-29T12:03:52",
     "data": [
       {
         "id": "t001",
@@ -13,8 +13,8 @@
         "notes": "v0.2 milestone. Config path: C:\\Program Files\\Roberts Space Industries\\StarCitizen",
         "priority": "high",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t031",
@@ -23,8 +23,8 @@
         "notes": "Run meta_loop.bat --once. Confirm one .md appears in meta_proposals/. Review the proposal.",
         "priority": "high",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t032",
@@ -33,8 +33,8 @@
         "notes": "Use Windows Task Scheduler to run meta_loop.bat --once nightly (e.g. 3am). Set working directory.",
         "priority": "high",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t004",
@@ -43,8 +43,8 @@
         "notes": "Needs CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID. Get token: dash.cloudflare.com",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t002",
@@ -53,8 +53,8 @@
         "notes": "Manual check — make sure all 6 Claude skills are enabled at claude.ai/customize/",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t005",
@@ -63,8 +63,8 @@
         "notes": "Blocked: console.groq.com login broken. Google OAuth loops back to login page.",
         "priority": "high",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t003",
@@ -73,8 +73,8 @@
         "notes": "Throttle axis not responding in War Thunder. Likely PS5/Xbox controller conflict",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t006",
@@ -83,8 +83,8 @@
         "notes": "v0.3 milestone. Wire Gemma 4 / Qwen2.5-VL into AAFL loop. LM Studio v0.4.12 installed.",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t007",
@@ -93,8 +93,8 @@
         "notes": "Config Mediator module. Handles game config files — WT spin fix lives here. Drop into /problems/",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t010",
@@ -103,8 +103,8 @@
         "notes": "AI learns your setup across sessions. Replace or augment SQLite knowledge store.",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t011",
@@ -113,8 +113,8 @@
         "notes": "Detect game, auto-install community keybind profile. SubliminalsTV SC profiles ready.",
         "priority": "medium",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t008",
@@ -123,8 +123,8 @@
         "notes": "Device Identity module. Device naming, VID/PID, config name mismatch. Drop into /problems/",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t009",
@@ -133,8 +133,8 @@
         "notes": "USB port, hub, power — detect only (no auto-fix). Drop into /problems/ directory",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t012",
@@ -143,38 +143,38 @@
         "notes": "AI builds custom profiles from user history. Warns when a game patch breaks existing profiles.",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t013",
         "title": "Ko-fi + Itch.io links to README",
         "column": "Backlog",
-        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero setup.",
+        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t014",
         "title": "Get Spin Doctor public on GitHub",
         "column": "Backlog",
-        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with README.",
+        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with v1.0",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t015",
         "title": "Public release — package as .exe (v1.0)",
         "column": "Backlog",
-        "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install.",
+        "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install",
         "priority": "low",
         "tool": "AAFL",
-        "created": "2026-05-28",
-        "updated": "2026-05-28"
+        "created": "2026-05-29",
+        "updated": "2026-05-29"
       },
       {
         "id": "t016",
@@ -328,123 +328,60 @@
       }
     ],
     "meta": {
-      "updated": "2026-05-28T15:56:47",
+      "updated": "2026-05-29T12:03:52",
       "updated_by": "mcu_optimizer",
       "version": "1.0"
     }
   },
   "activity_feed": {
-    "last_updated": "2026-05-28T15:56:47",
+    "last_updated": "2026-05-29T12:03:52",
     "data": [
       {
-        "timestamp": "2026-05-28T15:56:32",
+        "timestamp": "2026-05-29T12:03:33",
         "type": "session_log",
-        "title": "Session Log -- 2026-05-28-cc5",
-        "detail": "2026-05-28-cc5.md",
-        "file": "2026-05-28-cc5.md"
+        "title": "Session Log -- 2026-05-29-cc18",
+        "detail": "2026-05-29-cc18.md",
+        "file": "2026-05-29-cc18.md"
       },
       {
-        "timestamp": "2026-05-28T15:56:13",
+        "timestamp": "2026-05-29T11:33:24",
         "type": "session_log",
-        "title": "Session Log -- 2026-05-28-cc4",
-        "detail": "2026-05-28-cc4.md",
-        "file": "2026-05-28-cc4.md"
+        "title": "Session Log — 2026-05-29 — cc17",
+        "detail": "2026-05-29-cc17.md",
+        "file": "2026-05-29-cc17.md"
       },
       {
-        "timestamp": "2026-05-28T14:04:02",
+        "timestamp": "2026-05-29T07:01:09",
         "type": "session_log",
-        "title": "Session Log — 2026-05-28 (Claude Code session 3)",
-        "detail": "2026-05-28-cc3.md",
-        "file": "2026-05-28-cc3.md"
+        "title": "Session Log — 2026-05-29 (Claude Code session 6)",
+        "detail": "2026-05-29-cc6.md",
+        "file": "2026-05-29-cc6.md"
       },
       {
-        "timestamp": "2026-05-28T02:48:59",
+        "timestamp": "2026-05-29T06:30:07",
         "type": "session_log",
-        "title": "Session Log -- 2026-05-28-cc2",
-        "detail": "2026-05-28-cc2.md",
-        "file": "2026-05-28-cc2.md"
+        "title": "Session Log -- 2026-05-29-cc16",
+        "detail": "2026-05-29-cc16.md",
+        "file": "2026-05-29-cc16.md"
       },
       {
-        "timestamp": "2026-05-28T02:48:39",
+        "timestamp": "2026-05-29T06:29:47",
         "type": "session_log",
-        "title": "Session Log -- 2026-05-28-cc1",
-        "detail": "2026-05-28-cc1.md",
-        "file": "2026-05-28-cc1.md"
+        "title": "Session Log -- 2026-05-29-cc15",
+        "detail": "2026-05-29-cc15.md",
+        "file": "2026-05-29-cc15.md"
       },
       {
-        "timestamp": "2026-05-27T15:36:00",
+        "timestamp": "2026-05-29T01:07:00",
         "type": "loop_run",
         "title": "not json at all }{",
         "detail": "Loop run",
-        "file": "2026-05-27_15-36_not_json_at_all.md"
-      },
-      {
-        "timestamp": "2026-05-27T15:33:00",
-        "type": "loop_run",
-        "title": "not json at all }{",
-        "detail": "Loop run",
-        "file": "2026-05-27_15-33_not_json_at_all.md"
-      },
-      {
-        "timestamp": "2026-05-27T15:30:00",
-        "type": "loop_run",
-        "title": "not json at all }{",
-        "detail": "Loop run",
-        "file": "2026-05-27_15-30_not_json_at_all.md"
-      },
-      {
-        "timestamp": "2026-05-24T00:00:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 8.33",
-        "file": "2026-05-24_00-00_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-23T11:18:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 8.33",
-        "file": "2026-05-23_11-18_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-21T00:00:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 8.33",
-        "file": "2026-05-21_00-00_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-20T19:08:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 8.33",
-        "file": "2026-05-20_19-08_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-20T00:01:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 8.33",
-        "file": "2026-05-20_00-01_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-19T12:10:00",
-        "type": "loop_run",
-        "title": "Research top 5 Star Citizen joystick setup problems and fixes for VKB Gladiator ",
-        "detail": "Score: 6.17",
-        "file": "2026-05-19_12-10_research_top_5_star.md"
-      },
-      {
-        "timestamp": "2026-05-19T12:09:00",
-        "type": "loop_run",
-        "title": "Add Star Citizen full support to Spin Doctor",
-        "detail": "Score: 9.17",
-        "file": "2026-05-19_12-09_add_star_citizen_full.md"
+        "file": "2026-05-29_01-07_not_json_at_all.md"
       }
     ]
   },
   "aafl_runs": {
-    "last_updated": "2026-05-28T15:56:47",
+    "last_updated": "2026-05-29T12:03:52",
     "data": [
       {
         "id": 10,
@@ -569,12 +506,12 @@
     ]
   },
   "cost_tracker": {
-    "last_updated": "2026-05-28T15:56:47",
+    "last_updated": "2026-05-29T12:03:52",
     "data": {
-      "total_spent": 0.257911,
-      "avg_per_run": 0.00107,
-      "runs_today": 21,
-      "runs_total": 241
+      "total_spent": 0.457515,
+      "avg_per_run": 0.001089,
+      "runs_today": 161,
+      "runs_total": 420
     }
   }
 }

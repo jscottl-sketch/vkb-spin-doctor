@@ -8,10 +8,31 @@ USAGE:
     python aafl_wccs.py --dry-run        # show changes, don't write
 """
 
-import argparse, datetime as dt, os, re, shutil, subprocess, sys
+import argparse, datetime as dt, json as _json_mod, os, re, shutil, subprocess, sys, tempfile as _tf_mod
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+
+_SESSION_STATE_FILE = ROOT / "data" / "session_state.json"
+
+def _wccs_update_session_state(target_file: str):
+    """Update last_save in session_state.json after a successful WCCS write."""
+    try:
+        ss = {}
+        if _SESSION_STATE_FILE.exists():
+            ss = _json_mod.loads(_SESSION_STATE_FILE.read_text(encoding="utf-8"))
+        ss["last_save"] = {
+            "type": "wccs",
+            "timestamp": dt.datetime.now().isoformat(timespec="seconds"),
+            "file": target_file,
+        }
+        _SESSION_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp = _tf_mod.mkstemp(dir=str(_SESSION_STATE_FILE.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            _json_mod.dump(ss, f, indent=2)
+        shutil.move(tmp, str(_SESSION_STATE_FILE))
+    except Exception:
+        pass
 STATUS = ROOT / "STATUS.md"
 STATUS_BAK = ROOT / "STATUS.md.bak"   # pre-write safety copy (same folder)
 HISTORY = ROOT / "HISTORY.md"
@@ -336,6 +357,7 @@ def main():
                 print(f"[OK] Backed up STATUS.md to {bak.name}")
                 STATUS_TMP.replace(STATUS)
                 print(f"[OK] STATUS.md written via merge ({tmp_n} lines, was {old_n})")
+                _wccs_update_session_state("STATUS.md")
         except Exception as _write_err:
             _log_wccs_error(f"STATUS write crashed: {_write_err}")
             print(f"[ERROR] STATUS.md write crashed — see wccs_errors.log. {_write_err}")

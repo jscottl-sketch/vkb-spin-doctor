@@ -22,6 +22,30 @@ import clacker_validator
 
 HERE = Path(__file__).parent
 
+_SESSION_STATE = HERE / "data" / "session_state.json"
+_SS_DEFAULTS = {
+    "session_id": "", "started_at": "",
+    "current_task": {"type": "", "description": "", "subsystem": "", "status": "idle", "started_at": ""},
+    "last_result": {"task": "", "status": "", "mot_score": "", "files_changed": [], "completed_at": ""},
+    "provider_health": {"healthy_count": 0, "total": 14, "last_checked": ""},
+    "watchdog_status": "OFF",
+    "last_save": {"type": "", "timestamp": "", "file": ""},
+    "aafl_score": None, "cost_7d": None, "active_ocb_run_id": "", "next_priority": "",
+}
+
+
+def _update_ss(patch: dict):
+    """Merge patch into data/session_state.json (atomic, non-blocking)."""
+    try:
+        state = json.loads(_SESSION_STATE.read_text(encoding="utf-8")) if _SESSION_STATE.exists() else dict(_SS_DEFAULTS)
+        state.update(patch)
+        fd, tmp = tempfile.mkstemp(dir=str(_SESSION_STATE.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2)
+        shutil.move(tmp, str(_SESSION_STATE))
+    except Exception:
+        pass
+
 KNOWN_FILES = [
     "mission_control.html",
     "mcc_server.py",
@@ -363,6 +387,37 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
     phases = parse_ocb_block(ocb_text)
     now    = datetime.now().isoformat(timespec="seconds")
 
+    # ── NEEDS_OPUS check ──────────────────────────────────────────────────────
+    try:
+        from clacker_router import classify_all as _classify_all
+        ca = _classify_all(phases)
+        if ca.get("has_opus_tasks"):
+            needs_opus_status = {
+                "run_id":         run_id,
+                "status":         "NEEDS_OPUS",
+                "started_at":     now,
+                "opus_task_list": ca["opus_task_list"],
+                "phases":         [{"phase_num": p["phase_num"], "phase_name": p["phase_name"],
+                                    "status": "PENDING",
+                                    "tasks": [{"num": t["num"], "text": t["text"][:80],
+                                               "status": "PENDING"} for t in p["tasks"]]}
+                                   for p in phases],
+                "log": [f"[{datetime.now().strftime('%H:%M:%S')}] [SYS] NEEDS_OPUS — "
+                        f"{len(ca['opus_task_list'])} task(s) require Claude Opus"],
+                "mot_score": "", "cancelled": False, "files_changed": [], "completed_at": "",
+            }
+            _write_status(needs_opus_status)
+            return needs_opus_status
+    except Exception:
+        pass
+
+    # Update session_state: current task = OCB run
+    _update_ss({"current_task": {
+        "type": "CODE", "description": f"OCB run {run_id}",
+        "subsystem": "ocb_runner", "status": "running",
+        "started_at": now,
+    }, "active_ocb_run_id": run_id})
+
     status = {
         "run_id":               run_id,
         "started_at":           now,
@@ -578,6 +633,7 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         "acceptance_criteria": acceptance_criteria,
         "validator":          validator_result,
         "notes":              validator_result.get("notes", ""),
+        "ocb_text":           ocb_text,
     }
     try:
         tmp = str(CLACHR_RESPONSE) + ".tmp"
@@ -586,6 +642,22 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         shutil.move(tmp, str(CLACHR_RESPONSE))
     except Exception:
         pass
+
+    # Update session_state last_result + clear current_task
+    _update_ss({
+        "last_result": {
+            "task": f"OCB run {run_id}",
+            "status": status["status"],
+            "mot_score": mot_score,
+            "files_changed": sorted(files_changed),
+            "completed_at": completed_at,
+        },
+        "current_task": {
+            "type": "", "description": "", "subsystem": "",
+            "status": "idle", "started_at": "",
+        },
+        "active_ocb_run_id": "",
+    })
 
     return status
 

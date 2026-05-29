@@ -1,12 +1,6 @@
 {
-  "generated_at": "2026-05-28T23:24:00",
+  "generated_at": "2026-05-29T12:03:58",
   "tabs": [
-    {
-      "id": "help",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
     {
       "id": "wccs",
       "label": "",
@@ -27,6 +21,12 @@
     },
     {
       "id": "aafl-control",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "code-editor",
       "label": "",
       "title": "",
       "classes": "tab-btn"
@@ -215,6 +215,24 @@
       "onclick": "toggleSidebar()",
       "parent_tab": "root",
       "label": "◀"
+    },
+    {
+      "id": "tab-scroll-left",
+      "type": "button",
+      "classes": "btn tab-scroll-arrow",
+      "data-tip": "",
+      "onclick": "tabBarScroll(-1)",
+      "parent_tab": "root",
+      "label": "◀"
+    },
+    {
+      "id": "tab-scroll-right",
+      "type": "button",
+      "classes": "btn tab-scroll-arrow",
+      "data-tip": "",
+      "onclick": "tabBarScroll(1)",
+      "parent_tab": "root",
+      "label": "▶"
     },
     {
       "id": "",
@@ -436,10 +454,10 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Download the current filtered activity log as a .txt file",
+      "data-tip": "Download filtered activity log — uses date range if set, otherwise all entries",
       "onclick": "b2ExportActivity()",
       "parent_tab": "tab-wccs",
-      "label": "📄 Export .txt"
+      "label": "📄 Export"
     },
     {
       "id": "",
@@ -454,19 +472,10 @@
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only Kanban card changes",
-      "onclick": "b2ActFilter(this,'kanban')",
-      "parent_tab": "tab-wccs",
-      "label": "Kanban"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "act-filter-btn",
       "data-tip": "Show only AAFL goal runs",
-      "onclick": "b2ActFilter(this,'aafl')",
+      "onclick": "b2ActFilter(this,'aafl-run')",
       "parent_tab": "tab-wccs",
-      "label": "AAFL"
+      "label": "AAFL Run"
     },
     {
       "id": "",
@@ -490,64 +499,91 @@
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only cost and spending events",
-      "onclick": "b2ActFilter(this,'costs')",
+      "data-tip": "Show only errors and failures",
+      "onclick": "b2ActFilter(this,'error')",
       "parent_tab": "tab-wccs",
-      "label": "Costs"
+      "label": "Error"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only errors and failures — useful for debugging",
-      "onclick": "b2ActFilter(this,'errors')",
+      "data-tip": "Show only warnings",
+      "onclick": "b2ActFilter(this,'warning')",
       "parent_tab": "tab-wccs",
-      "label": "Errors"
+      "label": "Warning"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only events you triggered manually",
-      "onclick": "b2ActFilter(this,'manual')",
+      "data-tip": "Show only informational entries",
+      "onclick": "b2ActFilter(this,'info')",
       "parent_tab": "tab-wccs",
-      "label": "Manual"
+      "label": "Info"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only events triggered automatically by the system",
-      "onclick": "b2ActFilter(this,'auto')",
+      "data-tip": "Show only Kanban card changes",
+      "onclick": "b2ActFilter(this,'kanban')",
       "parent_tab": "tab-wccs",
-      "label": "Auto"
+      "label": "Kanban"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only events from today",
-      "onclick": "b2ActFilter(this,'today')",
+      "data-tip": "Show only Medical health events",
+      "onclick": "b2ActFilter(this,'medical')",
       "parent_tab": "tab-wccs",
-      "label": "Today"
+      "label": "Medical"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only events from the last 7 days",
-      "onclick": "b2ActFilter(this,'week')",
+      "data-tip": "Show only Storage events",
+      "onclick": "b2ActFilter(this,'storage')",
       "parent_tab": "tab-wccs",
-      "label": "This Week"
+      "label": "Storage"
     },
     {
       "id": "",
       "type": "button",
       "classes": "act-filter-btn",
-      "data-tip": "Show only events from the last 30 days",
-      "onclick": "b2ActFilter(this,'month')",
+      "data-tip": "Show only AI provider events",
+      "onclick": "b2ActFilter(this,'provider')",
       "parent_tab": "tab-wccs",
-      "label": "This Month"
+      "label": "Provider"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only user-triggered events",
+      "onclick": "b2ActFilter(this,'user')",
+      "parent_tab": "tab-wccs",
+      "label": "User"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Show only system/auto events",
+      "onclick": "b2ActFilter(this,'system')",
+      "parent_tab": "tab-wccs",
+      "label": "System"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "act-filter-btn",
+      "data-tip": "Reset all filters back to All",
+      "onclick": "b2ActClear()",
+      "parent_tab": "tab-wccs",
+      "label": "Clear"
     },
     {
       "id": "",
@@ -643,10 +679,10 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Add a new card pre-filled with the standard research task fields",
-      "onclick": "b2KanbanTemplate('research')",
+      "data-tip": "Add a new card pre-filled with standard AAFL goal sub-tasks",
+      "onclick": "b2KanbanTemplate('aafl')",
       "parent_tab": "tab-kanban",
-      "label": "🔬 Research Template"
+      "label": "🤖 AAFL Goal Template"
     },
     {
       "id": "btn-bulk-toggle",
@@ -670,10 +706,19 @@
       "id": "",
       "type": "button",
       "classes": "btn",
-      "data-tip": "Move all selected cards to the Done column",
-      "onclick": "b2BulkMove('done')",
+      "data-tip": "Move all selected cards to the chosen column",
+      "onclick": "b2BulkMoveToCol()",
       "parent_tab": "tab-kanban",
-      "label": "→ Done"
+      "label": "Move"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Archive all selected cards — viewable via the Archive button",
+      "onclick": "b2BulkArchive()",
+      "parent_tab": "tab-kanban",
+      "label": "📦 Archive"
     },
     {
       "id": "",
@@ -1198,6 +1243,15 @@
       "label": "Save to Memory"
     },
     {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Pre-fill a structured code-task prompt and route to Mistral Codestral (best free code AI)",
+      "onclick": "cePresetCodeTask()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📝 Code Task"
+    },
+    {
       "id": "btn-run-now",
       "type": "button",
       "classes": "btn",
@@ -1214,6 +1268,15 @@
       "onclick": "stopAaflProcess()",
       "parent_tab": "tab-aafl-control",
       "label": "⏹ Stop AAFL"
+    },
+    {
+      "id": "ce-from-aafl-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "The AAFL result contains code — click to open it in the Code Editor tab",
+      "onclick": "ceOpenFromAafl()",
+      "parent_tab": "tab-aafl-control",
+      "label": "✏ Open in Code Editor"
     },
     {
       "id": "",
@@ -1624,6 +1687,123 @@
       "id": "",
       "type": "button",
       "classes": "btn",
+      "data-tip": "Refresh file tree",
+      "onclick": "ceRefreshFiles()",
+      "parent_tab": "tab-code-editor",
+      "label": "↻"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "New file (unsaved)",
+      "onclick": "ceNewFile()",
+      "parent_tab": "tab-code-editor",
+      "label": "+"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save file (Ctrl+S)",
+      "onclick": "ceSave()",
+      "parent_tab": "tab-code-editor",
+      "label": "💾 Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Format document (uses Monaco built-in formatter)",
+      "onclick": "ceFormat()",
+      "parent_tab": "tab-code-editor",
+      "label": "⚙ Format"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy all editor content to clipboard",
+      "onclick": "ceCopyAll()",
+      "parent_tab": "tab-code-editor",
+      "label": "📋 Copy All"
+    },
+    {
+      "id": "ce-run-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Run this Python file and show output below editor",
+      "onclick": "ceRun()",
+      "parent_tab": "tab-code-editor",
+      "label": "▶ Run"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Open LLOW and load the fix_bug or refactor workflow for the current file",
+      "onclick": "ceOpenInLlow()",
+      "parent_tab": "tab-code-editor",
+      "label": "🔄 Open in LLOW"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Generate a CLAC instruction for Claude Code and copy to clipboard",
+      "onclick": "ceGenerateClac()",
+      "parent_tab": "tab-code-editor",
+      "label": "📤 Send to Claude Code"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Toggle CLAC Generator side panel",
+      "onclick": "ceToggleClacPanel()",
+      "parent_tab": "tab-code-editor",
+      "label": "≡ CLAC Panel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Close panel",
+      "onclick": "ceToggleClacPanel()",
+      "parent_tab": "tab-code-editor",
+      "label": "✕"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Generate CLAC block from task description",
+      "onclick": "ceBuildClac()",
+      "parent_tab": "tab-code-editor",
+      "label": "Generate CLAC"
+    },
+    {
+      "id": "ce-clac-copy-btn",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Copy CLAC to clipboard",
+      "onclick": "ceCopyClac()",
+      "parent_tab": "tab-code-editor",
+      "label": "📋 Copy CLAC"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Close output panel",
+      "onclick": "document.getElementById('ce-output-panel').style.display='none'",
+      "parent_tab": "tab-code-editor",
+      "label": "✕"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
       "data-tip": "Reload the Memory database from the server",
       "onclick": "loadMemory()",
       "parent_tab": "tab-memory",
@@ -1898,6 +2078,51 @@
       "onclick": "hideMissionForm()",
       "parent_tab": "tab-missions",
       "label": "Cancel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "aiCmpSort('name')",
+      "parent_tab": "tab-acca",
+      "label": "Name"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "aiCmpSort('speed')",
+      "parent_tab": "tab-acca",
+      "label": "Speed"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "aiCmpSort('quality')",
+      "parent_tab": "tab-acca",
+      "label": "Quality"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "aiCmpSort('cost')",
+      "parent_tab": "tab-acca",
+      "label": "Cost"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "aiCmpSort('tier')",
+      "parent_tab": "tab-acca",
+      "label": "Tier"
     },
     {
       "id": "",
@@ -2204,6 +2429,42 @@
       "onclick": "wcShowAllSessions()",
       "parent_tab": "tab-health-suite",
       "label": "Show All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "wcLoadTimeline()",
+      "parent_tab": "tab-health-suite",
+      "label": "🔄 Refresh Timeline"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-health-suite",
+      "label": "?"
     },
     {
       "id": "",
@@ -2537,6 +2798,15 @@
       "onclick": "",
       "parent_tab": "tab-design",
       "label": "Sample Button"
+    },
+    {
+      "id": "mcc-emergency-reset",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Emergency reset — clears all stuck overlays and resets MCC to home state",
+      "onclick": "mccEmergencyReset()",
+      "parent_tab": "tab-design",
+      "label": "⟳ Reset MCC"
     }
   ],
   "inputs": [
@@ -2551,6 +2821,13 @@
       "id": "auto-interval",
       "type": "number",
       "placeholder": "",
+      "classes": "",
+      "parent_tab": "root"
+    },
+    {
+      "id": "global-search-input",
+      "type": "text",
+      "placeholder": "Search MCC — buttons, ACCA codes… (Ctrl+K)",
       "classes": "",
       "parent_tab": "root"
     },
@@ -2579,6 +2856,20 @@
       "id": "wccs-srch-input",
       "type": "text",
       "placeholder": "Search HISTORY.md and ACCA.md…",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "act-export-from",
+      "type": "date",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "act-export-to",
+      "type": "date",
+      "placeholder": "",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
@@ -3442,6 +3733,12 @@
       "parent_tab": "tab-wccs"
     },
     {
+      "id": "ce-clac-task",
+      "placeholder": "e.g. Add error handling to all functions…",
+      "classes": "",
+      "parent_tab": "tab-code-editor"
+    },
+    {
       "id": "mf-notes",
       "placeholder": "Freeform notes, context, next steps...",
       "classes": "",
@@ -3469,6 +3766,11 @@
       "id": "wdiff-b",
       "classes": "",
       "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "kanban-bulk-col",
+      "classes": "",
+      "parent_tab": "tab-kanban"
     },
     {
       "id": "kanban-new-col",
@@ -3638,8 +3940,11 @@
     "/api/backup",
     "/api/clachr/queue",
     "/api/clachr/results",
+    "/api/code/files",
+    "/api/code/read",
     "/api/diff",
     "/api/health",
+    "/api/health/history",
     "/api/health/latest",
     "/api/help/history",
     "/api/history",
@@ -3649,6 +3954,7 @@
     "/api/instructions/",
     "/api/llow/arrows",
     "/api/llow/elements",
+    "/api/llow/scout-swarm",
     "/api/llow/workflow/",
     "/api/llow/workflows",
     "/api/medical-history",
@@ -3694,9 +4000,14 @@
     "/api/system/snapshot",
     "/api/task-inbox",
     "/api/timeline",
+    "/api/timeline-data",
+    "/api/watchdog/status",
+    "/api/work-checker/action-plan",
+    "/api/work-checker/checklist",
     "/api/work-checker/orphaned",
     "/api/work-checker/report",
     "/api/work-checker/requeue",
+    "/api/work-checker/timeline",
     "/b2/aafl-runs",
     "/b2/activity",
     "/b2/budget-caps",
@@ -3756,11 +4067,14 @@
     "/api/auto-wccs",
     "/api/chat-to-sesum",
     "/api/clachr/dispatch",
+    "/api/code/run",
+    "/api/code/save",
     "/api/help/ask",
     "/api/launch-spindoctor",
     "/api/llow/dry-run",
     "/api/llow/export-clacr",
     "/api/llow/run",
+    "/api/llow/scout-swarm",
     "/api/llow/validate",
     "/api/llow/workflow",
     "/api/missions",
@@ -3776,6 +4090,8 @@
     "/api/system/kill",
     "/api/task-inbox",
     "/api/wccs",
+    "/api/work-checker/check-item",
+    "/api/work-checker/delegate",
     "/api/work-checker/refresh",
     "/approve-promo",
     "/b2/activity",
@@ -3881,6 +4197,7 @@
     "sources_library.json",
     "storage_config.json",
     "stuck_inbox.json",
+    "tempfile",
     "wccs_errors.log",
     "wccs_log.md",
     "work_checker.py"

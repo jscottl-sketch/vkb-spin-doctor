@@ -487,6 +487,13 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .ph-detail-btn{background:#0d1e2e;border:1px solid #4af;color:#4af;padding:3px 10px;border-radius:4px;cursor:pointer;font:12px 'Segoe UI','Helvetica Neue',Arial,sans-serif;margin-top:4px;transition:.15s;width:100%}
 .ph-detail-btn:hover{background:#1a3a5a}
 
+/* ── OCB-P: ATTENTION SURFACE CARDS ── */
+.att-card{background:#0d0d14;border:1px solid #222;border-radius:6px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:.15s;min-width:0}
+.att-card:hover{border-color:#4af;background:#111}
+.att-card-label{font-size:9px;color:#556;text-transform:uppercase;letter-spacing:.8px;font-weight:bold;white-space:nowrap}
+.att-card-val{font-size:15px;font-weight:bold;text-align:center;word-break:break-word}
+.att-card-sub{font-size:9px;color:#555;text-align:center;word-break:break-word}
+
 /* ── B2-19: DARK/LIGHT THEME ── */
 body.theme-light{background:#f0f0f0;color:#222}
 body.theme-light .header{background:#e8e8e8;border-color:#ccc}
@@ -1534,6 +1541,56 @@ body{padding-bottom:28px}
 <div class="tab-pane" id="tab-home" data-tab="home" style="display:none!important">
   <div class="pane-scroll">
 
+    <!-- ── COMMAND BAR (OCB-P Phase 4) ── -->
+    <div style="background:#07070f;border:1px solid #2a3a5a;border-radius:8px;padding:12px 14px;margin-bottom:12px">
+      <div style="font-size:10px;color:#556;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Command Bar — Route your task</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="cmd-bar-input" type="text" placeholder="What do you want to do? (e.g. fix parse error / research Star Citizen keybinds / run AAFL benchmark)"
+          style="flex:1;background:#0a0a12;border:1px solid #2a3a5a;color:#ddd;font:13px 'Consolas','Courier New',monospace;padding:7px 10px;border-radius:4px;outline:none"
+          onkeydown="if(event.key==='Enter')routeCommand()"
+          title="Describe what you want to do — CLACKER will classify and route it">
+        <button class="btn" onclick="routeCommand()" style="min-width:72px;font-weight:bold">Route →</button>
+      </div>
+      <div id="cmd-bar-result" style="margin-top:8px;display:none">
+        <span id="cmd-bar-pill" style="display:inline-block;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:bold;margin-right:8px"></span>
+        <span id="cmd-bar-hint" style="font-size:11px;color:#888"></span>
+      </div>
+    </div>
+
+    <!-- ── ATTENTION SURFACE (OCB-P Phase 4) ── -->
+    <div id="attention-surface" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px">
+      <!-- Card 1: WATCHDOG -->
+      <div class="att-card" id="att-watchdog" onclick="attWatchdogClick()" title="Watchdog status — click to enable">
+        <div class="att-card-label">WATCHDOG</div>
+        <div class="att-card-val" id="att-wd-val" style="color:#f44">OFF</div>
+        <div class="att-card-sub" id="att-wd-sub">click to enable</div>
+      </div>
+      <!-- Card 2: PROVIDERS -->
+      <div class="att-card" onclick="switchTab('health-suite')" title="Provider health — click to open Health Suite">
+        <div class="att-card-label">PROVIDERS</div>
+        <div class="att-card-val" id="att-ph-val" style="color:#888">—/14</div>
+        <div class="att-card-sub" id="att-ph-sub">checking…</div>
+      </div>
+      <!-- Card 3: TASK -->
+      <div class="att-card" onclick="switchTab('wccs')" title="Current task — click to open WCCS">
+        <div class="att-card-label">TASK</div>
+        <div class="att-card-val" id="att-task-val" style="color:#888;font-size:12px">Idle</div>
+        <div class="att-card-sub" id="att-task-sub"></div>
+      </div>
+      <!-- Card 4: LAST RESULT -->
+      <div class="att-card" onclick="switchTab('wccs')" title="Last OCB/AAFL result — click to open WCCS">
+        <div class="att-card-label">LAST RESULT</div>
+        <div class="att-card-val" id="att-res-val" style="color:#888;font-size:11px">—</div>
+        <div class="att-card-sub" id="att-res-sub"></div>
+      </div>
+      <!-- Card 5: NEXT -->
+      <div class="att-card" onclick="switchTab('kanban')" title="Next priority — click to open Kanban">
+        <div class="att-card-label">NEXT</div>
+        <div class="att-card-val" id="att-next-val" style="color:#888;font-size:11px">—</div>
+        <div class="att-card-sub" id="att-next-sub"></div>
+      </div>
+    </div>
+
     <!-- ── SAFETY SHIELD (OCB-J Task 2 / OCB-K Phase 5 accordion) ── -->
     <div id="safety-shield" style="background:#0a0a12;border:1px solid #333;border-radius:8px;padding:14px 16px;margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
@@ -1590,6 +1647,8 @@ body{padding-bottom:28px}
         <div class="ph-inst-detail" id="ph-inst-detail">
           <div id="ph-inst-rows"><div style="color:#555;font-size:10px;text-align:center;padding:4px">Loading…</div></div>
           <div style="font-size:9px;color:#444;margin-top:4px;text-align:right" id="ph-inst-ts"></div>
+          <button class="btn" style="font-size:10px;padding:2px 8px;margin-top:4px;width:100%" onclick="runProviderDiagnosis()" title="Live-test each provider with a minimal call — writes provider_diagnosis.json">🩺 Run Diagnosis</button>
+          <div id="ph-diag-status" style="font-size:9px;color:#888;margin-top:3px;text-align:center"></div>
         </div>
       </div>
 
@@ -1966,10 +2025,17 @@ body{padding-bottom:28px}
     <!-- C: Live output log -->
     <div id="ocb-log-wrap" style="display:none;margin-top:10px">
       <div style="font-size:11px;color:#888;margin-bottom:4px">Live log — <span id="ocb-log-ts"></span></div>
+      <!-- NEEDS_OPUS banner -->
+      <div id="ocb-needs-opus-banner" style="display:none;background:#1a1200;border:1px solid #665500;border-radius:4px;padding:8px 12px;margin-bottom:8px">
+        <div style="color:#fc0;font-size:12px;font-weight:bold;margin-bottom:4px">⚠ NEEDS_OPUS — Some tasks require Claude Opus big-brain analysis</div>
+        <div id="ocb-opus-task-list" style="font-size:11px;color:#aaa;margin-bottom:6px"></div>
+        <button class="btn" style="font-size:11px;background:#1a1200;border-color:#665500;color:#fc0" onclick="ocbSendToOpus()" title="Copy flagged tasks to the RRCLACH textarea for Opus review">Send to Opus →</button>
+      </div>
       <div class="ocb-log-area" id="ocb-log-area"></div>
       <div class="ocb-log-controls">
         <button class="btn" style="font-size:11px" onclick="ocbCopyLog()" title="Copy the full log text to clipboard">📋 Copy log</button>
         <button class="btn" style="font-size:11px" onclick="ocbArchiveRun()" id="btn-ocb-archive" title="Move this run's log to archive_dead folder">📦 Archive run</button>
+        <button id="btn-ocb-retry-failed" class="btn" style="display:none;font-size:11px;background:#1a0a00;border-color:#854;color:#fc8" onclick="ocbRetryFailed()" title="Re-run only the phases that failed in the last run">↺ Retry failed phases</button>
         <span id="ocb-mot-score" style="font-size:12px;color:#4af;margin-left:auto;font-weight:bold"></span>
       </div>
     </div>
@@ -1988,6 +2054,7 @@ body{padding-bottom:28px}
         spellcheck="false"></textarea>
       <div class="ocb-controls" style="margin-top:10px">
         <button class="btn" onclick="generateRRCLACH()" title="Write rrclach_request.json with OCB block + acceptance criteria">⚡ Generate RRCLACH</button>
+        <span id="rrclach-cls-pill" style="display:none;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:bold;margin-left:8px"></span>
         <span id="rrclach-status" style="font-size:11px;color:#888;margin-left:auto"></span>
       </div>
     </div>
@@ -6279,6 +6346,9 @@ async function loadHomeScreen() {
   const refresh = document.getElementById('home-last-refresh');
   if (!grid) return;
 
+  // Start attention surface polling (session_state every 20s)
+  startAttentionPoll();
+
   // Fetch all card data in parallel, never crash on failure
   const cardData = await Promise.all(HOME_CARD_FILES.map(async def => {
     try {
@@ -9563,6 +9633,23 @@ async function ocbPoll() {
       document.getElementById('ocb-mot-score').textContent = 'MOT: ' + d.mot_score;
     }
 
+    // NEEDS_OPUS
+    if ((d.status || '').toUpperCase() === 'NEEDS_OPUS') {
+      ocbStopPoll();
+      document.getElementById('btn-ocb-run').disabled = false;
+      document.getElementById('btn-ocb-cancel').style.display = 'none';
+      const banner = document.getElementById('ocb-needs-opus-banner');
+      banner.style.display = 'block';
+      const tasks = d.opus_task_list || [];
+      document.getElementById('ocb-opus-task-list').innerHTML = tasks.map(t =>
+        '<div>• P' + t.phase + '.T' + t.task + ': ' + esc(t.text) + ' <em style="color:#665">' + esc(t.reason) + '</em></div>'
+      ).join('');
+      document.getElementById('ocb-run-status').textContent = 'NEEDS_OPUS';
+      document.getElementById('ocb-run-status').style.color = '#fc0';
+      document.getElementById('ocb-log-wrap').style.display = 'block';
+      return;
+    }
+
     // Terminal states
     const st = (d.status || '').toUpperCase();
     if (st === 'DONE' || st === 'PARTIAL' || st === 'CANCELLED' || st === 'FAILED') {
@@ -9573,6 +9660,9 @@ async function ocbPoll() {
       const col = st === 'DONE' ? '#4f4' : st === 'PARTIAL' ? '#fa0' : '#f44';
       document.getElementById('ocb-run-status').style.color   = col;
       toast('OCB ' + st, st === 'DONE' ? 'ok' : 'error');
+      if (st === 'PARTIAL' || st === 'FAILED') {
+        document.getElementById('btn-ocb-retry-failed').style.display = 'inline-block';
+      }
     }
   } catch(e) { /* ignore transient poll errors */ }
 }
@@ -9613,6 +9703,7 @@ async function generateRRCLACH() {
   const instructions = (document.getElementById('rrclach-instructions') || {}).value || '';
   const criteriaRaw  = (document.getElementById('rrclach-criteria') || {}).value || '';
   const statusEl     = document.getElementById('rrclach-status');
+  const pillEl       = document.getElementById('rrclach-cls-pill');
   if (!instructions.trim()) { toast('Paste an OCB block in Instructions first', 'error'); return; }
   const acceptance_criteria = criteriaRaw.split('\n')
     .map(s => s.trim()).filter(s => s.length > 0);
@@ -9624,9 +9715,221 @@ async function generateRRCLACH() {
     if (d.error) { toast('RRCLACH save failed: ' + d.error, 'error'); return; }
     const msg = 'Saved — ' + (d.criteria_count || 0) + ' criteria';
     if (statusEl) statusEl.textContent = msg;
+    // Show classification pill
+    if (pillEl && d.classification) {
+      const cls  = d.classification;
+      const type = cls.type || 'OPUS';
+      const pct  = Math.round((cls.confidence || 0.5) * 100);
+      const sub  = cls.subsystem ? ' → ' + cls.subsystem : '';
+      const prov = cls.provider ? ' (' + cls.provider + ')' : '';
+      pillEl.textContent = type + sub + prov + ' ' + pct + '%';
+      const clsColors = {CODE:'#0a2a0a', RESEARCH:'#0a1a2a', AAFL:'#0a1a1a', MAINTENANCE:'#1a1200', OPUS:'#1a0a2a'};
+      const clsTextColors = {CODE:'#4f4', RESEARCH:'#4af', AAFL:'#4dd', MAINTENANCE:'#fc8', OPUS:'#c8f'};
+      pillEl.style.background = clsColors[type] || '#111';
+      pillEl.style.color = clsTextColors[type] || '#aaa';
+      pillEl.style.border = '1px solid ' + (clsTextColors[type] || '#333');
+      pillEl.style.display = 'inline-block';
+      if (pct < 70) {
+        pillEl.style.background = '#1a1200';
+        pillEl.style.color = '#fc8';
+        pillEl.style.border = '1px solid #665500';
+      }
+    }
     toast(msg, 'ok');
   } catch(e) {
     toast('RRCLACH failed: ' + e.message, 'error');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// OCB-P — Command Bar + Attention Surface + Diagnosis + OCB helpers
+// ══════════════════════════════════════════════════════════════════
+
+async function routeCommand() {
+  const inp = document.getElementById('cmd-bar-input');
+  const res = document.getElementById('cmd-bar-result');
+  const pill = document.getElementById('cmd-bar-pill');
+  const hint = document.getElementById('cmd-bar-hint');
+  const text = (inp.value || '').trim();
+  if (!text) return;
+  try {
+    const d = await apiFetch('/api/command-bar', {
+      method: 'POST',
+      body: JSON.stringify({ instructions: text }),
+    });
+    if (d.error) { toast('Route error: ' + d.error, 'error'); return; }
+    const type = d.classification || 'OPUS';
+    const clsColors = {CODE:'#0a2a0a', RESEARCH:'#0a1a2a', AAFL:'#0a1a1a', MAINTENANCE:'#1a1200', OPUS:'#1a0a2a'};
+    const clsTextColors = {CODE:'#4f4', RESEARCH:'#4af', AAFL:'#4dd', MAINTENANCE:'#fc8', OPUS:'#c8f'};
+    pill.textContent = type + (d.provider ? ' / ' + d.provider : '') +
+                       ' ' + Math.round((d.confidence || 0.5) * 100) + '%';
+    pill.style.background = clsColors[type] || '#111';
+    pill.style.color = clsTextColors[type] || '#aaa';
+    pill.style.border = '1px solid ' + (clsTextColors[type] || '#333');
+    hint.textContent = d.hint || '';
+    res.style.display = 'block';
+    inp.value = '';
+  } catch(e) {
+    toast('Command bar failed: ' + e.message, 'error');
+  }
+}
+
+// Attention Surface: poll session_state every 20s
+let _attPollTimer = null;
+function startAttentionPoll() {
+  if (_attPollTimer) return;
+  _attPollTimer = setInterval(pollAttentionSurface, 20000);
+  pollAttentionSurface();
+}
+async function pollAttentionSurface() {
+  try {
+    const d = await apiFetch('/api/session-state');
+    _updateAttentionSurface(d);
+  } catch(e) { /* non-fatal */ }
+}
+function _updateAttentionSurface(d) {
+  if (!d) return;
+  // Watchdog
+  const wd = (d.watchdog_status || 'OFF').toUpperCase();
+  const wdEl = document.getElementById('att-wd-val');
+  const wdSub = document.getElementById('att-wd-sub');
+  if (wdEl) {
+    wdEl.textContent = wd;
+    wdEl.style.color = wd === 'ON' ? '#4f4' : '#f44';
+    if (wdSub) wdSub.textContent = wd === 'ON' ? 'running' : 'click to enable';
+  }
+  // Providers
+  const ph = d.provider_health || {};
+  const phEl = document.getElementById('att-ph-val');
+  const phSub = document.getElementById('att-ph-sub');
+  if (phEl) {
+    const hc = ph.healthy_count || 0;
+    const tot = ph.total || 14;
+    phEl.textContent = hc + '/' + tot;
+    phEl.style.color = hc >= 11 ? '#4f4' : hc >= 7 ? '#fa0' : '#f44';
+    if (phSub) phSub.textContent = ph.last_checked ? 'last ' + ph.last_checked.replace('T',' ').slice(0,16) : '—';
+  }
+  // Task
+  const ct = d.current_task || {};
+  const taskEl = document.getElementById('att-task-val');
+  const taskSub = document.getElementById('att-task-sub');
+  if (taskEl) {
+    if (ct.status === 'idle' || !ct.description) {
+      taskEl.textContent = 'Idle';
+      taskEl.style.color = '#888';
+      if (taskSub) taskSub.textContent = '';
+    } else {
+      taskEl.textContent = (ct.description || ct.type || '?').slice(0, 28);
+      taskEl.style.color = '#4af';
+      if (taskSub) taskSub.textContent = ct.subsystem || '';
+    }
+  }
+  // Last Result
+  const lr = d.last_result || {};
+  const resEl = document.getElementById('att-res-val');
+  const resSub = document.getElementById('att-res-sub');
+  if (resEl) {
+    if (lr.status) {
+      const motTxt = lr.mot_score ? ' ' + lr.mot_score : '';
+      resEl.textContent = (lr.status.toUpperCase() + motTxt).slice(0, 24);
+      resEl.style.color = lr.status === 'DONE' || lr.status === 'goal_met' ? '#4f4'
+                        : lr.status === 'PARTIAL' ? '#fa0' : '#f88';
+      if (resSub) resSub.textContent = lr.completed_at ? lr.completed_at.replace('T',' ').slice(0,16) : '';
+    } else {
+      resEl.textContent = '—';
+      resEl.style.color = '#888';
+    }
+  }
+  // Next
+  const nextEl = document.getElementById('att-next-val');
+  if (nextEl) {
+    nextEl.textContent = (d.next_priority || '—').slice(0, 28);
+    nextEl.style.color = d.next_priority ? '#4af' : '#888';
+  }
+  // Also update main instrument gauges from session_state
+  if (ph.healthy_count !== undefined) {
+    const green = ph.healthy_count, total = ph.total || 14;
+    const pct = total ? Math.round(green / total * 100) : 0;
+    const color = pct >= 70 ? '#2a7' : pct >= 40 ? '#aa5' : '#a33';
+    _gaugeSet('ph-arc', 'ph-val', 'ph-sub', pct, green + '/' + total, 'green providers', color);
+  }
+  if (d.aafl_score != null) {
+    const sc = parseFloat(d.aafl_score);
+    if (!isNaN(sc)) {
+      const pct = Math.round(sc / 10 * 100);
+      const color = pct >= 70 ? '#2a7' : pct >= 40 ? '#aa5' : '#a33';
+      _gaugeSet('aafl-arc', 'aafl-val', 'aafl-sub', pct, sc.toFixed(1), '/10', color);
+    }
+  }
+}
+async function attWatchdogClick() {
+  const wdEl = document.getElementById('att-wd-val');
+  const cur = wdEl ? wdEl.textContent : 'OFF';
+  if (cur === 'ON') return; // already on
+  try {
+    const d = await apiFetch('/api/watchdog/start', { method: 'POST' });
+    if (d.ok) {
+      toast('Watchdog started', 'ok');
+      pollAttentionSurface();
+    } else {
+      toast('Watchdog start failed: ' + (d.error || '?'), 'error');
+    }
+  } catch(e) {
+    toast('Watchdog start failed: ' + e.message, 'error');
+  }
+}
+
+// Provider Diagnosis
+async function runProviderDiagnosis() {
+  const diagEl = document.getElementById('ph-diag-status');
+  if (diagEl) diagEl.textContent = 'Running diagnosis…';
+  try {
+    const d = await apiFetch('/api/provider-health/diagnose', { method: 'POST' });
+    if (d.error) {
+      if (diagEl) diagEl.textContent = 'Error: ' + d.error;
+      toast('Diagnosis failed: ' + d.error, 'error');
+      return;
+    }
+    const msg = d.healthy + '/' + d.total + ' healthy';
+    if (diagEl) diagEl.textContent = msg;
+    toast('Diagnosis complete — ' + msg, 'ok');
+    // Refresh provider detail rows
+    if (_phDetailOpen) phLoadDetail();
+  } catch(e) {
+    if (diagEl) diagEl.textContent = 'Error: ' + e.message;
+    toast('Diagnosis failed: ' + e.message, 'error');
+  }
+}
+
+// OCB helper: send opus tasks to RRCLACH textarea
+function ocbSendToOpus() {
+  const taskListEl = document.getElementById('ocb-opus-task-list');
+  const rr = document.getElementById('rrclach-instructions');
+  if (rr && taskListEl) {
+    rr.value = (rr.value ? rr.value + '\n\n' : '') + taskListEl.innerText;
+    switchTab('wccs');
+    toast('Opus tasks added to RRCLACH', 'ok');
+  }
+}
+// OCB helper: retry failed phases
+async function ocbRetryFailed() {
+  if (!_ocbRunId) return;
+  try {
+    const d = await apiFetch('/api/ocb/run', {
+      method: 'POST',
+      body: JSON.stringify({ failed_phases_only: true, run_id: _ocbRunId }),
+    });
+    if (d.error) { toast('Retry error: ' + d.error, 'error'); return; }
+    _ocbRunId = d.run_id;
+    document.getElementById('btn-ocb-retry-failed').style.display = 'none';
+    document.getElementById('ocb-needs-opus-banner').style.display = 'none';
+    document.getElementById('btn-ocb-run').disabled = true;
+    document.getElementById('btn-ocb-cancel').style.display = 'inline-block';
+    document.getElementById('ocb-log-area').textContent = '';
+    ocbStartPoll();
+    toast('Retrying failed phases…', 'ok');
+  } catch(e) {
+    toast('Retry failed: ' + e.message, 'error');
   }
 }
 
@@ -9656,26 +9959,43 @@ async function phLoadDetail() {
   const rowsEl = document.getElementById('ph-inst-rows');
   const tsEl   = document.getElementById('ph-inst-ts');
   try {
-    const d = await apiFetch('/health-status');
+    // Fetch health status and diagnosis errors in parallel
+    const [d, diagData] = await Promise.all([
+      apiFetch('/health-status').catch(() => ({ providers: [] })),
+      apiFetch('/api/provider-health').catch(() => ({})),
+    ]);
+    // Build error map from provider_diagnosis if available
+    let diagErrors = {};
+    try {
+      const diagResp = await apiFetch('/api/session-state').catch(() => ({}));
+      // Read diagnosis errors from PROVIDER_DIAG_FILE if served — fall back gracefully
+    } catch(e2) { /* ignore */ }
+    // Use enriched provider list for error tooltips
+    const enriched = (diagData.providers || []);
+    const errMap = {};
+    enriched.forEach(p => { if (p.status === 'OFFLINE' || p.last_error) errMap[p.id] = p.last_error || p.status; });
+
     const providers = d.providers || [];
     if (!providers.length) {
       rowsEl.innerHTML = '<div style="color:#555;font-size:10px;text-align:center;padding:4px">No health data yet — run a health check.</div>';
-      return;
+    } else {
+      const badgeCls = st => {
+        if (st === 'GREEN')  return 'background:#174;color:#8f8';
+        if (st === 'YELLOW') return 'background:#332;color:#fc8';
+        if (st === 'RED')    return 'background:#311;color:#f88';
+        if (st === 'COOLING')return 'background:#133;color:#8df';
+        return 'background:#222;color:#666';
+      };
+      rowsEl.innerHTML = providers.map(p => {
+        const err = errMap[p.id] || p.error || '';
+        const tip = err ? ' title="' + esc(err) + '"' : '';
+        return '<div class="ph-inst-row"' + tip + '>' +
+          '<span class="ph-inst-name">' + esc(p.label || p.id) + '</span>' +
+          '<span class="ph-inst-badge" style="' + badgeCls(p.status) + '">' + esc(p.status || '?') + '</span>' +
+          '<span class="ph-inst-time">' + (p.response_time > 0 ? p.response_time.toFixed(1) + 's' : '—') + '</span>' +
+          '</div>';
+      }).join('');
     }
-    const badgeCls = st => {
-      if (st === 'GREEN')  return 'background:#174;color:#8f8';
-      if (st === 'YELLOW') return 'background:#332;color:#fc8';
-      if (st === 'RED')    return 'background:#311;color:#f88';
-      if (st === 'COOLING')return 'background:#133;color:#8df';
-      return 'background:#222;color:#666';
-    };
-    rowsEl.innerHTML = providers.map(p =>
-      '<div class="ph-inst-row">' +
-      '<span class="ph-inst-name">' + esc(p.label || p.id) + '</span>' +
-      '<span class="ph-inst-badge" style="' + badgeCls(p.status) + '">' + esc(p.status || '?') + '</span>' +
-      '<span class="ph-inst-time">' + (p.response_time > 0 ? p.response_time.toFixed(1) + 's' : '—') + '</span>' +
-      '</div>'
-    ).join('');
     tsEl.textContent = 'Checked: ' + (d.generated_at ? d.generated_at.slice(0,16).replace('T',' ') : '?');
   } catch(e) {
     rowsEl.innerHTML = '<div style="color:#a55;font-size:10px;padding:4px">Error: ' + esc(e.message) + '</div>';

@@ -1,0 +1,90 @@
+{
+  "CONFIRMED": {
+    "OCB-O": 4,
+    "OCB-P": 2,
+    "OCB-A": 2,
+    "OCB-B": 2,
+    "OCB-C": 3,
+    "OCB-D": 3,
+    "OCB-E": 2,
+    "OCB-F": 3,
+    "OCB-G": 3,
+    "OCB-H": 3,
+    "OCB-I": 3,
+    "OCB-K": 9,
+    "OCB-L": 3,
+    "OCB-N": 3,
+    "OCB-J": 2
+  },
+  "UNCERTAIN": {
+    "OCB-REPAIR": 1,
+    "OCB-M": 1
+  },
+  "UNKNOWN": [],
+  "PROPOSED_UPDATES": [
+    "| OCB-J | Confirmed by detective 2026-05-29 \u2014 verify details |"
+  ],
+  "INCONSISTENCIES": [
+    {
+      "source_a": "HISTORY.md",
+      "source_b": "STATUS.md",
+      "description": "OCB-REPAIR found in HISTORY.md but not confirmed in STATUS.md BUILT table"
+    },
+    {
+      "source_a": "HISTORY.md",
+      "source_b": "STATUS.md",
+      "description": "OCB-J found in HISTORY.md but not confirmed in STATUS.md BUILT table"
+    }
+  ],
+  "GAPS": [
+    {
+      "gap_id": "GAP-001",
+      "description": "OCB-J mentioned in non-STATUS sources but absent from STATUS.md",
+      "sources_checked": [
+        "HISTORY.md",
+        "git_log"
+      ],
+      "confidence": "MEDIUM",
+      "suggested_fix": "Add OCB-J entry to STATUS.md BUILT table if build is complete"
+    },
+    {
+      "gap_id": "GAP-002",
+      "description": "OCB-M mentioned in non-STATUS sources but absent from STATUS.md",
+      "sources_checked": [
+        "git_log"
+      ],
+      "confidence": "MEDIUM",
+      "suggested_fix": "Add OCB-M entry to STATUS.md BUILT table if build is complete"
+    },
+    {
+      "gap_id": "GAP-003",
+      "description": "OCB-REPAIR mentioned in non-STATUS sources but absent from STATUS.md",
+      "sources_checked": [
+        "HISTORY.md"
+      ],
+      "confidence": "MEDIUM",
+      "suggested_fix": "Add OCB-REPAIR entry to STATUS.md BUILT table if build is complete"
+    }
+  ],
+  "sources_scanned": [
+    "STATUS.md",
+    "HISTORY.md",
+    "ACCA.md",
+    "session_log/2026-05-29-cc20.md",
+    "session_log/2026-05-29-cc18.md",
+    "session_log/2026-05-29-cc19.md",
+    "session_log/2026-05-29-cc17.md",
+    "session_log/2026-05-29-cc6.md",
+    "session_log/2026-05-29-cc16.md",
+    "session_log/2026-05-29-cc15.md",
+    "session_log/2026-05-29-cc5.md",
+    "session_log/2026-05-29-cc14.md",
+    "session_log/2026-05-29-cc13.md",
+    "ocb_wal.log",
+    "ocb_queue.json",
+    "health.db",
+    "status_snapshots/",
+    "git_log"
+  ],
+  "generated_at": "2026-05-29T19:01:20"
+}

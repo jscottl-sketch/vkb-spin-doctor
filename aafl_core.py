@@ -177,7 +177,7 @@ PROVIDERS = [
     {
         "id": "openrouter",
         "label": "OpenRouter Auto",
-        "model": "openrouter/openrouter/auto",
+        "model": "openrouter/auto",
         "api_base": None,
         "api_key": None,
         "api_key_env": "OPENROUTER_API_KEY",
@@ -292,6 +292,16 @@ class AAFLCore:
         self._pmap       = {p["id"]: p for p in PROVIDERS}
         self._total_cost = 0.0
         self._call_count = 0
+        # Read provider_timeout and provider_retry_count from aafl_config.json
+        self._provider_timeout = 30
+        self._provider_retry_count = 3
+        try:
+            import json as _json
+            _cfg = _json.loads((HERE / "aafl_config.json").read_text(encoding="utf-8"))
+            self._provider_timeout = int(_cfg.get("provider_timeout", 30))
+            self._provider_retry_count = int(_cfg.get("provider_retry_count", 3))
+        except Exception:
+            pass
         self._log(f"START  dry_run={dry_run}  allow_paid={allow_paid}")
         mode = "DRY RUN — no real calls" if dry_run else "LIVE"
         print(f"[AAFL] {mode}. Paid={'ON' if allow_paid else 'OFF'}. "
@@ -328,25 +338,44 @@ class AAFLCore:
                 self._record(result, task)
                 return result
 
-            # ── real call ─────────────────────────────────────────────────
-            try:
-                text, cost = self._call(p, task, system, max_tokens, image_b64)
-                elapsed = round(time.time() - t0, 2)
-                if not self.verify(text):
-                    raise ValueError("verify() failed — empty response")
-                print(f"  OK ({elapsed}s, ${cost:.5f})")
-                result = CallResult(True, pid, p["model"], text,
-                                    task_type, elapsed, cost)
-                self._record(result, task)
-                return result
-            except Exception as exc:
-                msg = str(exc)
-                if any(t in msg.lower() for t in ("timeout", "timed out", "read timeout")):
-                    print("  SKIP (timeout)")
-                else:
-                    print(f"  FAIL: {msg[:80]}")
-                    _append_error_db(pid, msg)
-                continue
+            # ── real call with 503 retry ──────────────────────────────────
+            _503_delays = [2, 4, 8]
+            _last_exc: Optional[Exception] = None
+            _success = False
+            for _attempt in range(1 + self._provider_retry_count):
+                if _attempt > 0:
+                    _d = _503_delays[min(_attempt - 1, len(_503_delays) - 1)]
+                    print(f"  503 retry {_attempt}/{self._provider_retry_count} ({_d}s)...",
+                          end="", flush=True)
+                    time.sleep(_d)
+                try:
+                    text, cost = self._call(p, task, system, max_tokens, image_b64)
+                    elapsed = round(time.time() - t0, 2)
+                    if not self.verify(text):
+                        raise ValueError("verify() failed — empty response")
+                    print(f"  OK ({elapsed}s, ${cost:.5f})")
+                    result = CallResult(True, pid, p["model"], text,
+                                        task_type, elapsed, cost)
+                    self._record(result, task)
+                    _success = True
+                    return result
+                except Exception as exc:
+                    _last_exc = exc
+                    msg = str(exc)
+                    _is_503 = ("503" in msg or "service unavailable" in msg.lower()
+                               or "overloaded" in msg.lower())
+                    if _is_503 and _attempt < self._provider_retry_count:
+                        continue  # retry same provider
+                    # Non-retryable or retries exhausted
+                    if any(t in msg.lower() for t in ("timeout", "timed out", "read timeout")):
+                        print("  SKIP (timeout)")
+                    else:
+                        print(f"  FAIL: {msg[:80]}")
+                        _append_error_db(pid, msg)
+                    break
+            if _success:
+                return result  # type: ignore[return-value]
+            continue
 
         elapsed = round(time.time() - t0, 2)
         result  = CallResult(False, "none", "none", "", task_type, elapsed, 0.0,
@@ -415,7 +444,7 @@ class AAFLCore:
             model=model,
             messages=messages,
             max_tokens=max_tokens,
-            timeout=5 if is_local else 30,
+            timeout=5 if is_local else self._provider_timeout,
         )
         if p.get("api_base"):
             kwargs["api_base"] = p["api_base"]

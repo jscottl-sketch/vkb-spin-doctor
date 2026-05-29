@@ -163,10 +163,28 @@ def _synthesise(goal: str, data: dict, model: str = None) -> str:
     return data["briefing"]
 
 
+def get_project_context() -> str:
+    """Return STATUS.md (first 30 lines) + INDEX.md (first 20 lines) as context prefix."""
+    parts = ["PROJECT CONTEXT (do not search for this — use as background):"]
+    for path, limit in [(HERE / "STATUS.md", 30), (HERE / "INDEX.md", 20)]:
+        try:
+            lines = path.read_text(encoding="utf-8", errors="replace").splitlines()[:limit]
+            parts.append("\n".join(lines))
+        except Exception:
+            pass
+    parts.append("\n---\nSEARCH QUERY: ")
+    return "\n".join(parts)
+
+
 if __name__ == "__main__":
-    goal = " ".join(sys.argv[1:]) or "Star Citizen joystick axis spinning fix"
+    _args = sys.argv[1:]
+    no_context = "--no-context" in _args
+    _args = [a for a in _args if a != "--no-context"]
+    goal = " ".join(_args) or "Star Citizen joystick axis spinning fix"
+    if not no_context:
+        goal = get_project_context() + goal
     print(f"[CHIEF_SCOUT] Smoke test")
-    print(f"[CHIEF_SCOUT] Goal: {goal}")
+    print(f"[CHIEF_SCOUT] Goal: {goal[:120]}{'...' if len(goal)>120 else ''}")
     print("=" * 60)
     result = chief_scout(goal)
     print(f"\nSources found: {len(result['results'])}")
@@ -174,3 +192,4 @@ if __name__ == "__main__":
     print(result["briefing"])
     print("=" * 60)
     print("[CHIEF_SCOUT] Smoke test complete — no crashes.")
+    print("✅ Scout context injection added")
