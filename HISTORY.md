@@ -1024,6 +1024,46 @@ self_health.py, system_monitor.py, work_checker.py, mission_control.html, mcc_se
 2. Update STATUS.md with OCB-J/K/L entries (WCCS)
 3. Star Citizen v0.2 benchmark run
 
+
+---
+
+### 2026-05-29
+
+# SESUM — 2026-05-29
+
+## KEY ACHIEVEMENT
+- OCB Runner (OCB-O) BUILT AND TESTED
+- ocb_runner.py: 503 lines, 5 methods, full pipeline
+- MCC panel: textarea + Parse + Run + live log + badges
+- 5 /api/ocb/* endpoints in mcc_server.py
+- FIRST LIVE TEST: Codestral parsed, extracted lines 1737-2036,
+  edited mission_control.html, MOT exit 0 — BUT the edit broke
+  surrounding HTML (all tabs went blank). Rolled back via git.
+- VERDICT: engine works, needs safety layer before trusted
+
+## ACCA CODES ADDED
+- RRCLACH = Request Report from CLACH (first in chain)
+- CLACHR = Report back from MCC to CLACH (updated definition)
+- CLACRB = CLAC Report Back Scrutiniser (validates, loops)
+- RRBS = Random Review Brainstorm
+- DND = Drag and Drop
+
+## OCB-P PARKING LOT (next session)
+1. OCB Runner safety: git stash before run, HTML check, auto-rollback
+2. OCB Runner "Run script" task type (not just edit)
+3. Code Editor ↔ OCB Runner bridge
+4. LLOW Results panel (per-node cards, flow highlighting, diff view)
+5. LLOW special Task Input LEL (type task, DND file, options)
+6. Side slider ghost text bug
+7. Mission Viewer more visual info
+8. Sidebar more nested dropdowns with tab links
+9. LEL more options inside on/off grid
+
+## STATUS
+- MCC: restored to v67, working
+- MOT: 108/108
+- WCCS: v67 current
+
 <!-- END_OF_FILE -->
 
 
