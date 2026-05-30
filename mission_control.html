@@ -1994,11 +1994,12 @@ body{padding-bottom:28px}
       <!-- PANEL E: Screenshot Intake -->
       <div class="det-panel">
         <div class="det-panel-title">📷 Panel E — Screenshot Intake</div>
-        <div id="det-drop-zone" class="det-analyse-drop" onclick="document.getElementById('det-file-inp').click()" title="Click or drag a screenshot — Detective will analyse it">
+        <div id="det-drop-zone" class="det-analyse-drop" tabindex="0" onclick="document.getElementById('det-file-inp').click();this.focus()" title="Click or drag a screenshot — Detective will analyse it. Ctrl+V to paste.">
           📷 Drop a screenshot here — Detective will analyse it<br>
           <span style="font-size:10px;color:#445">or click to Browse</span>
         </div>
         <input type="file" id="det-file-inp" accept=".png,.jpg,.jpeg" style="display:none" onchange="detAnalyseFile(this.files[0])">
+        <div style="font-size:10px;color:#3a4a5a;margin-top:4px">Tip: Windows key + Shift + S to snip, then Ctrl+V here</div>
         <div id="det-analyse-status" style="font-size:12px;color:#778;margin-top:6px;min-height:14px"></div>
         <div id="det-analyse-result" style="display:none"></div>
       </div>
@@ -3598,7 +3599,7 @@ body{padding-bottom:28px}
     }).catch(function(){});
   };
 
-  // Drag-drop for Panel E
+  // Drag-drop + paste for Panel E
   document.addEventListener('DOMContentLoaded', function(){
     var dz = document.getElementById('det-drop-zone');
     if(!dz) return;
@@ -3609,8 +3610,32 @@ body{padding-bottom:28px}
       var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
       if(f) detAnalyseFile(f);
     });
+    dz.addEventListener('paste', function(e){
+      var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for(var i=0; i<items.length; i++){
+        if(items[i].type.indexOf('image') !== -1){
+          var file = items[i].getAsFile();
+          detAnalyseFile(file);
+          break;
+        }
+      }
+    });
     // Load panels on open
     setTimeout(detLoadPanels, 2000);
+  });
+
+  // Document-level paste fallback — activates when HISAV tab is open
+  document.addEventListener('paste', function(e){
+    var hisavPane = document.getElementById('tab-wccs');
+    if(!hisavPane || hisavPane.style.display === 'none') return;
+    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for(var i=0; i<items.length; i++){
+      if(items[i].type.indexOf('image') !== -1){
+        var file = items[i].getAsFile();
+        detAnalyseFile(file);
+        break;
+      }
+    }
   });
 
   // Re-expose load so toggle can call it

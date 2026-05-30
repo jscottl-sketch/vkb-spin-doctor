@@ -1,17 +1,17 @@
 {
-  "generated": "2026-05-30T16:31:35",
+  "generated": "2026-05-30T17:12:52",
   "summary": {
-    "total_commits": 105,
-    "built_items": 169,
+    "total_commits": 107,
+    "built_items": 177,
     "pending_items": 42,
-    "completion_ratio_pct": 80.1,
+    "completion_ratio_pct": 80.8,
     "acca_codes": 64,
-    "ocb_count": 9
+    "ocb_count": 10
   },
   "velocity": {
-    "per_day": 8.08,
-    "per_week": 56.6,
-    "total_commits": 105,
+    "per_day": 8.23,
+    "per_week": 57.6,
+    "total_commits": 107,
     "span_days": 13
   },
   "milestones": [
@@ -85,7 +85,7 @@
       "date": "2026-05-30",
       "label": "108/108 MOT",
       "type": "mot",
-      "detail": "v73: HISAV tab + DTA data files + handover auto-archive. WCCS tab renamed HISAV."
+      "detail": "OCB-Q: HISAV Mega Upgrade 8 phases â€” 109/109 MOT ALL CLEAR"
     }
   ],
   "ocb_nodes": [
@@ -469,6 +469,61 @@
       ],
       "mot_score": "108/108",
       "date": "2026-05-29"
+    },
+    {
+      "id": "OCB-Q",
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Save & Handoff sticky toolbar",
+          "notes": "S1 removed from accordion. Sticky toolbar pinned at HISAV top: SAVE NOW / WCCS / Session Summary toggle / Last saved label. Old S1 content archived (hidden).",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 2,
+          "name": "? button fix",
+          "notes": "Removed position:fixed from .mcc-popup-safe CSS — all ? tip buttons now scroll with their parent in every tab.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 3,
+          "name": "Detective 5-panel board",
+          "notes": "Detective banner rebuilt: Panel A (Active Investigation), B (What I've Checked), C (Failures+Fixes), D (Learning Database — 12 solutions), E (Screenshot Intake + AI analysis). New endpoints: /api/detective/analyse-screenshot, /api/detective/learning-db, /api/timeline/add-node.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 4,
+          "name": "Timeline entries format",
+          "notes": "_handle_timeline_full_get rebuilt — transforms project_timeline.json milestones+ocb_nodes+next_priorities into entries[] format the JS htlRender() expects.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 5,
+          "name": "Work Checker Action Plan v2",
+          "notes": "Priority cards with → Send to AAFL / Add to Kanban / Done buttons. Mini timeline panel (last 5 entries). New endpoints: /api/kanban/add-card, /api/history/append.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 6,
+          "name": "CLAC Sessions v2",
+          "notes": "Card view with View brief/Copy brief. + Log New Session modal (inline). Loads from /api/hisav/clac-sessions which scans session_logs/ for .md files.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 7,
+          "name": "Checklist Health filter",
+          "notes": "Filter bar [All][Complete][Incomplete][Unconfirmed]. Category headers with completion % bar. Incomplete items: amber border; unconfirmed: dark border.",
+          "status": "COMPLETE"
+        },
+        {
+          "phase": 8,
+          "name": "MOT",
+          "notes": "109/109 ALL CLEAR 2026-05-30. mcc_full_mot.py Windows Unicode crash fixed (sys.stdout.reconfigure).",
+          "status": "PASS"
+        }
+      ],
+      "mot_score": "109/109",
+      "date": "2026-05-30"
     }
   ],
   "mot_scores": [
@@ -480,6 +535,18 @@
     }
   ],
   "recent_commits": [
+    {
+      "hash": "8281bf07",
+      "date": "2026-05-30",
+      "message": "STATUS.md: OCB-Q all 8 phases logged + earlier fixes (date, truncation, Scout/CLACKER entries)",
+      "files_changed": 1
+    },
+    {
+      "hash": "6b4fff27",
+      "date": "2026-05-30",
+      "message": "OCB-Q: HISAV Mega Upgrade 8 phases â€” 109/109 MOT ALL CLEAR",
+      "files_changed": 71
+    },
     {
       "hash": "f21023e3",
       "date": "2026-05-30",
@@ -651,14 +718,12 @@
     {
       "hash": "3448eb15",
       "date": "2026-05-28",
-      "message": "OCB-G complete: LLOW full rebuild â€” CONNECTORS + Junction Boxes + Preset Load + Colour Strategy",
-      "files_changed": 13
+      "message": "OCB-G complete: LLOW full rebuild â€” CONNECTORS + Junction Boxes + Preset Load + Colour Strategy"
     },
     {
       "hash": "640f93b3",
       "date": "2026-05-28",
-      "message": "v53: OCB-G complete â€” LLOW arrow drop fix + colour strategy visibility",
-      "files_changed": 4
+      "message": "v53: OCB-G complete â€” LLOW arrow drop fix + colour strategy visibility"
     },
     {
       "hash": "da5742ff",
@@ -749,16 +814,6 @@
       "hash": "af5257d2",
       "date": "2026-05-24",
       "message": "WCCS auto-save 2026-05-24 (aafl_wccs.py)"
-    },
-    {
-      "hash": "92648792",
-      "date": "2026-05-24",
-      "message": "WCCS 2026-05-24 cc2: CAP/CNP verified clean, aafl_wccs.py fallback"
-    },
-    {
-      "hash": "8b72b089",
-      "date": "2026-05-24",
-      "message": "WCCS 2026-05-24: MCC fixes, project audit, ACCA housekeeping"
     }
   ],
   "pending_items": [

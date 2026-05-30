@@ -1,3 +1,452 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc1.md",
+      "brief": "# Session Log — 2026-05-30 (Claude Code session 1) / **Version:** v72 / **Date:** 2026-05-30 / **Session number:** cc1 / ---",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-001"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc2.md",
+      "brief": "# Session Log — 2026-05-30 — Claude Code Session 2 / **Version:** v73 / **Date:** 2026-05-30 / ## What Was Built / Changed / - **Phase 1** — Created data/master_checklist.json (5 categories, 25 items)",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-002"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc3.md",
+      "brief": "# Session Log -- 2026-05-30-cc3 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / {} / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-003"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc4.md",
+      "brief": "# Session Log -- 2026-05-30-cc4 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-004"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc5.md",
+      "brief": "# Session Log -- 2026-05-30-cc5 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / {} / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-005"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc6.md",
+      "brief": "# Session Log -- 2026-05-30-cc6 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-006"
+    },
+    {
+      "date": "2026-05-30",
+      "filename": "2026-05-30-cc7.md",
+      "brief": "# Session Log -- 2026-05-30-cc7 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-007"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc1.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 1) / **Handover:** v59 → v60 / **Build:** OCB-M — 10 phases / ## What Was Built / Changed / - **Phase 1 (LLOW LEL dblclick fix):** Root cause: llowSelec",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-008"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc10.md",
+      "brief": "# Session Log -- 2026-05-29-cc10 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-009"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc11.md",
+      "brief": "# Session Log -- 2026-05-29-cc11 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / {} / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-010"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc12.md",
+      "brief": "# Session Log -- 2026-05-29-cc12 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-011"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc13.md",
+      "brief": "# Session Log -- 2026-05-29-cc13 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-012"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc14.md",
+      "brief": "# Session Log -- 2026-05-29-cc14 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-013"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc15.md",
+      "brief": "# Session Log -- 2026-05-29-cc15 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / {} / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-014"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc16.md",
+      "brief": "# Session Log -- 2026-05-29-cc16 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-015"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc17.md",
+      "brief": "# Session Log — 2026-05-29 — cc17 / **Version:** v66 / **Session:** Claude Code session 17 (2026-05-29) / ## What was built / changed / - **Root cause found:** `?.checked = false` on line 9899 of miss",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-016"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc18.md",
+      "brief": "# Session Log — 2026-05-29 — Claude Code session 18 / **Version:** v67 / **Date:** 2026-05-29 / **Session:** cc18 / ## What was built / changed",
+      "status": "stopped",
+      "tasks_count": 3,
+      "id": "CS-017"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc19.md",
+      "brief": "# Session Log -- 2026-05-29-cc19 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-018"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc2.md",
+      "brief": "# Session Log -- 2026-05-29-cc2 / **Handover:** v60 -> v61 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / {}",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-019"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc20.md",
+      "brief": "# Session Log — 2026-05-29 (cc20) / **Version:** v68 / **Session number:** 20 (2026-05-29) / **Focus:** OCBR Lifeguard Protocol v0.1 / ---",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-020"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc22.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 22) / **Version:** v70 / **Date:** 2026-05-29 / **Session:** CC22 / ## What Was Built / Changed",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-021"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc23.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 23) / **Version:** v70 → v71 / **Date:** 2026-05-29 / ## What was built / changed / - **clacker_router.py** (NEW): Task classifier — `classify(text)` → ",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-022"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc3.md",
+      "brief": "# Session Log -- 2026-05-29-cc3 / **Handover:** v61 -> v62 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-023"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc4.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 4) / **Handover:** v62 → v63 / **Build:** OCB-O — Safety Bar + Global Search + 15 Fixes / **MOT:** 108/108 ALL CLEAR / ---",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-024"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc5.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 5) / **Version:** v64 / **Date:** 2026-05-29 / **Build:** OCB-O Code Pipeline / ## What was built / changed",
+      "status": "completed",
+      "tasks_count": 4,
+      "id": "CS-025"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc6.md",
+      "brief": "# Session Log — 2026-05-29 (Claude Code session 6) / **Version:** v65 / **Date:** 2026-05-29 / --- / ## What was built / changed",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-026"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc7.md",
+      "brief": "# Session Log -- 2026-05-29-cc7 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-027"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc8.md",
+      "brief": "# Session Log -- 2026-05-29-cc8 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / test chat text for recovery check[2026-05-29 01:02:15] test capture text / [2026-05-29 01:02:15",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-028"
+    },
+    {
+      "date": "2026-05-29",
+      "filename": "2026-05-29-cc9.md",
+      "brief": "# Session Log -- 2026-05-29-cc9 / **Mode:** Legacy wccs_runner (no handover created) / ## Chat Summary / {} / ## Session Entry",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-029"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc1.md",
+      "brief": "# Session Log -- 2026-05-28-cc1 / **Handover:** v50 -> v51 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / {}",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-030"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc2.md",
+      "brief": "# Session Log -- 2026-05-28-cc2 / **Handover:** v51 -> v52 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-031"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc3.md",
+      "brief": "# Session Log — 2026-05-28 (Claude Code session 3) / **Handover:** v52 → v53 / **Build:** OCB-G — Fix what OCB-F claimed but didn't fix / ## What was built / changed / - **llowOnDrop restructured (mis",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-032"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc4.md",
+      "brief": "# Session Log -- 2026-05-28-cc4 / **Handover:** v53 -> v54 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / {}",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-033"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc5.md",
+      "brief": "# Session Log -- 2026-05-28-cc5 / **Handover:** v54 -> v55 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-034"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc6.md",
+      "brief": "# Session Log — 2026-05-28 (Claude Code session 6) / **Handover:** v55 → v56 / **Focus:** mcc-instructions-keeper system / ## What was built / changed / - **data/instructions_db.json** — Created. 132 ",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-035"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc7.md",
+      "brief": "# Session Log — 2026-05-28 (Claude Code session 7) / **Version:** v56 → v57 / **Date:** 2026-05-28 / **Session type:** OCB-J — Health Checks + Safety Shield + CLACHR Relay / **MOT:** 108/108 ALL CLEAR",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-036"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc8.md",
+      "brief": "# Session Log — 2026-05-28 (Claude Code session 8) / **Version:** v58 / **Session:** 8 / ## What Was Built / - **Phase 1 (OCB-K finish):** CLAUDE.md project orientation file created. data/project_awar",
+      "status": "completed",
+      "tasks_count": 4,
+      "id": "CS-037"
+    },
+    {
+      "date": "2026-05-28",
+      "filename": "2026-05-28-cc9.md",
+      "brief": "# Session Log -- 2026-05-28-cc9 / **Handover:** v58 -> v59 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-038"
+    },
+    {
+      "date": "2026-05-27",
+      "filename": "2026-05-27-cc1.md",
+      "brief": "# Session Log -- 2026-05-27-cc1 / **Handover:** v46 -> v47 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-039"
+    },
+    {
+      "date": "2026-05-27",
+      "filename": "2026-05-27-cc2.md",
+      "brief": "# Session Log -- 2026-05-27-cc2 / **Handover:** v47 -> v48 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / {}",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-040"
+    },
+    {
+      "date": "2026-05-27",
+      "filename": "2026-05-27-cc3.md",
+      "brief": "# Session Log -- 2026-05-27-cc3 / **Handover:** v48 -> v49 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-041"
+    },
+    {
+      "date": "2026-05-27",
+      "filename": "2026-05-27-cc4.md",
+      "brief": "# Session Log -- 2026-05-27-cc4 / **Handover:** v49 -> v50 / **Focus:** WCCS automation run / ## Chat Summary (from chat_latest.txt) / test chat text for recovery check",
+      "status": "completed",
+      "tasks_count": 3,
+      "id": "CS-042"
+    },
+    {
+      "date": "2026-05-25",
+      "filename": "2026-05-25-build2.md",
+      "brief": "# Session Log — 2026-05-25 — Build 2 Complete / ## Summary / Build 2 — all 23 Parking Lot features implemented. MOT: 108/108 ALL CLEAR. / ## Features Completed / | # | Feature | Location |",
+      "status": "completed",
+      "tasks_count": 5,
+      "id": "CS-043"
+    },
+    {
+      "date": "2026-05-25",
+      "filename": "2026-05-25-housekeeping.md",
+      "brief": "# Session Log — Housekeeping Run / **Date:** 2026-05-25 | **Type:** Housekeeping | **ALP Budget:** 30% / --- / ## JOB 1: MCC SERVER STARTUP — RESULT: WORKING / - Started mcc_server.py, hit http://127.",
+      "status": "completed",
+      "tasks_count": 9,
+      "id": "CS-044"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "mot_2026-05-25_09-53.md",
+      "brief": "# MOT Report — 2026-05-25 09:53 / **Verdict: ALL CLEAR — 108/108 PASS** / ## Changes verified in this session / | Task | File | What changed | / |------|------|--------------|",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-045"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "mot_2026-05-25_medical.md",
+      "brief": "# Session Log — MCC Full Medical 2026-05-25 / **Tool:** mcc_medical.py (Doctor CLAC) / **Run time:** ~6 minutes 40 seconds / **Date:** 2026-05-25 / ---",
+      "status": "completed",
+      "tasks_count": 7,
+      "id": "CS-046"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_2026-05-28.md",
+      "brief": "# Session Log — 2026-05-28 (mcc-instructions-keeper) / ## What was done / - Compared two STATUS.md versions (222 vs 247 lines) — confirmed 247-line version correct / - Built mcc-instructions-keeper sy",
+      "status": "completed",
+      "tasks_count": 4,
+      "id": "CS-047"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_2026-05-30-detective-timeline.md",
+      "brief": "# Session Log — 2026-05-30 Detective + Timeline + Scroll Fix / **Date:** 2026-05-30 / **Session type:** Claude Code OCB (7 phases) / --- / ## What was built",
+      "status": "stopped",
+      "tasks_count": 3,
+      "id": "CS-048"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_2026-05-30-hisav-fix.md",
+      "brief": "# Session Log — 2026-05-30 HISAV Gap Fix / **Date:** 2026-05-30 / **Task:** Add missing HISAV sections 2-7 to mission_control.html / --- / ## Finding",
+      "status": "stopped",
+      "tasks_count": 3,
+      "id": "CS-049"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_2026-05-30-hisav.md",
+      "brief": "# Session Log — 2026-05-30 — HISAV tab + DTA data files v73 / ## Summary / OCB: HISAV tab replaces WCCS tab label. 7 accordion sections built. DTA data files created. Handover auto-archive confirmed. ",
+      "status": "completed",
+      "tasks_count": 4,
+      "id": "CS-050"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_build4b_2026-05-27.md",
+      "brief": "# Session: Build 4b — MCC Health Suite Consolidation + Sidebar Nav / **Date:** 2026-05-27 / **MOT Result:** 109/109 (100%) — ALL CLEAR / --- / ## Tasks Completed",
+      "status": "completed",
+      "tasks_count": 4,
+      "id": "CS-051"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_build4_2026-05-26.md",
+      "brief": "# Session Log — Build 4 — 2026-05-26 / ## Summary / Build 4 MCC features implemented. MOT: 108/108 ALL CLEAR. / --- / ## Tasks Completed",
+      "status": "completed",
+      "tasks_count": 5,
+      "id": "CS-052"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "session_build5a_2026-05-27.md",
+      "brief": "# Session Log — Build 5a — 2026-05-27 / ## Tasks Completed / ### Task 1 — Quick Ask Endpoint Fix (mcc_server.py) / - Rewrote `_handle_quick_ask` to explicitly try Cerebras → Mistral → Gemini in order ",
+      "status": "completed",
+      "tasks_count": 2,
+      "id": "CS-053"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "sesum_2026-05-27.md",
+      "brief": "DATE: 2026-05-27 / SESSION_TYPE: CLACH resumed + OCB-A retry / PROJECT: VKB-SpinDoctor / AAFL / CARRIED_OVER: 9 fixes from previous session, Work Checker, Self-Health foundation / CLAC_COMPLETED:",
+      "status": "completed",
+      "tasks_count": 0,
+      "id": "CS-054"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "sesum_2026-05-28_combined.md",
+      "brief": "# SESSION SUMMARY — VKB Spin Doctor / AAFL / AASKC / **DATE:** 2026-05-28 (Combined Session — 26-28 May 2026) / **SESSION_TYPE:** Combined SESUM — 3 days merged / **PROJECT:** VKB-SpinDoctor / AAFL / ",
+      "status": "completed",
+      "tasks_count": 6,
+      "id": "CS-055"
+    },
+    {
+      "date": "2026-05-01",
+      "filename": "sesum_imported_20260528_173208.md",
+      "brief": "**SESUM - VKB Spin Doctor / AAFL** / **Date:** [Current Date] / **Session:** [Session Number] / **What was built or decided:** / - Completed all 7 phases of testing (Bug Scan to MOT)",
+      "status": "completed",
+      "tasks_count": 0,
+      "id": "CS-056"
+    }
+  ]
 }
