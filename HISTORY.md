@@ -2453,4 +2453,22 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 
 **Files changed:** mission_control.html, mcc_server.py, data/master_checklist.json (new), data/idea_buffer.json (new), data/mot_gaps.json (new), data/clac_sessions.json (new), data/screenshot_log.json (new), STATUS.md, HISTORY.md
 
+---
+
+### 2026-05-30 — HISAV sections 2-7 gaps fixed + timeline populated
+
+**What was built:**
+- Confirmed: all 7 HISAV sections and all 8 endpoints already present from v73. No sections were missing.
+- Fixed: Vehicle History timeline was empty — project_timeline.json had no `entries` key. Added 16 hardcoded entries (v0.1 Spin Fix through Star Citizen) with correct statuses (milestone/done/stopped/current/planned).
+- Added: dot size 20px (was 14px), pulse animation CSS (@keyframes hisavPulse) for OCB-P amber node.
+- Added: summary stats row below timeline — "15 builds / 108/108 MOT / Best score: 9.33 / Current: v73".
+- Fixed: popup restructured — "Summary" accordion open by default (shows date + notes), Phases accordion, Files changed accordion.
+- Fixed: click outside timeline popup closes it (document click handler).
+- Fixed: planned nodes render with dashed border + transparent background.
+- Fixed: _tlDotColour now handles stopped=red, milestone=purple, current=amber, planned=grey correctly.
+- Added: date + notes subtitle below each timeline node label.
+- MOT: 109/109 ALL CLEAR
+
+**Files changed:** mission_control.html, data/project_timeline.json, HISTORY.md
+
 <!-- END_OF_FILE -->

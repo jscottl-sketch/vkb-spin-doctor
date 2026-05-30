@@ -99,7 +99,9 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-tl-wrap{overflow-x:auto;padding:12px 0 16px}
 .hisav-tl{display:flex;align-items:center;gap:0;position:relative;min-width:max-content}
 .hisav-tl-node{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;padding:0 14px}
-.hisav-tl-dot{width:14px;height:14px;border-radius:50%;border:2px solid;flex-shrink:0;transition:transform .15s}
+.hisav-tl-dot{width:20px;height:20px;border-radius:50%;border:2px solid;flex-shrink:0;transition:transform .15s;box-sizing:border-box}
+.hisav-tl-dot.pulse{animation:hisavPulse 1.2s ease-in-out infinite}
+@keyframes hisavPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.2)}}
 .hisav-tl-node:hover .hisav-tl-dot{transform:scale(1.3)}
 .hisav-tl-label{font-size:10px;color:#778;margin-top:5px;white-space:nowrap;max-width:80px;text-align:center;overflow:hidden;text-overflow:ellipsis}
 .hisav-tl-line{width:28px;height:2px;background:#1e2a3a;flex-shrink:0}
@@ -2217,19 +2219,25 @@ body{padding-bottom:28px}
                 <div style="color:#445;font-size:11px">Loading…</div>
               </div>
             </div>
-            <!-- detail popup (hidden, positioned via JS) -->
+            <!-- detail popup (hidden, positioned via JS, position:fixed so never clipped) -->
             <div class="tl-detail-popup" id="hisav-tl-popup" style="display:none">
-              <div class="tl-popup-title" id="hisav-tl-popup-title"></div>
-              <div id="hisav-tl-popup-summary" style="font-size:11px;color:#889;margin-bottom:6px"></div>
+              <div class="tl-popup-title" id="hisav-tl-popup-title" style="font-size:13px;font-weight:bold;color:#ccd;margin-bottom:6px"></div>
               <div class="tl-popup-acc">
-                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('phases')">▶ Phases</div>
-                <div class="tl-popup-acc-body" id="hisav-pop-phases"></div>
-                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('files')">▶ Files changed</div>
-                <div class="tl-popup-acc-body" id="hisav-pop-files"></div>
-                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('notes')">▶ Notes</div>
-                <div class="tl-popup-acc-body" id="hisav-pop-notes"></div>
+                <div class="tl-popup-acc-hdr open" onclick="hisavPopupAcc('summary')" style="font-size:11px;color:#4af;cursor:pointer;padding:3px 0;user-select:none">▼ Summary</div>
+                <div class="tl-popup-acc-body open" id="hisav-pop-summary" style="font-size:11px;color:#889;margin-bottom:4px;padding-left:8px"></div>
+                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('phases')" style="font-size:11px;color:#4af;cursor:pointer;padding:3px 0;user-select:none">▶ Phases</div>
+                <div class="tl-popup-acc-body" id="hisav-pop-phases" style="padding-left:8px"></div>
+                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('files')" style="font-size:11px;color:#4af;cursor:pointer;padding:3px 0;user-select:none">▶ Files changed</div>
+                <div class="tl-popup-acc-body" id="hisav-pop-files" style="padding-left:8px"></div>
               </div>
               <button onclick="document.getElementById('hisav-tl-popup').style.display='none'" style="margin-top:8px;background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit">✕ Close</button>
+            </div>
+            <!-- Stats row below timeline -->
+            <div style="font-size:11px;color:#445;margin-top:10px;padding:6px 0;border-top:1px solid #1a2a3a;display:flex;gap:14px;flex-wrap:wrap">
+              <span>🏗️ 15 builds</span>
+              <span>✅ 108/108 MOT</span>
+              <span>🏆 Best score: 9.33</span>
+              <span>📌 Current: v73</span>
             </div>
           </div>
         </div>
@@ -2415,12 +2423,12 @@ body{padding-bottom:28px}
     }).catch(function(){});
   };
   function _tlDotColour(entry){
-    var t=entry.type||'';var s=entry.status||'';
-    if(t==='clac_session') return s==='stopped'?'#c44':'#2a8';
+    var s=entry.status||'';var t=entry.type||'';
+    if(s==='stopped') return '#c44';
+    if(s==='milestone'||t==='milestone') return '#a4f';
     if(s==='done'||s==='completed') return '#2a8';
     if(s==='current') return '#fa0';
-    if(s==='planned') return '#445';
-    if(s==='milestone') return '#a4f';
+    if(s==='planned') return '#556';
     return '#4af';
   }
   function _renderTimeline(entries){
@@ -2434,44 +2442,80 @@ body{padding-bottom:28px}
     entries.forEach(function(e,i){
       var col=_tlDotColour(e);
       var warn=e.status==='stopped'?' ⚠️':'';
-      html+='<div class="hisav-tl-node" onclick="hisavShowTlPopup('+i+',this)" title="'+escHisav(e.label||'')+'">'+
-        '<div class="hisav-tl-dot" style="background:'+col+';border-color:'+col+'"></div>'+
-        '<div class="hisav-tl-label">'+escHisav((e.label||'').substring(0,20))+warn+'</div>'+
+      var dateStr=e.date&&e.date!=='planned'?e.date.substring(5):'TBD';
+      var dotCls='hisav-tl-dot'+(e.status==='current'?' pulse':'')+(e.status==='planned'?' planned':'');
+      var dotBg=e.status==='planned'?'transparent':col;
+      var dotBdr=e.status==='planned'?'dashed':'solid';
+      html+='<div class="hisav-tl-node" data-tlid="'+i+'" onclick="hisavShowTlPopup('+i+',this)" title="'+escHisav(e.label||'')+'">'+
+        '<div class="'+dotCls+'" style="background:'+dotBg+';border-color:'+col+';border-style:'+dotBdr+'"></div>'+
+        '<div class="hisav-tl-label">'+escHisav((e.label||'').substring(0,14))+warn+'</div>'+
+        '<div style="font-size:9px;color:#445;text-align:center;margin-top:1px">'+escHisav(dateStr)+'</div>'+
+        '<div style="font-size:9px;color:#556;text-align:center">'+escHisav((e.notes||'').substring(0,16))+'</div>'+
         '</div>';
       if(i<entries.length-1) html+='<div class="hisav-tl-line"></div>';
     });
     wrap.innerHTML=html;
-    // scroll to current
+    // auto-scroll current node into view
     var nodes=wrap.querySelectorAll('.hisav-tl-node');
     for(var i=0;i<entries.length;i++){
       if(entries[i].status==='current'){
-        if(nodes[i]) nodes[i].scrollIntoView({inline:'center',behavior:'smooth'});
+        setTimeout(function(n){if(n)n.scrollIntoView({inline:'center',behavior:'smooth'});}(nodes[i]),120);
         break;
       }
     }
   }
+  var _tlOpenIdx = -1;
   window.hisavShowTlPopup = function(idx,el){
-    var e=_tlData[idx];
-    if(!e) return;
     var popup=document.getElementById('hisav-tl-popup');
     if(!popup) return;
+    // toggle same node closes popup
+    if(_tlOpenIdx===idx && popup.style.display==='block'){
+      popup.style.display='none'; _tlOpenIdx=-1; return;
+    }
+    _tlOpenIdx=idx;
+    var e=_tlData[idx];
+    if(!e) return;
     document.getElementById('hisav-tl-popup-title').textContent=e.label||'';
-    document.getElementById('hisav-tl-popup-summary').textContent=(e.date||'')+(e.notes?' — '+e.notes:'');
-    document.getElementById('hisav-pop-phases').textContent=(e.phases||[]).join('\n')||(e.type||'');
-    document.getElementById('hisav-pop-files').textContent=(e.files_changed||[]).join(', ')||'—';
-    document.getElementById('hisav-pop-notes').textContent=e.notes||'—';
-    // position using fixed coords from click
+    var sumEl=document.getElementById('hisav-pop-summary');
+    if(sumEl){
+      var dateStr=e.date&&e.date!=='planned'?e.date+' — ':'planned — ';
+      sumEl.textContent=dateStr+(e.notes||'');
+    }
+    var phasesEl=document.getElementById('hisav-pop-phases');
+    if(phasesEl){
+      var ph=e.phases||[];
+      phasesEl.innerHTML=ph.length?ph.map(function(p){return '<div style="padding:2px 0">'+escHisav(p)+'</div>';}).join(''):'<div style="color:#445">—</div>';
+    }
+    var filesEl=document.getElementById('hisav-pop-files');
+    if(filesEl){
+      var fc=e.files_changed||[];
+      filesEl.innerHTML=fc.length?fc.map(function(f){return '<div style="padding:1px 0;color:#7a9">'+escHisav(f)+'</div>';}).join(''):'<div style="color:#445">—</div>';
+    }
+    // position: fixed, above clicked node, clamp to viewport
     var rect=el.getBoundingClientRect();
-    var top=rect.top-10;
-    if(top<8) top=8;
-    popup.style.left=Math.min(rect.left,window.innerWidth-295)+'px';
-    popup.style.top=Math.max(top-180,8)+'px';
+    var pw=280, ph2=220;
+    var left=Math.max(8,Math.min(rect.left+rect.width/2-pw/2, window.innerWidth-pw-8));
+    var top=Math.max(8, rect.top-ph2-8);
+    popup.style.left=left+'px';
+    popup.style.top=top+'px';
+    popup.style.width=pw+'px';
     popup.style.display='block';
   };
+  // click outside popup closes it
+  document.addEventListener('click',function(ev){
+    var popup=document.getElementById('hisav-tl-popup');
+    if(!popup||popup.style.display==='none') return;
+    if(!popup.contains(ev.target)&&!ev.target.closest('.hisav-tl-node')){
+      popup.style.display='none'; _tlOpenIdx=-1;
+    }
+  });
   window.hisavPopupAcc = function(key){
-    var el=document.getElementById('hisav-pop-'+key);
-    if(!el) return;
-    el.classList.toggle('open');
+    var body=document.getElementById('hisav-pop-'+key);
+    var hdr=body&&body.previousElementSibling;
+    if(!body) return;
+    var isOpen=body.classList.contains('open');
+    body.classList.toggle('open',!isOpen);
+    if(hdr) hdr.textContent=(isOpen?'▶ ':'▼ ')+(hdr.textContent.replace(/^[▶▼]\s*/,''));
   };
 
   // ── Checklist Health ─────────────────────────────────────
