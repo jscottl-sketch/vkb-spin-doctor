@@ -670,6 +670,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_hisav_screenshots_get()
             elif path.startswith("/data/screenshots/"):
                 self._handle_screenshot_static(path)
+            # ── Detective endpoints ─────────────────────────────────────────────
+            elif path == "/api/detective/report":
+                self._handle_detective_report_get()
+            elif path == "/api/timeline/full":
+                self._handle_timeline_full_get()
+            elif path.startswith("/api/timeline/node/"):
+                self._handle_timeline_node_get(path[len("/api/timeline/node/"):])
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -937,6 +944,10 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_hisav_clac_session_post()
             elif path == "/api/hisav/screenshot":
                 self._handle_hisav_screenshot_post()
+            elif path == "/api/detective/run":
+                self._handle_detective_run_post()
+            elif path == "/api/detective/dismiss":
+                self._handle_detective_dismiss_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7937,6 +7948,106 @@ def _handle_screenshot_static(self, path):
 
 
 MCCHandler._handle_screenshot_static = _handle_screenshot_static  # type: ignore[attr-defined]
+
+
+# ── Detective handlers ────────────────────────────────────────────────────────
+
+_DETECTIVE_REPORT = HERE / "data" / "detective_report.json"
+_TIMELINE_FULL    = HERE / "data" / "project_timeline.json"
+
+
+def _handle_detective_report_get(self):
+    """GET /api/detective/report — return data/detective_report.json."""
+    try:
+        if _DETECTIVE_REPORT.exists():
+            data = json.loads(_DETECTIVE_REPORT.read_text(encoding="utf-8"))
+        else:
+            data = {"last_run": None, "run_count": 0, "findings": [], "summary": {"total_findings": 0, "high": 0, "medium": 0, "low": 0, "ghosts": 0, "dead_endpoints": 0}}
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_report_get = _handle_detective_report_get  # type: ignore[attr-defined]
+
+
+def _handle_detective_run_post(self):
+    """POST /api/detective/run — launch hisav_detective.py --once as subprocess."""
+    import subprocess
+    try:
+        script = HERE / "hisav_detective.py"
+        if not script.exists():
+            self._send_json({"error": "hisav_detective.py not found"}, 404)
+            return
+        subprocess.Popen(
+            [sys.executable, str(script), "--once"],
+            cwd=str(HERE),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        self._send_json({"ok": True, "message": "Detective scan started"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_run_post = _handle_detective_run_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_dismiss_post(self):
+    """POST /api/detective/dismiss — body: {id} — set finding status to dismissed."""
+    try:
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))))
+        finding_id = body.get("id", "")
+        if not finding_id:
+            self._send_json({"error": "id required"}, 400)
+            return
+        if _DETECTIVE_REPORT.exists():
+            report = json.loads(_DETECTIVE_REPORT.read_text(encoding="utf-8"))
+            for f in report.get("findings", []):
+                if f.get("id") == finding_id:
+                    f["status"] = "dismissed"
+            _DETECTIVE_REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_dismiss_post = _handle_detective_dismiss_post  # type: ignore[attr-defined]
+
+
+def _handle_timeline_full_get(self):
+    """GET /api/timeline/full — return complete project_timeline.json."""
+    try:
+        if _TIMELINE_FULL.exists():
+            data = json.loads(_TIMELINE_FULL.read_text(encoding="utf-8"))
+        else:
+            data = {"entries": [], "generated": None}
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_timeline_full_get = _handle_timeline_full_get  # type: ignore[attr-defined]
+
+
+def _handle_timeline_node_get(self, node_id):
+    """GET /api/timeline/node/{id} — return single node with full detail."""
+    try:
+        if not _TIMELINE_FULL.exists():
+            self._send_json({"error": "Timeline not found"}, 404)
+            return
+        data = json.loads(_TIMELINE_FULL.read_text(encoding="utf-8"))
+        entries = data.get("entries", [])
+        for node in entries:
+            if str(node.get("id", "")) == node_id:
+                self._send_json(node)
+                return
+        self._send_json({"error": f"Node '{node_id}' not found"}, 404)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_timeline_node_get = _handle_timeline_node_get  # type: ignore[attr-defined]
 
 
 def main():

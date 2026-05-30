@@ -200,6 +200,10 @@
 | HISAV /api/hisav/* endpoints | GET /data, POST /idea, POST /idea/action, POST /checklist/tick, POST /clac-session, POST /screenshot, GET /screenshots, GET /data/screenshots/&lt;file&gt; |
 | OCB-O (OCB Runner) | ocb_runner.py 503 lines, 5 methods. MCC panel: textarea+Parse+Run+live log+badges. 5 /api/ocb/* endpoints. First test: engine works (Codestral parsed+MOT exit 0) but HTML edit broke tabs. Rolled back to v67. Needs safety layer. |
 | MCC v67 rollback | git checkout -- mission_control.html — frozen MCC fix |
+| hisav_detective.py | 6-strategy live validator: GHOST_FILE (STATUS vs disk), DEAD_ENDPOINT (ping all routes), STATUS_CONTRADICTION (BUILT+PENDING overlaps), STALE_MOT (48h freshness), MISSING_FROM_STATUS (session log cross-check), PHANTOM_UI (DOM element check). --once and --watch modes. Detective banner in HISAV. GET /api/detective/report, POST /api/detective/run, POST /api/detective/dismiss. |
+| Timeline full population | 37 nodes from STATUS/HISTORY/session_logs/git/ACCA. Foundation→Build Sprint→OCB Era→Next zones. Deep 4-level drill-down popup: phases+files+endpoints+ACCA codes+detective flags. Filter (All/Milestones/OCBs/Builds/Stopped/Planned) + Zoom (Compact/Normal/Expanded) + Jump to Today. Stats bar. GET /api/timeline/full, GET /api/timeline/node/{id}. |
+| Global scroll fix | All MCC tab panes: overflow-y:auto, min-height:0, padding-bottom:80px. scrollIntoView on accordion expand. Thin scrollbar globally. HISAV pane overflow:visible removed. |
+| HISAV restructured 9 sections | Screenshots moved to own Section 8. Work Checker moved from Health Suite to Section 9. Health Suite Work Checker replaced with redirect notice. hisavLoadGallery alias added. 109/109 MOT ALL CLEAR 2026-05-30. |
 | OCB-H
 
 ## CURRENT STATUS — PENDING

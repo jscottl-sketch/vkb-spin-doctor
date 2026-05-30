@@ -6,6 +6,20 @@
 
 ---
 
+### 2026-05-30 (Claude Code session — Detective + Timeline + Scroll Fix)
+**Key decisions:** 7-phase OCB built in single session. Phase 1: global scroll fix applied to all tab panes (overflow-y:auto, min-height:0, padding-bottom:80px, scrollIntoView on accordion expand). Phase 2: HISAV restructured to 9 sections — Screenshots moved to Section 8, Work Checker moved from Health Suite to Section 9 with redirect notice. Phase 3: hisav_detective.py built (6 strategies: GHOST_FILE/DEAD_ENDPOINT/STATUS_CONTRADICTION/STALE_MOT/MISSING_FROM_STATUS/PHANTOM_UI) with Detective Banner in HISAV, 3 new endpoints. Phase 4: Comprehensive project_timeline.json built with 37 nodes from all sources (STATUS/HISTORY/session_logs/git/ACCA). Phase 5: Timeline UI rebuilt with deep 4-level drill-down popup, zone bands, filter+zoom controls, stats bar. Phase 6: 109/109 MOT ALL CLEAR. Phase 7: WCCS.
+**New ACCA codes:** None
+**Bugs fixed:** HISAV scroll broken (pane-scroll had overflow:visible overriding class). Work Checker duplicate element IDs removed from Health Suite.
+**Files created:** hisav_detective.py, data/project_timeline.json (comprehensive 37 nodes)
+**Endpoints added:** GET /api/detective/report, POST /api/detective/run, POST /api/detective/dismiss, GET /api/timeline/full, GET /api/timeline/node/{id}
+**Next priorities:**
+1. Run hisav_detective.py --once to get first detective report
+2. OCB-P completion (safety layer, LLOW Results panel, Task Input LEL)
+3. Star Citizen v0.2 benchmark via AAFL autonomous run
+4. Add GROQ + Cloudflare keys to .env
+
+---
+
 ### 2026-05-29 (Claude Code session — OCB-N)
 **Key decisions:** OCB-N built in 6 phases: Scout Swarm LEL (DATA SOURCES category in LLOW palette with live counter/status/time-limit), project_timeline_builder.py (auto-rebuilds data/project_timeline.json on every WCCS), Work Checker 3 new panels (Timeline/Checklist/Action Plan with delegate buttons), persistent ACCA ticker bar at MCC bottom, legacy handover writes removed from wccs_runner.py. Phase 5 means no new VKB_SpinDoctor_Handover_vXX.md files will be created — STATUS/HISTORY/ACCA are permanent source of truth.
 **New ACCA codes:** SWARM, PTL, WCTL, WCCL, WCAP, ACCATICK (all added to ACCA.md 2026-05-29)
