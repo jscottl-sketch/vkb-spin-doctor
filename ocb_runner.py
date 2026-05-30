@@ -373,6 +373,47 @@ def _git_stash_pop(status: dict):
     _write_status(status)
 
 
+# ── Per-file HTML safety ──────────────────────────────────────────────────────
+
+def git_stash_html() -> bool:
+    """Stash mission_control.html before any edit."""
+    result = subprocess.run(
+        ["git", "stash", "push", "-m", "ocb-pre-edit", "mission_control.html"],
+        capture_output=True, text=True, cwd=str(HERE),
+    )
+    return result.returncode == 0
+
+
+def check_html_syntax(html_path: str) -> tuple:
+    """Basic HTML syntax check — detect missing panes and unbalanced script tags."""
+    try:
+        with open(html_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        required = [
+            'id="tab-wccs"', 'id="tab-aafl-control"',
+            'id="tab-health-suite"', 'id="tab-kanban"', 'id="tab-scout"',
+        ]
+        missing = [r for r in required if r not in content]
+        if missing:
+            return False, f"Missing tab panes: {missing}"
+        opens  = content.count("<script")
+        closes = content.count("</script>")
+        if opens != closes:
+            return False, f"Unbalanced script tags: {opens} open, {closes} close"
+        return True, "OK"
+    except Exception as exc:
+        return False, str(exc)
+
+
+def auto_rollback_html() -> bool:
+    """Restore mission_control.html from git stash."""
+    result = subprocess.run(
+        ["git", "stash", "pop"],
+        capture_output=True, text=True, cwd=str(HERE),
+    )
+    return result.returncode == 0
+
+
 # ── Orchestrator ──────────────────────────────────────────────────────────────
 
 def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
@@ -485,6 +526,15 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
             _log_entry(status, phase["phase_num"], task["num"],
                        f"Target: {filepath.name}")
 
+            # Stash HTML before any edit attempt
+            html_stashed = False
+            if filepath.suffix == ".html":
+                html_stashed = git_stash_html()
+                if html_stashed:
+                    _log_entry(status, phase["phase_num"], task["num"],
+                               "Stashed HTML backup")
+                _write_status(status)
+
             success = False
             for attempt in range(1, max_retries + 1):
                 if _is_cancelled(run_id):
@@ -513,6 +563,23 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
                         new_text,
                     )
                     if ok:
+                        if filepath.suffix == ".html":
+                            html_ok, html_reason = check_html_syntax(str(filepath))
+                            if not html_ok:
+                                auto_rollback_html()
+                                html_stashed = False
+                                _log_entry(status, phase["phase_num"], task["num"],
+                                           f"❌ ROLLBACK: HTML check failed — {html_reason}")
+                                phase_ok = False
+                                break
+                            else:
+                                _log_entry(status, phase["phase_num"], task["num"],
+                                           "✅ HTML check passed")
+                                subprocess.run(
+                                    ["git", "stash", "drop"],
+                                    capture_output=True, text=True, cwd=str(HERE),
+                                )
+                                html_stashed = False
                         files_changed.add(filepath.name)
                         status["files_changed"] = sorted(files_changed)
                         _log_entry(status, phase["phase_num"], task["num"],
@@ -525,6 +592,14 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
                 except Exception as exc:
                     _log_entry(status, phase["phase_num"], task["num"],
                                f"Attempt {attempt}: exception — {str(exc)[:80]}")
+
+            # Drop orphaned HTML stash if all attempts failed without explicit cleanup
+            if html_stashed:
+                subprocess.run(
+                    ["git", "stash", "drop"],
+                    capture_output=True, text=True, cwd=str(HERE),
+                )
+                html_stashed = False
 
             if _is_cancelled(run_id):
                 status["phases"][pi]["tasks"][ti]["status"] = "SKIPPED"

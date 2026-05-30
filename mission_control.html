@@ -1702,6 +1702,7 @@ body{padding-bottom:28px}
 <div class="tab-bar" id="main-tab-bar">
   <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
   <button class="tab-btn active" data-tab="wccs" data-tip="HISAV — History, Ideas, Save & Vehicle history">💾 HISAV</button>
+  <button class="tab-btn" data-tab="ocb-runner" data-tip="OCB Runner — paste an OCB build block and run it inside MCC">⚙️ OCB Runner</button>
   <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
   <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
   <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis">🔭 Scout Swarm</button>
@@ -4569,6 +4570,76 @@ window.pwccsCopyPath = function(ev){
 <!-- Auto-Save Log: access via WCCS tab → Auto-Save Log pill -->
 
 <!-- Provider Health: access via Home tab → Provider Health gauge → Show Details -->
+
+<!-- ── OCB RUNNER TAB ── -->
+
+<!-- ============================================================
+     TAB: OCB RUNNER
+     Standalone OCB block paste-and-run panel
+     ============================================================ -->
+<div class="tab-pane" id="tab-ocb-runner" data-tab="ocb-runner" style="display:none">
+
+  <!-- Pinned toolbar -->
+  <div style="position:sticky;top:0;z-index:100;
+    background:var(--bg-secondary);border-bottom:1px solid var(--border);
+    padding:10px 16px;display:flex;gap:10px;align-items:center">
+    <span style="font-weight:bold;font-size:1.1rem">⚙️ OCB Runner</span>
+    <span style="font-size:0.8rem;color:var(--text-muted)">
+      Paste an OCB block and run it inside MCC</span>
+    <div id="ocb2-status-badge" style="margin-left:auto;
+      padding:4px 10px;border-radius:12px;font-size:0.8rem;
+      background:var(--bg-tertiary);color:var(--text-muted)">
+      Idle</div>
+  </div>
+
+  <!-- Input area -->
+  <div style="padding:16px;display:grid;
+    grid-template-columns:1fr 1fr;gap:16px;height:calc(100vh - 160px)">
+
+    <!-- Left: OCB input -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label style="font-weight:bold">OCB Block Input</label>
+      <textarea id="ocb2-input" placeholder="Paste your OCB block here...
+Example:
+&#x2550;&#x2550;&#x2550; PHASE 1 &#x2014; Fix popup &#x2550;&#x2550;&#x2550;
+Find mission_control.html..."
+        style="flex:1;resize:none;font-family:monospace;font-size:0.85rem;
+        background:var(--bg-tertiary);color:var(--text);
+        border:1px solid var(--border);border-radius:6px;
+        padding:12px;min-height:300px"></textarea>
+      <div style="display:flex;gap:8px">
+        <button onclick="ocb2Parse()"
+          style="flex:1;padding:8px;background:var(--accent);
+          color:#fff;border:none;border-radius:6px;cursor:pointer;
+          font-weight:bold">🔍 Parse</button>
+        <button onclick="ocb2Run()"
+          style="flex:1;padding:8px;background:#22c55e;
+          color:#fff;border:none;border-radius:6px;cursor:pointer;
+          font-weight:bold">▶ Run</button>
+        <button onclick="ocb2Clear()"
+          style="padding:8px 12px;background:var(--bg-tertiary);
+          color:var(--text);border:1px solid var(--border);
+          border-radius:6px;cursor:pointer">✕</button>
+      </div>
+    </div>
+
+    <!-- Right: Output log -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <label style="font-weight:bold">Live Output</label>
+      <div id="ocb2-log"
+        style="flex:1;overflow-y:auto;font-family:monospace;
+        font-size:0.8rem;background:#0a0a0f;color:#e0e0e0;
+        border:1px solid var(--border);border-radius:6px;
+        padding:12px;min-height:300px;white-space:pre-wrap">
+        Waiting for OCB block...
+      </div>
+      <div id="ocb2-phase-badges"
+        style="display:flex;flex-wrap:wrap;gap:6px;min-height:28px">
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ── KANBAN TAB ── -->
 
@@ -11877,6 +11948,75 @@ async function ocbArchiveRun() {
   } catch(e) {
     toast('Archive failed: ' + e.message, 'error');
   }
+}
+
+// ── OCB Runner standalone tab functions ────────────────────────────────────
+function ocb2Parse() {
+  const input = document.getElementById('ocb2-input').value;
+  if (!input.trim()) return;
+  fetch(BASE + '/api/ocb/parse', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({block: input})
+  }).then(r => r.json()).then(data => {
+    const badges = document.getElementById('ocb2-phase-badges');
+    badges.innerHTML = '';
+    (data.phases || []).forEach((p, i) => {
+      const b = document.createElement('span');
+      b.textContent = 'Phase ' + (i + 1) + ': ' + p.name;
+      b.style.cssText = 'padding:4px 10px;border-radius:12px;' +
+        'background:var(--bg-tertiary);font-size:0.8rem;' +
+        'border:1px solid var(--border)';
+      b.id = 'ocb2-badge-' + i;
+      badges.appendChild(b);
+    });
+    document.getElementById('ocb2-log').textContent =
+      'Parsed ' + (data.phases || []).length + ' phases. Ready to run.';
+    document.getElementById('ocb2-status-badge').textContent = 'Ready';
+    document.getElementById('ocb2-status-badge').style.background = '#22c55e22';
+  }).catch(e => {
+    document.getElementById('ocb2-log').textContent = '❌ Parse error: ' + e.message;
+  });
+}
+
+function ocb2Run() {
+  const input = document.getElementById('ocb2-input').value;
+  if (!input.trim()) return;
+  const log   = document.getElementById('ocb2-log');
+  const badge = document.getElementById('ocb2-status-badge');
+  log.textContent = 'Starting OCB run...\n';
+  badge.textContent = 'Running';
+  badge.style.background = '#f59e0b22';
+
+  fetch(BASE + '/api/ocb/run', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({block: input})
+  }).then(r => r.json()).then(data => {
+    log.textContent += data.output || 'Done.';
+    badge.textContent = data.success ? 'Complete ✓' : 'Failed ✗';
+    badge.style.background = data.success ? '#22c55e22' : '#ef444422';
+    (data.phase_results || []).forEach((p, i) => {
+      const b = document.getElementById('ocb2-badge-' + i);
+      if (b) {
+        b.style.background  = p.passed ? '#22c55e33' : '#ef444433';
+        b.style.borderColor = p.passed ? '#22c55e'   : '#ef4444';
+        b.textContent = (p.passed ? '✓ ' : '✗ ') + b.textContent;
+      }
+    });
+  }).catch(e => {
+    log.textContent += '\n❌ Error: ' + e.message;
+    badge.textContent = 'Error';
+    badge.style.background = '#ef444422';
+  });
+}
+
+function ocb2Clear() {
+  document.getElementById('ocb2-input').value = '';
+  document.getElementById('ocb2-log').textContent = 'Waiting for OCB block...';
+  document.getElementById('ocb2-phase-badges').innerHTML = '';
+  document.getElementById('ocb2-status-badge').textContent = 'Idle';
+  document.getElementById('ocb2-status-badge').style.background = 'var(--bg-tertiary)';
 }
 
 // ── RRCLACH Panel ─────────────────────────────────────────────────
