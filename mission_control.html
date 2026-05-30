@@ -143,6 +143,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 /* tl-detail-popup — deep drill-down. !important guards against [class*="popup"] override */
 .tl-detail-popup{display:none;position:fixed!important;z-index:9999!important;background:#0a0e18!important;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px!important;width:320px;max-width:90vw;max-height:70vh;overflow-y:auto;font-size:12px!important;color:#aab!important;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.75);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
+/* timeline node popup uses absolute positioning within #htl-tl-wrapper */
+#hisav-tl-popup{position:absolute!important}
 .tl-popup-title{font-size:13px;font-weight:bold;color:#dde;margin-bottom:4px}
 .tl-popup-status{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:bold;margin-bottom:8px}
 .tl-popup-summary{font-size:11px;color:#889;margin-bottom:8px;line-height:1.5}
@@ -198,6 +200,18 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-tb-save:hover{background:#1d5a1d!important}
 .hisav-tb-last{font-size:11px;color:#556;margin-left:auto;white-space:nowrap}
 .hisav-summary-panel{display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;padding:12px 14px}
+/* ── POST-WCCS CHECKLIST ── */
+.pwccs-row{width:100%;display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid #1e2a3a;flex-wrap:nowrap;overflow-x:auto}
+.pwccs-row::-webkit-scrollbar{height:3px}
+.pwccs-row::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:2px}
+.pwccs-pill{background:#181818;border:1px solid #2a2a2a;color:#667;padding:3px 11px;border-radius:12px;cursor:pointer;font:bold 11px inherit;white-space:nowrap;transition:.15s}
+a.pwccs-pill{text-decoration:none;display:inline-block}
+.pwccs-pill:hover{border-color:#3a3a3a;color:#99a}
+.pwccs-pill.done{background:#0a2a0a;border-color:#2a6a2a;color:#6f6}
+.pwccs-arrow{color:#334;font-size:11px;flex-shrink:0;user-select:none}
+.pwccs-copy-btn{background:none;border:1px solid #2a2a2a;color:#556;padding:2px 7px;border-radius:4px;cursor:pointer;font:10px inherit;flex-shrink:0;transition:.15s;white-space:nowrap}
+.pwccs-copy-btn:hover{border-color:#4af;color:#4af}
+.pwccs-step3-wrap{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
 /* ── OCB-Q: Detective 5-panel board ── */
 .det-panel{background:#0a0d12;border:1px solid #1e2a3a;border-radius:6px;padding:12px 14px;margin-bottom:8px}
 .det-panel-title{font-size:11px;font-weight:bold;color:#4af;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
@@ -2011,6 +2025,21 @@ body{padding-bottom:28px}
       <button class="hisav-tb-btn" onclick="copyStatusForClaude()" title="Copy STATUS.md to clipboard — paste into Claude.ai Project Files">📋 WCCS</button>
       <button class="hisav-tb-btn" id="hisav-tb-summ-btn" onclick="hisavToggleSummary()" title="Open session summary paste area">📝 Session Summary</button>
       <span class="hisav-tb-last">Last saved: <span id="hisav-tb-ts">—</span></span>
+      <!-- POST-WCCS CHECKLIST ROW -->
+      <div class="pwccs-row" id="pwccs-checklist">
+        <span style="font-size:10px;color:#445;white-space:nowrap;flex-shrink:0">Post-WCCS:</span>
+        <button id="pwccs-1" class="pwccs-pill" onclick="pwccsToggle(1)" title="Step 1: Run WCCS — save session handover">1. Run WCCS ✓</button>
+        <span class="pwccs-arrow">→</span>
+        <button id="pwccs-2" class="pwccs-pill" onclick="pwccsToggle(2)" title="Step 2: Paste session summary into HISAV">2. Post SESUM to HISAV ✓</button>
+        <span class="pwccs-arrow">→</span>
+        <div class="pwccs-step3-wrap">
+          <button id="pwccs-3" class="pwccs-pill" onclick="pwccsToggle(3)"
+            title="Go to claude.ai → your Project → Project Files → Remove old STATUS.md / INDEX.md → Upload new versions from: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\">3. Update Project Files in Claude ✓</button>
+          <button class="pwccs-copy-btn" onclick="pwccsCopyPath(event)" title="Copy project path to clipboard">📋 Copy path</button>
+        </div>
+        <span class="pwccs-arrow">→</span>
+        <a id="pwccs-4" class="pwccs-pill" href="https://claude.ai" target="_blank" onclick="pwccsToggle(4)">4. Start new chat ✓</a>
+      </div>
     </div>
     <!-- Summary paste panel (hidden by default) -->
     <div class="hisav-summary-panel" id="hisav-summary-panel">
@@ -2516,6 +2545,8 @@ body{padding-bottom:28px}
               <button class="htl-filter-btn" onclick="htlJumpToToday()" style="background:#1a2a1a;color:#6f6;border-color:#2a4a2a">↓ Today</button>
             </div>
 
+            <!-- Timeline wrapper: position:relative so popup positions absolutely within it -->
+            <div id="htl-tl-wrapper" style="position:relative;overflow:visible">
             <!-- Timeline outer + zone bands + scroll controls -->
             <div style="display:flex;align-items:stretch;gap:4px">
               <button class="htl-scroll-btn" onclick="htlScrollBy(-200)" title="Scroll left">◀</button>
@@ -2573,6 +2604,8 @@ body{padding-bottom:28px}
               <div id="htl-pop-mot" style="font-size:11px;color:#2a8;margin-top:6px"></div>
               <div id="htl-pop-alp" style="font-size:11px;color:#fa0;margin-top:2px"></div>
             </div>
+
+            </div><!-- /htl-tl-wrapper -->
 
           </div><!-- /hisav-body-inner s3 -->
         </div><!-- /hisav-body s3 -->
@@ -3194,12 +3227,15 @@ body{padding-bottom:28px}
     var ph2 = document.getElementById('htl-pop-phases');
     if(ph2){ ph2.classList.add('open'); }
 
-    // Position popup: above clicked node, clamped to viewport
+    // Position popup: absolute within #htl-tl-wrapper, clamped to container width
     var rect = el.getBoundingClientRect();
-    var pw = 320, popH = Math.min(window.innerHeight*0.7, 500);
-    var left = Math.max(8, Math.min(rect.left+rect.width/2-pw/2, window.innerWidth-pw-8));
-    var top  = Math.max(8, rect.top-popH-8);
-    if(top < 8){ top = rect.bottom+8; } // flip below if no room
+    var wrapper = document.getElementById('htl-tl-wrapper');
+    var cRect = wrapper ? wrapper.getBoundingClientRect() : {left:0, top:0, width:window.innerWidth, height:400};
+    var pw = 320;
+    var left = rect.left - cRect.left;
+    var top  = rect.bottom - cRect.top + 8;
+    if(left + pw > cRect.width) left = Math.max(0, cRect.width - pw - 10);
+    if(left < 0) left = 0;
     popup.style.left = left+'px';
     popup.style.top  = top+'px';
     popup.style.display = 'block';
@@ -3620,6 +3656,26 @@ body{padding-bottom:28px}
   }
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadToolbarTs, 2000); });
 })();
+
+// ── Post-WCCS Checklist ───────────────────────────────────────────────────────
+window.pwccsToggle = function(n){
+  var el = document.getElementById('pwccs-'+n);
+  if(!el) return;
+  el.classList.toggle('done');
+};
+window.pwccsCopyPath = function(ev){
+  if(ev) ev.preventDefault();
+  var path = 'C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\';
+  navigator.clipboard.writeText(path).then(function(){
+    var btn = ev ? ev.currentTarget : null;
+    if(!btn) return;
+    var orig = btn.textContent;
+    btn.textContent = '✅ Copied';
+    setTimeout(function(){ btn.textContent = orig; }, 1800);
+  }).catch(function(){
+    prompt('Copy this path:', 'C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\');
+  });
+};
 
 // ── OCB-Q2: Detective 5-Panel Board (upgraded) ───────────────────────────────
 (function(){
