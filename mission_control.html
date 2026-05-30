@@ -87,7 +87,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-chevron.open{transform:rotate(180deg);color:#4af}
 .hisav-min{background:none;border:none;color:#445;font-size:13px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0}
 .hisav-min:hover{color:#aaa}
-.hisav-body{overflow:hidden;transition:max-height .28s ease;background:#0a0d12;border-radius:0 0 6px 6px}
+.hisav-body{max-height:0;overflow:hidden;transition:max-height .3s ease;background:#0a0d12;border-radius:0 0 6px 6px}
+.hisav-body.hisav-open{max-height:3000px;overflow:visible}
 .hisav-body-inner{padding:12px 14px}
 /* idea dump */
 .hisav-idea-ta{width:100%;height:90px;background:#080c10;border:1px solid #2a3a4a;color:#ccd;font:13px 'Segoe UI',Arial,sans-serif;padding:8px;border-radius:5px;resize:vertical;box-sizing:border-box}
@@ -140,8 +141,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-drop-zone:hover,.hisav-drop-zone.drag-over{border-color:#4af;color:#4af}
 .hisav-thumb{width:72px;height:54px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid #2a3a4a}
 .hisav-gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-/* tl-detail-popup — deep drill-down */
-.tl-detail-popup{position:fixed;z-index:9999;background:#0a0e18;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px;width:320px;max-height:70vh;overflow-y:auto;font-size:12px;color:#aab;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.75);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
+/* tl-detail-popup — deep drill-down. !important guards against [class*="popup"] override */
+.tl-detail-popup{display:none;position:fixed!important;z-index:9999!important;background:#0a0e18!important;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px!important;width:320px;max-width:90vw;max-height:70vh;overflow-y:auto;font-size:12px!important;color:#aab!important;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.75);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
 .tl-popup-title{font-size:13px;font-weight:bold;color:#dde;margin-bottom:4px}
 .tl-popup-status{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:bold;margin-bottom:8px}
 .tl-popup-summary{font-size:11px;color:#889;margin-bottom:8px;line-height:1.5}
@@ -898,7 +899,7 @@ body{font-size:var(--b3-font-size);color:var(--b3-text-color)}
 .tip-box{position:absolute;z-index:9999;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;pointer-events:none;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%)}
 /* ── OCB-A: Self-health popup safety — applied globally ── */
 .mcc-popup-safe{z-index:9999!important;max-width:320px}
-[class*="tooltip"],[class*="popup"]{z-index:9999!important;position:absolute;max-width:320px}
+[class*="tooltip"],[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe){z-index:9999!important;position:absolute;max-width:320px}
 /* Self-health grey popup */
 .sh-popup{position:absolute;z-index:9999;background:rgba(40,40,40,0.95);color:#fff;font-size:14px;padding:12px 16px;border-radius:8px;max-width:320px;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none;white-space:normal;line-height:1.5}
 body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9)}
@@ -1360,9 +1361,12 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-lb-name{flex:1;color:#bbb}
 .hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
 /* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
-.mcc-tooltip,[class*="tooltip"],[class*="popup"],[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
-/* mcc-popup-safe: popups use inline position:fixed in JS — button itself scrolls */
+/* Excludes .tl-detail-popup (position:fixed popup) and .mcc-popup-safe (button marker class) */
+.mcc-tooltip,[class*="tooltip"]:not(.tl-detail-popup),[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe),[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
+/* mcc-popup-safe: button marker only — popups use inline position:fixed in JS */
 .mcc-popup-safe{z-index:9999!important}
+/* hisav-popup-safe: display:none by default, position set by JS on show */
+.hisav-popup-safe{display:none;position:fixed!important;z-index:9999!important;max-width:90vw;max-height:80vh;overflow-y:auto}
 /* tip-btn tooltip containers — ensure they sit above all other elements */
 .tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
 /* Panel/drawer/accordion open state — always below tooltips (9999) — OCB-K */
@@ -1926,7 +1930,7 @@ body{padding-bottom:28px}
      TAB: WCCS
      Session save, auto-save log, search, diff viewer, rewind
      ============================================================ -->
-<div class="tab-pane active" id="tab-wccs">
+<div class="tab-pane active" id="tab-wccs" style="background:#0d0d0d">
   <div class="pane-scroll" style="position:relative">
 
     <!-- ═══ OCB-Q: HISAV STICKY TOOLBAR ═══ -->
@@ -2341,7 +2345,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron open" id="hisav-chev-s2">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s2')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s2" style="max-height:600px">
+        <div class="hisav-body hisav-open" id="hisav-body-s2">
           <div class="hisav-body-inner">
             <div style="font-size:11px;color:#556;margin-bottom:6px">Half-formed is fine — capture it now, flesh it out later.</div>
             <textarea id="hisav-idea-input" class="hisav-idea-ta" placeholder="Drop any idea here — half-formed is fine. Capture it now, flesh it out later."></textarea>
@@ -2362,7 +2366,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s3">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s3')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s3" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s3">
           <div class="hisav-body-inner">
 
             <!-- Controls bar -->
@@ -2400,7 +2404,7 @@ body{padding-bottom:28px}
             </div>
 
             <!-- Deep drill-down popup -->
-            <div class="tl-detail-popup" id="hisav-tl-popup" style="display:none">
+            <div class="tl-detail-popup hisav-popup-safe" id="hisav-tl-popup">
               <!-- Level 0: always visible -->
               <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px">
                 <div style="flex:1">
@@ -2448,7 +2452,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s4">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s4')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s4" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s4">
           <div class="hisav-body-inner">
             <div id="hisav-cl-summary" style="font-size:12px;color:#7a9;margin-bottom:8px">Loading…</div>
             <!-- OCB-Q: filter bar -->
@@ -2473,7 +2477,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s5">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s5')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s5" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s5">
           <div class="hisav-body-inner">
             <div id="hisav-ib-summary" style="font-size:12px;color:#7a9;margin-bottom:8px">Loading…</div>
             <div id="hisav-ib-body">
@@ -2491,7 +2495,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s6">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s6')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s6" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s6">
           <div class="hisav-body-inner">
             <div id="hisav-ap-ts" style="font-size:10px;color:#445;margin-bottom:8px">Loading…</div>
             <div id="hisav-ap-body">
@@ -2509,7 +2513,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s7">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s7')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s7" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s7">
           <div class="hisav-body-inner">
 
             <!-- OCB-Q: CLAC Session History header + new session button -->
@@ -2553,7 +2557,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s8">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s8')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s8" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s8">
           <div class="hisav-body-inner">
             <div style="font-size:11px;color:#556;margin-bottom:10px">Drag-drop or click to upload screenshots. Each screenshot is saved with a description.</div>
             <div class="hisav-drop-zone" id="hisav-drop-zone" onclick="document.getElementById('hisav-file-inp').click()" title="Click or drag a .png/.jpg here to upload a screenshot">
@@ -2566,7 +2570,7 @@ body{padding-bottom:28px}
             <div id="hisav-ss-flash" style="font-size:11px;color:#6f6;margin:5px 0;min-height:14px"></div>
             <div class="hisav-gallery" id="hisav-gallery"></div>
             <!-- Detail popup for screenshots -->
-            <div class="tl-detail-popup" id="hisav-ss-popup" style="display:none">
+            <div class="tl-detail-popup hisav-popup-safe" id="hisav-ss-popup">
               <img id="hisav-ss-popup-img" src="" style="max-width:100%;border-radius:4px;margin-bottom:8px">
               <div id="hisav-ss-popup-desc" style="font-size:11px;color:#889"></div>
               <button onclick="document.getElementById('hisav-ss-popup').style.display='none'" style="margin-top:8px;background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit">✕ Close</button>
@@ -2583,7 +2587,7 @@ body{padding-bottom:28px}
           <span class="hisav-chevron" id="hisav-chev-s9">▼</span>
           <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s9')" title="Minimise">—</button>
         </div>
-        <div class="hisav-body" id="hisav-body-s9" style="max-height:0;overflow:hidden">
+        <div class="hisav-body" id="hisav-body-s9">
           <div class="hisav-body-inner">
             <!-- Header row -->
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
@@ -2657,14 +2661,12 @@ body{padding-bottom:28px}
     var body = document.getElementById('hisav-body-'+id);
     var chev = document.getElementById('hisav-chev-'+id);
     if(!body) return;
-    var isOpen = body.style.maxHeight && body.style.maxHeight !== '0px' && body.style.maxHeight !== '0';
+    var isOpen = body.classList.contains('hisav-open');
     if(isOpen){
-      body.style.maxHeight='0';
-      body.style.overflow='hidden';
+      body.classList.remove('hisav-open');
       if(chev){chev.classList.remove('open');}
     } else {
-      body.style.maxHeight='4000px';
-      body.style.overflow='visible';
+      body.classList.add('hisav-open');
       if(chev){chev.classList.add('open');}
       if(id==='s3') hisavLoadTimeline();
       if(id==='s4') hisavLoadChecklist();
@@ -2674,7 +2676,8 @@ body{padding-bottom:28px}
       if(id==='s8') hisavLoadGallery();
       if(id==='s9') wcLoadReport();
       // scroll newly opened section into view
-      var sec = document.getElementById('hisav-s'+id.replace('s',''));
+      var secNum = id.replace(/^s/,'');
+      var sec = document.getElementById('hisav-s'+secNum);
       if(sec) setTimeout(function(){ sec.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 50);
     }
   };
@@ -7182,6 +7185,11 @@ function initTabs() {
       btn.classList.add('active');
       const pane = document.getElementById('tab-' + btn.dataset.tab);
       if (pane) pane.classList.add('active');
+      // FIX: hide all HISAV popups on every tab switch (prevents stale popups)
+      ['hisav-tl-popup','hisav-ss-popup'].forEach(function(pid){
+        var pop = document.getElementById(pid);
+        if(pop) pop.style.display='none';
+      });
       if (btn.dataset.tab === 'home') loadHomeScreen();
       if (btn.dataset.tab === 'wccs') renderWccsTab();
       if (btn.dataset.tab === 'autolog') { syncAutoLog(); renderAutoLog(); }
