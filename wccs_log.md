@@ -81,3 +81,4 @@
 | 66 | 2026-05-30 | v74 -> v75 | HISAV post-WCCS checklist added to sticky toolbar (4-step pill row: Run WCCS → Post SESUM → Update Project Files in Claude with copy-path btn → Start new chat link to claude.ai). Timeline popup fixed: position:fixed → position:absolute within #htl-tl-wrapper. 109/109 MOT ALL CLEAR. | None |
 | 67 | 2026-05-30 | legacy | {} | None |
 | 68 | 2026-05-30 | legacy | test chat text for recovery check | None |
+| 69 | 2026-05-30 | v75 -> v76 | OCB-R1 global bug sweep: z-index CSS fix for all popups (z-index:99999 + position:fixed), ? audit (30 found, 0 empty, 0 removed), post-save SESUM banner added to HISAV toolbar (showPostSaveBanner() wired to both save buttons). 109/109 MOT ALL CLEAR. | None |
