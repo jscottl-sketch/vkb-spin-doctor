@@ -174,6 +174,56 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .htl-filter-btn.active{background:#1a2a3a;color:#4af;border-color:#2a4a6a}
 /* stats bar */
 .htl-stats{display:flex;gap:16px;flex-wrap:wrap;padding:8px 0;border-top:1px solid #1a2a3a;font-size:11px;color:#445}
+/* ── OCB-Q: HISAV sticky toolbar ── */
+.hisav-sticky-tb{position:sticky;top:0;z-index:100;background:#0d1018;border-bottom:1px solid #1e2a3a;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hisav-tb-btn{background:#1a2a3a;border:1px solid #2a3a4a;color:#ccd;padding:6px 14px;border-radius:5px;cursor:pointer;font:bold 12px inherit;transition:background .15s;white-space:nowrap}
+.hisav-tb-btn:hover{background:#1d3a5a}
+.hisav-tb-save{background:#1a3a1a!important;border-color:#2a6a2a!important;color:#6f6!important}
+.hisav-tb-save:hover{background:#1d5a1d!important}
+.hisav-tb-last{font-size:11px;color:#556;margin-left:auto;white-space:nowrap}
+.hisav-summary-panel{display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;padding:12px 14px}
+/* ── OCB-Q: Detective 5-panel board ── */
+.det-panel{background:#0a0d12;border:1px solid #1e2a3a;border-radius:6px;padding:12px 14px;margin-bottom:8px}
+.det-panel-title{font-size:11px;font-weight:bold;color:#4af;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.det-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #0f1822;font-size:11px}
+.det-row:last-child{border-bottom:none}
+.det-row-border{border-left:3px solid #2a2a2a;padding-left:8px;margin-left:3px}
+.det-badge{padding:1px 7px;border-radius:8px;font-size:10px;font-weight:bold;white-space:nowrap;flex-shrink:0}
+.det-pass{background:#0a2a0a;color:#4f4;border:1px solid #2a4a2a}
+.det-fail{background:#2a0a0a;color:#f44;border:1px solid #4a2a2a}
+.det-warn{background:#1a1400;color:#fa0;border:1px solid #3a2a00}
+.det-open{background:#2a0a0a;color:#f44;border:1px solid #4a2a2a}
+.det-fixed{background:#0a2a0a;color:#4f4;border:1px solid #2a4a2a}
+.det-dimiss{background:#1a1a1a;color:#888;border:1px solid #333}
+.det-recurring{background:#1a1400;color:#fa0;border:1px solid #3a2a00}
+.det-analyse-drop{border:2px dashed #2a3a4a;border-radius:6px;padding:20px;text-align:center;color:#556;cursor:pointer;transition:.15s}
+.det-analyse-drop:hover,.det-analyse-drop.drag-over{border-color:#4af;color:#4af}
+.det-thought-bubble{background:#0a1520;border:1px solid #4af;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:12px;color:#bbc;line-height:1.6}
+/* ── OCB-Q: Action plan v2 ── */
+.hisav-ap-v2-item{background:#0d1318;border-left:3px solid #1e3a5a;border-radius:0 5px 5px 0;padding:8px 10px;margin-bottom:6px}
+.hisav-ap-v2-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.hisav-ap-v2-btn{background:#111820;border:1px solid #2a3a4a;color:#778;padding:3px 8px;border-radius:4px;cursor:pointer;font:11px inherit}
+.hisav-ap-v2-btn:hover{color:#ccd;border-color:#4af}
+.hisav-ap-v2-done{border-color:#2a4a2a!important;color:#4f4!important}
+/* ── OCB-Q: CLAC sessions v2 ── */
+.clac-sess-card{background:#0d1318;border-left:3px solid #2a4a2a;border-radius:0 5px 5px 0;padding:8px 10px;margin-bottom:6px}
+.clac-sess-card.stopped{border-left-color:#4a2a2a}
+.clac-sess-card.running{border-left-color:#4a8a00}
+.clac-sess-meta{font-size:10px;color:#445;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.clac-sess-desc{font-size:12px;color:#bbc;margin-bottom:4px}
+.clac-sess-body{display:none;font-size:11px;color:#778;white-space:pre-wrap;background:#080c10;border:1px solid #1e2a3a;border-radius:4px;padding:6px;margin-top:6px;max-height:120px;overflow-y:auto}
+/* ── OCB-Q: Checklist filter ── */
+.cl-filter-bar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.cl-filter-btn{background:#0a0d12;border:1px solid #1e2a3a;color:#556;padding:3px 9px;border-radius:10px;cursor:pointer;font:11px inherit}
+.cl-filter-btn.active{background:#1a2a3a;color:#4af;border-color:#2a4a6a}
+.cl-cat-hdr{display:flex;align-items:center;gap:8px;margin-bottom:5px;margin-top:10px}
+.cl-cat-name{font-size:11px;font-weight:bold;color:#7a9;text-transform:uppercase;letter-spacing:.7px}
+.cl-cat-prog{flex:1;height:4px;background:#1a2a1a;border-radius:2px;overflow:hidden}
+.cl-cat-prog-fill{height:100%;background:#2a8a3a;border-radius:2px;transition:width .3s}
+.cl-item{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:4px}
+.cl-item:hover{background:#111820}
+.cl-item.incomplete{border-left:2px solid #7a5a10;padding-left:6px}
+.cl-item.blocked{border-left:2px solid #6a1a1a;padding-left:6px}
 /* ── WCCS TAB ── */
 .wccs-top-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
 .btn-save-lg{background:#174;border:none;color:#fff;font:bold 14px 'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:10px 24px;border-radius:6px;cursor:pointer;transition:.15s;min-width:180px}
@@ -847,7 +897,7 @@ body{font-size:var(--b3-font-size);color:var(--b3-text-color)}
 .sb-section .tip-btn,.sb-nav-item .tip-btn{margin-left:auto;flex-shrink:0}
 .tip-box{position:absolute;z-index:9999;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;pointer-events:none;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%)}
 /* ── OCB-A: Self-health popup safety — applied globally ── */
-.mcc-popup-safe{z-index:9999!important;position:fixed!important;max-width:320px}
+.mcc-popup-safe{z-index:9999!important;max-width:320px}
 [class*="tooltip"],[class*="popup"]{z-index:9999!important;position:absolute;max-width:320px}
 /* Self-health grey popup */
 .sh-popup{position:absolute;z-index:9999;background:rgba(40,40,40,0.95);color:#fff;font-size:14px;padding:12px 16px;border-radius:8px;max-width:320px;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none;white-space:normal;line-height:1.5}
@@ -1311,8 +1361,8 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
 /* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
 .mcc-tooltip,[class*="tooltip"],[class*="popup"],[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
-/* mcc-popup-safe: fixed so it always renders above panels — OCB-K z-index fix */
-.mcc-popup-safe{z-index:9999!important;position:fixed!important}
+/* mcc-popup-safe: popups use inline position:fixed in JS — button itself scrolls */
+.mcc-popup-safe{z-index:9999!important}
 /* tip-btn tooltip containers — ensure they sit above all other elements */
 .tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
 /* Panel/drawer/accordion open state — always below tooltips (9999) — OCB-K */
@@ -1879,31 +1929,90 @@ body{padding-bottom:28px}
 <div class="tab-pane active" id="tab-wccs">
   <div class="pane-scroll" style="position:relative">
 
-    <!-- ═══ DETECTIVE BANNER — persistent, always visible ═══ -->
-    <div id="hisav-detective-banner" style="border-radius:7px;margin-bottom:10px;padding:10px 14px;cursor:pointer;background:#0a0d12;border:1px solid #1e2a3a;display:flex;align-items:center;gap:10px;transition:background .15s" onclick="hisavDetectiveToggle()">
+    <!-- ═══ OCB-Q: HISAV STICKY TOOLBAR ═══ -->
+    <div class="hisav-sticky-tb" id="hisav-sticky-tb">
+      <button class="hisav-tb-btn hisav-tb-save" id="btn-wccs-hub" onclick="saveSession()" title="Save session now — runs aafl_wccs.py">💾 SAVE NOW</button>
+      <button class="hisav-tb-btn" onclick="copyStatusForClaude()" title="Copy STATUS.md to clipboard — paste into Claude.ai Project Files">📋 WCCS</button>
+      <button class="hisav-tb-btn" id="hisav-tb-summ-btn" onclick="hisavToggleSummary()" title="Open session summary paste area">📝 Session Summary</button>
+      <span class="hisav-tb-last">Last saved: <span id="hisav-tb-ts">—</span></span>
+    </div>
+    <!-- Summary paste panel (hidden by default) -->
+    <div class="hisav-summary-panel" id="hisav-summary-panel">
+      <div style="font-size:11px;color:#778;margin-bottom:6px">Paste your session summary before saving — it gets written to the session log</div>
+      <textarea id="wccs-chat-input" class="hisav-idea-ta" style="height:80px" placeholder="Paste summary of what was done this session…" spellcheck="false" oninput="document.getElementById('wccs-chat-meta').textContent=this.value.length+' chars'"></textarea>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        <span id="wccs-chat-meta" style="font-size:11px;color:#556">0 chars</span>
+        <button class="hisav-tb-btn hisav-tb-save" onclick="saveSession()" style="padding:4px 12px;font-size:11px">💾 Save with summary</button>
+      </div>
+    </div>
+
+    <!-- ═══ OCB-Q: DETECTIVE STATUS BOARD ═══ -->
+    <div id="hisav-detective-banner" style="border-radius:7px 7px 0 0;padding:10px 14px;cursor:pointer;background:#0a0d12;border:1px solid #1e2a3a;border-bottom:none;display:flex;align-items:center;gap:10px;transition:background .15s" onclick="hisavDetectiveToggle()">
       <span id="hisav-det-pulse" style="width:10px;height:10px;border-radius:50%;background:#2a2a2a;flex-shrink:0;transition:background .3s"></span>
-      <span id="hisav-det-summary" style="flex:1;font-size:12px;color:#778">🔍 Detective: loading…</span>
-      <button onclick="event.stopPropagation();hisavDetectiveRun()" style="background:#0a1a0a;border:1px solid #1a4a1a;color:#6f6;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px inherit" title="Run detective scan now">Run Now</button>
+      <span style="font-size:12px;font-weight:bold;color:#4af">🕵️ Detective Status Board</span>
+      <span id="hisav-det-summary" style="flex:1;font-size:11px;color:#556"></span>
+      <button onclick="event.stopPropagation();hisavDetectiveRun()" style="background:#0a1a0a;border:1px solid #1a4a1a;color:#6f6;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px inherit" title="Run detective scan now">▶ Run Scan</button>
       <span id="hisav-det-chevron" style="font-size:11px;color:#445">▼</span>
     </div>
-    <div id="hisav-detective-panel" style="display:none;background:#080c10;border:1px solid #1e2a3a;border-radius:7px;margin-bottom:10px;padding:12px 14px">
-      <div id="hisav-det-findings" style="font-size:12px;color:#889;max-height:300px;overflow-y:auto">
-        <div style="color:#445">Loading detective findings…</div>
+    <div id="hisav-detective-panel" style="display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;border-radius:0 0 7px 7px;margin-bottom:12px;padding:12px 14px">
+
+      <!-- PANEL A: Active Investigation -->
+      <div class="det-panel">
+        <div class="det-panel-title">🔍 Panel A — Active Investigation</div>
+        <div id="det-panel-a-content">
+          <div style="font-size:12px;color:#ccd;font-weight:bold;margin-bottom:4px" id="det-strategy-name">Loading…</div>
+          <div style="font-size:11px;color:#556" id="det-last-run">Last run: —</div>
+          <div style="font-size:11px;color:#445;margin-top:3px" id="det-run-count">Scans run: 0</div>
+        </div>
       </div>
+
+      <!-- PANEL B: What I've Checked -->
+      <div class="det-panel">
+        <div class="det-panel-title">📋 Panel B — What I've Checked</div>
+        <div id="det-panel-b-content" style="max-height:200px;overflow-y:auto">
+          <div style="font-size:11px;color:#445">Run a scan to see history.</div>
+        </div>
+      </div>
+
+      <!-- PANEL C: Failures + Fixes -->
+      <div class="det-panel">
+        <div class="det-panel-title">⚠️ Panel C — Failures + Fixes</div>
+        <div id="det-panel-c-content">
+          <div style="font-size:11px;color:#2a8">No failures logged. All clear.</div>
+        </div>
+      </div>
+
+      <!-- PANEL D: Learning Database -->
+      <div class="det-panel">
+        <div class="det-panel-title">🧠 Panel D — Learning Database</div>
+        <div id="det-panel-d-header" style="font-size:12px;color:#ccd;margin-bottom:6px">Detective has learned 0 things so far</div>
+        <div id="det-panel-d-entries" style="font-size:11px;color:#778"></div>
+        <button class="hisav-idea-btn" onclick="detPanelDToggle()" id="det-panel-d-view-btn" style="margin-top:6px">View all solutions</button>
+        <div id="det-panel-d-all" style="display:none;max-height:200px;overflow-y:auto;margin-top:8px"></div>
+      </div>
+
+      <!-- PANEL E: Screenshot Intake -->
+      <div class="det-panel">
+        <div class="det-panel-title">📷 Panel E — Screenshot Intake</div>
+        <div id="det-drop-zone" class="det-analyse-drop" onclick="document.getElementById('det-file-inp').click()" title="Click or drag a screenshot — Detective will analyse it">
+          📷 Drop a screenshot here — Detective will analyse it<br>
+          <span style="font-size:10px;color:#445">or click to Browse</span>
+        </div>
+        <input type="file" id="det-file-inp" accept=".png,.jpg,.jpeg" style="display:none" onchange="detAnalyseFile(this.files[0])">
+        <div id="det-analyse-status" style="font-size:12px;color:#778;margin-top:6px;min-height:14px"></div>
+        <div id="det-analyse-result" style="display:none"></div>
+      </div>
+
+      <!-- legacy findings div (keeps existing JS working) -->
+      <div id="hisav-det-findings" style="display:none"></div>
     </div>
 
     <!-- HISAV Accordion — 9 sections -->
     <div class="hisav-accordion" id="hisav-accordion">
 
-      <!-- ═══ SECTION 1: Save & Handoff (collapsed by default) ═══ -->
-      <div class="hisav-section" id="hisav-s1">
-        <div class="hisav-hdr" onclick="hisavToggle('s1')">
-          <span class="hisav-drag" title="Drag to reorder">⠿</span>
-          <span class="hisav-title">💾 Save &amp; Handoff</span>
-          <span class="hisav-chevron" id="hisav-chev-s1">▼</span>
-          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s1')" title="Minimise section">—</button>
-        </div>
-        <div class="hisav-body" id="hisav-body-s1">
+      <!-- S1 removed from accordion OCB-Q: sticky toolbar replaces it. Old content hidden below -->
+      <div style="display:none" id="hisav-s1-archived">
+        <div class="hisav-body" id="hisav-body-s1-archived">
           <div class="hisav-body-inner">
 
     <!-- WCCS Back Bar — shown when a drill-down panel is open -->
@@ -2219,9 +2328,9 @@ body{padding-bottom:28px}
     </div>
     <div id="mccm-alerts-list" style="display:none;max-height:140px;overflow-y:auto;margin-bottom:8px"></div>
 
-          </div><!-- /hisav-body-inner s1 -->
-        </div><!-- /hisav-body s1 -->
-      </div><!-- /hisav-section s1 -->
+          </div><!-- /archived-s1-body-inner -->
+        </div><!-- /archived-s1-body -->
+      </div><!-- /hisav-s1-archived -->
 
       <!-- ═══ SECTION 2: Idea Dump (EXPANDED by default) ═══ -->
       <div class="hisav-section" id="hisav-s2">
@@ -2340,7 +2449,14 @@ body{padding-bottom:28px}
         </div>
         <div class="hisav-body" id="hisav-body-s4" style="max-height:0;overflow:hidden">
           <div class="hisav-body-inner">
-            <div id="hisav-cl-summary" style="font-size:12px;color:#7a9;margin-bottom:10px">Loading…</div>
+            <div id="hisav-cl-summary" style="font-size:12px;color:#7a9;margin-bottom:8px">Loading…</div>
+            <!-- OCB-Q: filter bar -->
+            <div class="cl-filter-bar" id="hisav-cl-filters">
+              <button class="cl-filter-btn active" data-clf="all" onclick="hisavClFilter(this,'all')">All</button>
+              <button class="cl-filter-btn" data-clf="done" onclick="hisavClFilter(this,'done')">Complete</button>
+              <button class="cl-filter-btn" data-clf="pending" onclick="hisavClFilter(this,'pending')">Incomplete</button>
+              <button class="cl-filter-btn" data-clf="unconfirmed" onclick="hisavClFilter(this,'unconfirmed')">Unconfirmed</button>
+            </div>
             <div id="hisav-cl-body">
               <div style="color:#445;font-size:11px">Loading checklist…</div>
             </div>
@@ -2395,25 +2511,34 @@ body{padding-bottom:28px}
         <div class="hisav-body" id="hisav-body-s7" style="max-height:0;overflow:hidden">
           <div class="hisav-body-inner">
 
-            <!-- Sub-Panel A: CLAC Session Logger -->
-            <div style="font-size:11px;color:#7a9;font-weight:bold;margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px">Session Logger</div>
-            <div style="font-size:11px;color:#445;margin-bottom:8px">Log what Claude Code was doing — completed runs and stopped runs.</div>
-            <div class="hisav-clac-btns">
-              <button class="hisav-clac-done" id="hisav-clac-btn-done" onclick="hisavClacSelect('completed')" title="CLAC session completed successfully">✅ CLAC Completed</button>
-              <button class="hisav-clac-stop" id="hisav-clac-btn-stop" onclick="hisavClacSelect('stopped')" title="CLAC session stopped before finishing">🛑 CLAC Stopped</button>
-            </div>
-            <input type="text" id="hisav-clac-desc" placeholder="What was it doing? e.g. OCB-P safety layer"
-              style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box;margin-bottom:7px">
-            <div id="hisav-clac-reason-wrap" style="display:none;margin-bottom:7px">
-              <input type="text" id="hisav-clac-reason" placeholder="Why stopped? e.g. ran out of ALP, error, timeout"
-                style="width:100%;background:#0d0608;border:1px solid #3a2a2a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box">
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-              <input type="text" id="hisav-clac-ver" placeholder="version e.g. v73" style="width:90px;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:5px 8px;border-radius:5px;font:11px inherit">
-              <button class="hisav-save-btn" onclick="hisavSaveClac()" style="flex:1">💾 Save Session</button>
+            <!-- OCB-Q: CLAC Session History header + new session button -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:bold;color:#7a9;text-transform:uppercase;letter-spacing:.8px">Session History</span>
+              <button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="clacNewSessionModal()" title="Log a new CLAC session">+ Log New Session</button>
+              <button class="hisav-idea-btn" onclick="hisavLoadClacSessions()" title="Reload sessions">↺ Refresh</button>
             </div>
             <div id="hisav-clac-summary" style="font-size:11px;color:#556;margin-bottom:8px">Loading…</div>
             <div id="hisav-clac-cards"></div>
+
+            <!-- New Session Modal -->
+            <div id="clac-modal" style="display:none;background:#0a0d14;border:1px solid #2a3a4a;border-radius:7px;padding:14px;margin-top:12px">
+              <div style="font-size:12px;font-weight:bold;color:#ccd;margin-bottom:10px">📝 Log New CLAC Session</div>
+              <div class="hisav-clac-btns">
+                <button class="hisav-clac-done" id="hisav-clac-btn-done" onclick="hisavClacSelect('completed')" title="CLAC session completed successfully">✅ Completed</button>
+                <button class="hisav-clac-stop" id="hisav-clac-btn-stop" onclick="hisavClacSelect('stopped')" title="CLAC session stopped before finishing">🛑 Stopped</button>
+              </div>
+              <input type="text" id="hisav-clac-desc" placeholder="What was it doing? e.g. OCB-Q Phase 3"
+                style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box;margin-bottom:7px">
+              <div id="hisav-clac-reason-wrap" style="display:none;margin-bottom:7px">
+                <input type="text" id="hisav-clac-reason" placeholder="Why stopped? e.g. ran out of ALP, error, timeout"
+                  style="width:100%;background:#0d0608;border:1px solid #3a2a2a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box">
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <input type="text" id="hisav-clac-ver" placeholder="version e.g. v76" style="width:90px;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:5px 8px;border-radius:5px;font:11px inherit">
+                <button class="hisav-save-btn" onclick="hisavSaveClac()" style="flex:1">💾 Save Session</button>
+                <button class="hisav-idea-btn" onclick="document.getElementById('clac-modal').style.display='none'">Cancel</button>
+              </div>
+            </div>
 
           </div><!-- /hisav-body-inner s7 -->
         </div><!-- /hisav-body s7 -->
@@ -2499,9 +2624,18 @@ body{padding-bottom:28px}
             <div class="wc-panel"><div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadChecklist()"><span>☑️ Checklist — Pending Items</span><span class="wc-chevron">▼</span></div>
               <div class="wc-panel-body collapsed" id="wc-checklist-body"><div id="wc-checklist-list"></div></div>
             </div>
-            <!-- Action Plan panel -->
-            <div class="wc-panel"><div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadActionPlan()"><span>🎯 Action Plan — Top 5 Priorities</span><span class="wc-chevron">▼</span></div>
-              <div class="wc-panel-body collapsed" id="wc-action-plan-body"><div id="wc-ap-list"></div></div>
+            <!-- Action Plan panel (OCB-Q upgraded) -->
+            <div class="wc-panel"><div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadActionPlanV2()"><span>🎯 Action Plan — Next Priorities</span><span class="wc-chevron">▼</span></div>
+              <div class="wc-panel-body collapsed" id="wc-action-plan-body">
+                <div id="wc-ap-v2-list"></div>
+                <div id="wc-ap-footer" style="font-size:11px;color:#556;padding:6px 0"></div>
+              </div>
+            </div>
+            <!-- Mini timeline panel (OCB-Q) -->
+            <div class="wc-panel"><div class="wc-panel-header" onclick="wcTogglePanel(this);wcLoadMiniTimeline()"><span>📅 Recent Timeline</span><span class="wc-chevron">▼</span></div>
+              <div class="wc-panel-body collapsed" id="wc-mini-tl-body">
+                <div id="wc-mini-tl-list" style="font-size:11px;color:#889"></div>
+              </div>
             </div>
             <div id="wc-loading" style="color:#888;padding:12px;display:none">Loading work report…</div>
             <div id="wc-error" style="color:#a55;padding:12px;display:none"></div>
@@ -3283,6 +3417,422 @@ body{padding-bottom:28px}
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(hisavDetectiveLoad, 1500);
   });
+})();
+</script>
+
+<script>
+// ── OCB-Q: HISAV Sticky Toolbar ──────────────────────────────────────────────
+(function(){
+  // Toggle session summary panel
+  window.hisavToggleSummary = function(){
+    var p = document.getElementById('hisav-summary-panel');
+    var btn = document.getElementById('hisav-tb-summ-btn');
+    if(!p) return;
+    var visible = p.style.display !== 'none' && p.style.display !== '';
+    p.style.display = visible ? 'none' : 'block';
+    if(btn) btn.style.background = visible ? '' : '#1a2a4a';
+  };
+  // Load last saved timestamp from hisav data
+  function loadToolbarTs(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      var ts = document.getElementById('hisav-tb-ts');
+      if(!ts) return;
+      var stat = d.stats || {};
+      if(stat.last_saved){
+        ts.textContent = stat.last_saved;
+      } else {
+        // Try from recent STATUS backup
+        fetch('/api/wccs/backups').then(function(r2){return r2.json();}).then(function(b){
+          var pts = (b.points||[]).slice().reverse();
+          if(pts.length) ts.textContent = pts[0].date_display || '—';
+        }).catch(function(){});
+      }
+    }).catch(function(){});
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadToolbarTs, 2000); });
+})();
+
+// ── OCB-Q: Detective 5-Panel Board ───────────────────────────────────────────
+(function(){
+  function _esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function _detBadge(status){
+    if(status==='done'||status==='fixed') return '<span class="det-badge det-fixed">FIXED</span>';
+    if(status==='dismissed') return '<span class="det-badge det-dimiss">DISMISSED</span>';
+    if(status==='high') return '<span class="det-badge det-fail">HIGH</span>';
+    if(status==='medium') return '<span class="det-badge det-warn">MEDIUM</span>';
+    return '<span class="det-badge det-open">OPEN</span>';
+  }
+
+  function detLoadPanels(){
+    fetch('/api/detective/report').then(function(r){return r.json();}).then(function(d){
+      var findings = d.findings || [];
+      var lastRun = d.last_run || null;
+      var runCount = d.run_count || 0;
+
+      // Panel A
+      var nameEl = document.getElementById('det-strategy-name');
+      var lastEl = document.getElementById('det-last-run');
+      var cntEl  = document.getElementById('det-run-count');
+      var pulsEl = document.getElementById('hisav-det-pulse');
+      var sumEl  = document.getElementById('hisav-det-summary');
+      var open = findings.filter(function(f){return f.status==='open';});
+      if(nameEl) nameEl.textContent = lastRun ? (open.length ? open.length+' open findings' : '✅ All clear') : 'Idle — standing watch';
+      if(lastEl) lastEl.textContent = 'Last run: ' + (lastRun ? lastRun.replace('T',' ').substring(0,16) : 'Never');
+      if(cntEl)  cntEl.textContent  = 'Scans completed: ' + runCount;
+      if(pulsEl) pulsEl.style.background = open.length>0 ? '#f44' : '#2a7';
+      if(sumEl)  sumEl.textContent = open.length>0 ? open.length+' finding'+(open.length===1?'':'s') : 'All clear';
+
+      // Panel B — history (all findings newest first)
+      var bEl = document.getElementById('det-panel-b-content');
+      if(bEl){
+        var sorted = findings.slice().sort(function(a,b){return (b.found_at||'').localeCompare(a.found_at||'');});
+        if(!sorted.length){
+          bEl.innerHTML='<div style="font-size:11px;color:#445">No checks recorded yet. Run a scan.</div>';
+        } else {
+          bEl.innerHTML = sorted.map(function(f){
+            var bdr = f.status==='fixed'?'#2a4a2a':f.severity==='high'?'#4a2a2a':'#3a3a1a';
+            return '<div class="det-row" style="border-left:3px solid '+bdr+';padding-left:8px">'+
+              '<span style="flex:1;font-size:11px;color:#bbc">'+_esc(f.type||f.description||'')+'</span>'+
+              '<span style="font-size:10px;color:#445;white-space:nowrap;margin:0 6px">'+_esc((f.found_at||'').substring(5,16))+'</span>'+
+              _detBadge(f.status==='open'?f.severity||'open':f.status)+
+              '</div>';
+          }).join('');
+        }
+      }
+
+      // Panel C — failures (open only)
+      var cEl = document.getElementById('det-panel-c-content');
+      if(cEl){
+        var fails = findings.filter(function(f){return f.status==='open';});
+        if(!fails.length){
+          cEl.innerHTML='<div style="font-size:11px;color:#2a8">No failures logged. All clear.</div>';
+        } else {
+          cEl.innerHTML = fails.map(function(f){
+            return '<div style="padding:7px 0;border-bottom:1px solid #0f1822">'+
+              '<div style="display:flex;align-items:flex-start;gap:6px">'+
+              '<div style="flex:1;font-size:12px;color:#bbc">'+_esc(f.description||f.type)+'</div>'+
+              _detBadge(f.severity||'open')+
+              '</div>'+
+              '<div style="font-size:11px;color:#556;margin:3px 0">Fix: '+_esc(f.suggested_fix||'—')+'</div>'+
+              '<button onclick="hisavDetectiveDismiss(\''+_esc(f.id)+'\')" style="background:none;border:1px solid #2a3a4a;color:#445;padding:2px 7px;border-radius:3px;cursor:pointer;font:10px inherit;margin-top:3px">Dismiss</button>'+
+              '</div>';
+          }).join('');
+        }
+      }
+    }).catch(function(){});
+
+    // Panel D — learning DB
+    fetch('/api/detective/learning-db').then(function(r){return r.json();}).then(function(d){
+      var hdr = document.getElementById('det-panel-d-header');
+      var lst = document.getElementById('det-panel-d-entries');
+      var all = document.getElementById('det-panel-d-all');
+      if(hdr) hdr.textContent = 'Detective has learned '+d.count+' things so far';
+      var entries = d.entries || [];
+      if(lst) lst.innerHTML = entries.length ? entries.map(function(e){
+        return '<div class="det-row"><span style="flex:1;color:#bbc">'+_esc(e.description)+'</span><span style="font-size:10px;color:#445">'+_esc(e.date||'')+'</span></div>';
+      }).join('') : '<div style="color:#445;font-size:11px">No entries yet.</div>';
+      if(all) all.innerHTML = lst ? lst.innerHTML : '';
+    }).catch(function(){});
+  }
+
+  window.detPanelDToggle = function(){
+    var all = document.getElementById('det-panel-d-all');
+    var btn = document.getElementById('det-panel-d-view-btn');
+    if(!all) return;
+    var visible = all.style.display !== 'none';
+    all.style.display = visible ? 'none' : 'block';
+    if(btn) btn.textContent = visible ? 'View all solutions' : 'Hide';
+  };
+
+  // Screenshot analysis — Panel E
+  window.detAnalyseFile = function(file){
+    if(!file) return;
+    var dz = document.getElementById('det-drop-zone');
+    var st = document.getElementById('det-analyse-status');
+    var res = document.getElementById('det-analyse-result');
+    if(st) st.textContent = '🔍 Detective is reading…';
+    if(res) res.style.display = 'none';
+    var fd = new FormData();
+    fd.append('screenshot', file);
+    fetch('/api/detective/analyse-screenshot', {method:'POST', body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(st) st.textContent = '';
+      if(!res) return;
+      res.style.display = 'block';
+      var desc = d.description || 'No description returned.';
+      var lbl  = d.suggested_label || desc.split(' ').slice(0,5).join(' ');
+      res.innerHTML =
+        '<div class="det-thought-bubble">'+
+        '<span style="font-size:18px;margin-right:6px">🕵️</span>'+
+        '<span style="font-size:12px;color:#ccd">"I think this shows:<br><strong>'+_esc(desc)+'</strong>"</span>'+
+        '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">'+
+        '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="detAddToTimeline(\''+_esc(lbl)+'\')" title="Add this to the project timeline">Yes, add it</button>'+
+        '<button class="hisav-idea-btn" onclick="document.getElementById(\'det-analyse-result\').style.display=\'none\'" title="Dismiss">No</button>'+
+        '<button class="hisav-idea-btn" onclick="detDescribeManually()" title="Type your own description">Let me describe it</button>'+
+        '</div>'+
+        '<div id="det-manual-desc-wrap" style="display:none;margin-top:8px">'+
+        '<input type="text" id="det-manual-desc" placeholder="Describe what this shows…" style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:5px 8px;border-radius:4px;font:11px inherit;box-sizing:border-box;margin-bottom:5px">'+
+        '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="detAddToTimeline(document.getElementById(\'det-manual-desc\').value)">Add my description</button>'+
+        '</div>'+
+        '</div>';
+    }).catch(function(e){
+      if(st) st.textContent = 'Analysis failed — try describing it manually.';
+    });
+  };
+
+  window.detDescribeManually = function(){
+    var w = document.getElementById('det-manual-desc-wrap');
+    if(w) w.style.display = 'block';
+  };
+
+  window.detAddToTimeline = function(label){
+    if(!label || !label.trim()) return;
+    fetch('/api/timeline/add-node', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({label:label.trim(), date:new Date().toISOString().substring(0,10)})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      toast && toast('Added to timeline: '+label, 'ok', 3000);
+      var res = document.getElementById('det-analyse-result');
+      if(res) res.style.display = 'none';
+    }).catch(function(){});
+  };
+
+  // Drag-drop for Panel E
+  document.addEventListener('DOMContentLoaded', function(){
+    var dz = document.getElementById('det-drop-zone');
+    if(!dz) return;
+    dz.addEventListener('dragover', function(e){e.preventDefault(); dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
+    dz.addEventListener('drop', function(e){
+      e.preventDefault(); dz.classList.remove('drag-over');
+      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f) detAnalyseFile(f);
+    });
+    // Load panels on open
+    setTimeout(detLoadPanels, 2000);
+  });
+
+  // Re-expose load so toggle can call it
+  var _origDetToggle = window.hisavDetectiveToggle;
+  window.hisavDetectiveToggle = function(){
+    _origDetToggle && _origDetToggle();
+    detLoadPanels();
+  };
+})();
+
+// ── OCB-Q: Checklist Health filter ───────────────────────────────────────────
+(function(){
+  var _clf = 'all';
+  var _clData = null;
+
+  window.hisavClFilter = function(btn, filter){
+    _clf = filter;
+    document.querySelectorAll('.cl-filter-btn').forEach(function(b){b.classList.remove('active');});
+    if(btn) btn.classList.add('active');
+    if(_clData) _renderChecklist(_clData);
+  };
+
+  function _renderChecklist(data){
+    var body = document.getElementById('hisav-cl-body');
+    var sum  = document.getElementById('hisav-cl-summary');
+    if(!body) return;
+    var cats = (data.categories||[]);
+    var total=0, done=0;
+    cats.forEach(function(c){ c.items.forEach(function(i){ total++; if(i.status==='done') done++; }); });
+    if(sum) sum.textContent = done+' / '+total+' items complete';
+    var html = '';
+    cats.forEach(function(cat){
+      var items = cat.items || [];
+      var filtered = _clf==='all' ? items : items.filter(function(i){
+        if(_clf==='done') return i.status==='done';
+        if(_clf==='pending') return i.status!=='done';
+        if(_clf==='unconfirmed') return i.status==='unconfirmed';
+        return true;
+      });
+      if(!filtered.length) return;
+      var catDone = items.filter(function(i){return i.status==='done';}).length;
+      var pct = items.length ? Math.round(catDone/items.length*100) : 0;
+      html += '<div class="cl-cat-hdr"><span class="cl-cat-name">'+_esc(cat.label||cat.id)+'</span>'+
+        '<div class="cl-cat-prog"><div class="cl-cat-prog-fill" style="width:'+pct+'%"></div></div>'+
+        '<span style="font-size:10px;color:#445;white-space:nowrap;margin-left:6px">'+catDone+'/'+items.length+'</span></div>';
+      html += filtered.map(function(it){
+        var cls = it.status==='done' ? '' : it.status==='unconfirmed' ? ' unconfirmed' : ' incomplete';
+        var chk = it.status==='done' ? ' checked' : '';
+        var col = it.status==='done' ? '#2a4a2a' : it.status==='unconfirmed' ? '#3a3a1a' : '#3a2a1a';
+        return '<div class="cl-item'+cls+'" style="border-left:2px solid '+col+'">'+
+          '<input type="checkbox"'+chk+' onchange="hisavClTick(\''+_esc(it.id)+'\',this.checked)" style="cursor:pointer">'+
+          '<span style="font-size:12px;color:'+(it.status==='done'?'#445':'#bbc')+'">'+_esc(it.label||it.id)+'</span>'+
+          '<span style="margin-left:auto;font-size:10px;padding:1px 6px;border-radius:8px;background:'+col+';color:'+(it.status==='done'?'#4f4':it.status==='unconfirmed'?'#aa8':'#fa0')+'">'+_esc(it.status||'pending')+'</span>'+
+          '</div>';
+      }).join('');
+    });
+    body.innerHTML = html || '<div style="color:#445;font-size:11px">No items match filter.</div>';
+  }
+
+  var _origLoadChecklist = window.hisavLoadChecklist;
+  window.hisavLoadChecklist = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      _clData = d.checklist || {categories:[]};
+      _renderChecklist(_clData);
+    }).catch(function(){});
+  };
+
+  window.hisavClTick = function(id, done){
+    fetch('/api/hisav/checklist/tick',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({item_id:id,done:done})})
+    .then(function(){window.hisavLoadChecklist();}).catch(function(){});
+  };
+
+  function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+})();
+
+// ── OCB-Q: CLAC Sessions v2 ───────────────────────────────────────────────────
+(function(){
+  function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  window.clacNewSessionModal = function(){
+    var m = document.getElementById('clac-modal');
+    if(m) m.style.display = m.style.display==='none'||!m.style.display ? 'block' : 'none';
+  };
+
+  var _origLoadClac = window.hisavLoadClacSessions;
+  window.hisavLoadClacSessions = function(){
+    fetch('/api/hisav/clac-sessions').then(function(r){return r.json();}).then(function(d){
+      var sessions = d.sessions || [];
+      var completed = sessions.filter(function(s){return s.status==='completed';}).length;
+      var stopped   = sessions.filter(function(s){return s.status==='stopped';}).length;
+      var total = sessions.length;
+      var rate  = total>0 ? Math.round(completed/total*100) : 0;
+      var sumEl = document.getElementById('hisav-clac-summary');
+      if(sumEl) sumEl.textContent = total+' sessions — '+completed+' completed, '+stopped+' stopped ('+rate+'% success)';
+      var cards = document.getElementById('hisav-clac-cards');
+      if(!cards) return;
+      if(!sessions.length){
+        cards.innerHTML='<div style="color:#445;font-size:11px">No sessions logged yet. Click "+ Log New Session" to start.</div>';
+        return;
+      }
+      cards.innerHTML = sessions.slice(0,30).map(function(s,idx){
+        var cls = s.status==='stopped' ? ' stopped' : s.status==='running' ? ' running' : '';
+        var col = s.status==='stopped' ? '#f66' : s.status==='running' ? '#4af' : '#6f6';
+        var badge = s.status==='stopped' ? '🛑' : s.status==='running' ? '🔵' : '✅';
+        return '<div class="clac-sess-card'+cls+'" id="clac-card-'+idx+'">'+
+          '<div class="clac-sess-meta">'+
+          '<span style="font-weight:bold;color:'+col+'">'+badge+' '+_esc(s.status||'completed')+'</span>'+
+          '<span style="color:#445">'+_esc(s.date||'')+'</span>'+
+          (s.version ? '<span style="color:#4af">'+_esc(s.version)+'</span>' : '')+
+          '</div>'+
+          '<div class="clac-sess-desc">'+_esc(s.description||s.filename||'')+'</div>'+
+          '<div style="display:flex;gap:6px;margin-top:4px">'+
+          '<button class="hisav-idea-btn" onclick="clacToggleBrief('+idx+')" title="View full session log">View brief</button>'+
+          '<button class="hisav-idea-btn" onclick="clacCopyBrief('+idx+')" title="Copy session text to clipboard">Copy brief</button>'+
+          '</div>'+
+          '<div class="clac-sess-body" id="clac-brief-'+idx+'">'+_esc(s.full_text||'No content.')+'</div>'+
+          '</div>';
+      }).join('');
+    }).catch(function(){
+      var cards = document.getElementById('hisav-clac-cards');
+      if(cards) cards.innerHTML='<div style="color:#a55;font-size:11px">Failed to load sessions.</div>';
+    });
+  };
+
+  window.clacToggleBrief = function(idx){
+    var el = document.getElementById('clac-brief-'+idx);
+    if(!el) return;
+    el.style.display = el.style.display==='block' ? 'none' : 'block';
+  };
+
+  window.clacCopyBrief = function(idx){
+    var el = document.getElementById('clac-brief-'+idx);
+    if(!el) return;
+    navigator.clipboard && navigator.clipboard.writeText(el.textContent).then(function(){
+      typeof toast==='function' && toast('Brief copied', 'ok', 2000);
+    });
+  };
+})();
+
+// ── OCB-Q: Work Checker Action Plan v2 ────────────────────────────────────────
+(function(){
+  function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
+
+  window.wcLoadActionPlanV2 = async function(){
+    var list = document.getElementById('wc-ap-v2-list');
+    var foot = document.getElementById('wc-ap-footer');
+    if(!list) return;
+    list.innerHTML = '<span style="color:#555;font-size:11px">Loading…</span>';
+    try {
+      var data = await apiFetch('/api/work-checker/action-plan');
+      var items = data.priorities || [];
+      if(!items.length){ list.innerHTML='<div style="color:#555;font-size:11px;padding:8px">No priorities found in STATUS.md.</div>'; return; }
+      list.innerHTML = items.map(function(item){
+        var text = item.priority || String(item);
+        var rank = item.rank || '';
+        return '<div class="hisav-ap-v2-item" id="wc-ap-item-'+rank+'">'+
+          '<div style="display:flex;gap:8px;align-items:flex-start">'+
+          '<div style="font-size:14px;font-weight:bold;color:#4af;min-width:20px">'+_esc(String(rank))+'</div>'+
+          '<div style="flex:1;font-size:12px;color:#bbc">'+_esc(text)+'</div>'+
+          '</div>'+
+          '<div class="hisav-ap-v2-btns">'+
+          '<button class="hisav-ap-v2-btn" onclick="wcApSendToAafl(\''+_esc(text)+'\')" title="Pre-fill AAFL goal and switch to AAFL Control tab">→ Send to AAFL</button>'+
+          '<button class="hisav-ap-v2-btn" onclick="wcApAddToKanban(\''+_esc(text)+'\')" title="Add this as a card in the Kanban TODO column">📋 Add to Kanban</button>'+
+          '<button class="hisav-ap-v2-btn hisav-ap-v2-done" onclick="wcApDone(this,\''+_esc(text)+'\')" title="Mark done and log to HISTORY.md">✓ Done</button>'+
+          '</div>'+
+          '</div>';
+      }).join('');
+      if(foot) foot.textContent = '';
+    } catch(e) {
+      list.innerHTML = '<span style="color:#a55;font-size:11px">Error: '+e.message+'</span>';
+    }
+  };
+
+  window.wcApSendToAafl = function(goal){
+    var inp = document.getElementById('aafl-goal-input') || document.querySelector('[id*="goal-input"]');
+    if(inp){ inp.value = goal; }
+    // Switch to AAFL Control tab
+    typeof goToTab === 'function' && goToTab('aafl-control');
+    typeof toast === 'function' && toast('Goal pre-filled in AAFL Control', 'ok', 3000);
+  };
+
+  window.wcApAddToKanban = async function(title){
+    try {
+      await apiFetch('/api/kanban/add-card',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:title,col:'todo'})});
+      typeof toast === 'function' && toast('Added to Kanban TODO: '+title.substring(0,40), 'ok', 3000);
+    } catch(e) { typeof toast === 'function' && toast('Error adding to Kanban: '+e.message,'error',3000); }
+  };
+
+  window.wcApDone = async function(btn, text){
+    if(!btn) return;
+    btn.disabled = true;
+    btn.textContent = '✓ Done';
+    var card = btn.closest('.hisav-ap-v2-item');
+    if(card){ card.style.opacity='0.4'; card.style.textDecoration='line-through'; }
+    try {
+      await apiFetch('/api/history/append',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({line:'Actioned priority: '+text})});
+      typeof toast === 'function' && toast('Logged to HISTORY.md', 'ok', 2000);
+    } catch(e) {}
+  };
+
+  // Mini timeline panel
+  window.wcLoadMiniTimeline = async function(){
+    var list = document.getElementById('wc-mini-tl-list');
+    if(!list) return;
+    list.innerHTML = '<span style="color:#555;font-size:11px">Loading…</span>';
+    try {
+      var data = await apiFetch('/api/timeline/full');
+      var entries = (data.entries||[]).filter(function(e){return e.status!=='planned';});
+      entries = entries.slice(-5).reverse();
+      if(!entries.length){ list.innerHTML='<div style="color:#555;font-size:11px">No timeline entries.</div>'; return; }
+      list.innerHTML = entries.map(function(e){
+        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #0f1822;cursor:pointer" onclick="goToTab(\'wccs\');hisavToggle(\'s3\')" title="Jump to Vehicle History">'+
+          '<span style="width:8px;height:8px;border-radius:50%;background:#4af;flex-shrink:0"></span>'+
+          '<span style="flex:1;font-size:12px;color:#bbc">'+_esc(e.label||'')+'</span>'+
+          '<span style="font-size:10px;color:#445">'+_esc((e.date||'').substring(5))+'</span>'+
+          '</div>';
+      }).join('');
+    } catch(e) { list.innerHTML = '<span style="color:#a55;font-size:11px">Error: '+e.message+'</span>'; }
+  };
+
+  function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
 })();
 </script>
 

@@ -1,15 +1,5 @@
 {
-  "todo": [
-    {
-      "id": "2026-05-25T00:32:26",
-      "title": "Test card",
-      "tags": [
-        "build2"
-      ],
-      "deps": [],
-      "created": "2026-05-25T00:32:26"
-    }
-  ],
+  "todo": [],
   "doing": [],
   "done": []
 }

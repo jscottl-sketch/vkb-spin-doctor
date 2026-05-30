@@ -1054,5 +1054,125 @@
     "cat": "wccs",
     "msg": "WCCS save triggered",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:00",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T12:13:01",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:01",
+    "cat": "integration",
+    "msg": "int_test_1780139581",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:02",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:09",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T12:13:10",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:10",
+    "cat": "integration",
+    "msg": "int_test_1780139590",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:10",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T12:13:11",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:11",
+    "cat": "integration",
+    "msg": "int_test_1780139591",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T12:13:12",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:21",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T15:44:21",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:21",
+    "cat": "integration",
+    "msg": "int_test_1780152261",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:22",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:38",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T15:44:58",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:58",
+    "cat": "integration",
+    "msg": "int_test_1780152298",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:44:59",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T15:51:35",
+    "cat": "wccs",
+    "msg": "WCCS save triggered",
+    "trigger": "manual"
   }
 ]

@@ -668,11 +668,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_hisav_data_get()
             elif path == "/api/hisav/screenshots":
                 self._handle_hisav_screenshots_get()
+            elif path == "/api/hisav/clac-sessions":
+                self._handle_hisav_clac_sessions_get()
             elif path.startswith("/data/screenshots/"):
                 self._handle_screenshot_static(path)
             # ── Detective endpoints ─────────────────────────────────────────────
             elif path == "/api/detective/report":
                 self._handle_detective_report_get()
+            elif path == "/api/detective/learning-db":
+                self._handle_detective_learning_db_get()
             elif path == "/api/timeline/full":
                 self._handle_timeline_full_get()
             elif path.startswith("/api/timeline/node/"):
@@ -948,6 +952,14 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_detective_run_post()
             elif path == "/api/detective/dismiss":
                 self._handle_detective_dismiss_post()
+            elif path == "/api/detective/analyse-screenshot":
+                self._handle_detective_analyse_screenshot_post()
+            elif path == "/api/timeline/add-node":
+                self._handle_timeline_add_node_post()
+            elif path == "/api/kanban/add-card":
+                self._handle_kanban_add_card_post()
+            elif path == "/api/history/append":
+                self._handle_history_append_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -8048,6 +8060,318 @@ def _handle_timeline_node_get(self, node_id):
 
 
 MCCHandler._handle_timeline_node_get = _handle_timeline_node_get  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Detective report — fallback to dated file ─────────────────────────
+_orig_detective_report_get = _handle_detective_report_get  # keep ref
+
+def _handle_detective_report_get_v2(self):
+    """GET /api/detective/report — return detective_report.json (or most recent dated)."""
+    try:
+        if _DETECTIVE_REPORT.exists():
+            data = json.loads(_DETECTIVE_REPORT.read_text(encoding="utf-8"))
+        else:
+            dated = sorted((HERE / "data").glob("detective_report_*.json"), reverse=True)
+            if dated:
+                data = json.loads(dated[0].read_text(encoding="utf-8"))
+            else:
+                data = {"last_run": None, "run_count": 0, "findings": [],
+                        "summary": {"total_findings": 0, "high": 0, "medium": 0, "low": 0}}
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_detective_report_get = _handle_detective_report_get_v2  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Detective learning DB count ───────────────────────────────────────
+_SOL_DB = HERE / "data" / "solution_database.json"
+
+def _handle_detective_learning_db_get(self):
+    """GET /api/detective/learning-db — solution count + last 5 entries."""
+    try:
+        count = 0
+        entries = []
+        # Try solution_database.json
+        if _SOL_DB.exists():
+            raw = json.loads(_SOL_DB.read_text(encoding="utf-8"))
+            sols = raw.get("solutions", raw) if isinstance(raw, dict) else raw
+            if isinstance(sols, list):
+                count = len(sols)
+                entries = [
+                    {"description": s.get("name", s.get("description", "?")),
+                     "date": s.get("last_used") or raw.get("last_updated", ""),
+                     "category": "auto-fix"}
+                    for s in sols[-5:]
+                ]
+        self._send_json({"count": count, "entries": entries})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_detective_learning_db_get = _handle_detective_learning_db_get  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: HISAV CLAC sessions from session_logs ─────────────────────────────
+def _handle_hisav_clac_sessions_get(self):
+    """GET /api/hisav/clac-sessions — scan session_logs/ for .md files."""
+    try:
+        sess_dir = HERE / "session_logs"
+        sessions = []
+        if sess_dir.exists():
+            import re as _re
+            for f in sorted(sess_dir.glob("*.md"), reverse=True):
+                name = f.stem
+                # parse date from filename e.g. 2026-05-30-cc5
+                m = _re.match(r"(\d{4}-\d{2}-\d{2})", name)
+                date_str = m.group(1) if m else ""
+                try:
+                    lines = f.read_text(encoding="utf-8", errors="replace").splitlines()
+                except Exception:
+                    lines = []
+                brief = " ".join(lines[:3]).strip()[:120]
+                # Status heuristic
+                lower_text = " ".join(lines).lower()
+                if "stopped" in lower_text or "cancelled" in lower_text:
+                    status = "stopped"
+                elif "all clear" in lower_text or "complete" in lower_text or "mot" in lower_text:
+                    status = "completed"
+                else:
+                    status = "completed"
+                sessions.append({
+                    "filename": f.name,
+                    "date": date_str,
+                    "description": brief or name,
+                    "status": status,
+                    "full_text": "\n".join(lines[:80]),
+                })
+        # Also include manually logged sessions from clac_sessions.json
+        clac_file = HERE / "data" / "clac_sessions.json"
+        if clac_file.exists():
+            try:
+                clac = json.loads(clac_file.read_text(encoding="utf-8"))
+                for s in clac.get("sessions", []):
+                    sessions.append({
+                        "filename": None,
+                        "date": s.get("date", ""),
+                        "description": s.get("description", ""),
+                        "status": s.get("status", "completed"),
+                        "version": s.get("version", ""),
+                        "full_text": s.get("reason", ""),
+                    })
+            except Exception:
+                pass
+        sessions.sort(key=lambda x: x["date"], reverse=True)
+        self._send_json({"sessions": sessions[:50]})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_hisav_clac_sessions_get = _handle_hisav_clac_sessions_get  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Detective screenshot analysis ─────────────────────────────────────
+def _handle_detective_analyse_screenshot_post(self):
+    """POST /api/detective/analyse-screenshot — multipart image → AI description."""
+    import base64, mimetypes
+    try:
+        ct = self.headers.get("Content-Type", "")
+        body = self._read_body()
+        # Parse multipart manually (minimal)
+        description = "Could not analyse image — try describing it manually"
+        confidence = "none"
+        suggested_label = "Screenshot"
+        # Save temp file
+        ss_dir = HERE / "data" / "screenshots"
+        ss_dir.mkdir(exist_ok=True)
+        temp_path = ss_dir / "temp_analysis.png"
+        # Try to extract the file bytes from multipart
+        if "multipart" in ct:
+            boundary = ct.split("boundary=")[-1].strip().encode()
+            parts = body.split(b"--" + boundary)
+            for part in parts:
+                if b"filename=" in part and b"\r\n\r\n" in part:
+                    header, _, data = part.partition(b"\r\n\r\n")
+                    data = data.rstrip(b"\r\n--")
+                    temp_path.write_bytes(data)
+                    break
+        if not temp_path.exists() or temp_path.stat().st_size == 0:
+            self._send_json({"description": description, "confidence": confidence, "suggested_label": suggested_label})
+            return
+        # Try LM Studio vision
+        try:
+            img_b64 = base64.b64encode(temp_path.read_bytes()).decode()
+            payload = json.dumps({
+                "model": "lmstudio-community/Qwen2.5-VL-32B",
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "You are a software development analyst. This is a screenshot from a coding session. In 2-3 sentences: what task was just completed? What files or interfaces are visible? Be specific."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_b64}"}}
+                    ]
+                }],
+                "max_tokens": 200,
+                "temperature": 0.3,
+            }).encode()
+            req = __import__("urllib.request", fromlist=["urlopen", "Request"]).Request(
+                "http://127.0.0.1:1234/v1/chat/completions",
+                data=payload, headers={"Content-Type": "application/json"}
+            )
+            resp = __import__("urllib.request", fromlist=["urlopen"]).urlopen(req, timeout=20)
+            result = json.loads(resp.read())
+            desc_text = result["choices"][0]["message"]["content"].strip()
+            description = desc_text
+            confidence = "high"
+            # Suggested label: first 5 words
+            words = desc_text.split()
+            suggested_label = " ".join(words[:5]) if len(words) >= 5 else desc_text[:40]
+        except Exception as lm_err:
+            # Fallback to Gemini via aafl_core
+            try:
+                import sys
+                sys.path.insert(0, str(HERE))
+                import aafl_core as _ac
+                img_b64 = base64.b64encode(temp_path.read_bytes()).decode()
+                prompt = f"You are a software development analyst. This is a screenshot from a coding session (base64 image follows — describe what you see): In 2-3 sentences: what task was just completed? What files or interfaces are visible? Be specific."
+                result = _ac.call_provider(prompt, provider="gemini", temperature=0.3)
+                if result and not result.get("error"):
+                    description = result.get("content", description)
+                    confidence = "medium"
+                    words = description.split()
+                    suggested_label = " ".join(words[:5]) if len(words) >= 5 else description[:40]
+            except Exception:
+                pass
+        self._send_json({"description": description, "confidence": confidence, "suggested_label": suggested_label})
+    except Exception as exc:
+        self._send_json({"description": "Error during analysis — try describing it manually", "confidence": "none", "suggested_label": "Screenshot", "error": str(exc)})
+
+MCCHandler._handle_detective_analyse_screenshot_post = _handle_detective_analyse_screenshot_post  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Timeline add-node ──────────────────────────────────────────────────
+def _handle_timeline_add_node_post(self):
+    """POST /api/timeline/add-node — append a node to project_timeline.json pending_items."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        label = body.get("label", "").strip()
+        date = body.get("date", _now_iso()[:10])
+        if not label:
+            self._send_json({"ok": False, "error": "label required"}, 400)
+            return
+        data = {}
+        if _TIMELINE_FULL.exists():
+            try:
+                data = json.loads(_TIMELINE_FULL.read_text(encoding="utf-8"))
+            except Exception:
+                data = {}
+        pending = data.get("pending_items", [])
+        pending.append({"label": label, "date": date, "status": "planned", "type": "user_added"})
+        data["pending_items"] = pending
+        _TIMELINE_FULL.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True, "label": label})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+MCCHandler._handle_timeline_add_node_post = _handle_timeline_add_node_post  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Kanban add-card shortcut ──────────────────────────────────────────
+def _handle_kanban_add_card_post(self):
+    """POST /api/kanban/add-card — add a card to todo column in kanban_board.json."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        title = body.get("title", "New Card").strip()
+        col = body.get("col", "todo")
+        board = self._b2_load_json(KANBAN_JSON, {"todo": [], "doing": [], "done": []})
+        card = {"id": _now_iso(), "title": title, "tags": [], "deps": [], "created": _now_iso()}
+        board.setdefault(col, []).append(card)
+        self._b2_save_json(KANBAN_JSON, board)
+        self._send_json({"ok": True, "card": card})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+MCCHandler._handle_kanban_add_card_post = _handle_kanban_add_card_post  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: History append ─────────────────────────────────────────────────────
+def _handle_history_append_post(self):
+    """POST /api/history/append — append a line to HISTORY.md."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        line = body.get("line", "").strip()
+        if not line:
+            self._send_json({"ok": False, "error": "line required"}, 400)
+            return
+        hist = HERE / "HISTORY.md"
+        ts = _now_iso()[:10]
+        entry = f"\n- [{ts}] {line}"
+        if hist.exists():
+            existing = hist.read_text(encoding="utf-8")
+            hist.write_text(existing + entry, encoding="utf-8")
+        else:
+            hist.write_text(f"# HISTORY\n{entry}", encoding="utf-8")
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+MCCHandler._handle_history_append_post = _handle_history_append_post  # type: ignore[attr-defined]
+
+
+# ── OCB-Q: Timeline full — transform project_timeline.json to entries format ──
+def _handle_timeline_full_get_v2(self):
+    """GET /api/timeline/full — transform project_timeline.json into entries[]."""
+    try:
+        if not _TIMELINE_FULL.exists():
+            self._send_json({"entries": [], "generated": None})
+            return
+        data = json.loads(_TIMELINE_FULL.read_text(encoding="utf-8"))
+        entries = []
+        # Milestones (past)
+        for m in data.get("milestones", []):
+            entries.append({
+                "id": m.get("label", ""),
+                "label": m.get("label", ""),
+                "date": m.get("date", ""),
+                "type": "milestone",
+                "is_milestone": True,
+                "status": "done",
+                "zone": "foundation",
+            })
+        # OCB nodes
+        for o in data.get("ocb_nodes", []):
+            ocb_id = o.get("id", "")
+            entries.append({
+                "id": ocb_id,
+                "label": ocb_id,
+                "date": o.get("date", ""),
+                "type": "ocb",
+                "is_milestone": False,
+                "mot_score": o.get("mot_score", ""),
+                "status": "done",
+                "zone": "ocb",
+                "phases": o.get("phases", []),
+            })
+        # Sort by date
+        entries.sort(key=lambda e: (e.get("date") or ""))
+        # Mark most recent done as "current"
+        done = [i for i, e in enumerate(entries) if e.get("status") == "done"]
+        if done:
+            entries[done[-1]]["status"] = "current"
+        # Planned from next_priorities
+        for i, p in enumerate(data.get("next_priorities", [])[:7]):
+            lbl = p if isinstance(p, str) else str(p)
+            entries.append({
+                "id": f"plan_{i}",
+                "label": lbl[:30],
+                "date": "planned",
+                "type": "planned",
+                "is_milestone": False,
+                "status": "planned",
+                "zone": "next",
+            })
+        self._send_json({"entries": entries, "generated": data.get("generated")})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_timeline_full_get = _handle_timeline_full_get_v2  # type: ignore[attr-defined]
 
 
 def main():

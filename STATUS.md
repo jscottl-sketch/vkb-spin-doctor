@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-29 (OCB-O + OCB-P defined) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-30 (HISAV + Detective + Timeline complete) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -185,6 +185,8 @@
 | OCB-N Phase 4 (ACCA Ticker) | Persistent bottom bar scrolling all ACCA codes. Click-to-expand. Auto-loads on connect. Colour coded. Auto-reload every 5min. |
 | OCB-N Phase 5 (Remove handover writes) | wccs_runner.py no longer creates VKB_SpinDoctor_Handover_vXX.md files. STATUS/HISTORY/ACCA are source of truth. |
 | OCB-N Phase 6 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
+| Scout context injection | get_project_context() added to chief_scout.py. Reads first 30 lines STATUS.md + 20 lines INDEX.md, prepends to every query as project context. --no-context flag added. Built 2026-05-29. |
+| CLACKER Protocol | clacker_router.py, clacker_safety.py, clacker_validator.py, data/session_state.json, data/ocb_status.json built. CLACH→MCC task dispatch circuit. Built 2026-05-29. |
 | OCB-K Build 2 Phase 1 (Kanban B2-01+B2-02) | Sub-task progress bar on cards. 🔒 icon + muted colour for blocked cards. Dependency chain display on card. "Blocked by" set via dep button (numbered list prompt). AAFL Goal template (replaced Research). Bulk Archive action. Bulk Move to any column (selector). b2SetDep(), b2BulkArchive(), b2BulkMoveToCol() functions. |
 | OCB-K Build 2 Phase 2 (Activity Feed B2-03) | 12 filter buttons updated to spec: AAFL Run/Scout/WCCS/Error/Warning/Info/Kanban/Medical/Storage/Provider/User/System. "Clear" button added. Export date range picker (from/to date inputs). b2ActClear() function. |
 | OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05) | Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown. |
@@ -204,7 +206,6 @@
 | Timeline full population | 37 nodes from STATUS/HISTORY/session_logs/git/ACCA. Foundation→Build Sprint→OCB Era→Next zones. Deep 4-level drill-down popup: phases+files+endpoints+ACCA codes+detective flags. Filter (All/Milestones/OCBs/Builds/Stopped/Planned) + Zoom (Compact/Normal/Expanded) + Jump to Today. Stats bar. GET /api/timeline/full, GET /api/timeline/node/{id}. |
 | Global scroll fix | All MCC tab panes: overflow-y:auto, min-height:0, padding-bottom:80px. scrollIntoView on accordion expand. Thin scrollbar globally. HISAV pane overflow:visible removed. |
 | HISAV restructured 9 sections | Screenshots moved to own Section 8. Work Checker moved from Health Suite to Section 9. Health Suite Work Checker replaced with redirect notice. hisavLoadGallery alias added. 109/109 MOT ALL CLEAR 2026-05-30. |
-| OCB-H
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

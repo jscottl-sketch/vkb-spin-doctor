@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-05-30T12:13:56.949346",
+  "generated_at": "2026-05-30T15:45:28.676303",
   "providers": [
     {
       "id": "lmstudio_coder",
       "label": "LM Studio Coder 32B",
       "tier": 1,
       "status": "DEAD",
-      "response_time": 0.43,
+      "response_time": 0.26,
       "quality_pass": false,
       "score": 0,
-      "reputation_pct": 37.5,
-      "total_calls": 40,
+      "reputation_pct": 36.6,
+      "total_calls": 41,
       "error": "litellm.BadRequestError: OpenAIException - No models loaded. Please load a model in the developer page or use the 'lms load' command."
     },
     {
@@ -18,11 +18,11 @@
       "label": "LM Studio VL 32B",
       "tier": 1,
       "status": "DEAD",
-      "response_time": 46.35,
+      "response_time": 46.25,
       "quality_pass": false,
       "score": 0,
-      "reputation_pct": 40.0,
-      "total_calls": 40,
+      "reputation_pct": 39.0,
+      "total_calls": 41,
       "error": "litellm.Timeout: APITimeoutError - Request timed out. Error_str: Request timed out."
     },
     {
@@ -30,11 +30,11 @@
       "label": "LM Studio DeepSeek R1",
       "tier": 1,
       "status": "DEAD",
-      "response_time": 12.69,
+      "response_time": 33.97,
       "quality_pass": false,
       "score": 0,
-      "reputation_pct": 40.0,
-      "total_calls": 40,
+      "reputation_pct": 39.0,
+      "total_calls": 41,
       "error": "litellm.BadRequestError: OpenAIException - Error code: 400 - {'error': 'Model unloaded.'}"
     },
     {
@@ -42,23 +42,23 @@
       "label": "LM Studio Phi-4 14B",
       "tier": 1,
       "status": "DEAD",
-      "response_time": 0.01,
+      "response_time": 0.72,
       "quality_pass": false,
       "score": 0,
-      "reputation_pct": 40.0,
-      "total_calls": 40,
-      "error": "litellm.BadRequestError: OpenAIException - No models loaded. Please load a model in the developer page or use the 'lms load' command."
+      "reputation_pct": 39.0,
+      "total_calls": 41,
+      "error": "litellm.BadRequestError: OpenAIException - Error code: 400 - {'error': 'Model is unloaded.'}"
     },
     {
       "id": "cerebras",
       "label": "Cerebras GPT-OSS 120B",
       "tier": 2,
       "status": "GREEN",
-      "response_time": 0.32,
+      "response_time": 0.64,
       "quality_pass": false,
       "score": 60,
-      "reputation_pct": 95.0,
-      "total_calls": 40,
+      "reputation_pct": 95.1,
+      "total_calls": 41,
       "error": null
     },
     {
@@ -90,11 +90,11 @@
       "label": "Gemini 2.5 Flash",
       "tier": 2,
       "status": "GREEN",
-      "response_time": 1.03,
+      "response_time": 0.78,
       "quality_pass": true,
       "score": 100,
-      "reputation_pct": 47.5,
-      "total_calls": 40,
+      "reputation_pct": 48.8,
+      "total_calls": 41,
       "error": null
     },
     {
@@ -102,11 +102,11 @@
       "label": "Mistral Codestral",
       "tier": 2,
       "status": "GREEN",
-      "response_time": 0.23,
+      "response_time": 0.28,
       "quality_pass": true,
       "score": 100,
       "reputation_pct": 100.0,
-      "total_calls": 40,
+      "total_calls": 41,
       "error": null
     },
     {
@@ -114,11 +114,11 @@
       "label": "OpenRouter Auto",
       "tier": 3,
       "status": "DEAD",
-      "response_time": 0.33,
+      "response_time": 0.31,
       "quality_pass": false,
       "score": 0,
-      "reputation_pct": 15.0,
-      "total_calls": 40,
+      "reputation_pct": 14.6,
+      "total_calls": 41,
       "error": "litellm.AuthenticationError: AuthenticationError: OpenrouterException - {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
     },
     {
@@ -126,11 +126,11 @@
       "label": "HuggingFace Mistral-7B",
       "tier": 3,
       "status": "DEAD",
-      "response_time": 0.76,
+      "response_time": 0.46,
       "quality_pass": false,
       "score": 0,
       "reputation_pct": 0.0,
-      "total_calls": 40,
+      "total_calls": 41,
       "error": "litellm.AuthenticationError: HuggingfaceException - {\"error\":\"User Access Token \\\"aafl\\\" is expired\"}"
     },
     {

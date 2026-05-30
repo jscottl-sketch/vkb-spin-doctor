@@ -1546,3 +1546,116 @@
 [2026-05-30 00:00:23] OK   code     cerebras             $0.00090  4.51s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
 [2026-05-30 09:44:45] START  dry_run=False  allow_paid=False
 [2026-05-30 09:44:55] OK   batch    mistral_code         $0.00926  10.83s  "You are optimising a software project's Mission Control task"
+[2026-05-30 11:56:36] START  dry_run=False  allow_paid=False
+[2026-05-30 11:56:49] OK   batch    mistral_code         $0.00882  13.19s  "You are optimising a software project's Mission Control task"
+[2026-05-30 12:12:46] START  dry_run=False  allow_paid=False
+[2026-05-30 12:12:51] START  dry_run=False  allow_paid=False
+[2026-05-30 12:12:51] START  dry_run=False  allow_paid=False
+[2026-05-30 12:12:54] START  dry_run=False  allow_paid=False
+[2026-05-30 12:12:54] START  dry_run=False  allow_paid=False
+[2026-05-30 12:12:56] OK   batch    mistral_code         $0.00110  1.44s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:12:56] OK   batch    mistral_code         $0.00107  1.78s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:12:59] OK   batch    mistral_code         $0.00850  13.72s  "You are optimising a software project's Mission Control task"
+[2026-05-30 12:13:03] OK   reason   gemini_flash         $0.00263  7.08s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:13:03] OK   reason   gemini_flash         $0.00263  7.68s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:13:06] START  dry_run=False  allow_paid=False
+[2026-05-30 12:13:19] OK   batch    mistral_code         $0.00739  13.35s  "You are optimising a software project's Mission Control task"
+[2026-05-30 12:13:37] OK   code     cerebras             $0.00089  34.13s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:13:39] OK   code     cerebras             $0.00090  35.4s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:13:41] START  dry_run=False  allow_paid=False
+[2026-05-30 12:13:42] START  dry_run=False  allow_paid=False
+[2026-05-30 12:13:44] OK   batch    mistral_code         $0.00113  1.26s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:13:50] OK   reason   gemini_flash         $0.00263  6.02s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:13:51] OK   code     cerebras             $0.00090  0.89s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:13:52] START  dry_run=False  allow_paid=False
+[2026-05-30 12:13:54] START  dry_run=False  allow_paid=False
+[2026-05-30 12:13:55] OK   batch    mistral_code         $0.00113  1.52s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:14:01] OK   reason   gemini_flash         $0.00263  5.89s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:14:02] OK   code     cerebras             $0.00086  1.03s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:14:04] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:06] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:08] OK   batch    mistral_code         $0.00065  1.49s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:14:13] OK   reason   gemini_flash         $0.00264  5.75s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:14:15] OK   code     cerebras             $0.00086  1.23s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:14:17] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:18] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:20] OK   batch    mistral_code         $0.00115  1.6s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:14:26] OK   reason   gemini_flash         $0.00263  6.04s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:14:27] OK   code     cerebras             $0.00086  1.54s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:14:29] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:31] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:32] OK   batch    mistral_code         $0.00068  1.43s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:14:38] OK   reason   gemini_flash         $0.00263  5.81s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:14:39] OK   code     cerebras             $0.00086  0.92s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:14:41] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:43] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:44] OK   batch    mistral_code         $0.00069  1.43s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:14:51] OK   reason   gemini_flash         $0.00263  6.29s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:14:51] OK   code     cerebras             $0.00045  0.62s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:14:53] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:55] START  dry_run=False  allow_paid=False
+[2026-05-30 12:14:56] OK   batch    mistral_code         $0.00070  1.56s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:15:02] OK   reason   gemini_flash         $0.00264  5.86s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:15:53] OK   code     cerebras             $0.00086  50.66s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 12:15:55] START  dry_run=False  allow_paid=False
+[2026-05-30 12:15:56] START  dry_run=False  allow_paid=False
+[2026-05-30 12:15:58] OK   batch    mistral_code         $0.00061  1.53s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 12:16:04] OK   reason   gemini_flash         $0.00264  6.19s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 12:16:05] OK   code     cerebras             $0.00090  1.09s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:44:06] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:12] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:13] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:15] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:15] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:16] OK   batch    mistral_code         $0.00110  1.32s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:44:16] OK   batch    mistral_code         $0.00818  10.08s  "You are optimising a software project's Mission Control task"
+[2026-05-30 15:44:16] OK   batch    mistral_code         $0.00110  1.35s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:44:24] OK   reason   gemini_flash         $0.00263  7.88s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:44:26] START  dry_run=False  allow_paid=False
+[2026-05-30 15:44:26] OK   reason   gemini_flash         $0.00263  10.03s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:44:36] OK   batch    mistral_code         $0.00814  10.34s  "You are optimising a software project's Mission Control task"
+[2026-05-30 15:45:01] OK   code     mistral_code         $0.00226  37.31s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:45:03] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:03] OK   code     mistral_code         $0.00206  36.69s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:45:05] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:06] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:07] OK   batch    mistral_code         $0.00110  1.23s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:45:15] OK   batch    mistral_code         $0.00772  12.58s  "You are optimising a software project's Mission Control task"
+[2026-05-30 15:45:30] OK   reason   gemini_flash         $0.00263  22.2s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:45:31] OK   code     cerebras             $0.00090  1.0s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:45:33] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:34] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:35] OK   batch    mistral_code         $0.00054  1.32s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:45:41] OK   reason   gemini_flash         $0.00263  5.71s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:45:42] OK   code     cerebras             $0.00090  0.91s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:45:44] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:45] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:48] OK   batch    mistral_code         $0.00076  2.22s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:45:53] OK   reason   gemini_flash         $0.00264  5.7s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:45:54] OK   code     cerebras             $0.00087  0.9s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:45:56] START  dry_run=False  allow_paid=False
+[2026-05-30 15:45:58] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:00] OK   batch    mistral_code         $0.00096  1.24s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:46:06] OK   reason   gemini_flash         $0.00262  6.23s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:46:08] OK   code     cerebras             $0.00092  1.95s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:46:10] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:11] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:12] OK   batch    mistral_code         $0.00063  1.14s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:46:13] OK   reason   cerebras             $0.00088  1.27s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:46:17] OK   code     mistral_code         $0.00281  3.17s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:46:18] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:20] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:21] OK   batch    mistral_code         $0.00097  1.11s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:46:28] OK   reason   gemini_flash         $0.00263  6.66s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:46:29] OK   code     cerebras             $0.00085  0.88s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'
+[2026-05-30 15:46:31] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:32] START  dry_run=False  allow_paid=False
+[2026-05-30 15:46:33] OK   batch    mistral_code         $0.00051  1.13s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:47:29] ERR  reason   none                 $0.00000  56.12s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:47:29] START  dry_run=False  allow_paid=False
+[2026-05-30 15:47:30] OK   batch    mistral_code         $0.00033  0.37s  'Is this a real AI chat session? Reply YES or NO only.\n\n--- T'
+[2026-05-30 15:49:31] START  dry_run=False  allow_paid=False
+[2026-05-30 15:49:32] START  dry_run=False  allow_paid=False
+[2026-05-30 15:49:33] OK   batch    mistral_code         $0.00048  1.1s  'Goal: not json at all }{\n\nSources found by parallel scouts:\n'
+[2026-05-30 15:49:35] OK   reason   cerebras             $0.00084  1.39s  'Plan how to achieve this goal step by step: not json at all '
+[2026-05-30 15:49:36] OK   code     cerebras             $0.00114  1.32s  'Execute this plan to achieve the goal.\n\nGoal: not json at al'

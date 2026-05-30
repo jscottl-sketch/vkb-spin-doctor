@@ -72,3 +72,8 @@
 | 57 | 2026-05-29 | v70 -> v71 | OCB-P: clacker_router.py, session_state.json unified state, Command Bar + Attention Surface cockpit, Provider Diagnosis, NEEDS_OPUS detection + Retry failed phases, aafl_core 503 retry + provider_timeout. 108/108 MOT ALL CLEAR. | None |
 | 58 | 2026-05-30 | v71 -> v72 | OCB-P v72 fixes: GET /api/provider-diagnosis endpoint, phLoadDetail now loads diagnosis errors for hover tooltips, sidebar Quick Stats updated from session_state every 20s. 108/108 MOT ALL CLEAR. | None |
 | 59 | 2026-05-30 | v72 -> v73 | HISAV tab: WCCS tab renamed HISAV, 7-section accordion (Save & Handoff/Idea Dump/Vehicle History/Checklist Health/Idea Buffer/Action Plan/CLAC Sessions), 5 DTA data files, 8 HISAV endpoints, handover auto-archive wired. 109/109 MOT ALL CLEAR. | HISAV = History + Ideas + Save. DTA = Data As Truth Architecture. |
+| 60 | 2026-05-30 | legacy | {} | None |
+| 61 | 2026-05-30 | legacy | test chat text for recovery check | None |
+| 62 | 2026-05-30 | legacy | {} | None |
+| 63 | 2026-05-30 | legacy | test chat text for recovery check | None |
+| 64 | 2026-05-30 | legacy | test chat text for recovery check | None |

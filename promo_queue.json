@@ -1123,5 +1123,104 @@
     "status": "pending",
     "created_at": "2026-05-30T00:00:23.737125",
     "updated_at": null
+  },
+  {
+    "item_id": "2cb46130",
+    "content": "**Execution of the “not json at all }{” plan**\n\nBelow is a complete, self‑contained set of actions that will replace every JSON‑based data exchange in the three GitHub pull‑requests (keyboard/joystick REST API, Gameport joystick support, and joystick‑timeout detection) with a non‑JSON protocol. The chosen replacement is **Protocol Buffers (protobuf)** because it is:\n\n* Compact (binary) – no human‑readable JSON payloads.\n* Fully typed – eliminates runtime JSON schema validation.\n* Widely supporte",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:13:37.526224",
+    "updated_at": null
+  },
+  {
+    "item_id": "5f487fc3",
+    "content": "**Execution – Re‑engineering the “no‑JSON” plan**\n\nBelow is a concrete, end‑to‑end implementation guide that replaces every JSON dependency in the three GitHub pull‑requests with non‑JSON alternatives (YAML, XML, and Protocol Buffers). The steps cover API redesign, data‑model migration, UI/config‑tool changes, testing, and documentation. No JSON is used anywhere in the final product.\n\n---  \n\n## 1. Global Strategy: Choose the replacement formats  \n\n| Original JSON use | Replacement format | Why i",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:13:51.109630",
+    "updated_at": null
+  },
+  {
+    "item_id": "b3c7c109",
+    "content": "**Executive Summary**\n\nThe objective is to eliminate all JSON usage from the three pull‑request‑driven features and replace it with a binary or text‑based protocol that carries the same semantic payload without the overhead of JSON parsing/validation. The solution consists of:\n\n* Defining a compact, schema‑driven binary format (Protocol Buffers) for all messages that cross the network boundary.  \n* Updating the REST endpoints to accept and return raw binary (`application/octet-stream`) instead o",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:14:02.913414",
+    "updated_at": null
+  },
+  {
+    "item_id": "5cafb71d",
+    "content": "**Executive Summary**  \nThe objective is to replace every JSON‐based payload in the existing “keyboard and joystick” REST API with a non‑JSON representation while preserving the same functional contract (U64‑class input injection, validation, and error handling). The following deliverable contains a complete, ready‑to‑copy‑paste implementation that:\n\n1. **Eliminates JSON completely** – no `application/json` content‑type is accepted or produced.  \n2. **Provides an alternative wire format** – a co",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:14:15.204193",
+    "updated_at": null
+  },
+  {
+    "item_id": "6f62c478",
+    "content": "**Objective:** Eliminate all JSON dependencies from the code‑base and API surface while preserving the functionality described in the Chief Scout briefing.\n\n---\n\n## 1. Audit Existing JSON Usage  \n\n| Area | Current JSON Touch‑point | Action |\n|------|--------------------------|--------|\n| `GET /v1/machine:input` | Returns a JSON object describing the current keyboard/joystick state | Replace with a binary payload (e.g., Protocol Buffers or a compact custom binary layout). |\n| `POST /v1/machine:in",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:14:39.670326",
+    "updated_at": null
+  },
+  {
+    "item_id": "87f4e4be",
+    "content": "**Redesign Overview – Eliminating JSON Completely**\n\nThe three GitHub pull‑requests listed in the Chief Scout briefing all rely on JSON as the transport format for configuration, commands, and telemetry.  To meet the “not JSON at all” goal we will replace every JSON payload with a binary‑oriented protocol that can be parsed with deterministic, low‑overhead code.  The following redesign outlines the concrete changes required for each component, the common binary format we will adopt, and the migr",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-30T12:15:53.161367",
+    "updated_at": null
+  },
+  {
+    "item_id": "e515e265",
+    "content": "**Re‑engineered design – zero JSON**\n\nBelow is a complete, self‑contained specification for the three features described in the brief, rewritten so that **no JSON payloads or JSON‑based pars‑ing are used anywhere**. All communication is expressed as plain‑text, URL‑encoded form data, binary protobuf, or simple HTTP headers. The design is ready for implementation and testing.\n\n---\n\n## 1. Keyboard + Joystick Injection API (no JSON)\n\n### 1.1. Overview\n- **Protocol:** HTTP 1.1 (or HTTPS)  \n- **Conte",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-30T15:45:31.210644",
+    "updated_at": null
+  },
+  {
+    "item_id": "fb2153a7",
+    "content": "**Overall Strategy**\n\nThe three objectives can be tackled in a single repository change set.  \nAll new logic will be placed under `src/input/` for the input‑injection service and under `src/simulator_xplane/` for the X‑Plane SITL backend.  \nThe REST interface will accept plain‑text payloads (or binary) instead of JSON to satisfy the “not JSON at all” requirement.  \n\n---  \n\n### 1. Keyboard & Joystick Input Injection via REST (No JSON)\n\n**Endpoint design**\n\n| Method | Path                     | Co",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T15:45:42.559534",
+    "updated_at": null
+  },
+  {
+    "item_id": "af5bbcef",
+    "content": "**Objective** – Remove JSON from the three GitHub pull‑request contexts listed in the briefing, replacing it with alternative data‑exchange mechanisms while preserving the same functional behavior.\n\n---\n\n## 1. Keyboard and Joystick REST API (1541ultimate)\n\n### Current Situation\n- Two endpoints: `GET /v1/machine:input` and `POST /v1/machine:input`.\n- The `POST` endpoint expects a JSON payload describing the U64‑class keyboard/joystick injection command.\n\n### Replacement Strategy\n| Step | Action |",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T15:45:54.776934",
+    "updated_at": null
+  },
+  {
+    "item_id": "aa791d15",
+    "content": "**Execution of the Planned Enhancements**  \n\nBelow is a concrete, step‑by‑step record of everything that must be done to fulfil the two primary objectives in the plan: (1) expose a keyboard‑/joystick‑injection REST API, and (2) add joystick‑unresponsiveness timeout detection together with full‑screen virtual controller support. The instructions assume the codebase uses a typical modern stack (e.g., a Python/Flask or Node/Express service, a PostgreSQL DB, Docker for dev/test environments, and Git",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.0/10",
+    "status": "pending",
+    "created_at": "2026-05-30T15:46:08.195273",
+    "updated_at": null
+  },
+  {
+    "item_id": "28c378f8",
+    "content": "**Implementation Blueprint – “not json at all”**  \n\nBelow is a concrete, end‑to‑end set of actions you can follow to add the three capabilities described in the Chief Scout briefing.  The steps are written as plain‑text instructions with code snippets (Go is used as the reference language because the existing server is written in Go, but the same ideas translate to any backend stack).  No JSON payloads are shown – only the implementation details.\n\n---\n\n## 1️⃣ Repository preparation\n\n```\n# 1. Clo",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-30T15:46:29.138230",
+    "updated_at": null
   }
 ]

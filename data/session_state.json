@@ -6,19 +6,19 @@
     "description": "not json at all }{",
     "subsystem": "loop_manager",
     "status": "running",
-    "started_at": "2026-05-30T00:00:09"
+    "started_at": "2026-05-30T15:49:31"
   },
   "last_result": {
-    "task": "",
-    "status": "",
+    "task": "not json at all }{",
+    "status": "max_iterations",
     "mot_score": "",
     "files_changed": [],
-    "completed_at": ""
+    "completed_at": "2026-05-30T15:47:29"
   },
   "provider_health": {
-    "healthy_count": 0,
+    "healthy_count": 3,
     "total": 14,
-    "last_checked": ""
+    "last_checked": "2026-05-30T15:45:28"
   },
   "watchdog_status": "OFF",
   "last_save": {

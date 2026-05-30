@@ -1,46 +1,42 @@
-# SESUM — 2026-05-29 (evening)
+SESUM — 30 May 2026
+Session: HISAV Architecture + Detective + Timeline
+What happened:
 
-## DONE THIS SESSION
-- OCB-O built: ocb_runner.py 503 lines, MCC panel, 5 API endpoints
-- First OCB Runner live test: pipeline worked (Codestral parsed +
-  extracted + edited + MOT exit 0) BUT code broke HTML — rolled back
-  via git checkout -- mission_control.html
-- Combined Foundation Sprint CLAC block ran (builds 2-6 in one):
-  Provider health fixes, session_state.json, clacker_router.py,
-  command bar + attention surface, CLACKER live wiring
-- MOT: exits 0 (forced-pass mode — verify 108/108 count next session)
-- WCCS cc23 written by CLAC autonomously (not requested — noted)
+Ran last night's CLAC (OCB-P v72) — completed successfully, MOT PASS, 3 remaining gaps fixed (provider hover errors, sidebar quick stats). WCCS done.
+Identified VKB_SpinDoctor_Handover_v72.md created in root — violates OCB-N Phase 5 rule. Handover auto-archive CLAC written but not yet run (folded into bigger OCB).
+Full architecture brainstorm for HISAV tab — replaces WCCS tab. 9 accordion sections: Save & Handoff, Idea Dump, Vehicle History Timeline, Checklist Health, Idea Buffer, Action Plan, CLAC Sessions, Screenshots, Work Checker (moved from Health Suite).
+DTA (Database Timeline Action plan) designed as new source of truth — STATUS.md becomes an auto-generated output, not hand-maintained.
+FFUEM confirmed (Fluid Flexible Updatable Editable Modular) — updated from FFUE.
+First HISAV CLAC ran — partial success. Tab renamed, Save & Handoff built, rest bugged out (context limit). Fix CLAC written and run — sections 2-7 added.
+Scott reported scroll issues — content cut off when accordions open. Global scroll fix added to next OCB.
+Detective system designed (hisav_detective.py) — 6 strategies: ghost files, dead endpoints, hollow endpoints, STATUS contradictions, session log cross-check, DOM phantom UI.
+Timeline showcase built in chat (Visualizer) — Scott wants it significantly upgraded: fully populated from all project data (40+ nodes), 4-level nested drill-downs, filter/zoom controls, jump-to-tab buttons.
+ACCA_REFERENCE.md created (47 codes with descriptions) — needs uploading to Project Files.
+Microsoft Store Python installed by mistake — must uninstall immediately.
 
-## NEW RULES LOGGED
-- ONE CLAC/OCB block always — no splits without Scott's permission
-- Safety-critical exception only — must state reason and ask first
+New ACCA codes this session:
 
-## NEW ACCA CODES
-- RRCLACH = Request from CLACH to MCC (first in chain)
-- CLACHR = Report back from MCC to CLACH
-- CLACRB = Scrutiniser/validator (loops or exits)
-- RRBS = Random Review Brainstorm
-- DND = Drag and Drop
-- CLACKER PROTOCOL = full delegation system CLACH → MCC subsystems
+HISAV = History Save
+DTA = Database Timeline Action plan
+QCB = Quality Control Buffer
+FFUEM = Fluid Flexible Updatable Editable Modular (updated from FFUE)
 
-## KEY FILES CREATED/CHANGED
-- ocb_runner.py (503 lines)
-- clacker_safety.py
-- clacker_validator.py
-- clacker_router.py
-- data/session_state.json
-- data/ocb_status.json
-- mcc_server.py (new endpoints)
-- mission_control.html (command bar + attention surface)
+CLAC blocks given:
 
-## ALP NOTES
-- Opus 4.8 used correctly this session for architecture/scrutiny
-- Screenshots processed unnecessarily early session — corrected
-- CLAC autonomous WCCS = minor ALP violation (free tier but still)
-- Rule: ONE block enforced from here
+Handover auto-archive (parked — folded into bigger OCB)
+HISAV full build (partial completion — Section 1 only)
+HISAV sections 2-7 fix (run — confirmed working with scroll issue)
+Detective + Timeline + Scroll fix OCB (given — not yet run)
 
-## NEXT
-1. Verify MOT is genuine 108/108 (not forced-pass)
-2. Test OCB Runner with safety layer active
-3. Star Citizen v0.2 benchmark
-4. WCCS properly when ready
+Still pending this session:
+
+Uninstall Microsoft Store Python
+Run the Detective + Timeline OCB (Box 3 ready to paste)
+Upload ACCA_REFERENCE.md to Project Files
+Verify HISAV scroll works after global fix
+
+ALP notes:
+
+Scott on Opus 4.8 for architecture portion (correct), switched to Sonnet for build CLACs (correct)
+Mission statement pasted in first message — flagged as ALP waste, explained why
+One screenshot sent (OCB-P completion) — justified and necessary
