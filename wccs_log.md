@@ -78,3 +78,4 @@
 | 63 | 2026-05-30 | legacy | test chat text for recovery check | None |
 | 64 | 2026-05-30 | legacy | test chat text for recovery check | None |
 | 65 | 2026-05-30 | v73 -> v74 | OCB-Q Combined (Q2+Q3): detective Panel A progress bars + task queue + WENTO, Panel B inline drill-downs, Panel A→B cross-link, STORM feed (storm_bridge.py + /api/storm/*), Panel E rebuilt (Ctrl+V paste guard), timeline PAST/PRESENT/PLANNED zones + TODAY marker. 11 new endpoints. 109/109 MOT ALL CLEAR. | STORM = Selective Targeted Output Remove Merge |
+| 66 | 2026-05-30 | v74 -> v75 | HISAV post-WCCS checklist added to sticky toolbar (4-step pill row: Run WCCS → Post SESUM → Update Project Files in Claude with copy-path btn → Start new chat link to claude.ai). Timeline popup fixed: position:fixed → position:absolute within #htl-tl-wrapper. 109/109 MOT ALL CLEAR. | None |

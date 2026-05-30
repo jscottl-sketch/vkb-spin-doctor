@@ -1174,5 +1174,23 @@
     "cat": "wccs",
     "msg": "WCCS save triggered",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T17:49:52",
+    "cat": "kanban",
+    "msg": "Moved card c1780159695642 → todo",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T17:51:08",
+    "cat": "kanban",
+    "msg": "Moved card c1780159721454 → doing",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T17:51:16",
+    "cat": "kanban",
+    "msg": "Moved card c1780159741221 → done",
+    "trigger": "manual"
   }
 ]

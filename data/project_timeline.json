@@ -984,6 +984,12 @@
     {
       "component": "CLACR system",
       "notes": "MCC↔CLACH language protocol — designed, not yet built"
+    },
+    {
+      "label": "Screenshot",
+      "date": "2026-05-30",
+      "status": "planned",
+      "type": "user_added"
     }
   ],
   "next_priorities": [
