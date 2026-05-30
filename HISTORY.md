@@ -2439,4 +2439,18 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 
 **Files changed:** ocb_runner.py (new), mcc_server.py, STATUS.md, HISTORY.md, ACCA.md
 
+---
+
+### 2026-05-30 — OCB: HISAV tab + DTA data files + handover auto-archive v73
+
+**What was built:**
+- PHASE 1: Created data/master_checklist.json (5 categories, 25 items), data/idea_buffer.json, data/mot_gaps.json
+- PHASE 2: archive_old_handovers() already present in aafl_wccs.py — confirmed wired and root clean
+- PHASE 3: Added 7 HISAV endpoints to mcc_server.py: GET /api/hisav/data, POST /api/hisav/idea, POST /api/hisav/idea/action, POST /api/hisav/checklist/tick, POST /api/hisav/clac-session, POST /api/hisav/screenshot, GET /api/hisav/screenshots. Plus GET /data/screenshots/<file> static serving.
+- PHASE 4: Renamed WCCS tab button to HISAV. Added .tl-detail-popup CSS + full HISAV accordion CSS. Replaced tab content with 7-section accordion: (1) Save & Handoff (wraps all WCCS content), (2) Idea Dump (expanded, Ctrl+Enter), (3) Vehicle History (timeline nodes, popup detail), (4) Checklist Health (progress bars, click-to-tick), (5) Idea Buffer (age-colour cards, dismiss/promote/done), (6) Action Plan (top 6 NEXT PRIORITIES + Delegate to AAFL), (7) CLAC Sessions (logger + screenshot intake sub-panels).
+- PHASE 4B: CLAC Sessions section with completed/stopped logger, timeline integration. Screenshot drag-drop intake, gallery, popup. data/clac_sessions.json + data/screenshot_log.json created.
+- PHASE 5: MOT 109/109 ALL CLEAR
+
+**Files changed:** mission_control.html, mcc_server.py, data/master_checklist.json (new), data/idea_buffer.json (new), data/mot_gaps.json (new), data/clac_sessions.json (new), data/screenshot_log.json (new), STATUS.md, HISTORY.md
+
 <!-- END_OF_FILE -->

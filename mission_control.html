@@ -76,6 +76,75 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .tab-pane.active{display:flex;flex-direction:column}
 .pane-scroll{flex:1;overflow-y:auto;padding:20px 16px 16px}
 
+/* ── HISAV ACCORDION ── */
+.hisav-accordion{display:flex;flex-direction:column;gap:6px;padding:8px 0}
+.hisav-section{border:1px solid #1e2a3a;border-radius:7px;overflow:visible;background:#0a0d12}
+.hisav-hdr{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;user-select:none;background:#0d1520;border-radius:6px 6px 0 0;transition:background .15s}
+.hisav-hdr:hover{background:#111d2e}
+.hisav-drag{color:#444;font-size:14px;cursor:grab;flex-shrink:0}
+.hisav-title{flex:1;font-size:13px;font-weight:bold;color:#ccd}
+.hisav-chevron{font-size:11px;color:#556;transition:transform .25s;flex-shrink:0}
+.hisav-chevron.open{transform:rotate(180deg);color:#4af}
+.hisav-min{background:none;border:none;color:#445;font-size:13px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0}
+.hisav-min:hover{color:#aaa}
+.hisav-body{overflow:hidden;transition:max-height .28s ease;background:#0a0d12;border-radius:0 0 6px 6px}
+.hisav-body-inner{padding:12px 14px}
+/* idea dump */
+.hisav-idea-ta{width:100%;height:90px;background:#080c10;border:1px solid #2a3a4a;color:#ccd;font:13px 'Segoe UI',Arial,sans-serif;padding:8px;border-radius:5px;resize:vertical;box-sizing:border-box}
+.hisav-idea-ta:focus{outline:none;border-color:#4af}
+.hisav-tag-input{background:#080c10;border:1px solid #2a3a4a;color:#aab;padding:5px 8px;border-radius:5px;font:12px inherit;width:220px}
+.hisav-save-btn{background:#1a4a2a;border:1px solid #2a7a3a;color:#6f6;padding:7px 18px;border-radius:5px;cursor:pointer;font:bold 12px inherit}
+.hisav-save-btn:hover{background:#1d6030}
+/* timeline nodes */
+.hisav-tl-wrap{overflow-x:auto;padding:12px 0 16px}
+.hisav-tl{display:flex;align-items:center;gap:0;position:relative;min-width:max-content}
+.hisav-tl-node{display:flex;flex-direction:column;align-items:center;cursor:pointer;position:relative;padding:0 14px}
+.hisav-tl-dot{width:14px;height:14px;border-radius:50%;border:2px solid;flex-shrink:0;transition:transform .15s}
+.hisav-tl-node:hover .hisav-tl-dot{transform:scale(1.3)}
+.hisav-tl-label{font-size:10px;color:#778;margin-top:5px;white-space:nowrap;max-width:80px;text-align:center;overflow:hidden;text-overflow:ellipsis}
+.hisav-tl-line{width:28px;height:2px;background:#1e2a3a;flex-shrink:0}
+/* checklist */
+.hisav-cat{margin-bottom:12px}
+.hisav-cat-title{font-size:11px;font-weight:bold;color:#7a9;letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.hisav-prog-bar{height:4px;background:#1a2a1a;border-radius:2px;margin-bottom:8px;overflow:hidden}
+.hisav-prog-fill{height:100%;background:#2a8a3a;border-radius:2px;transition:width .3s}
+.hisav-item{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:4px;cursor:pointer}
+.hisav-item:hover{background:#111820}
+.hisav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hisav-item-label{font-size:12px;color:#bbc;flex:1}
+.hisav-status-sel{background:#080c10;border:1px solid #2a3a4a;color:#aab;border-radius:3px;font:11px inherit;padding:2px 4px}
+/* idea buffer cards */
+.hisav-idea-card{background:#0d1318;border-left:3px solid #2a4a2a;border-radius:0 5px 5px 0;padding:8px 10px;margin-bottom:7px}
+.hisav-idea-card.aging{border-left-color:#7a5a10}
+.hisav-idea-card.stale{border-left-color:#6a1a1a}
+.hisav-idea-meta{font-size:10px;color:#556;margin-bottom:4px}
+.hisav-idea-text{font-size:12px;color:#bbc;margin-bottom:6px}
+.hisav-idea-btns{display:flex;gap:6px}
+.hisav-idea-btn{background:#111820;border:1px solid #2a3a4a;color:#778;padding:3px 8px;border-radius:4px;cursor:pointer;font:11px inherit}
+.hisav-idea-btn:hover{color:#aac;border-color:#4af}
+/* action plan */
+.hisav-ap-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #111820}
+.hisav-ap-num{font-size:14px;font-weight:bold;color:#4af;min-width:20px;flex-shrink:0}
+.hisav-ap-text{flex:1;font-size:12px;color:#bbc}
+.hisav-ap-btn{background:#1a2a3a;border:1px solid #2a4a6a;color:#4af;padding:3px 8px;border-radius:4px;cursor:pointer;font:11px inherit;white-space:nowrap}
+/* CLAC session */
+.hisav-clac-btns{display:flex;gap:12px;margin-bottom:12px}
+.hisav-clac-done{background:#0a2a0a;border:2px solid #2a6a2a;color:#6f6;padding:10px 20px;border-radius:6px;cursor:pointer;font:bold 13px inherit;flex:1}
+.hisav-clac-stop{background:#2a0a0a;border:2px solid #6a2a2a;color:#f66;padding:10px 20px;border-radius:6px;cursor:pointer;font:bold 13px inherit;flex:1}
+.hisav-clac-card{padding:8px 10px;border-radius:5px;border-left:3px solid #2a4a2a;background:#0d1318;margin-bottom:6px}
+.hisav-clac-card.stopped{border-left-color:#6a2a2a}
+/* screenshot upload */
+.hisav-drop-zone{border:2px dashed #2a3a4a;border-radius:6px;padding:18px;text-align:center;color:#556;cursor:pointer;transition:border-color .15s;margin-bottom:10px}
+.hisav-drop-zone:hover,.hisav-drop-zone.drag-over{border-color:#4af;color:#4af}
+.hisav-thumb{width:72px;height:54px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid #2a3a4a}
+.hisav-gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+/* tl-detail-popup */
+.tl-detail-popup{position:fixed;z-index:9999;background:var(--bg-card,#0d1520);border:.5px solid #2a3a4a;border-radius:8px;padding:12px 14px;max-width:280px;font-size:12px;color:#aab;line-height:1.6;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+.tl-popup-title{font-size:13px;font-weight:bold;color:#dde;margin-bottom:6px}
+.tl-popup-acc{margin-top:6px}
+.tl-popup-acc-hdr{cursor:pointer;font-size:11px;font-weight:bold;color:#4af;padding:3px 0;border-bottom:1px solid #1e2a3a}
+.tl-popup-acc-body{font-size:11px;color:#889;padding:4px 0 6px;display:none}
+.tl-popup-acc-body.open{display:block}
 /* ── WCCS TAB ── */
 .wccs-top-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
 .btn-save-lg{background:#174;border:none;color:#fff;font:bold 14px 'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:10px 24px;border-radius:6px;cursor:pointer;transition:.15s;min-width:180px}
@@ -1462,7 +1531,7 @@ body{padding-bottom:28px}
 <!-- TAB BAR (Home removed — now in sidebar; Help removed — OCB-O) -->
 <div class="tab-bar" id="main-tab-bar">
   <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
-  <button class="tab-btn active" data-tab="wccs" data-tip="Save your session — paste chat notes here and click Save Session Now">💾 WCCS</button>
+  <button class="tab-btn active" data-tab="wccs" data-tip="HISAV — History, Ideas, Save & Vehicle history">💾 HISAV</button>
   <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
   <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
   <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis">🔭 Scout Swarm</button>
@@ -1778,7 +1847,21 @@ body{padding-bottom:28px}
      Session save, auto-save log, search, diff viewer, rewind
      ============================================================ -->
 <div class="tab-pane active" id="tab-wccs">
-  <div class="pane-scroll" style="position:relative">
+  <div class="pane-scroll" style="position:relative;overflow:visible">
+
+    <!-- HISAV Accordion — 7 sections -->
+    <div class="hisav-accordion" id="hisav-accordion">
+
+      <!-- ═══ SECTION 1: Save & Handoff (collapsed by default) ═══ -->
+      <div class="hisav-section" id="hisav-s1">
+        <div class="hisav-hdr" onclick="hisavToggle('s1')">
+          <span class="hisav-drag" title="Drag to reorder">⠿</span>
+          <span class="hisav-title">💾 Save &amp; Handoff</span>
+          <span class="hisav-chevron" id="hisav-chev-s1">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s1')" title="Minimise section">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s1">
+          <div class="hisav-body-inner">
 
     <!-- WCCS Back Bar — shown when a drill-down panel is open -->
     <div class="wccs-back-bar" id="wccs-back-bar">
@@ -2093,8 +2176,558 @@ body{padding-bottom:28px}
     </div>
     <div id="mccm-alerts-list" style="display:none;max-height:140px;overflow-y:auto;margin-bottom:8px"></div>
 
-  </div>
-</div>
+          </div><!-- /hisav-body-inner s1 -->
+        </div><!-- /hisav-body s1 -->
+      </div><!-- /hisav-section s1 -->
+
+      <!-- ═══ SECTION 2: Idea Dump (EXPANDED by default) ═══ -->
+      <div class="hisav-section" id="hisav-s2">
+        <div class="hisav-hdr" onclick="hisavToggle('s2')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">💡 Idea Dump</span>
+          <span class="hisav-chevron open" id="hisav-chev-s2">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s2')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s2" style="max-height:600px">
+          <div class="hisav-body-inner">
+            <div style="font-size:11px;color:#556;margin-bottom:6px">Half-formed is fine — capture it now, flesh it out later.</div>
+            <textarea id="hisav-idea-input" class="hisav-idea-ta" placeholder="Drop any idea here — half-formed is fine. Capture it now, flesh it out later."></textarea>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap">
+              <input type="text" id="hisav-idea-tags" class="hisav-tag-input" placeholder="optional tags e.g. llow, scout, mcc" title="Comma-separated tags for this idea">
+              <button class="hisav-save-btn" onclick="hisavSaveIdea()" title="Save idea (Ctrl+Enter also works)">💾 Save Idea</button>
+            </div>
+            <div id="hisav-idea-flash" style="font-size:12px;color:#6f6;margin-top:6px;min-height:16px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION 3: Vehicle History (collapsed) ═══ -->
+      <div class="hisav-section" id="hisav-s3">
+        <div class="hisav-hdr" onclick="hisavToggle('s3')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">📅 Vehicle History</span>
+          <span class="hisav-chevron" id="hisav-chev-s3">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s3')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s3" style="max-height:0;overflow:hidden">
+          <div class="hisav-body-inner">
+            <div style="font-size:11px;color:#556;margin-bottom:8px">Click a node to see detail. Current OCB auto-scrolled into view.</div>
+            <div class="hisav-tl-wrap" id="hisav-tl-wrap">
+              <div class="hisav-tl" id="hisav-tl">
+                <div style="color:#445;font-size:11px">Loading…</div>
+              </div>
+            </div>
+            <!-- detail popup (hidden, positioned via JS) -->
+            <div class="tl-detail-popup" id="hisav-tl-popup" style="display:none">
+              <div class="tl-popup-title" id="hisav-tl-popup-title"></div>
+              <div id="hisav-tl-popup-summary" style="font-size:11px;color:#889;margin-bottom:6px"></div>
+              <div class="tl-popup-acc">
+                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('phases')">▶ Phases</div>
+                <div class="tl-popup-acc-body" id="hisav-pop-phases"></div>
+                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('files')">▶ Files changed</div>
+                <div class="tl-popup-acc-body" id="hisav-pop-files"></div>
+                <div class="tl-popup-acc-hdr" onclick="hisavPopupAcc('notes')">▶ Notes</div>
+                <div class="tl-popup-acc-body" id="hisav-pop-notes"></div>
+              </div>
+              <button onclick="document.getElementById('hisav-tl-popup').style.display='none'" style="margin-top:8px;background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit">✕ Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION 4: Checklist Health (collapsed) ═══ -->
+      <div class="hisav-section" id="hisav-s4">
+        <div class="hisav-hdr" onclick="hisavToggle('s4')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">✅ Checklist Health</span>
+          <span class="hisav-chevron" id="hisav-chev-s4">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s4')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s4" style="max-height:0;overflow:hidden">
+          <div class="hisav-body-inner">
+            <div id="hisav-cl-summary" style="font-size:12px;color:#7a9;margin-bottom:10px">Loading…</div>
+            <div id="hisav-cl-body">
+              <div style="color:#445;font-size:11px">Loading checklist…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION 5: Idea Buffer (collapsed) ═══ -->
+      <div class="hisav-section" id="hisav-s5">
+        <div class="hisav-hdr" onclick="hisavToggle('s5')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">🗃️ Idea Buffer</span>
+          <span class="hisav-chevron" id="hisav-chev-s5">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s5')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s5" style="max-height:0;overflow:hidden">
+          <div class="hisav-body-inner">
+            <div id="hisav-ib-summary" style="font-size:12px;color:#7a9;margin-bottom:8px">Loading…</div>
+            <div id="hisav-ib-body">
+              <div style="color:#445;font-size:11px">No ideas yet. Drop one in the Idea Dump above.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION 6: Action Plan (collapsed) ═══ -->
+      <div class="hisav-section" id="hisav-s6">
+        <div class="hisav-hdr" onclick="hisavToggle('s6')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">🎯 Action Plan</span>
+          <span class="hisav-chevron" id="hisav-chev-s6">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s6')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s6" style="max-height:0;overflow:hidden">
+          <div class="hisav-body-inner">
+            <div id="hisav-ap-ts" style="font-size:10px;color:#445;margin-bottom:8px">Loading…</div>
+            <div id="hisav-ap-body">
+              <div style="color:#445;font-size:11px">Loading action plan…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SECTION 7: CLAC Sessions (collapsed) — Phase 4B ═══ -->
+      <div class="hisav-section" id="hisav-s7">
+        <div class="hisav-hdr" onclick="hisavToggle('s7')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">🖥️ CLAC Sessions</span>
+          <span class="hisav-chevron" id="hisav-chev-s7">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s7')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s7" style="max-height:0;overflow:hidden">
+          <div class="hisav-body-inner">
+
+            <!-- Sub-Panel A: CLAC Session Logger -->
+            <div style="font-size:11px;color:#7a9;font-weight:bold;margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px">Session Logger</div>
+            <div style="font-size:11px;color:#445;margin-bottom:8px">Log what Claude Code was doing — completed runs and stopped runs.</div>
+            <div class="hisav-clac-btns">
+              <button class="hisav-clac-done" id="hisav-clac-btn-done" onclick="hisavClacSelect('completed')" title="CLAC session completed successfully">✅ CLAC Completed</button>
+              <button class="hisav-clac-stop" id="hisav-clac-btn-stop" onclick="hisavClacSelect('stopped')" title="CLAC session stopped before finishing">🛑 CLAC Stopped</button>
+            </div>
+            <input type="text" id="hisav-clac-desc" placeholder="What was it doing? e.g. OCB-P safety layer"
+              style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box;margin-bottom:7px">
+            <div id="hisav-clac-reason-wrap" style="display:none;margin-bottom:7px">
+              <input type="text" id="hisav-clac-reason" placeholder="Why stopped? e.g. ran out of ALP, error, timeout"
+                style="width:100%;background:#0d0608;border:1px solid #3a2a2a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+              <input type="text" id="hisav-clac-ver" placeholder="version e.g. v73" style="width:90px;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:5px 8px;border-radius:5px;font:11px inherit">
+              <button class="hisav-save-btn" onclick="hisavSaveClac()" style="flex:1">💾 Save Session</button>
+            </div>
+            <div id="hisav-clac-summary" style="font-size:11px;color:#556;margin-bottom:8px">Loading…</div>
+            <div id="hisav-clac-cards"></div>
+
+            <!-- Sub-Panel B: Screenshot Intake -->
+            <div style="font-size:11px;color:#7a9;font-weight:bold;margin-top:18px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px">Screenshot Intake</div>
+            <div class="hisav-drop-zone" id="hisav-drop-zone" onclick="document.getElementById('hisav-file-inp').click()" title="Click or drag a .png/.jpg here to upload a screenshot">
+              📸 Click or drag .png / .jpg here
+            </div>
+            <input type="file" id="hisav-file-inp" accept=".png,.jpg,.jpeg" style="display:none" onchange="hisavHandleFile(this.files[0])">
+            <input type="text" id="hisav-ss-desc" placeholder="What is this screenshot of? e.g. CLAC output, MCC bug"
+              style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:6px 9px;border-radius:5px;font:12px inherit;box-sizing:border-box;margin-bottom:7px">
+            <button class="hisav-save-btn" onclick="hisavSaveScreenshot()" id="hisav-ss-save-btn" style="display:none">💾 Save Screenshot</button>
+            <div id="hisav-ss-flash" style="font-size:11px;color:#6f6;margin:5px 0;min-height:14px"></div>
+            <div class="hisav-gallery" id="hisav-gallery"></div>
+
+            <!-- Detail popup for screenshots -->
+            <div class="tl-detail-popup" id="hisav-ss-popup" style="display:none">
+              <img id="hisav-ss-popup-img" src="" style="max-width:100%;border-radius:4px;margin-bottom:8px">
+              <div id="hisav-ss-popup-desc" style="font-size:11px;color:#889"></div>
+              <button onclick="document.getElementById('hisav-ss-popup').style.display='none'" style="margin-top:8px;background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit">✕ Close</button>
+            </div>
+
+          </div><!-- /hisav-body-inner s7 -->
+        </div><!-- /hisav-body s7 -->
+      </div><!-- /hisav-section s7 -->
+
+    </div><!-- /hisav-accordion -->
+  </div><!-- /pane-scroll -->
+</div><!-- /tab-wccs -->
+
+<script>
+// ── HISAV Accordion + all section logic ────────────────────────────────────
+(function(){
+  // ── Accordion toggle ─────────────────────────────────────
+  var _OPEN = {s2: true}; // section 2 expanded by default
+  window.hisavToggle = function(id){
+    var body = document.getElementById('hisav-body-'+id);
+    var chev = document.getElementById('hisav-chev-'+id);
+    if(!body) return;
+    var isOpen = body.style.maxHeight && body.style.maxHeight !== '0px' && body.style.maxHeight !== '0';
+    if(isOpen){
+      body.style.maxHeight='0';
+      body.style.overflow='hidden';
+      if(chev){chev.classList.remove('open');}
+    } else {
+      body.style.maxHeight='2000px';
+      body.style.overflow='visible';
+      if(chev){chev.classList.add('open');}
+      if(id==='s3') hisavLoadTimeline();
+      if(id==='s4') hisavLoadChecklist();
+      if(id==='s5') hisavLoadIdeas();
+      if(id==='s6') hisavLoadActionPlan();
+      if(id==='s7') hisavLoadClacSessions();
+    }
+  };
+  window.hisavMinimise = function(id){
+    var sec = document.getElementById('hisav-s'+id.replace('s',''));
+    if(sec) sec.style.display = sec.style.display==='none' ? '' : 'none';
+  };
+
+  // ── Idea Dump ─────────────────────────────────────────────
+  window.hisavSaveIdea = function(){
+    var text = (document.getElementById('hisav-idea-input')||{value:''}).value.trim();
+    var tags = (document.getElementById('hisav-idea-tags')||{value:''}).value.trim();
+    if(!text){
+      hisavFlash('hisav-idea-flash','⚠ Nothing to save','#fa0');
+      return;
+    }
+    fetch('/api/hisav/idea',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:text,tags:tags})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){
+        document.getElementById('hisav-idea-input').value='';
+        document.getElementById('hisav-idea-tags').value='';
+        hisavFlash('hisav-idea-flash','✅ Saved — it won\'t be forgotten','#6f6');
+      } else {
+        hisavFlash('hisav-idea-flash','Error: '+(d.error||'unknown'),'#f66');
+      }
+    }).catch(function(e){hisavFlash('hisav-idea-flash','Error: '+e,'#f66');});
+  };
+  // Ctrl+Enter in the idea textarea
+  document.addEventListener('DOMContentLoaded',function(){
+    var ta = document.getElementById('hisav-idea-input');
+    if(ta) ta.addEventListener('keydown',function(e){
+      if(e.ctrlKey && e.key==='Enter'){e.preventDefault();hisavSaveIdea();}
+    });
+  });
+
+  // ── Vehicle History timeline ─────────────────────────────
+  var _tlData = [];
+  window.hisavLoadTimeline = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      _tlData = d.timeline_entries||[];
+      _renderTimeline(_tlData);
+    }).catch(function(){});
+  };
+  function _tlDotColour(entry){
+    var t=entry.type||'';var s=entry.status||'';
+    if(t==='clac_session') return s==='stopped'?'#c44':'#2a8';
+    if(s==='done'||s==='completed') return '#2a8';
+    if(s==='current') return '#fa0';
+    if(s==='planned') return '#445';
+    if(s==='milestone') return '#a4f';
+    return '#4af';
+  }
+  function _renderTimeline(entries){
+    var wrap = document.getElementById('hisav-tl');
+    if(!wrap) return;
+    if(!entries||!entries.length){
+      wrap.innerHTML='<div style="color:#445;font-size:11px">No timeline data yet.</div>';
+      return;
+    }
+    var html='';
+    entries.forEach(function(e,i){
+      var col=_tlDotColour(e);
+      var warn=e.status==='stopped'?' ⚠️':'';
+      html+='<div class="hisav-tl-node" onclick="hisavShowTlPopup('+i+',this)" title="'+escHisav(e.label||'')+'">'+
+        '<div class="hisav-tl-dot" style="background:'+col+';border-color:'+col+'"></div>'+
+        '<div class="hisav-tl-label">'+escHisav((e.label||'').substring(0,20))+warn+'</div>'+
+        '</div>';
+      if(i<entries.length-1) html+='<div class="hisav-tl-line"></div>';
+    });
+    wrap.innerHTML=html;
+    // scroll to current
+    var nodes=wrap.querySelectorAll('.hisav-tl-node');
+    for(var i=0;i<entries.length;i++){
+      if(entries[i].status==='current'){
+        if(nodes[i]) nodes[i].scrollIntoView({inline:'center',behavior:'smooth'});
+        break;
+      }
+    }
+  }
+  window.hisavShowTlPopup = function(idx,el){
+    var e=_tlData[idx];
+    if(!e) return;
+    var popup=document.getElementById('hisav-tl-popup');
+    if(!popup) return;
+    document.getElementById('hisav-tl-popup-title').textContent=e.label||'';
+    document.getElementById('hisav-tl-popup-summary').textContent=(e.date||'')+(e.notes?' — '+e.notes:'');
+    document.getElementById('hisav-pop-phases').textContent=(e.phases||[]).join('\n')||(e.type||'');
+    document.getElementById('hisav-pop-files').textContent=(e.files_changed||[]).join(', ')||'—';
+    document.getElementById('hisav-pop-notes').textContent=e.notes||'—';
+    // position using fixed coords from click
+    var rect=el.getBoundingClientRect();
+    var top=rect.top-10;
+    if(top<8) top=8;
+    popup.style.left=Math.min(rect.left,window.innerWidth-295)+'px';
+    popup.style.top=Math.max(top-180,8)+'px';
+    popup.style.display='block';
+  };
+  window.hisavPopupAcc = function(key){
+    var el=document.getElementById('hisav-pop-'+key);
+    if(!el) return;
+    el.classList.toggle('open');
+  };
+
+  // ── Checklist Health ─────────────────────────────────────
+  window.hisavLoadChecklist = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      var cl=d.checklist||{categories:[]};
+      var st=d.stats||{};
+      var total=st.done_count+(st.pending_count||0)+(st.unconfirmed_count||0);
+      var pct=total>0?Math.round(st.done_count/total*100):0;
+      var sum=document.getElementById('hisav-cl-summary');
+      if(sum) sum.textContent=st.done_count+' done / '+st.pending_count+' pending / '+st.unconfirmed_count+' unconfirmed — overall '+pct+'% complete';
+      var body=document.getElementById('hisav-cl-body');
+      if(!body) return;
+      var html='';
+      (cl.categories||[]).forEach(function(cat){
+        var items=cat.items||[];
+        var done=items.filter(function(x){return x.status==='done';}).length;
+        var pctCat=items.length>0?Math.round(done/items.length*100):0;
+        html+='<div class="hisav-cat"><div class="hisav-cat-title">'+escHisav(cat.label||cat.id)+'</div>'+
+          '<div class="hisav-prog-bar"><div class="hisav-prog-fill" style="width:'+pctCat+'%"></div></div>';
+        items.forEach(function(item){
+          var dotCol=item.status==='done'?'#2a8':item.status==='pending'?'#fa0':item.status==='unconfirmed'?'#f44':'#556';
+          html+='<div class="hisav-item" onclick="hisavTickItem(\''+escHisav(item.id)+'\')" title="Click to change status">'+
+            '<div class="hisav-dot" style="background:'+dotCol+'"></div>'+
+            '<span class="hisav-item-label">'+escHisav(item.label)+'</span>'+
+            '<select class="hisav-status-sel" onchange="hisavSetStatus(\''+escHisav(item.id)+'\',this.value)" onclick="event.stopPropagation()" title="Set status">'+
+            ['done','pending','partial','unconfirmed'].map(function(s){
+              return '<option value="'+s+'"'+(item.status===s?' selected':'')+'>'+s+'</option>';
+            }).join('')+
+            '</select></div>';
+        });
+        html+='</div>';
+      });
+      body.innerHTML=html||'<div style="color:#445;font-size:11px">No checklist data.</div>';
+    }).catch(function(){});
+  };
+  window.hisavTickItem = function(id){
+    var statuses=['done','pending','partial','unconfirmed'];
+    // find current, cycle to next
+    var sel=document.querySelector('.hisav-item [onchange*="\''+id+'\'"]');
+    if(!sel) return;
+    var cur=sel.value;
+    var next=statuses[(statuses.indexOf(cur)+1)%statuses.length];
+    hisavSetStatus(id,next);
+    sel.value=next;
+  };
+  window.hisavSetStatus = function(id,status){
+    fetch('/api/hisav/checklist/tick',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:id,status:status})})
+    .then(function(){hisavLoadChecklist();}).catch(function(){});
+  };
+
+  // ── Idea Buffer ───────────────────────────────────────────
+  window.hisavLoadIdeas = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      var ideas=(d.ideas||[]).filter(function(x){return x.status==='open';});
+      var sum=document.getElementById('hisav-ib-summary');
+      var red=d.stats&&d.stats.red_ideas||0;
+      if(sum) sum.textContent=ideas.length+' active ideas'+(red>0?' — '+red+' need attention':'');
+      var body=document.getElementById('hisav-ib-body');
+      if(!body) return;
+      if(!ideas.length){
+        body.innerHTML='<div style="color:#445;font-size:11px">No ideas yet. Drop one in the Idea Dump above.</div>';
+        return;
+      }
+      var html='';
+      ideas.slice().reverse().forEach(function(idea){
+        var age=idea.days_old||0;
+        var cls=age>=14?'stale':age>=7?'aging':'';
+        html+='<div class="hisav-idea-card '+cls+'">'+
+          '<div class="hisav-idea-meta">'+escHisav(idea.created_at||'').substring(0,10)+' &bull; '+age+' days old'+(idea.tags&&idea.tags.length?' &bull; '+idea.tags.join(', '):'')+'</div>'+
+          '<div class="hisav-idea-text">'+escHisav(idea.text)+'</div>'+
+          '<div class="hisav-idea-btns">'+
+          '<button class="hisav-idea-btn" onclick="hisavIdeaAction(\''+idea.id+'\',\'done\')" title="Mark done">✅ Done</button>'+
+          '<button class="hisav-idea-btn" onclick="hisavIdeaAction(\''+idea.id+'\',\'promote\')" title="Promote to action plan">📋 Promote</button>'+
+          '<button class="hisav-idea-btn" onclick="hisavIdeaAction(\''+idea.id+'\',\'dismiss\')" title="Dismiss idea">🗑️ Dismiss</button>'+
+          '</div></div>';
+      });
+      body.innerHTML=html;
+    }).catch(function(){});
+  };
+  window.hisavIdeaAction = function(id,action){
+    fetch('/api/hisav/idea/action',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:id,action:action})})
+    .then(function(){hisavLoadIdeas();}).catch(function(){});
+  };
+
+  // ── Action Plan ───────────────────────────────────────────
+  window.hisavLoadActionPlan = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      var ap=d.action_plan||[];
+      var ts=document.getElementById('hisav-ap-ts');
+      if(ts) ts.textContent='Last updated: from STATUS.md NEXT PRIORITIES';
+      var body=document.getElementById('hisav-ap-body');
+      if(!body) return;
+      var items=ap.filter(function(x){return x&&x.trim()&&!x.startsWith('|')&&!x.startsWith('#');}).slice(0,6);
+      if(!items.length){
+        body.innerHTML='<div style="color:#445;font-size:11px">No action plan items found in STATUS.md.</div>';
+        return;
+      }
+      body.innerHTML=items.map(function(line,i){
+        return '<div class="hisav-ap-item">'+
+          '<div class="hisav-ap-num">'+(i+1)+'</div>'+
+          '<div class="hisav-ap-text">'+escHisav(line.replace(/^\d+\.\s*/,'').replace(/^\*\s*/,''))+'</div>'+
+          '<button class="hisav-ap-btn" onclick="hisavDelegateToAafl(\''+escHisav(line)+'\')" title="Delegate this to the AAFL engine">Delegate to AAFL</button>'+
+          '</div>';
+      }).join('');
+    }).catch(function(){});
+  };
+  window.hisavDelegateToAafl = function(goal){
+    fetch('/set-aafl-goal',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({goal:goal.replace(/^\d+\.\s*/,'').replace(/^\*\s*/,'')})})
+    .then(function(r){return r.json();})
+    .then(function(){alert('Goal sent to AAFL engine!');})
+    .catch(function(){alert('Failed to delegate — check AAFL Control tab.');});
+  };
+
+  // ── CLAC Sessions (Phase 4B) ──────────────────────────────
+  var _clacStatus = 'completed';
+  window.hisavClacSelect = function(status){
+    _clacStatus = status;
+    var doneBtn=document.getElementById('hisav-clac-btn-done');
+    var stopBtn=document.getElementById('hisav-clac-btn-stop');
+    var rw=document.getElementById('hisav-clac-reason-wrap');
+    if(doneBtn) doneBtn.style.opacity=status==='completed'?'1':'0.5';
+    if(stopBtn) stopBtn.style.opacity=status==='stopped'?'1':'0.5';
+    if(rw) rw.style.display=status==='stopped'?'':'none';
+  };
+  window.hisavSaveClac = function(){
+    var desc=(document.getElementById('hisav-clac-desc')||{value:''}).value.trim();
+    var reason=(document.getElementById('hisav-clac-reason')||{value:''}).value.trim();
+    var ver=(document.getElementById('hisav-clac-ver')||{value:''}).value.trim();
+    fetch('/api/hisav/clac-session',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({status:_clacStatus,description:desc,reason:reason,version:ver})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){
+        document.getElementById('hisav-clac-desc').value='';
+        if(document.getElementById('hisav-clac-reason')) document.getElementById('hisav-clac-reason').value='';
+        if(document.getElementById('hisav-clac-ver')) document.getElementById('hisav-clac-ver').value='';
+        hisavLoadClacSessions();
+      }
+    }).catch(function(){});
+  };
+  window.hisavLoadClacSessions = function(){
+    fetch('/api/hisav/data').then(function(r){return r.json();}).then(function(d){
+      // Load from timeline entries with type clac_session
+      var entries=(d.timeline_entries||[]).filter(function(e){return e.type==='clac_session';});
+      var completed=entries.filter(function(e){return e.status==='completed';}).length;
+      var stopped=entries.filter(function(e){return e.status==='stopped';}).length;
+      var total=completed+stopped;
+      var rate=total>0?Math.round(completed/total*100):0;
+      var sum=document.getElementById('hisav-clac-summary');
+      if(sum) sum.textContent=completed+' completed / '+stopped+' stopped — completion rate '+rate+'%';
+      var cards=document.getElementById('hisav-clac-cards');
+      if(!cards) return;
+      if(!entries.length){
+        cards.innerHTML='<div style="color:#445;font-size:11px">No sessions logged yet.</div>';
+        return;
+      }
+      cards.innerHTML=entries.slice().reverse().slice(0,15).map(function(e){
+        var cls=e.status==='stopped'?' stopped':'';
+        return '<div class="hisav-clac-card'+cls+'">'+
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'+
+          '<span style="font-size:11px;font-weight:bold;color:'+(e.status==='stopped'?'#f66':'#6f6')+'">'+
+          (e.status==='stopped'?'🛑 Stopped':'✅ Completed')+'</span>'+
+          '<span style="font-size:10px;color:#445;margin-left:auto">'+escHisav((e.date||'').substring(0,10))+'</span></div>'+
+          '<div style="font-size:12px;color:#bbc">'+escHisav(e.label||'')+'</div>'+
+          (e.notes?'<div style="font-size:11px;color:#778;margin-top:3px">'+escHisav(e.notes)+'</div>':'')+
+          '</div>';
+      }).join('');
+    }).catch(function(){});
+  };
+
+  // ── Screenshot Intake (Phase 4B) ──────────────────────────
+  var _pendingFile = null;
+  window.hisavHandleFile = function(file){
+    if(!file) return;
+    _pendingFile = file;
+    var save=document.getElementById('hisav-ss-save-btn');
+    if(save) save.style.display='';
+    hisavFlash('hisav-ss-flash','📎 '+file.name+' ready to save','#4af');
+  };
+  // drag-drop
+  document.addEventListener('DOMContentLoaded',function(){
+    var dz=document.getElementById('hisav-drop-zone');
+    if(!dz) return;
+    dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
+    dz.addEventListener('drop',function(e){
+      e.preventDefault();dz.classList.remove('drag-over');
+      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(f) hisavHandleFile(f);
+    });
+  });
+  window.hisavSaveScreenshot = function(){
+    if(!_pendingFile){
+      hisavFlash('hisav-ss-flash','No file selected','#fa0');
+      return;
+    }
+    var desc=(document.getElementById('hisav-ss-desc')||{value:''}).value.trim();
+    var fd=new FormData();
+    fd.append('image',_pendingFile);
+    fd.append('description',desc);
+    fetch('/api/hisav/screenshot',{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){
+        _pendingFile=null;
+        var save=document.getElementById('hisav-ss-save-btn');
+        if(save) save.style.display='none';
+        if(document.getElementById('hisav-ss-desc')) document.getElementById('hisav-ss-desc').value='';
+        hisavFlash('hisav-ss-flash','✅ Saved: '+d.filename,'#6f6');
+        hisavLoadScreenshots();
+      }
+    }).catch(function(e){hisavFlash('hisav-ss-flash','Error: '+e,'#f66');});
+  };
+  window.hisavLoadScreenshots = function(){
+    fetch('/api/hisav/screenshots').then(function(r){return r.json();}).then(function(d){
+      var list=(d.screenshots||[]).slice().reverse();
+      var gallery=document.getElementById('hisav-gallery');
+      if(!gallery) return;
+      gallery.innerHTML=list.slice(0,20).map(function(s){
+        return '<div style="text-align:center;cursor:pointer" onclick="hisavShowSsPopup(\''+escHisav(s.filename)+'\',\''+escHisav(s.description||'')+'\')">'+
+          '<img class="hisav-thumb" src="/data/screenshots/'+escHisav(s.filename)+'" onerror="this.style.display=\'none\'" title="'+escHisav(s.description||s.filename)+'">'+
+          '<div style="font-size:9px;color:#445;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHisav(s.filename)+'</div></div>';
+      }).join('');
+    }).catch(function(){});
+  };
+  window.hisavShowSsPopup = function(filename,desc){
+    var popup=document.getElementById('hisav-ss-popup');
+    if(!popup) return;
+    document.getElementById('hisav-ss-popup-img').src='/data/screenshots/'+filename;
+    document.getElementById('hisav-ss-popup-desc').textContent=desc||filename;
+    // centre on screen
+    popup.style.left=Math.max(8,window.innerWidth/2-140)+'px';
+    popup.style.top=Math.max(8,window.innerHeight/2-120)+'px';
+    popup.style.display='block';
+  };
+
+  // ── Utility ───────────────────────────────────────────────
+  function escHisav(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  function hisavFlash(id,msg,col){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.textContent=msg;el.style.color=col||'#6f6';
+    setTimeout(function(){if(el.textContent===msg)el.textContent='';},3000);
+  }
+
+  // ── On DOMContentLoaded: load HISAV data for expanded sections ──
+  document.addEventListener('DOMContentLoaded',function(){
+    // Section 2 is open by default — nothing to load for idea dump
+    // Load screenshots for section 7 if it gets opened
+  });
+})();
+</script>
 
 <script>
 // ── Chief Detective + MCCM panel ──────────────────────────────────────────

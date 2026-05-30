@@ -411,7 +411,32 @@ def main():
             print(f"[WARN] Timeline build failed (non-fatal): {_tl_err}")
     if not args.dry_run:
         _sunday_merge()
+    if not args.dry_run:
+        archive_old_handovers()
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''}")
+
+
+def _uprint(msg):
+    """Print with fallback for Windows terminals that can't handle emoji."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        print(msg.encode(sys.stdout.encoding or "utf-8", errors="replace")
+                 .decode(sys.stdout.encoding or "utf-8", errors="replace"))
+
+
+def archive_old_handovers():
+    """Move any VKB_SpinDoctor_Handover_v*.md files from root to archive_dead/."""
+    found = sorted(ROOT.glob("VKB_SpinDoctor_Handover_v*.md"))
+    if not found:
+        _uprint("✅ No handover files to archive")
+        return
+    archive = ROOT / "archive_dead"
+    archive.mkdir(exist_ok=True)
+    for f in found:
+        dst = archive / f.name
+        shutil.move(str(f), str(dst))
+        _uprint(f"\U0001f5c4️ Archived handover: {f.name}")
 
 
 def _sunday_merge():

@@ -1,0 +1,71 @@
+{
+  "last_updated": "auto",
+  "categories": [
+    {
+      "id": "mcc_tabs",
+      "label": "MCC Tabs",
+      "items": [
+        {"id":"tab_home","label":"Home tab","status":"done"},
+        {"id":"tab_aafl","label":"AAFL Control tab","status":"done"},
+        {"id":"tab_scout","label":"Scout Swarm tab","status":"done"},
+        {"id":"tab_health","label":"Health Suite tab","status":"done"},
+        {"id":"tab_llow","label":"LLOW Canvas tab","status":"done"},
+        {"id":"tab_kanban","label":"Kanban tab","status":"done"},
+        {"id":"tab_missions","label":"Missions tab","status":"done"},
+        {"id":"tab_storage","label":"Storage tab","status":"done"},
+        {"id":"tab_costs","label":"Costs tab (B2-10/11)","status":"pending"},
+        {"id":"tab_design","label":"Design tab","status":"done"},
+        {"id":"tab_promo","label":"Promo tab","status":"done"},
+        {"id":"tab_help","label":"Help tab","status":"done"},
+        {"id":"tab_hisav","label":"HISAV tab","status":"pending"},
+        {"id":"tab_aaflruns","label":"AAFL Runs tab","status":"done"},
+        {"id":"tab_activity","label":"Activity Feed tab","status":"done"},
+        {"id":"tab_wccs","label":"WCCS/Save tab","status":"done"}
+      ]
+    },
+    {
+      "id": "safety",
+      "label": "Safety & Watchdogs",
+      "items": [
+        {"id":"saf_watchdog","label":"aafl_watchdog.py wired into loop_manager","status":"unconfirmed"},
+        {"id":"saf_costguard","label":"cost_guard.py wired into loop_manager","status":"unconfirmed"},
+        {"id":"saf_rollback","label":"OCB Runner git stash safety layer","status":"done"},
+        {"id":"saf_linecnt","label":"STATUS.md line count sanity check","status":"done"}
+      ]
+    },
+    {
+      "id": "providers",
+      "label": "Free Providers",
+      "items": [
+        {"id":"prov_cerebras","label":"Cerebras connected","status":"done"},
+        {"id":"prov_mistral","label":"Mistral Codestral connected","status":"done"},
+        {"id":"prov_gemini","label":"Gemini 2.5 Flash connected","status":"done"},
+        {"id":"prov_groq","label":"Groq API key added","status":"pending"},
+        {"id":"prov_cloudflare","label":"Cloudflare keys added","status":"pending"},
+        {"id":"prov_lmstudio","label":"LM Studio local models","status":"done"}
+      ]
+    },
+    {
+      "id": "benchmarks",
+      "label": "Benchmarks",
+      "items": [
+        {"id":"bench_wt","label":"War Thunder v0.1 PASS","status":"done"},
+        {"id":"bench_sc","label":"Star Citizen v0.2 benchmark","status":"pending"},
+        {"id":"bench_ed","label":"Elite Dangerous benchmark","status":"pending"}
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "label": "Core Infrastructure",
+      "items": [
+        {"id":"inf_aafl","label":"AAFL engine autonomous runs","status":"done"},
+        {"id":"inf_scout","label":"Chief Scout parallel swarm","status":"done"},
+        {"id":"inf_llow","label":"LLOW visual workflow canvas","status":"done"},
+        {"id":"inf_ocbrunner","label":"OCB Runner safe + tested","status":"partial"},
+        {"id":"inf_litellm","label":"LiteLLM full integration","status":"pending"},
+        {"id":"inf_electron","label":"Electron wrapper packaged","status":"pending"},
+        {"id":"inf_dta","label":"DTA as source of truth for STATUS.md","status":"pending"}
+      ]
+    }
+  ]
+}

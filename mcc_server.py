@@ -663,6 +663,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Provider diagnosis results ──────────────────────────────
             elif path == "/api/provider-diagnosis":
                 self._handle_provider_diagnosis_get()
+            # ── HISAV: combined data ────────────────────────────────────────────
+            elif path == "/api/hisav/data":
+                self._handle_hisav_data_get()
+            elif path == "/api/hisav/screenshots":
+                self._handle_hisav_screenshots_get()
+            elif path.startswith("/data/screenshots/"):
+                self._handle_screenshot_static(path)
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -919,6 +926,17 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Watchdog start ─────────────────────────────────────────
             elif path == "/api/watchdog/start":
                 self._handle_watchdog_start()
+            # ── HISAV: idea / checklist / clac-session / screenshot ───────────
+            elif path == "/api/hisav/idea":
+                self._handle_hisav_idea_post()
+            elif path == "/api/hisav/idea/action":
+                self._handle_hisav_idea_action_post()
+            elif path == "/api/hisav/checklist/tick":
+                self._handle_hisav_checklist_tick_post()
+            elif path == "/api/hisav/clac-session":
+                self._handle_hisav_clac_session_post()
+            elif path == "/api/hisav/screenshot":
+                self._handle_hisav_screenshot_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7584,6 +7602,341 @@ def _handle_watchdog_start(self):
 
 
 MCCHandler._handle_watchdog_start = _handle_watchdog_start  # type: ignore[attr-defined]
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HISAV: History + Save tab data endpoints
+# ═══════════════════════════════════════════════════════════════════════════════
+
+_HISAV_CHECKLIST  = HERE / "data" / "master_checklist.json"
+_HISAV_IDEAS      = HERE / "data" / "idea_buffer.json"
+_HISAV_GAPS       = HERE / "data" / "mot_gaps.json"
+_HISAV_CLAC       = HERE / "data" / "clac_sessions.json"
+_HISAV_SCRLOG     = HERE / "data" / "screenshot_log.json"
+_HISAV_SCRDIR     = HERE / "data" / "screenshots"
+_HISAV_TIMELINE   = HERE / "data" / "project_timeline.json"
+
+
+def _hisav_load(path, default):
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return default
+
+
+def _hisav_save(path, data):
+    import tempfile as _tf
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = _tf.mkstemp(dir=str(path.parent), suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        json.dump(data, fh, indent=2, ensure_ascii=False)
+    shutil.move(tmp, str(path))
+
+
+def _hisav_next_sc_id(screenshots):
+    if not screenshots:
+        return 1
+    return max(int(s.get("id", 0)) for s in screenshots) + 1
+
+
+def _handle_hisav_data_get(self):
+    """GET /api/hisav/data — returns checklist, ideas, gaps, timeline, action_plan, stats."""
+    try:
+        checklist  = _hisav_load(_HISAV_CHECKLIST, {"categories": []})
+        ideas_data = _hisav_load(_HISAV_IDEAS, {"ideas": []})
+        gaps       = _hisav_load(_HISAV_GAPS, {"gaps": [], "warnings": []})
+        timeline   = _hisav_load(_HISAV_TIMELINE, {"entries": []})
+
+        # Stats from checklist
+        done_count = pending_count = unconfirmed_count = 0
+        for cat in checklist.get("categories", []):
+            for item in cat.get("items", []):
+                s = item.get("status", "")
+                if s == "done":
+                    done_count += 1
+                elif s in ("pending", "partial"):
+                    pending_count += 1
+                elif s == "unconfirmed":
+                    unconfirmed_count += 1
+
+        # Stale ideas — open + older than 14 days
+        import datetime as _dt
+        now = _dt.datetime.now(tz=_dt.timezone.utc)
+        ideas = ideas_data.get("ideas", [])
+        red_ideas = 0
+        for idea in ideas:
+            if idea.get("status") != "open":
+                continue
+            created = idea.get("created_at", "")
+            try:
+                ts = _dt.datetime.fromisoformat(created.replace("Z", "+00:00"))
+                if ts.tzinfo is None:
+                    ts = ts.replace(tzinfo=_dt.timezone.utc)
+                age = (now - ts).days
+                idea["days_old"] = age
+                if age >= 14:
+                    red_ideas += 1
+            except Exception:
+                pass
+
+        # Action plan — NEXT PRIORITIES section from STATUS.md
+        action_plan = []
+        try:
+            status_text = STATUS_FILE.read_text(encoding="utf-8") if STATUS_FILE.exists() else ""
+            in_section = False
+            for line in status_text.splitlines():
+                if "NEXT PRIORITIES" in line.upper():
+                    in_section = True
+                    continue
+                if in_section:
+                    if line.startswith("## "):
+                        break
+                    stripped = line.strip()
+                    if stripped and not stripped.startswith("|---"):
+                        action_plan.append(stripped)
+        except Exception:
+            pass
+
+        self._send_json({
+            "checklist": checklist,
+            "ideas": ideas,
+            "gaps": gaps,
+            "timeline_entries": timeline.get("entries", []),
+            "action_plan": action_plan[:10],
+            "stats": {
+                "done_count": done_count,
+                "pending_count": pending_count,
+                "unconfirmed_count": unconfirmed_count,
+                "total_ideas": len(ideas),
+                "red_ideas": red_ideas,
+            },
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_data_get = _handle_hisav_data_get  # type: ignore[attr-defined]
+
+
+def _handle_hisav_idea_post(self):
+    """POST /api/hisav/idea — append an idea to idea_buffer.json."""
+    try:
+        import uuid as _uuid
+        import datetime as _dt
+        body = json.loads(self._read_body() or "{}")
+        text = str(body.get("text", "")).strip()
+        if not text:
+            self._send_json({"error": "text required"}, 400)
+            return
+        tags = body.get("tags", [])
+        if isinstance(tags, str):
+            tags = [t.strip() for t in tags.replace(",", " ").split() if t.strip()]
+        data = _hisav_load(_HISAV_IDEAS, {"ideas": []})
+        idea = {
+            "id": _uuid.uuid4().hex[:8],
+            "text": text,
+            "tags": tags,
+            "created_at": _dt.datetime.now(tz=_dt.timezone.utc).isoformat(timespec="seconds"),
+            "status": "open",
+            "days_old": 0,
+        }
+        data["ideas"].append(idea)
+        _hisav_save(_HISAV_IDEAS, data)
+        self._send_json({"success": True, "idea": idea})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_idea_post = _handle_hisav_idea_post  # type: ignore[attr-defined]
+
+
+def _handle_hisav_idea_action_post(self):
+    """POST /api/hisav/idea/action — update idea status (dismiss/promote/edit)."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        idea_id = str(body.get("id", "")).strip()
+        action = str(body.get("action", "")).strip()
+        if not idea_id or action not in ("dismiss", "promote", "edit", "done"):
+            self._send_json({"error": "id and valid action required"}, 400)
+            return
+        data = _hisav_load(_HISAV_IDEAS, {"ideas": []})
+        for idea in data["ideas"]:
+            if idea.get("id") == idea_id:
+                idea["status"] = action
+                break
+        _hisav_save(_HISAV_IDEAS, data)
+        self._send_json({"success": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_idea_action_post = _handle_hisav_idea_action_post  # type: ignore[attr-defined]
+
+
+def _handle_hisav_checklist_tick_post(self):
+    """POST /api/hisav/checklist/tick — update a checklist item status."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        item_id = str(body.get("id", "")).strip()
+        status = str(body.get("status", "")).strip()
+        valid_statuses = {"done", "pending", "partial", "unconfirmed"}
+        if not item_id or status not in valid_statuses:
+            self._send_json({"error": "id and valid status required"}, 400)
+            return
+        data = _hisav_load(_HISAV_CHECKLIST, {"categories": []})
+        import datetime as _dt
+        for cat in data.get("categories", []):
+            for item in cat.get("items", []):
+                if item.get("id") == item_id:
+                    item["status"] = status
+                    data["last_updated"] = _dt.datetime.now().isoformat(timespec="seconds")
+        _hisav_save(_HISAV_CHECKLIST, data)
+        self._send_json({"success": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_checklist_tick_post = _handle_hisav_checklist_tick_post  # type: ignore[attr-defined]
+
+
+def _handle_hisav_clac_session_post(self):
+    """POST /api/hisav/clac-session — log a CLAC session completion or stop."""
+    try:
+        import datetime as _dt
+        body = json.loads(self._read_body() or "{}")
+        status = str(body.get("status", "completed")).strip()
+        if status not in ("completed", "stopped"):
+            status = "completed"
+        session = {
+            "id": __import__("uuid").uuid4().hex[:8],
+            "status": status,
+            "description": str(body.get("description", "")).strip(),
+            "reason": str(body.get("reason", "")).strip(),
+            "version": str(body.get("version", "")).strip(),
+            "timestamp": _dt.datetime.now(tz=_dt.timezone.utc).isoformat(timespec="seconds"),
+        }
+        data = _hisav_load(_HISAV_CLAC, {"sessions": []})
+        data["sessions"].append(session)
+        _hisav_save(_HISAV_CLAC, data)
+        # Also append a node to project_timeline.json
+        try:
+            tl = _hisav_load(_HISAV_TIMELINE, {"entries": []})
+            tl.setdefault("entries", []).append({
+                "id": session["id"],
+                "type": "clac_session",
+                "status": status,
+                "label": session["description"] or "CLAC session",
+                "date": session["timestamp"][:10],
+                "notes": session.get("reason", ""),
+            })
+            _hisav_save(_HISAV_TIMELINE, tl)
+        except Exception:
+            pass
+        self._send_json({"success": True, "session": session})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_clac_session_post = _handle_hisav_clac_session_post  # type: ignore[attr-defined]
+
+
+def _handle_hisav_screenshot_post(self):
+    """POST /api/hisav/screenshot — multipart upload, saves to data/screenshots/."""
+    try:
+        import datetime as _dt
+        import re as _re
+        content_type = self.headers.get("Content-Type", "")
+        boundary_match = _re.search(r"boundary=([^\s;]+)", content_type)
+        if not boundary_match:
+            self._send_json({"error": "multipart boundary not found"}, 400)
+            return
+        boundary = boundary_match.group(1).encode()
+        length = int(self.headers.get("Content-Length", 0))
+        raw = self.rfile.read(length)
+
+        # Parse parts
+        parts = raw.split(b"--" + boundary)
+        image_data = None
+        description = ""
+        for part in parts:
+            if b"Content-Disposition" not in part:
+                continue
+            header_end = part.find(b"\r\n\r\n")
+            if header_end == -1:
+                continue
+            headers_raw = part[:header_end].decode("utf-8", errors="replace")
+            body_data = part[header_end + 4:].rstrip(b"\r\n")
+            if 'name="image"' in headers_raw or 'filename=' in headers_raw:
+                image_data = body_data
+            elif 'name="description"' in headers_raw:
+                description = body_data.decode("utf-8", errors="replace").strip()
+
+        if not image_data:
+            self._send_json({"error": "no image data received"}, 400)
+            return
+
+        _HISAV_SCRDIR.mkdir(parents=True, exist_ok=True)
+        screenshots = _hisav_load(_HISAV_SCRLOG, {"screenshots": []}).get("screenshots", [])
+        idx = len(screenshots) + 1
+        today = _dt.date.today().isoformat()
+        filename = f"ss_{today}_{idx:03d}.png"
+        ((_HISAV_SCRDIR) / filename).write_bytes(image_data)
+
+        entry = {
+            "id": idx,
+            "filename": filename,
+            "description": description,
+            "timestamp": _dt.datetime.now(tz=_dt.timezone.utc).isoformat(timespec="seconds"),
+            "parsed_content": "",
+        }
+        data = _hisav_load(_HISAV_SCRLOG, {"screenshots": []})
+        data["screenshots"].append(entry)
+        _hisav_save(_HISAV_SCRLOG, data)
+        self._send_json({"success": True, "filename": filename})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_screenshot_post = _handle_hisav_screenshot_post  # type: ignore[attr-defined]
+
+
+def _handle_hisav_screenshots_get(self):
+    """GET /api/hisav/screenshots — return screenshot_log.json."""
+    try:
+        data = _hisav_load(_HISAV_SCRLOG, {"screenshots": []})
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_hisav_screenshots_get = _handle_hisav_screenshots_get  # type: ignore[attr-defined]
+
+
+def _handle_screenshot_static(self, path):
+    """GET /data/screenshots/<filename> — serve an uploaded screenshot image."""
+    import posixpath
+    filename = posixpath.basename(path)
+    if not filename or ".." in filename:
+        self._send_json({"error": "Not found"}, 404)
+        return
+    img_path = _HISAV_SCRDIR / filename
+    if not img_path.exists():
+        self._send_json({"error": "Not found"}, 404)
+        return
+    ext = img_path.suffix.lower()
+    ct = "image/jpeg" if ext in (".jpg", ".jpeg") else "image/png"
+    data = img_path.read_bytes()
+    self.send_response(200)
+    self._cors()
+    self.send_header("Content-Type", ct)
+    self.send_header("Content-Length", str(len(data)))
+    self.end_headers()
+    self.wfile.write(data)
+
+
+MCCHandler._handle_screenshot_static = _handle_screenshot_static  # type: ignore[attr-defined]
 
 
 def main():

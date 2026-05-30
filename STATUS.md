@@ -190,6 +190,14 @@
 | OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05) | Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown. |
 | OCB-K Build 2 Phase 4 (AAFL Control B2-06+B2-08+B2-09) | All already built (Step Mode, Pause, Benchmark Runner, Second Opinion AI). |
 | OCB-K Build 2 Phase 5 (MOT) | 108/108 ALL CLEAR 2026-05-29 |
+| HISAV tab | Replaces WCCS tab label. 7 accordion sections: Save &amp; Handoff, Idea Dump, Vehicle History, Checklist Health, Idea Buffer, Action Plan, CLAC Sessions. DTA data files created. Popup z-index global fix applied. 109/109 MOT ALL CLEAR 2026-05-30. |
+| data/master_checklist.json | 5 categories, 25 checklist items with status tracking |
+| data/idea_buffer.json | Idea capture system — age-flagged, 14-day red alert |
+| data/mot_gaps.json | MOT to MCCM dialogue file |
+| data/clac_sessions.json | CLAC session logger — completed/stopped with timeline integration |
+| data/screenshot_log.json | Screenshot intake log — metadata for uploaded screenshots |
+| Handover auto-archive | aafl_wccs.py archives VKB_SpinDoctor_Handover_v*.md automatically on every WCCS run |
+| HISAV /api/hisav/* endpoints | GET /data, POST /idea, POST /idea/action, POST /checklist/tick, POST /clac-session, POST /screenshot, GET /screenshots, GET /data/screenshots/&lt;file&gt; |
 | OCB-O (OCB Runner) | ocb_runner.py 503 lines, 5 methods. MCC panel: textarea+Parse+Run+live log+badges. 5 /api/ocb/* endpoints. First test: engine works (Codestral parsed+MOT exit 0) but HTML edit broke tabs. Rolled back to v67. Needs safety layer. |
 | MCC v67 rollback | git checkout -- mission_control.html — frozen MCC fix |
 | OCB-H
