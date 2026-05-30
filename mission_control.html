@@ -9861,6 +9861,20 @@ function _updateAttentionSurface(d) {
       _gaugeSet('aafl-arc', 'aafl-val', 'aafl-sub', pct, sc.toFixed(1), '/10', color);
     }
   }
+  // Sidebar Quick Stats — all from session_state (single source, 20s poll)
+  const sbScore = document.getElementById('sb-aafl-score');
+  if (sbScore) sbScore.textContent = d.aafl_score != null ? String(d.aafl_score) : '—';
+  const sbProv = document.getElementById('sb-prov-count');
+  if (sbProv) {
+    const hc = (d.provider_health || {}).healthy_count;
+    const tot = (d.provider_health || {}).total || 14;
+    sbProv.textContent = hc != null ? hc + '/' + tot : '—';
+  }
+  const sbSave = document.getElementById('sb-last-save');
+  if (sbSave) {
+    const ls = d.last_save || {};
+    sbSave.textContent = ls.timestamp ? ls.timestamp.replace('T',' ').slice(0,16) : '—';
+  }
 }
 async function attWatchdogClick() {
   const wdEl = document.getElementById('att-wd-val');
@@ -9960,20 +9974,17 @@ async function phLoadDetail() {
   const tsEl   = document.getElementById('ph-inst-ts');
   try {
     // Fetch health status and diagnosis errors in parallel
-    const [d, diagData] = await Promise.all([
+    const [d, diagResp] = await Promise.all([
       apiFetch('/health-status').catch(() => ({ providers: [] })),
-      apiFetch('/api/provider-health').catch(() => ({})),
+      apiFetch('/api/provider-diagnosis').catch(() => ({ providers: {} })),
     ]);
-    // Build error map from provider_diagnosis if available
-    let diagErrors = {};
-    try {
-      const diagResp = await apiFetch('/api/session-state').catch(() => ({}));
-      // Read diagnosis errors from PROVIDER_DIAG_FILE if served — fall back gracefully
-    } catch(e2) { /* ignore */ }
-    // Use enriched provider list for error tooltips
-    const enriched = (diagData.providers || []);
+    // Build error map from provider_diagnosis.json — id → last error string
     const errMap = {};
-    enriched.forEach(p => { if (p.status === 'OFFLINE' || p.last_error) errMap[p.id] = p.last_error || p.status; });
+    const diagProviders = diagResp.providers || {};
+    Object.entries(diagProviders).forEach(([pid, info]) => {
+      if (info.error) errMap[pid] = info.error;
+      else if (info.status && info.status !== 'OK') errMap[pid] = info.status;
+    });
 
     const providers = d.providers || [];
     if (!providers.length) {

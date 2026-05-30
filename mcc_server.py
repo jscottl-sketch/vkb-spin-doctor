@@ -660,6 +660,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Unified session state ───────────────────────────────────
             elif path == "/api/session-state":
                 self._handle_session_state_get()
+            # ── OCB-P: Provider diagnosis results ──────────────────────────────
+            elif path == "/api/provider-diagnosis":
+                self._handle_provider_diagnosis_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -7467,6 +7470,20 @@ def _handle_session_state_post(self):
 
 
 MCCHandler._handle_session_state_post = _handle_session_state_post  # type: ignore[attr-defined]
+
+
+def _handle_provider_diagnosis_get(self):
+    """GET /api/provider-diagnosis — serve data/provider_diagnosis.json (never 404)."""
+    if PROVIDER_DIAG_FILE.exists():
+        try:
+            self._send_json(json.loads(PROVIDER_DIAG_FILE.read_text(encoding="utf-8")))
+            return
+        except Exception:
+            pass
+    self._send_json({"generated_at": "", "healthy": 0, "total": 0, "failures": [], "providers": {}})
+
+
+MCCHandler._handle_provider_diagnosis_get = _handle_provider_diagnosis_get  # type: ignore[attr-defined]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

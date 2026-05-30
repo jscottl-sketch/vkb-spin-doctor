@@ -676,3 +676,6 @@
 [2026-05-29 12:09:18] CostGuard init  max_cost=£0.0395  max_iter=10
 [2026-05-29 12:09:27] CALL #1  cost=£0.002630  running=£0.002630  iter=1/10
 [2026-05-29 12:09:29] CALL #2  cost=£0.000899  running=£0.003529  iter=2/10
+[2026-05-30 00:00:09] CostGuard init  max_cost=£0.0395  max_iter=200
+[2026-05-30 00:00:19] CALL #1  cost=£0.002628  running=£0.002628  iter=1/200
+[2026-05-30 00:00:23] CALL #2  cost=£0.000898  running=£0.003525  iter=2/200

@@ -10,8 +10,8 @@
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_fast",
-    "first_seen": "2026-05-29T17:08:40",
-    "count": 10,
+    "first_seen": "2026-05-30T00:00:19",
+    "count": 11,
     "last_fix": null,
     "fix_worked": null
   },
@@ -26,16 +26,16 @@
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_coder",
-    "first_seen": "2026-05-29T17:08:40",
-    "count": 9,
+    "first_seen": "2026-05-30T00:00:19",
+    "count": 10,
     "last_fix": null,
     "fix_worked": null
   },
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_reason",
-    "first_seen": "2026-05-29T12:09:21",
-    "count": 7,
+    "first_seen": "2026-05-30T00:00:13",
+    "count": 8,
     "last_fix": null,
     "fix_worked": null
   },
