@@ -206,6 +206,14 @@
 | Timeline full population | 37 nodes from STATUS/HISTORY/session_logs/git/ACCA. Foundation→Build Sprint→OCB Era→Next zones. Deep 4-level drill-down popup: phases+files+endpoints+ACCA codes+detective flags. Filter (All/Milestones/OCBs/Builds/Stopped/Planned) + Zoom (Compact/Normal/Expanded) + Jump to Today. Stats bar. GET /api/timeline/full, GET /api/timeline/node/{id}. |
 | Global scroll fix | All MCC tab panes: overflow-y:auto, min-height:0, padding-bottom:80px. scrollIntoView on accordion expand. Thin scrollbar globally. HISAV pane overflow:visible removed. |
 | HISAV restructured 9 sections | Screenshots moved to own Section 8. Work Checker moved from Health Suite to Section 9. Health Suite Work Checker replaced with redirect notice. hisavLoadGallery alias added. 109/109 MOT ALL CLEAR 2026-05-30. |
+| OCB-Q Phase 1 (Save & Handoff sticky toolbar) | S1 removed from accordion. Sticky toolbar pinned at HISAV top: SAVE NOW / WCCS / Session Summary toggle / Last saved label. Old S1 content archived (hidden). |
+| OCB-Q Phase 2 (? button fix) | Removed position:fixed from .mcc-popup-safe CSS — all ? tip buttons now scroll with their parent in every tab. |
+| OCB-Q Phase 3 (Detective 5-panel board) | Detective banner rebuilt: Panel A (Active Investigation), B (What I've Checked), C (Failures+Fixes), D (Learning Database — 12 solutions), E (Screenshot Intake + AI analysis). New endpoints: /api/detective/analyse-screenshot, /api/detective/learning-db, /api/timeline/add-node. |
+| OCB-Q Phase 4 (Timeline entries format) | _handle_timeline_full_get rebuilt — transforms project_timeline.json milestones+ocb_nodes+next_priorities into entries[] format the JS htlRender() expects. |
+| OCB-Q Phase 5 (Work Checker Action Plan v2) | Priority cards with → Send to AAFL / Add to Kanban / Done buttons. Mini timeline panel (last 5 entries). New endpoints: /api/kanban/add-card, /api/history/append. |
+| OCB-Q Phase 6 (CLAC Sessions v2) | Card view with View brief/Copy brief. + Log New Session modal (inline). Loads from /api/hisav/clac-sessions which scans session_logs/ for .md files. |
+| OCB-Q Phase 7 (Checklist Health filter) | Filter bar [All][Complete][Incomplete][Unconfirmed]. Category headers with completion % bar. Incomplete items: amber border; unconfirmed: dark border. |
+| OCB-Q Phase 8 (MOT) | 109/109 ALL CLEAR 2026-05-30. mcc_full_mot.py Windows Unicode crash fixed (sys.stdout.reconfigure). |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
