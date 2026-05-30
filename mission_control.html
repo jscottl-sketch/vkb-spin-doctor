@@ -1023,7 +1023,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-pane.active{display:block;padding-top:60px}
 
 /* Work Checker panels */
-.wc-panel{background:#111;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:10px;overflow:hidden}
+.wc-panel{background:#111;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:10px;overflow:visible}
 .wc-panel-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;font-size:13px;font-weight:bold;color:#ddd;transition:.15s}
 .wc-panel-header:hover{background:#151515}
 .wc-panel-body{padding:10px 14px;border-top:1px solid #1a1a1a}
@@ -1101,7 +1101,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .pc-bar:hover{background:#4af}
 
 /* Accordion drill-down */
-.accordion-item{border:1px solid #1a1a1a;border-radius:4px;margin-bottom:4px;overflow:hidden}
+.accordion-item{border:1px solid #1a1a1a;border-radius:4px;margin-bottom:4px;overflow:visible}
 .accordion-header{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;cursor:pointer;background:#111;font-size:12px;color:#ccc;transition:background .15s}
 .accordion-header:hover{background:#161616}
 .accordion-header .acc-val{font-weight:bold;color:#4af;cursor:pointer;text-decoration:underline dotted}
@@ -1173,7 +1173,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .breadcrumb-sep{color:#333}
 
 /* ── QUICK ASK PANEL ── */
-.qa-panel{background:#0a1020;border:1px solid #1a3a5a;border-radius:6px;margin-bottom:12px;overflow:hidden}
+.qa-panel{background:#0a1020;border:1px solid #1a3a5a;border-radius:6px;margin-bottom:12px;overflow:visible}
 .qa-summary{padding:9px 14px;cursor:pointer;font-size:13px;font-weight:bold;color:#4af;background:#0d1828;display:flex;align-items:center;justify-content:space-between;user-select:none}
 .qa-summary:hover{background:#111e30}
 .qa-arrow{font-size:10px;color:#4af;transition:.15s}
@@ -1213,7 +1213,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .uq-power-body{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 2px}
 
 /* ── AAFL CONTROL ACCORDION SECTIONS ── */
-.aafl-acc{border:1px solid #1e1e1e;border-radius:6px;margin-bottom:8px;overflow:hidden}
+.aafl-acc{border:1px solid #1e1e1e;border-radius:6px;margin-bottom:8px;overflow:visible}
 .aafl-acc-hdr{padding:8px 14px;cursor:pointer;background:#111;display:flex;align-items:center;justify-content:space-between;user-select:none;font-size:12px;font-weight:bold;color:#888;letter-spacing:1px;text-transform:uppercase}
 .aafl-acc-hdr:hover{background:#161616;color:#ccc}
 .aafl-acc-hdr .acc-arrow{font-size:10px;color:#555;transition:.15s}
@@ -1396,7 +1396,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-phase-label{position:absolute;top:0;font-size:10px;font-weight:bold;letter-spacing:.06em;pointer-events:none;z-index:1;padding:5px 10px 4px;border-radius:0 0 5px 5px;text-transform:uppercase;min-width:160px;line-height:1.4}
 .llow-phase-goeb{display:block;font-size:8px;font-style:italic;font-weight:normal;letter-spacing:0;text-transform:none;opacity:.7;margin-top:1px;line-height:1.4}
 /* ── OCB-I Phase 8: Loop Behaviour inside LLOW ── */
-.llow-loop-acc{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:8px;overflow:hidden}
+.llow-loop-acc{background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:8px;overflow:visible}
 .llow-loop-hdr{padding:7px 12px;cursor:pointer;background:#0d0d0d;display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:bold;color:#666;text-transform:uppercase;letter-spacing:.06em;user-select:none}
 .llow-loop-hdr:hover{background:#111;color:#aaa}
 .llow-loop-body{padding:10px 12px 12px;display:none}
@@ -1525,6 +1525,24 @@ body{padding-bottom:28px}
 .ce-output{display:none;height:150px;background:#080808;border-top:1px solid #1a1a1a;flex-shrink:0;flex-direction:column}
 .ce-output-hdr{display:flex;align-items:center;gap:8px;padding:3px 10px;border-bottom:1px solid #111;background:#0a0a0a;flex-shrink:0}
 #ce-output-pre{flex:1;padding:8px 12px;font:12px Consolas,'Courier New',monospace;color:#ccc;overflow:auto;margin:0;white-space:pre-wrap;word-break:break-word}
+
+/* GLOBAL POPUP Z-INDEX FIX — OCB-R1 */
+.tooltip, .info-popup, .help-popup, .mcc-popup,
+.mcc-popup-safe, .question-popup, .drill-down-popup,
+.tl-popup, [id$="-popup"], [id$="-tooltip"],
+[class*="popup"], [class*="tooltip"], [class*="flyout"],
+[class*="dropdown-content"], [class*="info-panel"],
+[data-popup], .goeb-tooltip, .goeb-content {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+/* Inline drill-downs stay in flow — not fixed */
+.drill-down-inline, .inline-expand, .accordion-body,
+.acc-content, [class*="inline-detail"] {
+  position: relative !important;
+  z-index: auto !important;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 </head>
@@ -2049,6 +2067,51 @@ body{padding-bottom:28px}
       <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
         <span id="wccs-chat-meta" style="font-size:11px;color:#556">0 chars</span>
         <button class="hisav-tb-btn hisav-tb-save" onclick="saveSession()" style="padding:4px 12px;font-size:11px">💾 Save with summary</button>
+      </div>
+    </div>
+
+    <!-- POST-SAVE SESUM REMINDER BANNER — OCB-R1 -->
+    <div id="post-save-banner" style="display:none;
+      background: linear-gradient(135deg,#1a3a1a,#0a2a0a);
+      border: 2px solid #22c55e; border-radius: 8px;
+      padding: 14px 18px; margin: 10px 16px;
+      animation: fadeInUp 0.4s ease">
+      <div style="font-weight:bold;color:#22c55e;font-size:1rem;
+        margin-bottom:8px">✅ Saved! Now do these 3 steps:</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="postSaveStep1()"
+          id="post-save-btn1"
+          style="padding:8px 14px;border-radius:6px;border:none;
+          background:#22c55e33;color:#22c55e;cursor:pointer;
+          border:1px solid #22c55e;font-weight:bold">
+          1 — Copy SESUM</button>
+        <button onclick="postSaveStep2()"
+          id="post-save-btn2"
+          style="padding:8px 14px;border-radius:6px;border:none;
+          background:var(--bg-tertiary,#1a1a1a);color:var(--text,#ccc);
+          cursor:pointer;border:1px solid var(--border,#333)">
+          2 — Paste to HISAV SESUM box</button>
+        <button onclick="postSaveStep3()"
+          id="post-save-btn3"
+          style="padding:8px 14px;border-radius:6px;border:none;
+          background:var(--bg-tertiary,#1a1a1a);color:var(--text,#ccc);
+          cursor:pointer;border:1px solid var(--border,#333)">
+          3 — Update Claude Project Files</button>
+        <button onclick="postSaveDismiss()"
+          style="margin-left:auto;padding:8px 12px;
+          background:none;border:none;color:var(--text-muted,#666);
+          cursor:pointer;font-size:0.8rem">Done ✓</button>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-muted,#666);
+        margin-top:8px">
+        Project files path:
+        <code>C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\</code>
+        <button onclick="navigator.clipboard.writeText(
+          'C:\\\\Users\\\\jscot\\\\OneDrive\\\\Desktop\\\\VKB-SpinDoctor\\\\')"
+          style="margin-left:6px;padding:2px 8px;font-size:0.75rem;
+          background:var(--bg-tertiary,#1a1a1a);border:1px solid var(--border,#333);
+          border-radius:4px;cursor:pointer;color:var(--text,#ccc)">
+          📋 Copy path</button>
       </div>
     </div>
 
@@ -8149,6 +8212,7 @@ async function saveSession() {
       await loadTimeline();
       renderWccsTab();
       triggerSaveNudge();
+      showPostSaveBanner();
     } else {
       const detail = res.error || (res.stdout ? res.stdout.slice(0, 100) : 'unknown');
       toast('Save failed: ' + detail, 'error', 6000);
@@ -8158,6 +8222,56 @@ async function saveSession() {
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '💾 Save Session Now'; }
   }
+}
+
+// ── POST-SAVE SESUM BANNER — OCB-R1 ──────────────────────────────────────────
+
+function showPostSaveBanner() {
+  var el = document.getElementById('post-save-banner');
+  if (!el) return;
+  el.style.display = 'block';
+  var btn1 = document.getElementById('post-save-btn1');
+  if (btn1) btn1.style.background = '#22c55e44';
+}
+
+function postSaveStep1() {
+  var sesumBox = document.getElementById('sesum-input') ||
+    document.querySelector('textarea[placeholder*="SESUM"]') ||
+    document.querySelector('textarea[placeholder*="sesum"]') ||
+    document.getElementById('wccs-chat-input');
+  if (sesumBox && sesumBox.value) {
+    navigator.clipboard.writeText(sesumBox.value);
+    var b1 = document.getElementById('post-save-btn1');
+    var b2 = document.getElementById('post-save-btn2');
+    if (b1) { b1.textContent = '1 ✓ SESUM Copied'; b1.style.background = '#22c55e44'; }
+    if (b2) { b2.style.background = '#22c55e33'; b2.style.borderColor = '#22c55e'; b2.style.color = '#22c55e'; }
+  } else {
+    alert('No SESUM found. Write your SESUM in the Idea Dump section first.');
+  }
+}
+
+function postSaveStep2() {
+  var b2 = document.getElementById('post-save-btn2');
+  var b3 = document.getElementById('post-save-btn3');
+  if (b2) b2.textContent = '2 ✓ Done';
+  if (b3) { b3.style.background = '#22c55e33'; b3.style.borderColor = '#22c55e'; b3.style.color = '#22c55e'; }
+}
+
+function postSaveStep3() {
+  window.open('https://claude.ai', '_blank');
+  var b3 = document.getElementById('post-save-btn3');
+  if (b3) b3.textContent = '3 ✓ Opened';
+}
+
+function postSaveDismiss() {
+  var el = document.getElementById('post-save-banner');
+  if (el) el.style.display = 'none';
+  var b1 = document.getElementById('post-save-btn1');
+  var b2 = document.getElementById('post-save-btn2');
+  var b3 = document.getElementById('post-save-btn3');
+  if (b1) { b1.textContent = '1 — Copy SESUM'; b1.style.background = '#22c55e33'; }
+  if (b2) { b2.textContent = '2 — Paste to HISAV SESUM box'; b2.style.borderColor = ''; b2.style.color = ''; }
+  if (b3) { b3.textContent = '3 — Update Claude Project Files'; b3.style.borderColor = ''; b3.style.color = ''; }
 }
 
 // ── DIFF TAB ──────────────────────────────────────────────────────────────────
@@ -12424,6 +12538,7 @@ async function copyStatusForClaude() {
     document.getElementById('copyStatusMsg').innerHTML = '<span style="color:#22c55e;">✅ Copied! Now paste into Claude Project Files</span>';
     setTimeout(() => { document.getElementById('copyStatusMsg').innerHTML = ''; }, 10000);
     toast('✅ Copied — paste into Project Files to update Claude.', 'ok', 6000);
+    showPostSaveBanner();
   } catch(e) {
     document.getElementById('copyStatusMsg').innerHTML = '<span style="color:red;">❌ Failed - is MCC server running?</span>';
   }

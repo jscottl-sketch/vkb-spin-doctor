@@ -1,11 +1,17 @@
 {
-  "generated_at": "2026-05-30T15:44:37",
+  "generated_at": "2026-05-30T21:38:04",
   "tabs": [
     {
       "id": "wccs",
       "label": "",
       "title": "",
       "classes": "tab-btn active"
+    },
+    {
+      "id": "ocb-runner",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
     },
     {
       "id": "kanban",
@@ -424,22 +430,283 @@
       "label": "📋 Copy"
     },
     {
+      "id": "btn-wccs-hub",
+      "type": "button",
+      "classes": "hisav-tb-btn hisav-tb-save",
+      "data-tip": "Save session now — runs aafl_wccs.py",
+      "onclick": "saveSession()",
+      "parent_tab": "tab-wccs",
+      "label": "💾 SAVE NOW"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hisav-tb-btn",
+      "data-tip": "Copy STATUS.md to clipboard — paste into Claude.ai Project Files",
+      "onclick": "copyStatusForClaude()",
+      "parent_tab": "tab-wccs",
+      "label": "📋 WCCS"
+    },
+    {
+      "id": "hisav-tb-summ-btn",
+      "type": "button",
+      "classes": "hisav-tb-btn",
+      "data-tip": "Open session summary paste area",
+      "onclick": "hisavToggleSummary()",
+      "parent_tab": "tab-wccs",
+      "label": "📝 Session Summary"
+    },
+    {
+      "id": "pwccs-1",
+      "type": "button",
+      "classes": "pwccs-pill",
+      "data-tip": "Step 1: Run WCCS — save session handover",
+      "onclick": "pwccsToggle(1)",
+      "parent_tab": "tab-wccs",
+      "label": "1. Run WCCS ✓"
+    },
+    {
+      "id": "pwccs-2",
+      "type": "button",
+      "classes": "pwccs-pill",
+      "data-tip": "Step 2: Paste session summary into HISAV",
+      "onclick": "pwccsToggle(2)",
+      "parent_tab": "tab-wccs",
+      "label": "2. Post SESUM to HISAV ✓"
+    },
+    {
+      "id": "pwccs-3",
+      "type": "button",
+      "classes": "pwccs-pill",
+      "data-tip": "Go to claude.ai → your Project → Project Files → Remove old STATUS.md / INDEX.md → Upload new versions from: C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\",
+      "onclick": "pwccsToggle(3)",
+      "parent_tab": "tab-wccs",
+      "label": "3. Update Project Files in Claude ✓"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "pwccs-copy-btn",
+      "data-tip": "Copy project path to clipboard",
+      "onclick": "pwccsCopyPath(event)",
+      "parent_tab": "tab-wccs",
+      "label": "📋 Copy path"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hisav-tb-btn hisav-tb-save",
+      "data-tip": "",
+      "onclick": "saveSession()",
+      "parent_tab": "tab-wccs",
+      "label": "💾 Save with summary"
+    },
+    {
       "id": "",
       "type": "button",
       "classes": "",
       "data-tip": "Run detective scan now",
       "onclick": "event.stopPropagation();hisavDetectiveRun()",
       "parent_tab": "tab-wccs",
-      "label": "Run Now"
+      "label": "▶ Run Scan"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
-      "data-tip": "Minimise section",
-      "onclick": "event.stopPropagation();hisavMinimise('s1')",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "detAddTaskShow()",
       "parent_tab": "tab-wccs",
-      "label": "—"
+      "label": "+ Add Task"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "detRunAllQueued()",
+      "parent_tab": "tab-wccs",
+      "label": "▶ Run All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "detClearQueue()",
+      "parent_tab": "tab-wccs",
+      "label": "⬜ Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('GHOST_FILE')",
+      "parent_tab": "tab-wccs",
+      "label": "1 · GHOST_FILE — check STATUS vs disk"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('DEAD_ENDPOINT')",
+      "parent_tab": "tab-wccs",
+      "label": "2 · DEAD_ENDPOINT — ping all API routes"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('STATUS_CONTRADICTION')",
+      "parent_tab": "tab-wccs",
+      "label": "3 · STATUS_CONTRADICTION — BUILT vs PENDING overlaps"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('STALE_MOT')",
+      "parent_tab": "tab-wccs",
+      "label": "4 · STALE_MOT — check MOT freshness"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('MISSING_FROM_STATUS')",
+      "parent_tab": "tab-wccs",
+      "label": "5 · MISSING_FROM_STATUS — cross-check session logs"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStrategy('PHANTOM_UI')",
+      "parent_tab": "tab-wccs",
+      "label": "6 · PHANTOM_UI — check DOM elements"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "det-strat-btn",
+      "data-tip": "",
+      "onclick": "detQueueStratWento()",
+      "parent_tab": "tab-wccs",
+      "label": "7 · WENTO — custom instruction (AI executes it)"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "detQueueWento()",
+      "parent_tab": "tab-wccs",
+      "label": "Add to Queue"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "document.getElementById('det-strat-sel').style.display='none'",
+      "parent_tab": "tab-wccs",
+      "label": "Cancel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "document.getElementById('det-strat-sel').style.display='none'",
+      "parent_tab": "tab-wccs",
+      "label": "✕ Cancel"
+    },
+    {
+      "id": "det-panel-d-view-btn",
+      "type": "button",
+      "classes": "hisav-idea-btn",
+      "data-tip": "",
+      "onclick": "detPanelDToggle()",
+      "parent_tab": "tab-wccs",
+      "label": "View all solutions"
+    },
+    {
+      "id": "det-browse-btn",
+      "type": "button",
+      "classes": "hisav-idea-btn",
+      "data-tip": "",
+      "onclick": "",
+      "parent_tab": "tab-wccs",
+      "label": "📂 Browse…"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "detStormRefresh()",
+      "parent_tab": "tab-wccs",
+      "label": "↻"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn active",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'all')",
+      "parent_tab": "tab-wccs",
+      "label": "All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'fail')",
+      "parent_tab": "tab-wccs",
+      "label": "Fail"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'warn')",
+      "parent_tab": "tab-wccs",
+      "label": "Warn"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'pass')",
+      "parent_tab": "tab-wccs",
+      "label": "Pass"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'detective')",
+      "parent_tab": "tab-wccs",
+      "label": "Detective"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "storm-filter-btn",
+      "data-tip": "",
+      "onclick": "detStormFilter(this,'wccs')",
+      "parent_tab": "tab-wccs",
+      "label": "WCCS"
     },
     {
       "id": "",
@@ -903,6 +1170,24 @@
     {
       "id": "",
       "type": "button",
+      "classes": "htl-scroll-btn",
+      "data-tip": "Scroll left",
+      "onclick": "htlScrollBy(-200)",
+      "parent_tab": "tab-wccs",
+      "label": "◀"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "htl-scroll-btn",
+      "data-tip": "Scroll right",
+      "onclick": "htlScrollBy(200)",
+      "parent_tab": "tab-wccs",
+      "label": "▶"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "",
       "data-tip": "",
       "onclick": "htlClosePopup()",
@@ -917,6 +1202,42 @@
       "onclick": "event.stopPropagation();hisavMinimise('s4')",
       "parent_tab": "tab-wccs",
       "label": "—"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "cl-filter-btn active",
+      "data-tip": "",
+      "onclick": "hisavClFilter(this,'all')",
+      "parent_tab": "tab-wccs",
+      "label": "All"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "cl-filter-btn",
+      "data-tip": "",
+      "onclick": "hisavClFilter(this,'done')",
+      "parent_tab": "tab-wccs",
+      "label": "Complete"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "cl-filter-btn",
+      "data-tip": "",
+      "onclick": "hisavClFilter(this,'pending')",
+      "parent_tab": "tab-wccs",
+      "label": "Incomplete"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "cl-filter-btn",
+      "data-tip": "",
+      "onclick": "hisavClFilter(this,'unconfirmed')",
+      "parent_tab": "tab-wccs",
+      "label": "Unconfirmed"
     },
     {
       "id": "",
@@ -946,13 +1267,31 @@
       "label": "—"
     },
     {
+      "id": "",
+      "type": "button",
+      "classes": "hisav-save-btn",
+      "data-tip": "Log a new CLAC session",
+      "onclick": "clacNewSessionModal()",
+      "parent_tab": "tab-wccs",
+      "label": "+ Log New Session"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hisav-idea-btn",
+      "data-tip": "Reload sessions",
+      "onclick": "hisavLoadClacSessions()",
+      "parent_tab": "tab-wccs",
+      "label": "↺ Refresh"
+    },
+    {
       "id": "hisav-clac-btn-done",
       "type": "button",
       "classes": "hisav-clac-done",
       "data-tip": "CLAC session completed successfully",
       "onclick": "hisavClacSelect('completed')",
       "parent_tab": "tab-wccs",
-      "label": "✅ CLAC Completed"
+      "label": "✅ Completed"
     },
     {
       "id": "hisav-clac-btn-stop",
@@ -961,7 +1300,7 @@
       "data-tip": "CLAC session stopped before finishing",
       "onclick": "hisavClacSelect('stopped')",
       "parent_tab": "tab-wccs",
-      "label": "🛑 CLAC Stopped"
+      "label": "🛑 Stopped"
     },
     {
       "id": "",
@@ -971,6 +1310,15 @@
       "onclick": "hisavSaveClac()",
       "parent_tab": "tab-wccs",
       "label": "💾 Save Session"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hisav-idea-btn",
+      "data-tip": "",
+      "onclick": "document.getElementById('clac-modal').style.display='none'",
+      "parent_tab": "tab-wccs",
+      "label": "Cancel"
     },
     {
       "id": "",
@@ -1025,6 +1373,33 @@
       "onclick": "wcCopyRequeue()",
       "parent_tab": "tab-wccs",
       "label": "📋 Copy CLACR Block"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocb2Parse()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "🔍 Parse"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocb2Run()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "▶ Run"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocb2Clear()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "✕"
     },
     {
       "id": "",
@@ -3114,6 +3489,20 @@
       "parent_tab": "tab-home"
     },
     {
+      "id": "det-wento-txt",
+      "type": "text",
+      "placeholder": "Enter custom instruction for detective…",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "det-file-inp",
+      "type": "file",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
       "id": "urg-wccs",
       "type": "range",
       "placeholder": "",
@@ -3158,7 +3547,7 @@
     {
       "id": "hisav-clac-desc",
       "type": "text",
-      "placeholder": "What was it doing? e.g. OCB-P safety layer",
+      "placeholder": "What was it doing? e.g. OCB-Q Phase 3",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
@@ -3172,7 +3561,7 @@
     {
       "id": "hisav-clac-ver",
       "type": "text",
-      "placeholder": "version e.g. v73",
+      "placeholder": "version e.g. v76",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
@@ -4032,6 +4421,12 @@
       "parent_tab": "tab-home"
     },
     {
+      "id": "wccs-chat-input",
+      "placeholder": "Paste summary of what was done this session…",
+      "classes": "hisav-idea-ta",
+      "parent_tab": "tab-wccs"
+    },
+    {
       "id": "wrewind-edit",
       "placeholder": "Select a version above…",
       "classes": "",
@@ -4072,6 +4467,12 @@
       "placeholder": "Drop any idea here — half-formed is fine. Capture it now, flesh it out later.",
       "classes": "hisav-idea-ta",
       "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "ocb2-input",
+      "placeholder": "Paste your OCB block here...\nExample:\n═══ PHASE 1 — Fix popup ═══\nFind mission_control.html...",
+      "classes": "",
+      "parent_tab": "tab-ocb-runner"
     },
     {
       "id": "ce-clac-task",
@@ -4282,12 +4683,15 @@
     "/api/clachr/results",
     "/api/code/files",
     "/api/code/read",
+    "/api/detective/learning-db",
+    "/api/detective/queue",
     "/api/detective/report",
     "/api/diff",
     "/api/health",
     "/api/health/history",
     "/api/health/latest",
     "/api/help/history",
+    "/api/hisav/clac-sessions",
     "/api/hisav/data",
     "/api/hisav/screenshots",
     "/api/history",
@@ -4341,6 +4745,8 @@
     "/api/storage/largest",
     "/api/storage/stats",
     "/api/storage/treemap",
+    "/api/storm/feed",
+    "/api/storm/summary",
     "/api/stuck/afna-suggestions",
     "/api/system/ai-allocation",
     "/api/system/cpu",
@@ -4422,14 +4828,23 @@
     "/api/code/run",
     "/api/code/save",
     "/api/command-bar",
+    "/api/detective/add-solution",
+    "/api/detective/add-to-queue",
+    "/api/detective/analyse-screenshot",
+    "/api/detective/cancel-task",
     "/api/detective/dismiss",
+    "/api/detective/reorder-queue",
+    "/api/detective/resolve",
     "/api/detective/run",
+    "/api/detective/run-all-queued",
     "/api/help/ask",
     "/api/hisav/checklist/tick",
     "/api/hisav/clac-session",
     "/api/hisav/idea",
     "/api/hisav/idea/action",
     "/api/hisav/screenshot",
+    "/api/history/append",
+    "/api/kanban/add-card",
     "/api/launch-spindoctor",
     "/api/llow/dry-run",
     "/api/llow/export-clacr",
@@ -4438,6 +4853,7 @@
     "/api/llow/validate",
     "/api/llow/workflow",
     "/api/missions",
+    "/api/missions/update-from-sesum",
     "/api/ocb/parse",
     "/api/ocb/run",
     "/api/project-awareness/update",
@@ -4452,8 +4868,10 @@
     "/api/session-state",
     "/api/settings",
     "/api/storage/reallocate",
+    "/api/storm/ingest",
     "/api/system/kill",
     "/api/task-inbox",
+    "/api/timeline/add-node",
     "/api/watchdog/start",
     "/api/wccs",
     "/api/work-checker/check-item",
@@ -4572,12 +4990,22 @@
   "dependencies": [],
   "fetch_calls_in_html": [
     "/api/chat-to-sesum",
+    "/api/detective/add-solution",
+    "/api/detective/add-to-queue",
+    "/api/detective/analyse-screenshot",
+    "/api/detective/cancel-task",
     "/api/detective/dismiss",
+    "/api/detective/learning-db",
+    "/api/detective/queue",
+    "/api/detective/reorder-queue",
     "/api/detective/report",
+    "/api/detective/resolve",
     "/api/detective/run",
+    "/api/detective/run-all-queued",
     "/api/help/ask",
     "/api/hisav/checklist/tick",
     "/api/hisav/clac-session",
+    "/api/hisav/clac-sessions",
     "/api/hisav/data",
     "/api/hisav/idea",
     "/api/hisav/idea/action",
@@ -4591,7 +5019,9 @@
     "/api/missions/",
     "/api/run-medical",
     "/api/status",
+    "/api/timeline/add-node",
     "/api/timeline/full",
+    "/api/wccs/backups",
     "/api/work-checker/refresh",
     "/api/work-checker/requeue",
     "/set-aafl-goal",

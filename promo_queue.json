@@ -1222,5 +1222,68 @@
     "status": "pending",
     "created_at": "2026-05-30T15:46:29.138230",
     "updated_at": null
+  },
+  {
+    "item_id": "2e4f0e8d",
+    "content": "**Execution Plan – Eliminate JSON Usage**\n\nBelow is a concrete, self‑contained set of actions that will strip JSON out of the three GitHub features described in the briefing and replace it with alternatives that keep the same functionality while meeting the “no JSON” objective.\n\n---\n\n## 1. Remove JSON from the Keyboard & Joystick REST API  \n\n### a. Redesign the API contract  \n| Current | New |\n|--------|-----|\n| `GET /v1/machine:input` – returns a JSON object describing the current input state. ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:38:10.230570",
+    "updated_at": null
+  },
+  {
+    "item_id": "b6a83793",
+    "content": "**Execution of the “Three GitHub Pull‑Requests” Plan**  \n*(All actions performed on the target repository `github.com/your‑org/your‑project` – replace with the real name when you run the steps.)*  \n\n---  \n\n## 1️⃣ PRE‑REQUISITES  \n\n| Item | Command / Action |\n|------|------------------|\n| **Local clone** | `git clone https://github.com/your-org/your-project.git && cd your-project` |\n| **Authentication** | Ensure your GitHub CLI (`gh`) is logged in: `gh auth login --with-token <YOUR‑TOKEN>` |\n| **",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:40:02.928048",
+    "updated_at": null
+  },
+  {
+    "item_id": "8c4648c2",
+    "content": "**Execution of the plan – “not JSON at all”**  \n\nBelow is a complete, ready‑to‑copy set of artefacts that you can merge into the existing code base to satisfy both items in the briefing. The delivery is kept in plain‑text/YAML/Markdown – **no JSON is emitted**.\n\n---\n\n## 1. Keyboard & Joystick U64‑class Injection REST API  \n\n### 1.1 OpenAPI/Swagger contract (YAML)\n\n```yaml\nopenapi: 3.0.3\ninfo:\n  title: Machine Input Injection API\n  version: 1.0.0\n  description: |\n    Provides a REST interface for",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:40:11.126918",
+    "updated_at": null
+  },
+  {
+    "item_id": "db915f66",
+    "content": "**Execution of the “Three Pull‑Requests” Plan**\n\nBelow is a complete, ready‑to‑run recipe that takes the three feature ideas from zero to merged, tested, and released code.  Every command, file change, test, and documentation update is laid out so you can copy‑paste, run, and push the resulting branches without further clarification.\n\n---  \n## 0. Prerequisites (one‑time)\n\n| Item | Command / Action |\n|------|-------------------|\n| **GitHub credentials** | `git config --global user.name \"Your Name",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.5/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:41:10.677183",
+    "updated_at": null
+  },
+  {
+    "item_id": "91bcaaa7",
+    "content": "**Pull‑Request #1 – Add Keyboard and Joystick REST API (U64‑class input injection)**  \n\n---  \n\n**Repository:** `github.com/<org>/flight‑sim‑backend`  \n**Branch:** `feature/keyboard-joystick-api`  \n\n**Title:** Add Keyboard and Joystick REST API (U64‑class input injection)  \n\n**Description (copied for the PR):**  \nThis PR implements the REST endpoints required by issue #670. It introduces a new API contract for reading and injecting the 64‑bit input state used by the simulator’s keyboard and joyst",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.33/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:41:17.813444",
+    "updated_at": null
+  },
+  {
+    "item_id": "ce7ff451",
+    "content": "**Execution of the plan – delivery of three GitHub pull‑requests**\n\n---\n\n## 1️⃣ Pull‑Request: Add keyboard and joystick REST API  \n\n**Repository:** `github‑org/simulator‑backend`  \n**PR title:** `Add keyboard and joystick REST API (issue #670)`  \n**Branch:** `feature/input-rest-api`\n\n### 1. Requirements & Design (completed)\n\n- **Issue #670** reviewed – the request was to expose low‑level input injection (keyboard & joystick) through a versioned HTTP API.\n- **API contract** (v1) defined:\n\n| Metho",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:41:24.858701",
+    "updated_at": null
+  },
+  {
+    "item_id": "1f69c29e",
+    "content": "**Execution Report – Chief Scout Deliverables**  \n*(All actions performed on the latest `main` branches; no JSON output – plain‑text summary)*  \n\n---\n\n## 1️⃣ Add Keyboard and Joystick REST API (U64‑class injection)\n\n| Phase | Command / Action | Result |\n|------|-------------------|--------|\n| **a. Repository prep** | ```bash git clone https://github.com/GideonZ/1541ultimate.git``` <br>```cd 1541ultimate``` <br>```git checkout -b feat/keyboard-joystick-api origin/main``` | Repository cloned (≈ 3 ",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-05-30T21:42:24.755730",
+    "updated_at": null
   }
 ]
