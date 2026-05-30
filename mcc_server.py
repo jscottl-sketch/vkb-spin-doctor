@@ -681,6 +681,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_timeline_full_get()
             elif path.startswith("/api/timeline/node/"):
                 self._handle_timeline_node_get(path[len("/api/timeline/node/"):])
+            # ── OCB-Q2: Detective queue + STORM ────────────────────────────────
+            elif path == "/api/detective/queue":
+                self._handle_detective_queue_get()
+            elif path == "/api/storm/feed":
+                self._handle_storm_feed_get()
+            elif path == "/api/storm/summary":
+                self._handle_storm_summary_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -960,6 +967,24 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_kanban_add_card_post()
             elif path == "/api/history/append":
                 self._handle_history_append_post()
+            # ── OCB-Q2: Detective queue management ─────────────────────────────
+            elif path == "/api/detective/reorder-queue":
+                self._handle_detective_reorder_queue_post()
+            elif path == "/api/detective/cancel-task":
+                self._handle_detective_cancel_task_post()
+            elif path == "/api/detective/add-to-queue":
+                self._handle_detective_add_to_queue_post()
+            elif path == "/api/detective/run-all-queued":
+                self._handle_detective_run_all_queued_post()
+            elif path == "/api/detective/resolve":
+                self._handle_detective_resolve_post()
+            elif path == "/api/detective/add-solution":
+                self._handle_detective_add_solution_post()
+            # ── OCB-Q3: STORM feed + MCCM ──────────────────────────────────────
+            elif path == "/api/storm/ingest":
+                self._handle_storm_ingest_post()
+            elif path == "/api/missions/update-from-sesum":
+                self._handle_missions_update_from_sesum_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -8372,6 +8397,289 @@ def _handle_timeline_full_get_v2(self):
         self._send_json({"error": str(exc)}, 500)
 
 MCCHandler._handle_timeline_full_get = _handle_timeline_full_get_v2  # type: ignore[attr-defined]
+
+
+# ── OCB-Q2: Detective Queue handlers ─────────────────────────────────────────
+_DETECTIVE_QUEUE = HERE / "data" / "detective_queue.json"
+_STORM_FEED      = HERE / "data" / "storm_feed.json"
+
+
+def _load_detective_queue():
+    if _DETECTIVE_QUEUE.exists():
+        try:
+            return json.loads(_DETECTIVE_QUEUE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"queue": [], "active_tasks": []}
+
+
+def _save_detective_queue(data):
+    tmp = _DETECTIVE_QUEUE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    import os; os.replace(tmp, _DETECTIVE_QUEUE)
+
+
+def _handle_detective_queue_get(self):
+    """GET /api/detective/queue"""
+    try:
+        self._send_json(_load_detective_queue())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_queue_get = _handle_detective_queue_get  # type: ignore[attr-defined]
+
+
+def _handle_detective_reorder_queue_post(self):
+    """POST /api/detective/reorder-queue {order:[id,...]}"""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        order = body.get("order", [])
+        data = _load_detective_queue()
+        id_map = {item["id"]: item for item in data.get("queue", [])}
+        data["queue"] = [id_map[i] for i in order if i in id_map]
+        _save_detective_queue(data)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_reorder_queue_post = _handle_detective_reorder_queue_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_cancel_task_post(self):
+    """POST /api/detective/cancel-task {task_id}"""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        task_id = body.get("task_id", "")
+        data = _load_detective_queue()
+        data["queue"] = [t for t in data.get("queue", []) if t.get("id") != task_id]
+        data["active_tasks"] = [t for t in data.get("active_tasks", []) if t.get("id") != task_id]
+        _save_detective_queue(data)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_cancel_task_post = _handle_detective_cancel_task_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_add_to_queue_post(self):
+    """POST /api/detective/add-to-queue {strategy, custom?}"""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        strategy = body.get("strategy", "").upper().strip()
+        custom = body.get("custom", "").strip()
+        if not strategy:
+            self._send_json({"error": "strategy required"}, 400)
+            return
+        data = _load_detective_queue()
+        task_id = _now_iso().replace(":", "").replace("-", "").replace("T", "") + str(len(data.get("queue", [])))
+        task = {
+            "id": task_id,
+            "strategy": strategy,
+            "custom": custom if strategy == "WENTO" else None,
+            "added_at": _now_iso(),
+            "type": "wento" if strategy == "WENTO" else "standard",
+        }
+        data.setdefault("queue", []).append(task)
+        _save_detective_queue(data)
+        self._send_json({"ok": True, "task": task})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_add_to_queue_post = _handle_detective_add_to_queue_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_run_all_queued_post(self):
+    """POST /api/detective/run-all-queued"""
+    try:
+        data = _load_detective_queue()
+        queue = data.get("queue", [])
+        if not queue:
+            self._send_json({"ok": True, "message": "Queue is empty"})
+            return
+        script = HERE / "hisav_detective.py"
+        if not script.exists():
+            self._send_json({"error": "hisav_detective.py not found"}, 404)
+            return
+        data["active_tasks"] = queue[:]
+        data["queue"] = []
+        _save_detective_queue(data)
+        for task in queue:
+            args = [sys.executable, str(script), "--once"]
+            if task.get("strategy"):
+                args.extend(["--strategy", task["strategy"]])
+            if task.get("type") == "wento" and task.get("custom"):
+                args.extend(["--wento", task["custom"]])
+            import subprocess as _sp
+            _sp.Popen(args, cwd=str(HERE), stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
+        self._send_json({"ok": True, "started": len(queue)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_run_all_queued_post = _handle_detective_run_all_queued_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_resolve_post(self):
+    """POST /api/detective/resolve {id}"""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        finding_id = body.get("id", "")
+        if not finding_id:
+            self._send_json({"error": "id required"}, 400)
+            return
+        if _DETECTIVE_REPORT.exists():
+            report = json.loads(_DETECTIVE_REPORT.read_text(encoding="utf-8"))
+            for f in report.get("findings", []):
+                if f.get("id") == finding_id:
+                    f["status"] = "fixed"
+                    f["resolved_at"] = _now_iso()
+            _DETECTIVE_REPORT.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_resolve_post = _handle_detective_resolve_post  # type: ignore[attr-defined]
+
+
+def _handle_detective_add_solution_post(self):
+    """POST /api/detective/add-solution {finding, fix}"""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        finding = body.get("finding", "").strip()
+        fix = body.get("fix", "").strip()
+        if not finding:
+            self._send_json({"error": "finding required"}, 400)
+            return
+        if _SOL_DB.exists():
+            raw = json.loads(_SOL_DB.read_text(encoding="utf-8"))
+        else:
+            raw = {"version": "1.0", "last_updated": _now_iso()[:10], "solutions": []}
+        sols = raw.get("solutions", [])
+        new_id = f"fix_{len(sols)+1:03d}"
+        sols.append({
+            "id": new_id,
+            "name": finding[:80],
+            "match_pattern": finding[:40],
+            "fix_steps": [fix] if fix else [],
+            "success_rate": 0.0,
+            "last_used": _now_iso()[:10],
+            "times_used": 0,
+            "user_approval_required": True,
+            "notes": "Added by detective",
+        })
+        raw["solutions"] = sols
+        raw["last_updated"] = _now_iso()[:10]
+        _SOL_DB.write_text(json.dumps(raw, indent=2, ensure_ascii=False), encoding="utf-8")
+        self._send_json({"ok": True, "id": new_id})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_detective_add_solution_post = _handle_detective_add_solution_post  # type: ignore[attr-defined]
+
+
+# ── OCB-Q3: STORM Feed handlers ───────────────────────────────────────────────
+
+def _load_storm_feed():
+    if _STORM_FEED.exists():
+        try:
+            return json.loads(_STORM_FEED.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"entries": [], "last_updated": None}
+
+
+def _save_storm_feed(data):
+    tmp = _STORM_FEED.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    import os; os.replace(tmp, _STORM_FEED)
+
+
+def _handle_storm_feed_get(self):
+    """GET /api/storm/feed?severity=&limit=50"""
+    try:
+        qs = dict(urllib.parse.parse_qsl(self.path.split("?")[1] if "?" in self.path else ""))
+        sev_filter = qs.get("severity", "")
+        limit = int(qs.get("limit", "50"))
+        data = _load_storm_feed()
+        entries = data.get("entries", [])
+        if sev_filter:
+            entries = [e for e in entries if e.get("severity", "") == sev_filter]
+        self._send_json({"entries": list(reversed(entries))[:limit], "total": len(data.get("entries", []))})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_storm_feed_get = _handle_storm_feed_get  # type: ignore[attr-defined]
+
+
+def _handle_storm_summary_get(self):
+    """GET /api/storm/summary"""
+    try:
+        data = _load_storm_feed()
+        entries = data.get("entries", [])
+        counts = {}
+        by_source = {}
+        for e in entries:
+            sev = e.get("severity", "unknown")
+            counts[sev] = counts.get(sev, 0) + 1
+            src = e.get("source", "unknown")
+            by_source[src] = by_source.get(src, 0) + 1
+        self._send_json({"counts": counts, "by_source": by_source, "total": len(entries)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_storm_summary_get = _handle_storm_summary_get  # type: ignore[attr-defined]
+
+
+def _handle_storm_ingest_post(self):
+    """POST /api/storm/ingest — append any JSON payload to storm_feed.json."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        body["timestamp"] = body.get("timestamp", _now_iso())
+        body["resolved"] = body.get("resolved", False)
+        data = _load_storm_feed()
+        data.setdefault("entries", []).append(body)
+        if len(data["entries"]) > 1000:
+            data["entries"] = data["entries"][-1000:]
+        data["last_updated"] = _now_iso()
+        _save_storm_feed(data)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_storm_ingest_post = _handle_storm_ingest_post  # type: ignore[attr-defined]
+
+
+def _handle_missions_update_from_sesum_post(self):
+    """POST /api/missions/update-from-sesum {sesum_text, date}"""
+    import re as _re
+    try:
+        body = json.loads(self._read_body() or "{}")
+        sesum_text = body.get("sesum_text", "")
+        if not sesum_text:
+            self._send_json({"ok": False, "error": "sesum_text required"}, 400)
+            return
+        completed = []
+        for line in sesum_text.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("✅") or _re.match(r'^[✓\-\*]\s*(Completed|Built|Done|Fixed)', stripped, _re.IGNORECASE):
+                item = _re.sub(r'^[✅✓\-\*]\s*(Completed|Built|Done|Fixed)?\s*:?\s*', '', stripped).strip()
+                if item:
+                    completed.append(item)
+        self._send_json({"ok": True, "completed_items": completed, "count": len(completed)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_missions_update_from_sesum_post = _handle_missions_update_from_sesum_post  # type: ignore[attr-defined]
 
 
 def main():

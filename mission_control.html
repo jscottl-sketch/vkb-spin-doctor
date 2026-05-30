@@ -155,22 +155,37 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .tl-lvl2-hdr{cursor:pointer;font-size:11px;color:#8bc;padding:3px 0;user-select:none;border-bottom:1px solid #111820}
 .tl-lvl2-body{display:none;padding:4px 0 4px 8px}
 .tl-lvl2-body.open{display:block}
-/* zone bands */
+/* OCB-Q3: Timeline zone bands */
+.htl-zone-band{position:absolute;top:0;bottom:0;pointer-events:none;border-right:1px dashed rgba(255,255,255,.05)}
+.htl-zone-label-big{position:absolute;top:4px;font-size:9px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;opacity:.25;pointer-events:none;white-space:nowrap}
 .tl-zone-label{position:absolute;top:0;font-size:9px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:0 0 4px 4px;opacity:0.7;white-space:nowrap}
+/* TODAY marker */
+.htl-today-marker{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#fa0,#c60);z-index:5;pointer-events:none}
+.htl-today-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:bold;color:#fa0;white-space:nowrap;animation:hisavPulse 1.5s ease-in-out infinite}
 /* timeline outer */
-#htl-outer{overflow-x:auto;overflow-y:visible;padding:32px 8px 8px;position:relative}
-#htl-track{display:flex;align-items:center;position:relative;min-width:max-content}
-#htl-line{position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg,#1e3a4a,#2a5a6a,#1e3a4a);transform:translateY(-50%);z-index:0}
-.htl-node{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;z-index:1;min-width:90px;padding:0 4px}
+#htl-outer{overflow-x:auto;overflow-y:visible;padding:40px 8px 12px;position:relative;height:280px;display:flex;flex-direction:column;justify-content:center;scroll-behavior:smooth}
+#htl-outer::-webkit-scrollbar{height:4px}
+#htl-outer::-webkit-scrollbar-track{background:#0a0a0a}
+#htl-outer::-webkit-scrollbar-thumb{background:#2a3a4a;border-radius:2px}
+#htl-track{display:flex;align-items:center;position:relative;min-width:max-content;padding:50px 20px}
+#htl-line{position:absolute;top:50%;left:0;right:0;height:3px;background:linear-gradient(90deg,#1a4a2a,#4a6a0a,#2a4a8a);transform:translateY(-50%);z-index:0}
+.htl-node{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;z-index:1;min-width:60px;padding:0 4px}
 .htl-node:hover .htl-dot{transform:scale(1.4)}
-.htl-dot{width:22px;height:22px;border-radius:50%;border:2px solid;flex-shrink:0;transition:transform .15s;box-sizing:border-box;position:relative;z-index:2}
-.htl-dot.milestone{box-shadow:0 0 8px currentColor}
+.htl-dot{width:14px;height:14px;border-radius:50%;border:2px solid;flex-shrink:0;transition:transform .15s;box-sizing:border-box;position:relative;z-index:2}
+.htl-dot.past{width:14px;height:14px;background:#2a8}
+.htl-dot.present{width:18px;height:18px;animation:hisavPulse 1.2s ease-in-out infinite;box-shadow:0 0 10px #fa088}
+.htl-dot.planned{width:12px;height:12px;background:transparent;border-style:dashed;opacity:.5}
+.htl-dot.milestone{box-shadow:0 0 8px currentColor;width:18px;height:18px}
+.htl-dot.pulse{animation:hisavPulse 1.2s ease-in-out infinite}
 .htl-label{font-size:10px;font-weight:bold;color:#778;margin-top:5px;text-align:center;max-width:80px;line-height:1.2;word-break:break-word}
 .htl-date{font-size:9px;color:#445;text-align:center;margin-top:2px}
 .htl-badge{font-size:9px;text-align:center;margin-top:2px;padding:1px 5px;border-radius:8px}
 .htl-connector{width:28px;height:2px;background:#1e2a3a;flex-shrink:0;z-index:1}
+/* scroll arrows */
+.htl-scroll-btn{position:sticky;background:#0a0d12;border:1px solid #1e2a3a;color:#445;width:28px;min-width:28px;cursor:pointer;font-size:16px;border-radius:4px;z-index:10;flex-shrink:0;align-self:center}
+.htl-scroll-btn:hover{background:#111820;color:#4af}
 /* filter bar */
-.htl-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.htl-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;align-items:center}
 .htl-filter-btn{background:#0a0d12;border:1px solid #1e2a3a;color:#556;padding:3px 10px;border-radius:12px;cursor:pointer;font:11px inherit;transition:.15s}
 .htl-filter-btn.active{background:#1a2a3a;color:#4af;border-color:#2a4a6a}
 /* stats bar */
@@ -200,6 +215,63 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .det-analyse-drop{border:2px dashed #2a3a4a;border-radius:6px;padding:20px;text-align:center;color:#556;cursor:pointer;transition:.15s}
 .det-analyse-drop:hover,.det-analyse-drop.drag-over{border-color:#4af;color:#4af}
 .det-thought-bubble{background:#0a1520;border:1px solid #4af;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:12px;color:#bbc;line-height:1.6}
+/* OCB-Q2: Detective progress bars + queue */
+.det-prog-wrap{margin-bottom:7px}
+.det-prog-bar-row{display:flex;align-items:center;gap:8px;padding:5px 8px;background:#0d1218;border-radius:4px;cursor:pointer;transition:background .15s;margin-bottom:4px}
+.det-prog-bar-row:hover{background:#111a25}
+.det-prog-bar-row.expanded{background:#0d1a2a;border-left:2px solid #4af}
+.det-prog-name{flex:1;font-size:11px;color:#bbc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.det-prog-bar{flex:1;height:7px;background:#1a2a3a;border-radius:3px;overflow:hidden;max-width:100px}
+.det-prog-fill{height:100%;border-radius:3px;transition:width .4s;background:linear-gradient(90deg,#2a6a3a,#4af)}
+.det-prog-pct{font-size:10px;color:#4af;white-space:nowrap;min-width:28px;text-align:right}
+.det-prog-phase{font-size:10px;color:#556;white-space:nowrap}
+.det-prog-time{font-size:10px;color:#334;white-space:nowrap}
+.det-task-detail{background:#080c10;border:1px solid #1e2a3a;border-radius:4px;padding:10px;margin-top:4px;font-size:11px;display:none}
+.det-task-detail.open{display:block}
+.det-task-detail-row{display:flex;gap:6px;margin-bottom:5px;align-items:baseline}
+.det-task-detail-lbl{color:#445;min-width:90px;flex-shrink:0}
+.det-task-detail-val{color:#bbc;flex:1}
+.det-task-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.det-queue-row{display:flex;align-items:center;gap:8px;padding:6px 8px;background:#0d1218;border-radius:4px;margin-bottom:3px;cursor:grab}
+.det-queue-row:hover{background:#111820}
+.det-queue-drag{color:#334;font-size:13px;flex-shrink:0}
+.det-queue-num{font-size:10px;color:#334;min-width:16px;text-align:center}
+.det-queue-strat{font-size:10px;background:#1a2a3a;color:#4af;border-radius:3px;padding:1px 6px;white-space:nowrap}
+.det-q-idle{display:flex;align-items:center;gap:8px;padding:10px 8px;font-size:12px;color:#4a7}
+.det-q-idle-dot{width:9px;height:9px;border-radius:50%;background:#2a7;animation:hisavPulse 1.5s ease-in-out infinite;flex-shrink:0}
+.det-strat-sel{display:none;background:#080c10;border:1px solid #2a3a4a;border-radius:6px;padding:10px;margin-top:8px}
+.det-strat-btn{display:block;width:100%;text-align:left;background:#0d1218;border:1px solid #1e2a3a;color:#bbc;padding:6px 10px;border-radius:4px;cursor:pointer;font:11px inherit;margin-bottom:4px}
+.det-strat-btn:hover{background:#111820;border-color:#4af;color:#4af}
+/* OCB-Q2: Panel B drill-down */
+.det-row-clickable{cursor:pointer;transition:background .12s}
+.det-row-clickable:hover{background:#0d1520}
+.det-drill{display:none;background:#060a10;border:1px solid #1e2a3a;border-radius:0 0 4px 4px;padding:10px 12px;margin:0 0 6px;font-size:11px}
+.det-drill.open{display:block}
+.det-drill-sec{margin-bottom:10px}
+.det-drill-sec-title{font-size:10px;font-weight:bold;color:#4af;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #1e2a3a}
+.det-drill-field{display:flex;gap:8px;margin-bottom:4px;align-items:baseline}
+.det-drill-lbl{color:#445;min-width:100px;flex-shrink:0;font-size:10px}
+.det-drill-val{color:#bbc;flex:1;word-break:break-word}
+.det-drill-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.det-drill-btn{background:#1a2a3a;border:1px solid #2a4a6a;color:#7af;padding:3px 9px;border-radius:4px;cursor:pointer;font:11px inherit}
+.det-drill-btn:hover{background:#1a3a5a;color:#adf}
+.det-drill-btn.red{background:#2a1010;border-color:#4a2020;color:#f77}
+.det-drill-btn.red:hover{background:#3a1818}
+.det-drill-btn.green{background:#0a2a1a;border-color:#2a4a2a;color:#4f4}
+.det-drill-btn.green:hover{background:#0d3a22}
+/* OCB-Q3: STORM Feed panel */
+.storm-feed-wrap{background:#060a10;border:1px solid #1e2a3a;border-radius:6px;padding:10px 12px;margin-top:12px}
+.storm-feed-title{font-size:11px;font-weight:bold;color:#4af;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.storm-feed-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #0f1822;font-size:11px}
+.storm-feed-row:last-child{border-bottom:none}
+.storm-sev{padding:1px 7px;border-radius:3px;font-size:10px;font-weight:bold;white-space:nowrap;flex-shrink:0}
+.storm-sev-fail{background:#2a0a0a;color:#f66;border:1px solid #4a1a1a}
+.storm-sev-warn{background:#1a1200;color:#fa0;border:1px solid #3a2a00}
+.storm-sev-pass{background:#0a2a0a;color:#4f4;border:1px solid #1a4a1a}
+.storm-sev-info{background:#0a1a2a;color:#4af;border:1px solid #1a2a4a}
+.storm-filter-bar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.storm-filter-btn{background:#0a0d12;border:1px solid #1e2a3a;color:#445;padding:2px 8px;border-radius:10px;cursor:pointer;font:10px inherit}
+.storm-filter-btn.active{border-color:#4af;color:#4af;background:#0a1a2a}
 /* ── OCB-Q: Action plan v2 ── */
 .hisav-ap-v2-item{background:#0d1318;border-left:3px solid #1e3a5a;border-radius:0 5px 5px 0;padding:8px 10px;margin-bottom:6px}
 .hisav-ap-v2-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -1960,13 +2032,50 @@ body{padding-bottom:28px}
     </div>
     <div id="hisav-detective-panel" style="display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;border-radius:0 0 7px 7px;margin-bottom:12px;padding:12px 14px">
 
-      <!-- PANEL A: Active Investigation -->
+      <!-- PANEL A: Active Investigation + Task Queue -->
       <div class="det-panel">
         <div class="det-panel-title">🔍 Panel A — Active Investigation</div>
         <div id="det-panel-a-content">
+          <!-- Summary line (kept for legacy JS compat) -->
           <div style="font-size:12px;color:#ccd;font-weight:bold;margin-bottom:4px" id="det-strategy-name">Loading…</div>
-          <div style="font-size:11px;color:#556" id="det-last-run">Last run: —</div>
-          <div style="font-size:11px;color:#445;margin-top:3px" id="det-run-count">Scans run: 0</div>
+          <div style="font-size:11px;color:#556;margin-bottom:2px" id="det-last-run">Last run: —</div>
+          <div style="font-size:11px;color:#445;margin-bottom:8px" id="det-run-count">Scans run: 0</div>
+          <!-- Progress bars -->
+          <div id="det-a-progress-strip">
+            <div class="det-q-idle" id="det-a-idle">
+              <span class="det-q-idle-dot"></span>
+              Standing watch — no active task
+            </div>
+          </div>
+          <!-- Task Queue panel -->
+          <div id="det-task-queue" style="margin-top:12px;border-top:1px solid #1e2a3a;padding-top:10px">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:bold;color:#4af">Task Queue</span>
+              <button onclick="detAddTaskShow()" style="background:#0a1a2a;border:1px solid #2a4a6a;color:#4af;padding:2px 9px;border-radius:4px;cursor:pointer;font:11px inherit;margin-left:auto">+ Add Task</button>
+              <button onclick="detRunAllQueued()" style="background:#0a2a0a;border:1px solid #2a4a2a;color:#6f6;padding:2px 9px;border-radius:4px;cursor:pointer;font:11px inherit">▶ Run All</button>
+              <button onclick="detClearQueue()" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#666;padding:2px 9px;border-radius:4px;cursor:pointer;font:11px inherit">⬜ Clear</button>
+            </div>
+            <div id="det-queue-list" style="font-size:11px;color:#334">Queue is empty.</div>
+            <!-- Strategy selector overlay -->
+            <div class="det-strat-sel" id="det-strat-sel">
+              <div style="font-size:11px;font-weight:bold;color:#ccd;margin-bottom:7px">Choose strategy:</div>
+              <button class="det-strat-btn" onclick="detQueueStrategy('GHOST_FILE')">1 · GHOST_FILE — check STATUS vs disk</button>
+              <button class="det-strat-btn" onclick="detQueueStrategy('DEAD_ENDPOINT')">2 · DEAD_ENDPOINT — ping all API routes</button>
+              <button class="det-strat-btn" onclick="detQueueStrategy('STATUS_CONTRADICTION')">3 · STATUS_CONTRADICTION — BUILT vs PENDING overlaps</button>
+              <button class="det-strat-btn" onclick="detQueueStrategy('STALE_MOT')">4 · STALE_MOT — check MOT freshness</button>
+              <button class="det-strat-btn" onclick="detQueueStrategy('MISSING_FROM_STATUS')">5 · MISSING_FROM_STATUS — cross-check session logs</button>
+              <button class="det-strat-btn" onclick="detQueueStrategy('PHANTOM_UI')">6 · PHANTOM_UI — check DOM elements</button>
+              <button class="det-strat-btn" onclick="detQueueStratWento()">7 · WENTO — custom instruction (AI executes it)</button>
+              <div id="det-wento-wrap" style="display:none;margin-top:6px">
+                <input type="text" id="det-wento-txt" placeholder="Enter custom instruction for detective…" style="width:100%;background:#0a0d12;border:1px solid #2a3a4a;color:#bbc;padding:6px 8px;border-radius:4px;font:11px inherit;box-sizing:border-box;margin-bottom:5px">
+                <div style="display:flex;gap:6px">
+                  <button onclick="detQueueWento()" style="background:#0a2a0a;border:1px solid #2a4a2a;color:#6f6;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px inherit">Add to Queue</button>
+                  <button onclick="document.getElementById('det-strat-sel').style.display='none'" style="background:none;border:1px solid #2a2a2a;color:#556;padding:3px 10px;border-radius:4px;cursor:pointer;font:11px inherit">Cancel</button>
+                </div>
+              </div>
+              <button onclick="document.getElementById('det-strat-sel').style.display='none'" style="background:none;border:none;color:#445;font:10px inherit;cursor:pointer;margin-top:4px">✕ Cancel</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1998,18 +2107,39 @@ body{padding-bottom:28px}
       <!-- PANEL E: Screenshot Intake -->
       <div class="det-panel">
         <div class="det-panel-title">📷 Panel E — Screenshot Intake</div>
-        <div id="det-drop-zone" class="det-analyse-drop" tabindex="0" onclick="document.getElementById('det-file-inp').click();this.focus()" title="Click or drag a screenshot — Detective will analyse it. Ctrl+V to paste.">
-          📷 Drop a screenshot here — Detective will analyse it<br>
-          <span style="font-size:10px;color:#445">or click to Browse</span>
+        <div id="det-drop-zone" class="det-analyse-drop" tabindex="0" title="Ctrl+V to paste · drag a file here · or click Browse">
+          📷 Drop or paste a screenshot — Detective will analyse it<br>
+          <span style="font-size:10px;color:#445">Ctrl+V · drag &amp; drop · or Browse below</span>
         </div>
-        <input type="file" id="det-file-inp" accept=".png,.jpg,.jpeg" style="display:none" onchange="detAnalyseFile(this.files[0])">
-        <div style="font-size:10px;color:#3a4a5a;margin-top:4px">Tip: Windows key + Shift + S to snip, then Ctrl+V here</div>
+        <input type="file" id="det-file-inp" accept=".png,.jpg,.jpeg,.gif,.webp" style="display:none">
+        <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button id="det-browse-btn" class="hisav-idea-btn" style="font-size:11px">📂 Browse…</button>
+          <span style="font-size:10px;color:#3a4a5a">Windows key + Shift + S → snip → Ctrl+V here</span>
+        </div>
         <div id="det-analyse-status" style="font-size:12px;color:#778;margin-top:6px;min-height:14px"></div>
         <div id="det-analyse-result" style="display:none"></div>
       </div>
 
       <!-- legacy findings div (keeps existing JS working) -->
       <div id="hisav-det-findings" style="display:none"></div>
+
+      <!-- STORM Feed panel (live scroll of all detective/WCCS entries) -->
+      <div class="storm-feed-wrap" id="det-storm-panel">
+        <div class="storm-feed-title">
+          ⚡ STORM Feed
+          <span style="font-size:10px;font-weight:normal;color:#445;margin-left:auto">Auto-refresh 30s</span>
+          <button onclick="detStormRefresh()" style="background:#0a1a2a;border:1px solid #2a4a6a;color:#4af;padding:2px 8px;border-radius:3px;cursor:pointer;font:10px inherit">↻</button>
+        </div>
+        <div class="storm-filter-bar">
+          <button class="storm-filter-btn active" onclick="detStormFilter(this,'all')">All</button>
+          <button class="storm-filter-btn" onclick="detStormFilter(this,'fail')">Fail</button>
+          <button class="storm-filter-btn" onclick="detStormFilter(this,'warn')">Warn</button>
+          <button class="storm-filter-btn" onclick="detStormFilter(this,'pass')">Pass</button>
+          <button class="storm-filter-btn" onclick="detStormFilter(this,'detective')">Detective</button>
+          <button class="storm-filter-btn" onclick="detStormFilter(this,'wccs')">WCCS</button>
+        </div>
+        <div id="det-storm-list" style="max-height:180px;overflow-y:auto;font-size:11px;color:#445">Loading…</div>
+      </div>
     </div>
 
     <!-- HISAV Accordion — 9 sections -->
@@ -2386,13 +2516,17 @@ body{padding-bottom:28px}
               <button class="htl-filter-btn" onclick="htlJumpToToday()" style="background:#1a2a1a;color:#6f6;border-color:#2a4a2a">↓ Today</button>
             </div>
 
-            <!-- Timeline outer + zone bands -->
-            <div id="htl-outer">
-              <!-- Zone labels injected by JS -->
-              <div id="htl-track">
-                <div id="htl-line"></div>
-                <div style="color:#445;font-size:11px;padding:20px">Loading timeline…</div>
+            <!-- Timeline outer + zone bands + scroll controls -->
+            <div style="display:flex;align-items:stretch;gap:4px">
+              <button class="htl-scroll-btn" onclick="htlScrollBy(-200)" title="Scroll left">◀</button>
+              <div id="htl-outer" style="flex:1">
+                <!-- Zone bands + TODAY marker injected by JS -->
+                <div id="htl-track">
+                  <div id="htl-line"></div>
+                  <div style="color:#445;font-size:11px;padding:20px">Loading timeline…</div>
+                </div>
               </div>
+              <button class="htl-scroll-btn" onclick="htlScrollBy(200)" title="Scroll right">▶</button>
             </div>
 
             <!-- Stats bar -->
@@ -2404,7 +2538,7 @@ body{padding-bottom:28px}
             </div>
 
             <!-- Deep drill-down popup -->
-            <div class="tl-detail-popup hisav-popup-safe" id="hisav-tl-popup">
+            <div class="tl-detail-popup hisav-popup-safe" id="hisav-tl-popup" style="display:none">
               <!-- Level 0: always visible -->
               <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px">
                 <div style="flex:1">
@@ -2753,12 +2887,13 @@ body{padding-bottom:28px}
     });
   };
 
+  // OCB-Q3: Rebuilt timeline render with PAST/PRESENT/PLANNED zones + TODAY marker
   function _htlRender(){
     var entries = _tlData;
+    var outer = document.getElementById('htl-outer');
     var track = document.getElementById('htl-track');
     if(!track) return;
 
-    // Apply filter
     if(_tlFilter !== 'all'){
       entries = _tlData.filter(function(e){
         if(_tlFilter==='milestone') return e.is_milestone||e.type==='milestone';
@@ -2770,22 +2905,19 @@ body{padding-bottom:28px}
       });
     }
 
-    // Zone spacing
-    var nodeW = _tlZoom==='compact' ? 72 : _tlZoom==='expanded' ? 120 : 90;
+    var nodeW = _tlZoom==='compact' ? 60 : _tlZoom==='expanded' ? 110 : 80;
 
     if(!entries.length){
       track.innerHTML='<div id="htl-line"></div><div style="color:#445;padding:20px;font-size:11px">No entries match filter.</div>';
       return;
     }
 
-    // Zone bands (rough date groupings)
-    var zones = [
-      {label:'Foundation', start:0, end:Math.floor(entries.length*0.18), col:'#0a2a1a'},
-      {label:'Build Sprint', start:Math.floor(entries.length*0.18), end:Math.floor(entries.length*0.45), col:'#1a1a0a'},
-      {label:'OCB Era', start:Math.floor(entries.length*0.45), end:Math.floor(entries.length*0.92), col:'#0a0a2a'},
-      {label:'Next', start:Math.floor(entries.length*0.92), end:entries.length, col:'#0a1a0a'},
-    ];
+    // Separate past/present/planned
+    var pastEntries = entries.filter(function(e){ return e.status==='done'||e.status==='stopped'||e.status==='partial'||e.status==='milestone'; });
+    var currEntries = entries.filter(function(e){ return e.status==='current'; });
+    var planEntries = entries.filter(function(e){ return e.status==='planned'; });
 
+    var todayIdx = -1;
     var html = '<div id="htl-line"></div>';
 
     entries.forEach(function(e,i){
@@ -2793,18 +2925,26 @@ body{padding-bottom:28px}
       var isCurrent = e.status==='current';
       var isPlanned = e.status==='planned';
       var isMilestone = e.is_milestone||e.type==='milestone';
-      var dotCls = 'htl-dot'+(isMilestone?' milestone':'')+(isCurrent?' pulse':'');
+      var dotExtraCls = '';
+      if(isMilestone) dotExtraCls += ' milestone';
+      if(isCurrent){ dotExtraCls += ' present pulse'; todayIdx = i; }
+      else if(isPlanned) dotExtraCls += ' planned';
+      else dotExtraCls += ' past';
       var dotBg = isPlanned ? 'transparent' : col;
       var dotBdr = isPlanned ? 'dashed' : 'solid';
       var dateStr = e.date&&e.date!=='planned' ? e.date.substring(5) : 'TBD';
       var warn = e.status==='stopped' ? ' ⚠️' : '';
-      var labelText = escHisav((e.label||'').substring(0, _tlZoom==='expanded'?20:12)) + warn;
+      var maxL = _tlZoom==='expanded'?20:(_tlZoom==='compact'?9:12);
+      var labelText = escHisav((e.label||'').substring(0,maxL)) + warn;
       var badgeText = e.mot_score ? escHisav(e.mot_score) : '';
       var badgeCol = e.mot_score ? '#2a8' : '';
+      var isOcb = (e.label||'').toLowerCase().indexOf('ocb')>=0;
+      var isBuild = (e.label||'').toLowerCase().indexOf('build')>=0;
+      var labelBold = isOcb||isBuild ? 'font-weight:bold;color:#ccd' : '';
 
       html += '<div class="htl-node" style="min-width:'+nodeW+'px" data-idx="'+i+'" onclick="htlShowPopup('+i+',this)" title="'+escHisav(e.label||'')+'">'+
-        '<div class="'+dotCls+'" style="background:'+dotBg+';border-color:'+col+';border-style:'+dotBdr+'"></div>'+
-        '<div class="htl-label">'+labelText+'</div>'+
+        '<div class="htl-dot'+dotExtraCls+'" style="background:'+dotBg+';border-color:'+col+';border-style:'+dotBdr+'"></div>'+
+        '<div class="htl-label" style="'+labelBold+'">'+labelText+'</div>'+
         '<div class="htl-date">'+escHisav(dateStr)+'</div>'+
         (badgeText ? '<div class="htl-badge" style="background:'+badgeCol+'22;color:'+badgeCol+'">'+badgeText+'</div>' : '')+
         '</div>';
@@ -2815,21 +2955,46 @@ body{padding-bottom:28px}
 
     track.innerHTML = html;
 
-    // Zone background bands as absolute overlays (behind nodes)
-    // (simplified: use coloured top labels)
-    zones.forEach(function(z){
-      if(z.start >= entries.length) return;
-      var startNode = track.querySelectorAll('.htl-node')[z.start];
+    // Zone labels above first node in each zone
+    var zoneSpecs = [
+      {label:'PAST', sub:'FOUNDATION → OCB ERA', startRatio:0, endRatio:0.75, col:'rgba(0,200,80,.04)'},
+      {label:'PRESENT', sub:'NOW', startRatio:0.75, endRatio:0.87, col:'rgba(255,200,0,.06)'},
+      {label:'PLANNED', sub:'NEXT UP', startRatio:0.87, endRatio:1, col:'rgba(80,120,255,.05)'},
+    ];
+    var nodeEls = track.querySelectorAll('.htl-node');
+    zoneSpecs.forEach(function(z){
+      var startIdx = Math.floor(entries.length * z.startRatio);
+      if(startIdx >= nodeEls.length) return;
+      var startNode = nodeEls[startIdx];
       if(startNode){
         var lbl = document.createElement('div');
-        lbl.className = 'tl-zone-label';
+        lbl.style.cssText = 'position:absolute;top:-32px;left:0;font-size:8px;font-weight:bold;color:#556;letter-spacing:1.5px;text-transform:uppercase;pointer-events:none;white-space:nowrap';
         lbl.textContent = z.label;
-        lbl.style.cssText = 'position:absolute;top:-26px;font-size:9px;font-weight:bold;color:#556;letter-spacing:1px;text-transform:uppercase;pointer-events:none';
+        startNode.style.position = 'relative';
         startNode.appendChild(lbl);
+        if(z.sub){
+          var sub = document.createElement('div');
+          sub.style.cssText = 'position:absolute;top:-20px;left:0;font-size:7px;color:#334;pointer-events:none;white-space:nowrap';
+          sub.textContent = z.sub;
+          startNode.appendChild(sub);
+        }
       }
     });
 
-    // Update stats bar
+    // TODAY marker after current node
+    if(todayIdx >= 0 && nodeEls[todayIdx]){
+      var todayNode = nodeEls[todayIdx];
+      var marker = document.createElement('div');
+      marker.style.cssText = 'position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:2px;background:linear-gradient(180deg,#fa0,#c60);z-index:5;pointer-events:none';
+      var todayLbl = document.createElement('div');
+      todayLbl.style.cssText = 'position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:bold;color:#fa0;white-space:nowrap;animation:hisavPulse 1.5s ease-in-out infinite';
+      todayLbl.textContent = 'TODAY';
+      marker.appendChild(todayLbl);
+      todayNode.style.position = 'relative';
+      todayNode.appendChild(marker);
+    }
+
+    // Stats bar
     var statEl = document.getElementById('htl-stats-bar');
     if(statEl){
       var builds = _tlData.filter(function(e){ return e.type==='build'||e.type==='milestone'; }).length;
@@ -2839,14 +3004,10 @@ body{padding-bottom:28px}
       statEl.innerHTML = '<span>🏗️ '+builds+' builds</span><span>✅ '+mots+' MOT passes</span><span>📌 '+milestones+' milestones</span><span>🔴 '+stopped+' stopped</span>';
     }
 
-    // Auto-scroll current node
+    // Auto-scroll to TODAY on load
     setTimeout(function(){
-      var nodes = track.querySelectorAll('.htl-node');
-      for(var i=0;i<_tlData.length;i++){
-        if((_tlFilter==='all'?_tlData[i]:entries[i])&&(_tlFilter==='all'?_tlData[i].status:entries[i].status)==='current'){
-          if(nodes[i]) nodes[i].scrollIntoView({inline:'center',behavior:'smooth'});
-          break;
-        }
+      if(outer && todayIdx>=0 && nodeEls[todayIdx]){
+        nodeEls[todayIdx].scrollIntoView({inline:'center',behavior:'smooth'});
       }
     }, 200);
   }
@@ -2872,6 +3033,7 @@ body{padding-bottom:28px}
   window.htlJumpToToday = function(){
     var popup = document.getElementById('hisav-tl-popup');
     if(popup) popup.style.display='none';
+    var outer = document.getElementById('htl-outer');
     var track = document.getElementById('htl-track');
     if(!track) return;
     var nodes = track.querySelectorAll('.htl-node');
@@ -2881,9 +3043,12 @@ body{padding-bottom:28px}
         return;
       }
     }
-    // Scroll to end
-    var outer = document.getElementById('htl-outer');
     if(outer) outer.scrollLeft = outer.scrollWidth;
+  };
+
+  window.htlScrollBy = function(delta){
+    var outer = document.getElementById('htl-outer');
+    if(outer) outer.scrollBy({left:delta, behavior:'smooth'});
   };
 
   // Show popup for node at idx
@@ -3400,24 +3565,24 @@ body{padding-bottom:28px}
     var chev  = document.getElementById('hisav-det-chevron');
     if(panel) panel.style.display = _open ? 'block' : 'none';
     if(chev)  chev.textContent = _open ? '▲' : '▼';
-    if(_open) hisavDetectiveLoad();
+    if(_open){ hisavDetectiveLoad(); detLoadPanels(); detQueueLoad(); detStormRefresh(); }
   };
 
   window.hisavDetectiveRun = function(){
     var sumEl = document.getElementById('hisav-det-summary');
     if(sumEl) sumEl.textContent = '🔍 Detective: scanning…';
     fetch('/api/detective/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'})
-    .then(function(){ setTimeout(hisavDetectiveLoad, 4000); })
+    .then(function(){ setTimeout(function(){ hisavDetectiveLoad(); detLoadPanels(); }, 4000); })
     .catch(function(){});
   };
 
   window.hisavDetectiveDismiss = function(id){
     fetch('/api/detective/dismiss', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:id})})
-    .then(function(){ hisavDetectiveLoad(); })
+    .then(function(){ hisavDetectiveLoad(); detLoadPanels(); })
     .catch(function(){});
   };
 
-  // Load on page ready
+  // Load banner data on page ready (does NOT open the panel)
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(hisavDetectiveLoad, 1500);
   });
@@ -3456,7 +3621,7 @@ body{padding-bottom:28px}
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(loadToolbarTs, 2000); });
 })();
 
-// ── OCB-Q: Detective 5-Panel Board ───────────────────────────────────────────
+// ── OCB-Q2: Detective 5-Panel Board (upgraded) ───────────────────────────────
 (function(){
   function _esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -3468,13 +3633,209 @@ body{padding-bottom:28px}
     return '<span class="det-badge det-open">OPEN</span>';
   }
 
+  function _borderCol(f){
+    if(f.status==='fixed') return '#2a4a2a';
+    var s = f.severity||f.status||'open';
+    if(s==='high'||s==='fail') return '#4a1a1a';
+    if(s==='medium'||s==='warn') return '#4a3a0a';
+    if(s==='pass') return '#1a4a2a';
+    return '#1a2a3a';
+  }
+
+  // ── Panel A: load task queue progress bars ────────────────────────────────
+  window.detQueueLoad = function(){
+    fetch('/api/detective/queue').then(function(r){return r.json();}).then(function(d){
+      var strip = document.getElementById('det-a-progress-strip');
+      var idleEl = document.getElementById('det-a-idle');
+      var qlist  = document.getElementById('det-queue-list');
+      var active = d.active_tasks || [];
+      var queue  = d.queue || [];
+
+      // Progress bars for active tasks
+      if(strip){
+        if(!active.length){
+          if(idleEl) idleEl.style.display = 'flex';
+        } else {
+          if(idleEl) idleEl.style.display = 'none';
+          var barsHtml = active.map(function(t, idx){
+            var pct = Math.min(100, Math.round((t.progress||0.4)*100));
+            var phase = t.phase || 'Scanning';
+            var elapsed = t.started_at ? _elapsed(t.started_at) : '';
+            return '<div class="det-prog-bar-row" id="det-prog-'+_esc(t.id)+'" onclick="detTaskDetailToggle(\''+_esc(t.id)+'\')" title="Click for full task detail">'+
+              '<span class="det-prog-name">'+_esc(t.strategy||t.type||'Task')+(t.custom?' — '+_esc(t.custom.substring(0,30)):'')+'</span>'+
+              '<div class="det-prog-bar"><div class="det-prog-fill" style="width:'+pct+'%"></div></div>'+
+              '<span class="det-prog-pct">'+pct+'%</span>'+
+              '<span class="det-prog-phase">'+_esc(phase)+'</span>'+
+              (elapsed?'<span class="det-prog-time">'+_esc(elapsed)+'</span>':'')+
+              '</div>'+
+              '<div class="det-task-detail" id="det-td-'+_esc(t.id)+'">'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Task ID</span><span class="det-task-detail-val">'+_esc(t.id)+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Trigger</span><span class="det-task-detail-val">'+_esc(t.trigger||'manual')+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Strategy</span><span class="det-task-detail-val">'+_esc(t.strategy||t.type||'?')+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Phase</span><span class="det-task-detail-val">'+_esc(phase)+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Files checked</span><span class="det-task-detail-val">'+_esc((t.files_checked||[]).join(', ')||'—')+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Findings so far</span><span class="det-task-detail-val">'+(t.findings_count||0)+'</span></div>'+
+                '<div class="det-task-detail-row"><span class="det-task-detail-lbl">Started</span><span class="det-task-detail-val">'+_esc(t.started_at||'—')+'</span></div>'+
+                (t.findings_count>0?'<a href="#" onclick="detPanelBFilterByTask(\''+_esc(t.id)+'\');return false" style="font-size:11px;color:#4af;margin-top:6px;display:block">View findings so far ('+t.findings_count+') →</a>':'')+
+                '<div class="det-task-btns">'+
+                  '<button onclick="detCancelTask(\''+_esc(t.id)+'\')" style="background:#2a1010;border:1px solid #4a2020;color:#f77;padding:3px 9px;border-radius:4px;cursor:pointer;font:10px inherit">Cancel</button>'+
+                  '<button onclick="detReprioritise(\''+_esc(t.id)+'\',\'up\')" style="background:#1a2a3a;border:1px solid #2a3a4a;color:#4af;padding:3px 9px;border-radius:4px;cursor:pointer;font:10px inherit">↑ Priority</button>'+
+                  '<button onclick="detReprioritise(\''+_esc(t.id)+'\',\'down\')" style="background:#1a2a3a;border:1px solid #2a3a4a;color:#4af;padding:3px 9px;border-radius:4px;cursor:pointer;font:10px inherit">↓ Priority</button>'+
+                '</div>'+
+              '</div>';
+          }).join('');
+          strip.innerHTML = barsHtml;
+        }
+      }
+
+      // Queue list
+      if(qlist){
+        if(!queue.length){
+          qlist.innerHTML = '<div style="color:#334;font-size:11px;padding:4px 0">Queue is empty.</div>';
+        } else {
+          qlist.innerHTML = queue.map(function(t,i){
+            return '<div class="det-queue-row" draggable="true" data-qid="'+_esc(t.id)+'">'+
+              '<span class="det-queue-drag">⠿</span>'+
+              '<span class="det-queue-num">'+(i+1)+'</span>'+
+              '<span style="flex:1;font-size:11px;color:#bbc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_esc(t.strategy)+(t.custom?' — '+_esc(t.custom.substring(0,30)):'')+'</span>'+
+              '<span class="det-queue-strat">'+_esc(t.strategy)+'</span>'+
+              '<button onclick="detRemoveFromQueue(\''+_esc(t.id)+'\')" style="background:none;border:none;color:#445;cursor:pointer;font:13px inherit;padding:0 4px" title="Remove">✕</button>'+
+            '</div>';
+          }).join('');
+          _initQueueDrag();
+        }
+      }
+    }).catch(function(){});
+  };
+
+  function _elapsed(startIso){
+    try{
+      var s = (new Date() - new Date(startIso)) / 1000 | 0;
+      if(s<60) return s+'s';
+      return (s/60|0)+'m '+(s%60)+'s';
+    }catch(e){ return ''; }
+  }
+
+  window.detTaskDetailToggle = function(id){
+    var row = document.getElementById('det-prog-'+id);
+    var detail = document.getElementById('det-td-'+id);
+    if(!detail) return;
+    var open = detail.classList.toggle('open');
+    if(row) row.classList.toggle('expanded', open);
+  };
+
+  window.detAddTaskShow = function(){
+    var sel = document.getElementById('det-strat-sel');
+    if(sel) sel.style.display = sel.style.display==='none'?'block':'none';
+    var w = document.getElementById('det-wento-wrap');
+    if(w) w.style.display='none';
+  };
+
+  window.detQueueStrategy = function(strategy){
+    fetch('/api/detective/add-to-queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({strategy:strategy})})
+    .then(function(r){return r.json();})
+    .then(function(){
+      document.getElementById('det-strat-sel').style.display='none';
+      detQueueLoad();
+    }).catch(function(){});
+  };
+
+  window.detQueueStratWento = function(){
+    var w = document.getElementById('det-wento-wrap');
+    if(w) w.style.display='block';
+    var inp = document.getElementById('det-wento-txt');
+    if(inp) inp.focus();
+  };
+
+  window.detQueueWento = function(){
+    var txt = (document.getElementById('det-wento-txt')||{}).value||'';
+    if(!txt.trim()) return;
+    fetch('/api/detective/add-to-queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({strategy:'WENTO',custom:txt.trim()})})
+    .then(function(r){return r.json();})
+    .then(function(){
+      document.getElementById('det-strat-sel').style.display='none';
+      document.getElementById('det-wento-txt').value='';
+      detQueueLoad();
+    }).catch(function(){});
+  };
+
+  window.detRemoveFromQueue = function(id){
+    fetch('/api/detective/cancel-task',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
+    .then(function(){ detQueueLoad(); }).catch(function(){});
+  };
+
+  window.detCancelTask = function(id){
+    fetch('/api/detective/cancel-task',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
+    .then(function(){ detQueueLoad(); }).catch(function(){});
+  };
+
+  window.detReprioritise = function(id, dir){
+    fetch('/api/detective/queue').then(function(r){return r.json();}).then(function(d){
+      var q = d.queue||[];
+      var idx = q.findIndex(function(t){return t.id===id;});
+      if(idx<0) return;
+      var newIdx = dir==='up' ? Math.max(0,idx-1) : Math.min(q.length-1,idx+1);
+      var item = q.splice(idx,1)[0];
+      q.splice(newIdx,0,item);
+      fetch('/api/detective/reorder-queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:q.map(function(t){return t.id;})})})
+      .then(function(){ detQueueLoad(); });
+    }).catch(function(){});
+  };
+
+  window.detRunAllQueued = function(){
+    fetch('/api/detective/run-all-queued',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(typeof toast==='function') toast(d.message||'Running '+d.started+' tasks', 'ok', 3000);
+      setTimeout(function(){ detQueueLoad(); detLoadPanels(); }, 3000);
+    }).catch(function(){});
+  };
+
+  window.detClearQueue = function(){
+    fetch('/api/detective/queue').then(function(r){return r.json();}).then(function(d){
+      var ids = (d.queue||[]).map(function(t){return t.id;});
+      var promises = ids.map(function(id){
+        return fetch('/api/detective/cancel-task',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})});
+      });
+      Promise.all(promises).then(function(){ detQueueLoad(); });
+    }).catch(function(){});
+  };
+
+  function _initQueueDrag(){
+    var rows = document.querySelectorAll('.det-queue-row');
+    var _dragId = null;
+    rows.forEach(function(row){
+      row.addEventListener('dragstart',function(){ _dragId = row.dataset.qid; row.style.opacity='.5'; });
+      row.addEventListener('dragend',function(){ row.style.opacity=''; });
+      row.addEventListener('dragover',function(e){ e.preventDefault(); row.style.borderTop='2px solid #4af'; });
+      row.addEventListener('dragleave',function(){ row.style.borderTop=''; });
+      row.addEventListener('drop',function(e){
+        e.preventDefault(); row.style.borderTop='';
+        if(_dragId === row.dataset.qid) return;
+        fetch('/api/detective/queue').then(function(r){return r.json();}).then(function(d){
+          var q = d.queue||[];
+          var from = q.findIndex(function(t){return t.id===_dragId;});
+          var to   = q.findIndex(function(t){return t.id===row.dataset.qid;});
+          if(from<0||to<0) return;
+          var item = q.splice(from,1)[0];
+          q.splice(to,0,item);
+          fetch('/api/detective/reorder-queue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:q.map(function(t){return t.id;})})})
+          .then(function(){ detQueueLoad(); });
+        });
+      });
+    });
+  }
+
+  // ── Panel B: load findings with clickable drill-down ──────────────────────
+  var _panelBFilter = null;
+
   function detLoadPanels(){
     fetch('/api/detective/report').then(function(r){return r.json();}).then(function(d){
       var findings = d.findings || [];
       var lastRun = d.last_run || null;
       var runCount = d.run_count || 0;
 
-      // Panel A
+      // Panel A summary
       var nameEl = document.getElementById('det-strategy-name');
       var lastEl = document.getElementById('det-last-run');
       var cntEl  = document.getElementById('det-run-count');
@@ -3487,25 +3848,39 @@ body{padding-bottom:28px}
       if(pulsEl) pulsEl.style.background = open.length>0 ? '#f44' : '#2a7';
       if(sumEl)  sumEl.textContent = open.length>0 ? open.length+' finding'+(open.length===1?'':'s') : 'All clear';
 
-      // Panel B — history (all findings newest first)
+      // Panel B — history with drill-down
       var bEl = document.getElementById('det-panel-b-content');
       if(bEl){
+        // Clear filter header
+        var fltHdr = document.getElementById('det-b-filter-hdr');
+        if(!fltHdr){
+          fltHdr = document.createElement('div');
+          fltHdr.id = 'det-b-filter-hdr';
+          fltHdr.style.cssText = 'display:none;font-size:11px;color:#fa0;padding:4px 0 6px;border-bottom:1px solid #1e2a3a;margin-bottom:6px;display:flex;align-items:center;gap:8px';
+          fltHdr.innerHTML = '<span id="det-b-filter-txt">Filtered view</span><button onclick="detPanelBClearFilter()" style="background:none;border:1px solid #2a3a4a;color:#445;padding:1px 7px;border-radius:3px;cursor:pointer;font:10px inherit;margin-left:auto">✕ Clear filter</button>';
+          bEl.parentNode.insertBefore(fltHdr, bEl);
+        }
+
         var sorted = findings.slice().sort(function(a,b){return (b.found_at||'').localeCompare(a.found_at||'');});
         if(!sorted.length){
           bEl.innerHTML='<div style="font-size:11px;color:#445">No checks recorded yet. Run a scan.</div>';
         } else {
-          bEl.innerHTML = sorted.map(function(f){
-            var bdr = f.status==='fixed'?'#2a4a2a':f.severity==='high'?'#4a2a2a':'#3a3a1a';
-            return '<div class="det-row" style="border-left:3px solid '+bdr+';padding-left:8px">'+
+          bEl.innerHTML = sorted.map(function(f, idx){
+            var bdr = _borderCol(f);
+            var dimmed = (_panelBFilter && f.task_id !== _panelBFilter) ? 'opacity:.3;' : '';
+            var pulseBdr = (_panelBFilter && f.task_id === _panelBFilter) ? 'animation:hisavPulse .8s ease-in-out 3;' : '';
+            return '<div class="det-row det-row-clickable" style="border-left:3px solid '+bdr+';padding-left:8px;'+dimmed+pulseBdr+'" onclick="detDrillToggle(\'det-drill-'+idx+'\')" data-idx="'+idx+'">'+
               '<span style="flex:1;font-size:11px;color:#bbc">'+_esc(f.type||f.description||'')+'</span>'+
               '<span style="font-size:10px;color:#445;white-space:nowrap;margin:0 6px">'+_esc((f.found_at||'').substring(5,16))+'</span>'+
               _detBadge(f.status==='open'?f.severity||'open':f.status)+
-              '</div>';
+              '<span style="font-size:10px;color:#334;margin-left:4px">▼</span>'+
+              '</div>'+
+              _buildDrill(f, idx);
           }).join('');
         }
       }
 
-      // Panel C — failures (open only)
+      // Panel C
       var cEl = document.getElementById('det-panel-c-content');
       if(cEl){
         var fails = findings.filter(function(f){return f.status==='open';});
@@ -3526,7 +3901,7 @@ body{padding-bottom:28px}
       }
     }).catch(function(){});
 
-    // Panel D — learning DB
+    // Panel D
     fetch('/api/detective/learning-db').then(function(r){return r.json();}).then(function(d){
       var hdr = document.getElementById('det-panel-d-header');
       var lst = document.getElementById('det-panel-d-entries');
@@ -3540,6 +3915,96 @@ body{padding-bottom:28px}
     }).catch(function(){});
   }
 
+  function _buildDrill(f, idx){
+    var did = 'det-drill-'+idx;
+    // Check solution DB for recurrence (simple check)
+    var recurrence = f.recurrence_count>0 ? 'Seen '+f.recurrence_count+' time'+(f.recurrence_count===1?'':'s')+'. First seen: '+(f.first_seen||'unknown') : 'New finding';
+    return '<div class="det-drill" id="'+did+'">'+
+      '<div class="det-drill-sec">'+
+        '<div class="det-drill-sec-title">Finding Detail</div>'+
+        '<div class="det-drill-field"><span class="det-drill-lbl">Full text</span><span class="det-drill-val">'+_esc(f.description||f.type||'—')+'</span></div>'+
+        '<div class="det-drill-field"><span class="det-drill-lbl">Strategy</span><span class="det-drill-val">'+_esc(f.strategy||f.type||'—')+'</span></div>'+
+        '<div class="det-drill-field"><span class="det-drill-lbl">Files scanned</span><span class="det-drill-val">'+_esc((f.files_scanned||[]).join(', ')||'—')+'</span></div>'+
+        (f.endpoints_tested?'<div class="det-drill-field"><span class="det-drill-lbl">Endpoints tested</span><span class="det-drill-val">'+_esc((f.endpoints_tested||[]).join(', '))+'</span></div>':'')+
+        (f.contradictions?'<div class="det-drill-field"><span class="det-drill-lbl">Contradictions</span><span class="det-drill-val">'+_esc(f.contradictions)+'</span></div>':'')+
+        (f.error_msg?'<div class="det-drill-field"><span class="det-drill-lbl">Error</span><span class="det-drill-val" style="color:#f77">'+_esc(f.error_msg)+'</span></div>':'')+
+      '</div>'+
+      '<div class="det-drill-sec">'+
+        '<div class="det-drill-sec-title">Evidence</div>'+
+        '<div style="background:#080c10;border-radius:4px;padding:7px;font:10px monospace;color:#8ab;word-break:break-all;max-height:80px;overflow-y:auto">'+_esc(f.raw_data||f.evidence||'No raw data.')+'</div>'+
+        (f.line_numbers?'<div style="font-size:10px;color:#445;margin-top:3px">STATUS.md lines: '+_esc(f.line_numbers)+'</div>':'')+
+      '</div>'+
+      '<div class="det-drill-sec">'+
+        '<div class="det-drill-sec-title">Resolution</div>'+
+        '<div class="det-drill-field"><span class="det-drill-lbl">Auto-fix tried</span><span class="det-drill-val">'+_esc(f.auto_fix_attempted?'Yes':'No')+'</span></div>'+
+        (f.auto_fix_attempted?'<div class="det-drill-field"><span class="det-drill-lbl">Fix result</span><span class="det-drill-val">'+_esc(f.auto_fix_result||'—')+'</span></div>':'')+
+        '<div class="det-drill-field"><span class="det-drill-lbl">Suggested fix</span><span class="det-drill-val">'+_esc(f.suggested_fix||'No fix suggestion')+'</span></div>'+
+        '<div class="det-drill-btns">'+
+          '<button class="det-drill-btn green" onclick="detResolve(\''+_esc(f.id)+'\')">✓ Mark resolved</button>'+
+          '<button class="det-drill-btn" onclick="detAddSolution(\''+_esc(f.id)+'\',\''+_esc((f.description||f.type||'').replace(/'/g,''))+'\',\''+_esc((f.suggested_fix||'').replace(/'/g,''))+'\')">+ Add to solution DB</button>'+
+          '<button class="det-drill-btn red" onclick="hisavDetectiveDismiss(\''+_esc(f.id)+'\')">✕ Dismiss</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="det-drill-sec">'+
+        '<div class="det-drill-sec-title">Recurrence</div>'+
+        '<div style="font-size:11px;color:#889">'+_esc(recurrence)+'</div>'+
+      '</div>'+
+      '<div class="det-drill-sec">'+
+        '<div class="det-drill-sec-title">Timeline Link</div>'+
+        '<button class="det-drill-btn" onclick="detAddFindingToTimeline(\''+_esc((f.description||f.type||'Finding').substring(0,40))+'\')">📌 Add to Vehicle History</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  window.detDrillToggle = function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var open = el.classList.toggle('open');
+    var row = el.previousElementSibling;
+    if(row){
+      var chev = row.querySelector('span:last-child');
+      if(chev) chev.textContent = open ? '▲' : '▼';
+    }
+  };
+
+  window.detResolve = function(id){
+    fetch('/api/detective/resolve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){ detLoadPanels(); if(typeof toast==='function') toast('Finding resolved','ok',2000); })
+    .catch(function(){});
+  };
+
+  window.detAddSolution = function(id, finding, fix){
+    fetch('/api/detective/add-solution',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({finding:finding,fix:fix})})
+    .then(function(){ if(typeof toast==='function') toast('Added to solution DB','ok',2000); })
+    .catch(function(){});
+  };
+
+  window.detAddFindingToTimeline = function(label){
+    fetch('/api/timeline/add-node',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({label:label,date:new Date().toISOString().substring(0,10),category:'Fix',zone:'present'})})
+    .then(function(){ if(typeof toast==='function') toast('Added to timeline','ok',2000); })
+    .catch(function(){});
+  };
+
+  // Phase 4: Panel A → Panel B cross-link (filter Panel B by task)
+  window.detPanelBFilterByTask = function(taskId){
+    _panelBFilter = taskId;
+    var bPanel = document.getElementById('det-panel-b-content');
+    var bPanelEl = bPanel && bPanel.closest('.det-panel');
+    if(bPanelEl) bPanelEl.scrollIntoView({behavior:'smooth',block:'start'});
+    detLoadPanels();
+    var hdr = document.getElementById('det-b-filter-hdr');
+    var txt = document.getElementById('det-b-filter-txt');
+    if(hdr) hdr.style.display = 'flex';
+    if(txt) txt.textContent = 'Showing findings from task: '+taskId;
+  };
+
+  window.detPanelBClearFilter = function(){
+    _panelBFilter = null;
+    var hdr = document.getElementById('det-b-filter-hdr');
+    if(hdr) hdr.style.display = 'none';
+    detLoadPanels();
+  };
+
   window.detPanelDToggle = function(){
     var all = document.getElementById('det-panel-d-all');
     var btn = document.getElementById('det-panel-d-view-btn');
@@ -3549,14 +4014,13 @@ body{padding-bottom:28px}
     if(btn) btn.textContent = visible ? 'View all solutions' : 'Hide';
   };
 
-  // Screenshot analysis — Panel E
+  // Phase 6: Screenshot analysis — rebuilt Panel E handler
   window.detAnalyseFile = function(file){
     if(!file) return;
-    var dz = document.getElementById('det-drop-zone');
     var st = document.getElementById('det-analyse-status');
     var res = document.getElementById('det-analyse-result');
-    if(st) st.textContent = '🔍 Detective is reading…';
-    if(res) res.style.display = 'none';
+    if(st) st.textContent = '🕵️ Detective is reading…';
+    if(res){ res.style.display='none'; res.innerHTML=''; }
     var fd = new FormData();
     fd.append('screenshot', file);
     fetch('/api/detective/analyse-screenshot', {method:'POST', body:fd})
@@ -3568,85 +4032,137 @@ body{padding-bottom:28px}
       var desc = d.description || 'No description returned.';
       var lbl  = d.suggested_label || desc.split(' ').slice(0,5).join(' ');
       res.innerHTML =
-        '<div class="det-thought-bubble">'+
-        '<span style="font-size:18px;margin-right:6px">🕵️</span>'+
-        '<span style="font-size:12px;color:#ccd">"I think this shows:<br><strong>'+_esc(desc)+'</strong>"</span>'+
-        '<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">'+
-        '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="detAddToTimeline(\''+_esc(lbl)+'\')" title="Add this to the project timeline">Yes, add it</button>'+
-        '<button class="hisav-idea-btn" onclick="document.getElementById(\'det-analyse-result\').style.display=\'none\'" title="Dismiss">No</button>'+
-        '<button class="hisav-idea-btn" onclick="detDescribeManually()" title="Type your own description">Let me describe it</button>'+
-        '</div>'+
-        '<div id="det-manual-desc-wrap" style="display:none;margin-top:8px">'+
-        '<input type="text" id="det-manual-desc" placeholder="Describe what this shows…" style="width:100%;background:#080c10;border:1px solid #2a3a4a;color:#bbc;padding:5px 8px;border-radius:4px;font:11px inherit;box-sizing:border-box;margin-bottom:5px">'+
-        '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="detAddToTimeline(document.getElementById(\'det-manual-desc\').value)">Add my description</button>'+
+        '<div class="det-thought-bubble" style="display:flex;gap:12px;align-items:flex-start">'+
+        '<span style="font-size:2rem;flex-shrink:0">🕵️</span>'+
+        '<div style="flex:1">'+
+          '<p style="margin:0 0 4px"><strong>I think this shows:</strong> '+_esc(desc)+'</p>'+
+          '<p style="margin:0 0 8px;font-size:10px;color:#556"><em>Confidence: '+_esc(d.confidence||'?')+'</em></p>'+
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+            '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px" onclick="detAddToTimeline(\''+_esc(lbl)+'\')">📌 Yes, add to timeline</button>'+
+            '<button class="hisav-idea-btn" onclick="detDescribeManually()">✏️ Let me describe it</button>'+
+            '<button class="hisav-idea-btn" onclick="document.getElementById(\'det-analyse-result\').style.display=\'none\'">✕ No</button>'+
+          '</div>'+
+          '<div id="det-manual-input" style="display:none;margin-top:8px">'+
+            '<input id="det-manual-text" type="text" placeholder="Describe what was completed…" style="width:100%;padding:6px;background:#080c10;border:1px solid #2a3a4a;color:#bbc;border-radius:4px;font:11px inherit;box-sizing:border-box">'+
+            '<button class="hisav-save-btn" style="font-size:11px;padding:3px 10px;margin-top:5px" onclick="detAddToTimelineManual()">📌 Add this to timeline</button>'+
+          '</div>'+
         '</div>'+
         '</div>';
-    }).catch(function(e){
-      if(st) st.textContent = 'Analysis failed — try describing it manually.';
+    }).catch(function(){
+      if(st) st.textContent = '❌ Could not analyse — try describing it manually below.';
     });
   };
 
   window.detDescribeManually = function(){
-    var w = document.getElementById('det-manual-desc-wrap');
+    var w = document.getElementById('det-manual-input');
     if(w) w.style.display = 'block';
+    var inp = document.getElementById('det-manual-text');
+    if(inp) inp.focus();
+  };
+
+  window.detAddToTimelineManual = function(){
+    var label = (document.getElementById('det-manual-text')||{}).value||'';
+    if(label.trim()) detAddToTimeline(label.trim());
   };
 
   window.detAddToTimeline = function(label){
     if(!label || !label.trim()) return;
-    fetch('/api/timeline/add-node', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({label:label.trim(), date:new Date().toISOString().substring(0,10)})})
+    fetch('/api/timeline/add-node', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({label:label.trim(), date:new Date().toISOString().substring(0,10), category:'Screenshot', zone:'present'})})
     .then(function(r){return r.json();})
-    .then(function(d){
-      toast && toast('Added to timeline: '+label, 'ok', 3000);
+    .then(function(){
+      if(typeof toast==='function') toast('Added to timeline: '+label, 'ok', 3000);
       var res = document.getElementById('det-analyse-result');
       if(res) res.style.display = 'none';
     }).catch(function(){});
   };
 
-  // Drag-drop + paste for Panel E
+  // Phase 6: Rebuilt drop zone + paste handler
   document.addEventListener('DOMContentLoaded', function(){
     var dz = document.getElementById('det-drop-zone');
-    if(!dz) return;
-    dz.addEventListener('dragover', function(e){e.preventDefault(); dz.classList.add('drag-over');});
-    dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
-    dz.addEventListener('drop', function(e){
-      e.preventDefault(); dz.classList.remove('drag-over');
-      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if(f) detAnalyseFile(f);
-    });
-    dz.addEventListener('paste', function(e){
-      var items = (e.clipboardData || e.originalEvent.clipboardData).items;
-      for(var i=0; i<items.length; i++){
-        if(items[i].type.indexOf('image') !== -1){
-          var file = items[i].getAsFile();
-          detAnalyseFile(file);
-          break;
-        }
-      }
-    });
-    // Load panels on open
-    setTimeout(detLoadPanels, 2000);
+    if(dz){
+      dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag-over'); });
+      dz.addEventListener('dragleave', function(){ dz.classList.remove('drag-over'); });
+      dz.addEventListener('drop', function(e){
+        e.preventDefault(); dz.classList.remove('drag-over');
+        var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if(f && f.type.startsWith('image/')) detAnalyseFile(f);
+      });
+    }
+    // Browse button — hidden file input
+    var browse = document.getElementById('det-browse-btn');
+    var fi = document.createElement('input');
+    fi.type='file'; fi.accept='image/*'; fi.style.display='none';
+    document.body.appendChild(fi);
+    if(browse) browse.onclick = function(){ fi.click(); };
+    fi.onchange = function(){ if(fi.files[0]) detAnalyseFile(fi.files[0]); };
+    // Also wire existing det-file-inp (backwards compat)
+    var fi2 = document.getElementById('det-file-inp');
+    if(fi2) fi2.addEventListener('change', function(){ if(fi2.files[0]) detAnalyseFile(fi2.files[0]); });
   });
 
-  // Document-level paste fallback — activates when HISAV tab is open
+  // Document-level Ctrl+V paste — only when HISAV tab is visible
   document.addEventListener('paste', function(e){
     var hisavPane = document.getElementById('tab-wccs');
-    if(!hisavPane || hisavPane.style.display === 'none') return;
-    var items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    if(!hisavPane || !hisavPane.classList.contains('active')) return;
+    var detPanel = document.getElementById('hisav-detective-panel');
+    if(!detPanel || detPanel.style.display==='none') return;
+    var items = (e.clipboardData || e.originalEvent && e.originalEvent.clipboardData || {}).items || [];
     for(var i=0; i<items.length; i++){
-      if(items[i].type.indexOf('image') !== -1){
-        var file = items[i].getAsFile();
-        detAnalyseFile(file);
-        break;
+      if(items[i].type && items[i].type.startsWith('image/')){
+        detAnalyseFile(items[i].getAsFile());
+        return;
       }
     }
   });
 
-  // Re-expose load so toggle can call it
-  var _origDetToggle = window.hisavDetectiveToggle;
-  window.hisavDetectiveToggle = function(){
-    _origDetToggle && _origDetToggle();
-    detLoadPanels();
+  // STORM Feed
+  var _stormFilter = 'all';
+  window.detStormFilter = function(btn, filter){
+    _stormFilter = filter;
+    document.querySelectorAll('.storm-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    if(btn) btn.classList.add('active');
+    detStormRefresh();
   };
+
+  window.detStormRefresh = function(){
+    var list = document.getElementById('det-storm-list');
+    if(!list) return;
+    var url = '/api/storm/feed?limit=50';
+    if(_stormFilter!=='all' && _stormFilter!=='detective' && _stormFilter!=='wccs'){
+      url += '&severity='+encodeURIComponent(_stormFilter);
+    }
+    fetch(url).then(function(r){return r.json();}).then(function(d){
+      var entries = d.entries||[];
+      if(_stormFilter==='detective') entries = entries.filter(function(e){return e.source&&e.source.indexOf('detective')>=0;});
+      if(_stormFilter==='wccs') entries = entries.filter(function(e){return e.source&&e.source.indexOf('wccs')>=0;});
+      if(!entries.length){
+        list.innerHTML='<div style="color:#334;padding:6px">No entries yet.</div>';
+        return;
+      }
+      var sevClass={'fail':'storm-sev-fail','warn':'storm-sev-warn','pass':'storm-sev-pass','info':'storm-sev-info'};
+      list.innerHTML = entries.map(function(e){
+        var sc = sevClass[e.severity]||'storm-sev-info';
+        var ts = (e.timestamp||'').substring(5,16).replace('T',' ');
+        return '<div class="storm-feed-row">'+
+          '<span class="storm-sev '+sc+'">'+_esc(e.severity||'info').toUpperCase()+'</span>'+
+          '<span style="color:#445;font-size:10px;white-space:nowrap">'+_esc(e.source||'?')+'</span>'+
+          '<span style="flex:1;color:#bbc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_esc(e.finding||e.category||JSON.stringify(e).substring(0,60))+'</span>'+
+          '<span style="color:#334;font-size:10px;white-space:nowrap">'+_esc(ts)+'</span>'+
+        '</div>';
+      }).join('');
+    }).catch(function(){
+      if(list) list.innerHTML='<div style="color:#334;padding:6px">STORM feed unavailable.</div>';
+    });
+  };
+
+  // Auto-refresh STORM every 30s
+  setInterval(function(){
+    var panel = document.getElementById('hisav-detective-panel');
+    if(panel && panel.style.display!=='none') detStormRefresh();
+  }, 30000);
+
+  // Expose detLoadPanels globally
+  window.detLoadPanels = detLoadPanels;
 })();
 
 // ── OCB-Q: Checklist Health filter ───────────────────────────────────────────

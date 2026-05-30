@@ -289,13 +289,27 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 
 ---
 
+## BUILT — OCB-Q Combined (Q2 + Q3) — 2026-05-30
+| Feature | Detail |
+|---|---|
+| Detective Panel A upgrade | Progress bar strip per active task, Task Queue panel with drag-reorder, 7-strategy selector + WENTO custom tasks. Built 2026-05-30. |
+| Detective Panel B drill-down | Every finding row clickable → inline drill-down (Finding Detail, Evidence, Resolution, Recurrence, Timeline Link). Built 2026-05-30. |
+| Panel A → Panel B cross-link | Task detail shows "View findings (N)" link → filters Panel B by task with pulsing highlight. Built 2026-05-30. |
+| WENTO backend | /api/detective/add-to-queue handles WENTO strategy, calls aafl_core when run. Built 2026-05-30. |
+| STORM + MCCM architecture | storm_bridge.py created. STORM receives feeds from detective/WCCS/screenshots. data/storm_feed.json. MCCM mission launcher endpoint for SESUM parsing. Built 2026-05-30. |
+| Screenshot Panel E rebuild | Ctrl+V paste + drag-drop + Browse rebuilt. det-browse-btn, det-manual-input, StormBridge ingest on analysis. Built 2026-05-30. |
+| Timeline visual upgrade | PAST/PRESENT/PLANNED zones, TODAY marker with pulsing gold glow, scroll arrows, proportional node sizing, auto-scroll to current. Built 2026-05-30. |
+| New endpoints | GET /api/detective/queue, GET /api/storm/feed, GET /api/storm/summary, POST /api/detective/reorder-queue, POST /api/detective/cancel-task, POST /api/detective/add-to-queue, POST /api/detective/run-all-queued, POST /api/detective/resolve, POST /api/detective/add-solution, POST /api/storm/ingest, POST /api/missions/update-from-sesum. Built 2026-05-30. |
+
 ## NEXT PRIORITIES
-1. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements (parking lot)
-2. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
-3. Add GROQ + Cloudflare keys to .env (manual — security rule)
-4. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
-5. Post on r/LocalLLaMA when Star Citizen benchmark passes
-6. LiteLLM full integration — replace direct provider calls with LiteLLM router
-7. Electron wrapper for packaging
+1. Complete STORM ↔ MCCM live loop testing
+2. Wire aafl_wccs.py SESUM output → STORM → Mission Launcher
+3. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements (parking lot)
+4. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)
+5. Add GROQ + Cloudflare keys to .env (manual — security rule)
+6. Polish AASKC for ship — README, demo video, r/LocalLLaMA post
+7. Post on r/LocalLLaMA when Star Citizen benchmark passes
+8. LiteLLM full integration — replace direct provider calls with LiteLLM router
+9. Electron wrapper for packaging
 
 <!-- END_OF_FILE -->
