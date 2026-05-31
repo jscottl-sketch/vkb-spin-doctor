@@ -403,6 +403,12 @@ def main():
                 print(f"[GIT PUSH] Failed — run manually. Error: {push_res.stderr.strip()}")
         except Exception as e:
             print(f"[GIT PUSH] Failed — run manually. Error: {e}")
+    try:
+        status_content = open('STATUS.md', 'r', encoding='utf-8').read()
+        subprocess.run(['clip'], input=status_content, text=True)
+        print("📋 STATUS.md copied to clipboard — paste into Project Files now")
+    except Exception:
+        print("[WARN] Could not copy STATUS.md to clipboard")
     if not args.dry_run:
         try:
             import project_timeline_builder

@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-30 (HISAV + Detective + Timeline complete) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-05-31 (OCB-Q+P: STORM bridge + WENTO queue + Timeline zones + OCB Runner safety) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -214,6 +214,9 @@
 | OCB-Q Phase 6 (CLAC Sessions v2) | Card view with View brief/Copy brief. + Log New Session modal (inline). Loads from /api/hisav/clac-sessions which scans session_logs/ for .md files. |
 | OCB-Q Phase 7 (Checklist Health filter) | Filter bar [All][Complete][Incomplete][Unconfirmed]. Category headers with completion % bar. Incomplete items: amber border; unconfirmed: dark border. |
 | OCB-Q Phase 8 (MOT) | 109/109 ALL CLEAR 2026-05-30. mcc_full_mot.py Windows Unicode crash fixed (sys.stdout.reconfigure). |
+| STORM + MCCM architecture | storm_bridge.py — STORM receives feeds from detective/WCCS/screenshots. MCCM mission launcher auto-updates from SESOMs. All data flows through storm_feed.json. Built 2026-05-31. |
+| WENTO Queue | HISAV Section 10 — standalone WENTO capture with timestamp list. GET/POST /api/hisav/wento. data/wento_queue.json. Built 2026-05-31. |
+| OCB Runner safety layer | git stash + HTML syntax check + auto-rollback on fail. Run Script task type. run_ocb() callable via /api/ocb/run. HISAV Section 11 panel. Built 2026-05-31. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |

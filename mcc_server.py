@@ -647,6 +647,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path == "/api/code/read":
                 self._handle_code_read()
             # ── OCB-O: OCB Runner ─────────────────────────────────────────────
+            elif path == "/api/ocb/status":
+                self._handle_ocb_status("")
             elif path.startswith("/api/ocb/status/"):
                 run_id = path[len("/api/ocb/status/"):]
                 self._handle_ocb_status(run_id)
@@ -670,6 +672,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_hisav_screenshots_get()
             elif path == "/api/hisav/clac-sessions":
                 self._handle_hisav_clac_sessions_get()
+            elif path == "/api/hisav/wento":
+                self._handle_hisav_wento_get()
             elif path.startswith("/data/screenshots/"):
                 self._handle_screenshot_static(path)
             # ── Detective endpoints ─────────────────────────────────────────────
@@ -955,6 +959,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_hisav_clac_session_post()
             elif path == "/api/hisav/screenshot":
                 self._handle_hisav_screenshot_post()
+            elif path == "/api/hisav/wento":
+                self._handle_hisav_wento_post()
             elif path == "/api/detective/run":
                 self._handle_detective_run_post()
             elif path == "/api/detective/dismiss":
@@ -8191,6 +8197,42 @@ def _handle_hisav_clac_sessions_get(self):
         self._send_json({"error": str(exc)}, 500)
 
 MCCHandler._handle_hisav_clac_sessions_get = _handle_hisav_clac_sessions_get  # type: ignore[attr-defined]
+
+
+# ── HISAV WENTO Queue endpoints ───────────────────────────────────────────────
+_WENTO_FILE = HERE / "data" / "wento_queue.json"
+
+def _handle_hisav_wento_get(self):
+    """GET /api/hisav/wento — return WENTO queue items."""
+    try:
+        data = json.loads(_WENTO_FILE.read_text(encoding="utf-8")) if _WENTO_FILE.exists() else {"items": []}
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_hisav_wento_get = _handle_hisav_wento_get  # type: ignore[attr-defined]
+
+def _handle_hisav_wento_post(self):
+    """POST /api/hisav/wento — add item to WENTO queue."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        text = (body.get("text") or "").strip()
+        if not text:
+            self._send_json({"error": "text required"}, 400)
+            return
+        data = json.loads(_WENTO_FILE.read_text(encoding="utf-8")) if _WENTO_FILE.exists() else {"items": []}
+        data.setdefault("items", []).append({"text": text, "ts": _now_iso()})
+        tmp = str(_WENTO_FILE) + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        shutil.move(tmp, str(_WENTO_FILE))
+        # Verify write
+        verify = json.loads(_WENTO_FILE.read_text(encoding="utf-8"))
+        self._send_json({"ok": True, "count": len(verify.get("items", []))})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_hisav_wento_post = _handle_hisav_wento_post  # type: ignore[attr-defined]
 
 
 # ── OCB-Q: Detective screenshot analysis ─────────────────────────────────────

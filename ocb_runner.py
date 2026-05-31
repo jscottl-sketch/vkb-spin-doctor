@@ -378,7 +378,7 @@ def _git_stash_pop(status: dict):
 def git_stash_html() -> bool:
     """Stash mission_control.html before any edit."""
     result = subprocess.run(
-        ["git", "stash", "push", "-m", "ocb-pre-edit", "mission_control.html"],
+        ["git", "stash", "push", "-m", "pre-ocb-backup", "mission_control.html"],
         capture_output=True, text=True, cwd=str(HERE),
     )
     return result.returncode == 0
@@ -521,6 +521,28 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
             _log_entry(status, phase["phase_num"], task["num"],
                        f"Task: {task['text'][:70]}")
             _write_status(status)
+
+            # Run Script task type: "run script: foo.py" or "execute foo.bat"
+            task_lower = task["text"].lower()
+            if task_lower.startswith("run script:") or task_lower.startswith("execute "):
+                script_name = task["text"].split(":", 1)[-1].strip() if ":" in task["text"] else task["text"].split(None, 1)[-1].strip()
+                script_path = HERE / script_name
+                _log_entry(status, phase["phase_num"], task["num"], f"Run Script: {script_name}")
+                _write_status(status)
+                try:
+                    cmd = [sys.executable, str(script_path)] if script_path.suffix == ".py" else [str(script_path)]
+                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
+                    _log_entry(status, phase["phase_num"], task["num"],
+                               f"exit={res.returncode} | {(res.stdout+res.stderr).strip()[:200]}")
+                    status["phases"][pi]["tasks"][ti]["status"] = "DONE" if res.returncode == 0 else "FAILED"
+                    if res.returncode != 0:
+                        phase_ok = False
+                except Exception as exc:
+                    _log_entry(status, phase["phase_num"], task["num"], f"Script error: {str(exc)[:80]}")
+                    status["phases"][pi]["tasks"][ti]["status"] = "FAILED"
+                    phase_ok = False
+                _write_status(status)
+                continue
 
             filepath = identify_affected_file(task["text"])
             _log_entry(status, phase["phase_num"], task["num"],

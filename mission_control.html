@@ -1526,11 +1526,11 @@ body{padding-bottom:28px}
 .ce-output-hdr{display:flex;align-items:center;gap:8px;padding:3px 10px;border-bottom:1px solid #111;background:#0a0a0a;flex-shrink:0}
 #ce-output-pre{flex:1;padding:8px 12px;font:12px Consolas,'Courier New',monospace;color:#ccc;overflow:auto;margin:0;white-space:pre-wrap;word-break:break-word}
 
-/* GLOBAL POPUP Z-INDEX FIX — OCB-R1 */
+/* GLOBAL POPUP Z-INDEX FIX — OCB-R1 (fixed: mcc-popup-safe/tl-detail-popup/hisav-popup-safe excluded) */
 .tooltip, .info-popup, .help-popup, .mcc-popup,
-.mcc-popup-safe, .question-popup, .drill-down-popup,
-.tl-popup, [id$="-popup"], [id$="-tooltip"],
-[class*="popup"], [class*="tooltip"], [class*="flyout"],
+.question-popup, .drill-down-popup,
+.tl-popup, [id$="-tooltip"],
+[class*="flyout"],
 [class*="dropdown-content"], [class*="info-panel"],
 [data-popup], .goeb-tooltip, .goeb-content {
   z-index: 99999 !important;
@@ -2801,7 +2801,7 @@ body{padding-bottom:28px}
             <div id="hisav-ss-flash" style="font-size:11px;color:#6f6;margin:5px 0;min-height:14px"></div>
             <div class="hisav-gallery" id="hisav-gallery"></div>
             <!-- Detail popup for screenshots -->
-            <div class="tl-detail-popup hisav-popup-safe" id="hisav-ss-popup">
+            <div class="tl-detail-popup hisav-popup-safe" id="hisav-ss-popup" style="display:none">
               <img id="hisav-ss-popup-img" src="" style="max-width:100%;border-radius:4px;margin-bottom:8px">
               <div id="hisav-ss-popup-desc" style="font-size:11px;color:#889"></div>
               <button onclick="document.getElementById('hisav-ss-popup').style.display='none'" style="margin-top:8px;background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit">✕ Close</button>
@@ -2878,6 +2878,52 @@ body{padding-bottom:28px}
           </div><!-- /hisav-body-inner s9 -->
         </div><!-- /hisav-body s9 -->
       </div><!-- /hisav-section s9 -->
+
+      <!-- ═══ SECTION 10: WENTO Queue ═══ -->
+      <div class="hisav-section" id="hisav-s10">
+        <div class="hisav-hdr" onclick="hisavToggle('s10')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">💡 WENTO Queue</span>
+          <span class="hisav-chevron" id="hisav-chev-s10">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s10')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s10">
+          <div class="hisav-body-inner">
+            <div style="font-size:11px;color:#556;margin-bottom:8px">Whatever Else Not Thought Of — capture anything that doesn't fit elsewhere.</div>
+            <div style="display:flex;gap:6px;margin-bottom:10px">
+              <textarea id="wento-input" class="hisav-idea-ta" style="height:54px;flex:1" placeholder="Note anything here — half-formed, tangential, future idea…" spellcheck="false"></textarea>
+              <button class="hisav-save-btn" style="align-self:flex-end;padding:5px 12px" onclick="wentoAdd()" title="Add to WENTO queue">+ Add</button>
+            </div>
+            <div id="wento-list" style="font-size:11px;color:#889">Loading…</div>
+          </div>
+        </div>
+      </div><!-- /hisav-section s10 -->
+
+      <!-- ═══ SECTION 11: OCB Runner Panel ═══ -->
+      <div class="hisav-section" id="hisav-s11">
+        <div class="hisav-hdr" onclick="hisavToggle('s11')">
+          <span class="hisav-drag">⠿</span>
+          <span class="hisav-title">⚙️ OCB Runner</span>
+          <span class="hisav-chevron" id="hisav-chev-s11">▼</span>
+          <button class="hisav-min" onclick="event.stopPropagation();hisavMinimise('s11')" title="Minimise">—</button>
+        </div>
+        <div class="hisav-body" id="hisav-body-s11">
+          <div class="hisav-body-inner">
+            <div style="font-size:11px;color:#556;margin-bottom:8px">Paste an OCB build block, parse phases, then run. Git stash auto-backup + HTML check + auto-rollback on fail.</div>
+            <textarea id="hisav-ocb-input" class="hisav-idea-ta" style="height:120px;font-family:monospace;font-size:11px" placeholder="Paste OCB block here…&#10;═══ PHASE 1 — Fix popup ═══&#10;1. Find the button…" spellcheck="false"></textarea>
+            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+              <button class="hisav-save-btn" onclick="hisavOcbParse()" title="Parse OCB block into phases">🔍 Parse</button>
+              <button class="hisav-save-btn" style="background:#0a2a0a;border-color:#1a5a1a;color:#6f6" onclick="hisavOcbRun()" title="Run OCB block — git stash before, auto-rollback on fail">▶ Run</button>
+              <button class="hisav-idea-btn" onclick="document.getElementById('hisav-ocb-input').value=''" title="Clear input">✕ Clear</button>
+              <span id="hisav-ocb-status" style="font-size:11px;color:#4af;margin-left:auto;align-self:center"></span>
+            </div>
+            <!-- Phase badges -->
+            <div id="hisav-ocb-badges" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:20px"></div>
+            <!-- Live log -->
+            <div id="hisav-ocb-log" style="margin-top:8px;background:#060a10;border:1px solid #1e2a3a;border-radius:4px;padding:8px;font:11px monospace;color:#889;max-height:160px;overflow-y:auto;white-space:pre-wrap;display:none">Waiting…</div>
+          </div>
+        </div>
+      </div><!-- /hisav-section s11 -->
 
     </div><!-- /hisav-accordion -->
   </div><!-- /pane-scroll -->
@@ -3052,29 +3098,46 @@ body{padding-bottom:28px}
 
     track.innerHTML = html;
 
-    // Zone labels above first node in each zone
-    var zoneSpecs = [
-      {label:'PAST', sub:'FOUNDATION → OCB ERA', startRatio:0, endRatio:0.75, col:'rgba(0,200,80,.04)'},
-      {label:'PRESENT', sub:'NOW', startRatio:0.75, endRatio:0.87, col:'rgba(255,200,0,.06)'},
-      {label:'PLANNED', sub:'NEXT UP', startRatio:0.87, endRatio:1, col:'rgba(80,120,255,.05)'},
-    ];
+    // Zone labels + coloured background bands
     var nodeEls = track.querySelectorAll('.htl-node');
+    var total = entries.length;
+    // Determine zone boundaries based on entry status
+    var pastEnd = 0, currEnd = 0;
+    entries.forEach(function(e,i){
+      if(e.status==='done'||e.status==='stopped'||e.status==='partial'||e.status==='milestone') pastEnd=i;
+      if(e.status==='current') currEnd=i;
+    });
+    var zoneSpecs = [
+      {label:'PAST', sub:'FOUNDATION → OCB ERA', startIdx:0, endIdx:Math.max(pastEnd,0), bgCol:'rgba(40,100,200,.06)', borderCol:'rgba(40,100,200,.18)', textCol:'#2a6aaa'},
+      {label:'PRESENT', sub:'NOW', startIdx:Math.max(pastEnd+1,0), endIdx:Math.max(currEnd,pastEnd+1), bgCol:'rgba(40,200,100,.07)', borderCol:'rgba(40,200,100,.20)', textCol:'#2a9a4a'},
+      {label:'PLANNED', sub:'NEXT UP', startIdx:Math.max(currEnd+1,0), endIdx:total-1, bgCol:'rgba(200,150,40,.06)', borderCol:'rgba(200,150,40,.18)', textCol:'#aa8a2a'},
+    ];
     zoneSpecs.forEach(function(z){
-      var startIdx = Math.floor(entries.length * z.startRatio);
-      if(startIdx >= nodeEls.length) return;
-      var startNode = nodeEls[startIdx];
-      if(startNode){
-        var lbl = document.createElement('div');
-        lbl.style.cssText = 'position:absolute;top:-32px;left:0;font-size:8px;font-weight:bold;color:#556;letter-spacing:1.5px;text-transform:uppercase;pointer-events:none;white-space:nowrap';
-        lbl.textContent = z.label;
-        startNode.style.position = 'relative';
-        startNode.appendChild(lbl);
-        if(z.sub){
-          var sub = document.createElement('div');
-          sub.style.cssText = 'position:absolute;top:-20px;left:0;font-size:7px;color:#334;pointer-events:none;white-space:nowrap';
-          sub.textContent = z.sub;
-          startNode.appendChild(sub);
-        }
+      if(z.startIdx > z.endIdx || z.startIdx >= nodeEls.length) return;
+      var startNode = nodeEls[Math.min(z.startIdx, nodeEls.length-1)];
+      var endNode   = nodeEls[Math.min(z.endIdx, nodeEls.length-1)];
+      if(!startNode) return;
+      // Background band spanning startNode → endNode
+      var band = document.createElement('div');
+      band.style.cssText = 'position:absolute;top:-8px;bottom:-8px;background:'+z.bgCol+';border-left:2px solid '+z.borderCol+';border-radius:4px;pointer-events:none;z-index:0';
+      var sRect = startNode.getBoundingClientRect();
+      var eRect = endNode  ? endNode.getBoundingClientRect()  : sRect;
+      var tRect = track.getBoundingClientRect();
+      band.style.left  = (sRect.left - tRect.left - 4) + 'px';
+      band.style.width = (eRect.right - sRect.left + 8) + 'px';
+      track.style.position = 'relative';
+      track.insertBefore(band, track.firstChild);
+      // Zone label above first node
+      var lbl = document.createElement('div');
+      lbl.style.cssText = 'position:absolute;top:-32px;left:0;font-size:8px;font-weight:bold;color:'+z.textCol+';letter-spacing:1.5px;text-transform:uppercase;pointer-events:none;white-space:nowrap';
+      lbl.textContent = z.label;
+      startNode.style.position = 'relative';
+      startNode.appendChild(lbl);
+      if(z.sub){
+        var sub = document.createElement('div');
+        sub.style.cssText = 'position:absolute;top:-20px;left:0;font-size:7px;color:'+z.borderCol+';pointer-events:none;white-space:nowrap';
+        sub.textContent = z.sub;
+        startNode.appendChild(sub);
       }
     });
 
@@ -3601,10 +3664,105 @@ body{padding-bottom:28px}
   // hisavLoadGallery — alias so hisavToggle('s8') can call it
   window.hisavLoadGallery = window.hisavLoadScreenshots;
 
+  // ── WENTO Queue (Section 10) ──────────────────────────────────────────────
+  window.wentoLoad = function(){
+    var list = document.getElementById('wento-list');
+    if(!list) return;
+    fetch('/api/hisav/wento').then(function(r){return r.json();}).then(function(d){
+      var items = d.items||[];
+      if(!items.length){ list.innerHTML='<div style="color:#445;font-size:11px">No WENTO items yet.</div>'; return; }
+      list.innerHTML = items.slice().reverse().map(function(it){
+        return '<div style="display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid #0f1822">'+
+          '<span style="flex:1;color:#bbc">'+_esc(it.text||it)+'</span>'+
+          '<span style="font-size:10px;color:#445;white-space:nowrap">'+_esc((it.ts||'').substring(5,16))+'</span>'+
+          '</div>';
+      }).join('');
+    }).catch(function(){ if(list) list.innerHTML='<div style="color:#a55;font-size:11px">Could not load.</div>'; });
+  };
+
+  window.wentoAdd = function(){
+    var inp = document.getElementById('wento-input');
+    var txt = inp ? inp.value.trim() : '';
+    if(!txt){ typeof toast==='function'&&toast('Type something first','error',2000); return; }
+    fetch('/api/hisav/wento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:txt})})
+    .then(function(r){return r.json();}).then(function(){
+      if(inp) inp.value='';
+      wentoLoad();
+      typeof toast==='function'&&toast('Added to WENTO queue','ok',2000);
+    }).catch(function(){ typeof toast==='function'&&toast('Save failed','error',2000); });
+  };
+
+  // ── OCB Runner Panel (Section 11) ────────────────────────────────────────
+  window.hisavOcbParse = function(){
+    var input = document.getElementById('hisav-ocb-input');
+    var badges = document.getElementById('hisav-ocb-badges');
+    var status = document.getElementById('hisav-ocb-status');
+    if(!input||!badges) return;
+    var text = input.value;
+    var phases = text.match(/[═=]{3,}\s*PHASE\s+\d+[^═=]*/gi)||[];
+    if(!phases.length){ if(status) status.textContent='No phases found'; return; }
+    badges.innerHTML = phases.map(function(p,i){
+      var m = p.match(/PHASE\s+(\d+)\s*[—\-]+\s*([^\n]+)/i);
+      var name = m ? m[2].trim().substring(0,30) : 'Phase '+(i+1);
+      return '<span style="background:#0a1a2a;border:1px solid #2a4a6a;color:#4af;padding:2px 8px;border-radius:10px;font-size:10px">P'+(i+1)+': '+_esc(name)+'</span>';
+    }).join('');
+    if(status) status.textContent = phases.length+' phase'+(phases.length===1?'':'s')+' found';
+  };
+
+  window.hisavOcbRun = function(){
+    var input = document.getElementById('hisav-ocb-input');
+    var log = document.getElementById('hisav-ocb-log');
+    var status = document.getElementById('hisav-ocb-status');
+    var badges = document.getElementById('hisav-ocb-badges');
+    if(!input) return;
+    var text = input.value.trim();
+    if(!text){ typeof toast==='function'&&toast('Paste an OCB block first','error',2000); return; }
+    if(log){ log.style.display='block'; log.textContent='Sending to OCB Runner…'; }
+    if(status) status.textContent='Running…';
+    fetch('/api/ocb/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ocb_text:text})})
+    .then(function(r){return r.json();}).then(function(d){
+      if(status) status.textContent = d.status||'Done';
+      if(log) log.textContent = (d.log||[]).join('\n')||'No log output.';
+      if(badges&&d.phases){
+        badges.innerHTML = d.phases.map(function(p){
+          var col = p.status==='DONE'?'#2a7':p.status==='FAILED'?'#c44':p.status==='RUNNING'?'#fa0':'#334';
+          return '<span style="background:'+col+'22;border:1px solid '+col+'44;color:'+col+';padding:2px 8px;border-radius:10px;font-size:10px">P'+p.phase_num+': '+_esc((p.phase_name||'').substring(0,20))+' ('+p.status+')</span>';
+        }).join('');
+      }
+    }).catch(function(e){
+      if(log) log.textContent='Error: '+(e.message||'unknown');
+      if(status) status.textContent='Error';
+    });
+    // Poll for live updates every 2s
+    var pollCount = 0;
+    var pollId = setInterval(function(){
+      pollCount++;
+      if(pollCount>60){ clearInterval(pollId); return; }
+      fetch('/api/ocb/status').then(function(r){return r.json();}).then(function(d){
+        if(log) log.textContent = (d.log||[]).join('\n')||log.textContent;
+        if(status) status.textContent = d.status||'Running…';
+        if(badges&&d.phases){
+          badges.innerHTML = d.phases.map(function(p){
+            var col = p.status==='DONE'?'#2a7':p.status==='FAILED'?'#c44':p.status==='RUNNING'?'#fa0':'#334';
+            return '<span style="background:'+col+'22;border:1px solid '+col+'44;color:'+col+';padding:2px 8px;border-radius:10px;font-size:10px">P'+p.phase_num+': '+_esc((p.phase_name||'').substring(0,20))+' ('+p.status+')</span>';
+          }).join('');
+        }
+        if(d.status==='DONE'||d.status==='PARTIAL'||d.status==='CANCELLED'||d.status==='ROLLED_BACK') clearInterval(pollId);
+      }).catch(function(){});
+    }, 2000);
+  };
+
+  // Wire s10/s11 toggle load
+  var _origToggle = window.hisavToggle;
+  window.hisavToggle = function(id){
+    _origToggle(id);
+    if(id==='s10') wentoLoad();
+  };
+
   // ── On DOMContentLoaded: load HISAV data for expanded sections ──
   document.addEventListener('DOMContentLoaded',function(){
     // Section 2 is open by default — nothing to load for idea dump
-    // Sections 8+9 load on demand when accordion is toggled
+    // Sections 8-11 load on demand when accordion is toggled
   });
 })();
 </script>
@@ -3967,6 +4125,37 @@ window.pwccsCopyPath = function(ev){
       if(cntEl)  cntEl.textContent  = 'Scans completed: ' + runCount;
       if(pulsEl) pulsEl.style.background = open.length>0 ? '#f44' : '#2a7';
       if(sumEl)  sumEl.textContent = open.length>0 ? open.length+' finding'+(open.length===1?'':'s') : 'All clear';
+
+      // Panel A — category progress bars (Phase 3)
+      var strip = document.getElementById('det-a-progress-strip');
+      if(strip){
+        var CATS = ['GHOST_FILE','DEAD_ENDPOINT','STATUS_CONTRADICTION','STALE_MOT','MISSING_FROM_STATUS','PHANTOM_UI'];
+        var catLabels = {GHOST_FILE:'Ghost File',DEAD_ENDPOINT:'Dead Endpoint',STATUS_CONTRADICTION:'Contradiction',STALE_MOT:'Stale MOT',MISSING_FROM_STATUS:'Missing',PHANTOM_UI:'Phantom UI'};
+        if(!findings.length){
+          strip.innerHTML = '<div class="det-q-idle" id="det-a-idle"><span class="det-q-idle-dot"></span>Standing watch — no active task</div>';
+        } else {
+          var countMap = {};
+          CATS.forEach(function(c){ countMap[c]=0; });
+          findings.forEach(function(f){
+            var cat = (f.strategy||f.type||'').toUpperCase().replace(/ /g,'_');
+            if(countMap[cat]!==undefined && f.status==='open') countMap[cat]++;
+          });
+          strip.innerHTML = CATS.map(function(cat){
+            var n = countMap[cat]||0;
+            var barCol = n===0?'#2a7':n<=2?'#fa0':'#f44';
+            var pct = n===0?100:Math.min(100,n*25);
+            return '<div style="margin-bottom:7px">'+
+              '<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">'+
+              '<span style="font-size:10px;color:#889;min-width:120px">'+catLabels[cat]+'</span>'+
+              '<span style="font-size:11px;font-weight:bold;color:'+barCol+'">'+n+' found</span>'+
+              '</div>'+
+              '<div style="background:#1a1a1a;border-radius:3px;height:6px;overflow:hidden">'+
+              '<div style="height:100%;width:'+pct+'%;background:'+barCol+';border-radius:3px;transition:width .4s"></div>'+
+              '</div>'+
+              '</div>';
+          }).join('');
+        }
+      }
 
       // Panel B — history with drill-down
       var bEl = document.getElementById('det-panel-b-content');
