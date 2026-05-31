@@ -66,7 +66,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .auto-interval-wrap input{width:44px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;text-align:center}
 
 /* TABS */
-.tab-bar{background:#161616;border-bottom:1px solid #222;display:flex;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto}
+.tab-bar{background:#161616;border-bottom:1px solid #222;display:flex;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto;z-index:100;position:relative}
 .tab-btn{background:none;border:none;color:#888;padding:9px 16px;cursor:pointer;font:inherit;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
 .tab-btn:hover{color:#ccc;background:#1a1a1a}
 .tab-btn.active{color:#fff;border-bottom-color:#4af}
@@ -488,21 +488,22 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
   padding: 6px 10px;
   font-size: 12px;
   line-height: 1.4;
-  max-width: 250px;
+  max-width: 320px;
   position: absolute;
-  z-index: 9999;
+  z-index: 99999 !important;
   bottom: 125%;
   left: 50%;
   transform: translateX(-50%);
   transition: opacity 0.2s;
   pointer-events: none;
   white-space: normal;
+  word-wrap: break-word;
 }
 .tooltip-wrap:hover .tip { visibility: visible; opacity: 1; }
 
 /* CUSTOM TOOLTIPS — replace browser grey boxes */
 [data-tip]{position:relative}
-[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:12px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:5px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:5000;max-width:260px;white-space:normal;text-align:center;line-height:1.4}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:12px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:5px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99999 !important;max-width:300px;white-space:normal;text-align:center;line-height:1.4;word-wrap:break-word}
 [data-tip]:hover::after{opacity:1}
 
 /* ── SELF-DIAGNOSIS TAB ── */
@@ -606,7 +607,7 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 /* ── OCB-B: Body Map ── */
 .bm-wrap{position:relative;margin:16px 0 6px;background:#060606;border:1px solid #1a1a1a;border-radius:8px;overflow:hidden}
 .bm-svg{width:100%;height:auto;display:block;min-height:200px}
-.bm-tooltip{position:fixed;pointer-events:none;background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:11px;padding:6px 10px;border-radius:5px;z-index:8000;max-width:280px;line-height:1.5;display:none;white-space:pre-wrap}
+.bm-tooltip{position:fixed;pointer-events:none;background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:11px;padding:6px 10px;border-radius:5px;z-index:99999 !important;max-width:320px;line-height:1.5;display:none;white-space:pre-wrap;word-wrap:break-word}
 .bm-drill-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:#111;border-left:1px solid #222;z-index:7500;overflow-y:auto;transition:right .25s ease;padding:16px 14px;box-shadow:-4px 0 20px rgba(0,0,0,.5)}
 .bm-drill-panel.open{right:0}
 .bm-drill-close{float:right;background:#2a1a1a;border:1px solid #4a2a2a;color:#f88;padding:2px 8px;border-radius:3px;cursor:pointer;font-size:11px;margin-bottom:10px}
@@ -999,12 +1000,12 @@ body{font-size:var(--b3-font-size);color:var(--b3-text-color)}
 .tip-btn:hover{background:#222;border-color:#4af;color:#4af;opacity:1}
 /* Sidebar ? icons: right-align (OCB-O) */
 .sb-section .tip-btn,.sb-nav-item .tip-btn{margin-left:auto;flex-shrink:0}
-.tip-box{position:absolute;z-index:9999;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;pointer-events:none;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%)}
+.tip-box{position:fixed;z-index:99999 !important;background:rgba(255,255,255,0.97);color:rgba(0,0,0,0.88);border:1px solid #aaa;border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.5;max-width:320px;box-shadow:0 4px 16px rgba(0,0,0,0.4);white-space:normal;word-wrap:break-word;pointer-events:none}
 /* ── OCB-A: Self-health popup safety — applied globally ── */
-.mcc-popup-safe{z-index:9999!important;max-width:320px}
-[class*="tooltip"],[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe){z-index:9999!important;position:absolute;max-width:320px}
+.mcc-popup-safe{z-index:99999!important;max-width:320px}
+[class*="tooltip"],[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe){z-index:99999!important;position:fixed;max-width:320px;pointer-events:none;word-wrap:break-word;white-space:normal}
 /* Self-health grey popup */
-.sh-popup{position:absolute;z-index:9999;background:rgba(40,40,40,0.95);color:#fff;font-size:14px;padding:12px 16px;border-radius:8px;max-width:320px;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none;white-space:normal;line-height:1.5}
+.sh-popup{position:fixed;z-index:99999 !important;background:rgba(40,40,40,0.95);color:#fff;font-size:14px;padding:12px 16px;border-radius:8px;max-width:320px;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none;white-space:normal;line-height:1.5;word-wrap:break-word}
 body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9)}
 
 /* MCCM sidebar section */
@@ -1465,13 +1466,13 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
 /* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
 /* Excludes .tl-detail-popup (position:fixed popup) and .mcc-popup-safe (button marker class) */
-.mcc-tooltip,[class*="tooltip"]:not(.tl-detail-popup),[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe),[data-tooltip]{z-index:9999!important;position:absolute;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:auto;line-height:1.5}
+.mcc-tooltip,[class*="tooltip"]:not(.tl-detail-popup),[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe),[data-tooltip]{z-index:99999!important;position:fixed !important;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;line-height:1.5;word-wrap:break-word;white-space:normal}
 /* mcc-popup-safe: button marker only — popups use inline position:fixed in JS */
-.mcc-popup-safe{z-index:9999!important}
+.mcc-popup-safe{z-index:99999!important}
 /* hisav-popup-safe: display:none by default, position set by JS on show */
-.hisav-popup-safe{display:none;position:fixed!important;z-index:9999!important;max-width:90vw;max-height:80vh;overflow-y:auto}
+.hisav-popup-safe{display:none;position:fixed!important;z-index:99999!important;max-width:90vw;max-height:80vh;overflow-y:auto}
 /* tip-btn tooltip containers — ensure they sit above all other elements */
-.tip-pop{z-index:9999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333}
+.tip-pop{z-index:99999!important;position:fixed!important;max-width:360px;background:rgba(20,20,20,0.98);color:#ccc;font-size:13px;padding:12px 16px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.8);pointer-events:none;line-height:1.6;border:1px solid #333;word-wrap:break-word;white-space:normal}
 /* Panel/drawer/accordion open state — always below tooltips (9999) — OCB-K */
 .aafl-acc[open],.llow-settings-panel.open,.ai-master-panel,.bm-drill-panel.open{z-index:8000}
 /* ── OCB-N: Scout Swarm LEL node ── */
@@ -1559,6 +1560,47 @@ body{padding-bottom:28px}
 .acc-content, [class*="inline-detail"] {
   position: relative !important;
   z-index: auto !important;
+}
+
+/* ── GLOBAL TOOLTIP FLOAT RULE — always above tab bar (z-index:100) ── */
+[data-tooltip]:hover::after,
+[data-tooltip]:hover::before,
+.tooltip:hover .tooltip-text,
+.mcc-tooltip-text,
+.goeb-content,
+.tab-info-bubble {
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+}
+
+/* ── [data-tooltip] CSS tooltip system ── */
+[data-tooltip] { position: relative; cursor: help; }
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: 99999 !important;
+  background: #1a1a2e;
+  color: #e0e0ff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+  border: 1px solid #3a3a5c;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
@@ -1736,25 +1778,25 @@ body{padding-bottom:28px}
 <!-- TAB BAR (Home removed — now in sidebar; Help removed — OCB-O) -->
 <div class="tab-bar" id="main-tab-bar">
   <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
-  <button class="tab-btn active" data-tab="wccs" data-tip="HISAV — History, Ideas, Save & Vehicle history">💾 HISAV</button>
-  <button class="tab-btn" data-tab="ocb-runner" data-tip="OCB Runner — paste an OCB build block and run it inside MCC">⚙️ OCB Runner</button>
-  <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project">📋 Kanban</button>
-  <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓"></span>
-  <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis">🔭 Scout Swarm</button>
-  <button class="tab-btn" data-tab="aafl-control" data-tip="Run and configure the AAFL AI engine — set goals, pick providers, run workflows">⚙️ AAFL Control</button>
-  <button class="tab-btn" data-tab="code-editor" data-tip="Code Editor — Monaco-powered editor with file browser, run Python scripts, and CLAC generator">✏ Code Editor</button>
-  <button class="tab-btn" data-tab="memory" data-tip="Knowledge Bank and Solution Log — read-only view of what the AI has learned over time">🧠 Memory</button>
-  <span class="tab-sep" data-tip="AI Tools ↑ | Resources ↓"></span>
-  <button class="tab-btn" data-tab="costs" data-tip="AI spending tracker — daily/weekly/monthly costs with budget caps and ROI calculation. ALP section included.">💰 Costs</button>
-  <button class="tab-btn" data-tab="storage" data-tip="Disk quota monitor — shows how much space each storage slot is using, with Memory Status">💽 Storage</button>
-  <span class="tab-sep" data-tip="Resources ↑ | Monitoring ↓"></span>
-  <button class="tab-btn" data-tab="health-suite" data-tip="Health Suite — Provider Health, Self-Diagnosis, Medical, and GPU/CPU/RAM all in one place">💊 Health Suite</button>
-  <span class="tab-sep" data-tip="Monitoring ↑ | Config ↓"></span>
-  <button class="tab-btn" data-tab="acca" data-tip="MCC user guide, ACCA shorthand code reference, and all keyboard shortcuts">⚡ Instructions &amp; Codes</button>
+  <button class="tab-btn active" data-tab="wccs" data-tip="HISAV — History, Ideas, Save & Vehicle history" data-tooltip="HISAV — save sessions, capture ideas, track vehicle history, manage checklists and CLAC sessions">💾 HISAV</button>
+  <button class="tab-btn" data-tab="ocb-runner" data-tip="OCB Runner — paste an OCB build block and run it inside MCC" data-tooltip="OCB Runner — paste an OCB build block and run it safely inside MCC with pre-flight checks">⚙️ OCB Runner</button>
+  <button class="tab-btn" data-tab="kanban" data-tip="Project task board — manage To Do / Doing / Done cards for the project" data-tooltip="Kanban — project task board, manage To Do / Doing / Done cards, dependencies and progress">📋 Kanban</button>
+  <span class="tab-sep" data-tip="Project Management ↑ | AI Tools ↓" data-tooltip="Project Management ↑ | AI Tools ↓"></span>
+  <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis" data-tooltip="Scout Swarm — run web research across 5 parallel strategies: DDG, Reddit, GitHub, YouTube, Forum with AI synthesis">🔭 Scout Swarm</button>
+  <button class="tab-btn" data-tab="aafl-control" data-tip="Run and configure the AAFL AI engine — set goals, pick providers, run workflows" data-tooltip="AAFL Control — run and configure the AI feedback loop, set goals, pick providers and run workflows">⚙️ AAFL Control</button>
+  <button class="tab-btn" data-tab="code-editor" data-tip="Code Editor — Monaco-powered editor with file browser, run Python scripts, and CLAC generator" data-tooltip="Code Editor — Monaco-powered editor with file browser, run Python scripts and generate CLAC blocks">✏ Code Editor</button>
+  <button class="tab-btn" data-tab="memory" data-tip="Knowledge Bank and Solution Log — read-only view of what the AI has learned over time" data-tooltip="Memory — Knowledge Bank and Solution Log, read-only view of what the AI has learned over time">🧠 Memory</button>
+  <span class="tab-sep" data-tip="AI Tools ↑ | Resources ↓" data-tooltip="AI Tools ↑ | Resources ↓"></span>
+  <button class="tab-btn" data-tab="costs" data-tip="AI spending tracker — daily/weekly/monthly costs with budget caps and ROI calculation. ALP section included." data-tooltip="Costs — AI spending tracker, daily/weekly/monthly costs with budget caps and ROI calculation">💰 Costs</button>
+  <button class="tab-btn" data-tab="storage" data-tip="Disk quota monitor — shows how much space each storage slot is using, with Memory Status" data-tooltip="Storage — disk quota monitor showing how much space each storage slot uses, with Memory Status">💽 Storage</button>
+  <span class="tab-sep" data-tip="Resources ↑ | Monitoring ↓" data-tooltip="Resources ↑ | Monitoring ↓"></span>
+  <button class="tab-btn" data-tab="health-suite" data-tip="Health Suite — Provider Health, Self-Diagnosis, Medical, and GPU/CPU/RAM all in one place" data-tooltip="Health Suite — monitor provider health, run self-diagnosis, check Medical score and GPU/CPU/RAM live">💊 Health Suite</button>
+  <span class="tab-sep" data-tip="Monitoring ↑ | Config ↓" data-tooltip="Monitoring ↑ | Config ↓"></span>
+  <button class="tab-btn" data-tab="acca" data-tip="MCC user guide, ACCA shorthand code reference, and all keyboard shortcuts" data-tooltip="Instructions and Codes — MCC user guide, ACCA shorthand code reference and all keyboard shortcuts">⚡ Instructions &amp; Codes</button>
   <!-- KB Profiles moved into Missions tab — OCB-H Phase 2 -->
-  <button class="tab-btn" data-tab="design" data-tip="Design tab — customise fonts, colours, borders, and save design presets for this dashboard">🎨 Design</button>
-  <button class="tab-btn" data-tab="promo" data-tip="High-scoring AI results (≥9.0) waiting for your approval or rejection before archiving">⭐ Promo</button>
-  <button class="tab-btn" data-tab="missions" data-tip="Mission registry — all active AAFL projects with status, tags, and progress notes">🎯 Missions</button>
+  <button class="tab-btn" data-tab="design" data-tip="Design tab — customise fonts, colours, borders, and save design presets for this dashboard" data-tooltip="Design — customise fonts, colours, borders and save design presets for this dashboard">🎨 Design</button>
+  <button class="tab-btn" data-tab="promo" data-tip="High-scoring AI results (≥9.0) waiting for your approval or rejection before archiving" data-tooltip="Promo — high-scoring AI results (9.0+) waiting for your approval or rejection before archiving">⭐ Promo</button>
+  <button class="tab-btn" data-tab="missions" data-tip="Mission registry — all active AAFL projects with status, tags, and progress notes" data-tooltip="Missions — launch Spin Doctor, track mission progress, manage keybinding profiles and status">🎯 Missions</button>
   <span id="kb-icon" title="Keyboard shortcuts (Shift+?)" style="margin-left:auto;padding:6px 10px;cursor:pointer;color:#555;font-size:14px;user-select:none" onclick="showKbHelp()">⌨</span>
   <button class="btn tab-scroll-arrow" id="tab-scroll-right" onclick="tabBarScroll(1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-left:1px solid #222;background:#161616;color:#888;flex-shrink:0">▶</button>
 </div>
@@ -8260,6 +8302,26 @@ Find mission_control.html..."
 
 <script>
 'use strict';
+
+/* ── GLOBAL TOOLTIP POSITIONER — FIX 3 ── */
+function positionTooltip(tooltipEl, triggerEl) {
+  const tr = triggerEl.getBoundingClientRect();
+  const tw = tooltipEl.offsetWidth || 280;
+  const th = tooltipEl.offsetHeight || 80;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const TAB_BAR_HEIGHT = 60;
+  let top = tr.bottom + 8;
+  let left = tr.left;
+  if (top + th > vh - 10) top = tr.top - th - 8;
+  if (top < TAB_BAR_HEIGHT + 8) top = TAB_BAR_HEIGHT + 8;
+  if (left + tw > vw - 10) left = vw - tw - 10;
+  if (left < 5) left = 5;
+  tooltipEl.style.position = 'fixed';
+  tooltipEl.style.top = top + 'px';
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.zIndex = '99999';
+}
 
 const S = {
   timeline: [],
@@ -15158,18 +15220,13 @@ function b3ShowTip(btn, text) {
   if (_b3TipActive) { _b3TipActive.remove(); _b3TipActive = null; }
   const box = document.createElement('div');
   box.textContent = text;
-  box.style.cssText = 'position:fixed;z-index:9999;max-width:280px;padding:10px 14px;' +
+  box.style.cssText = 'position:fixed;z-index:99999;max-width:320px;padding:10px 14px;' +
     'background:rgba(0,0,0,0.92);color:#ddd;border:1px solid #555;border-radius:6px;' +
-    'font-size:12px;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.6);pointer-events:auto';
+    'font-size:12px;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,0.6);pointer-events:auto;' +
+    'word-wrap:break-word;white-space:normal';
   document.body.appendChild(box);
   _b3TipActive = box;
-  const r = btn.getBoundingClientRect();
-  let top  = r.bottom + 8;
-  let left = r.left;
-  if (top + 200 > window.innerHeight) top = Math.max(8, r.top - 210);
-  if (left + 295 > window.innerWidth)  left = Math.max(8, window.innerWidth - 298);
-  box.style.top  = top  + 'px';
-  box.style.left = left + 'px';
+  positionTooltip(box, btn);
   const dismiss = (e) => {
     if (!box.contains(e.target) && e.target !== btn) {
       box.remove(); _b3TipActive = null;
@@ -17467,13 +17524,7 @@ function shTip(btn, msg) {
   pop.textContent = msg;
   document.body.appendChild(pop);
   _shPopupEl = pop;
-  const r = btn.getBoundingClientRect();
-  let top = r.top + window.scrollY - pop.offsetHeight - 8;
-  let left = r.left + window.scrollX;
-  if (top < 8) top = r.bottom + window.scrollY + 8;
-  if (left + 320 > window.innerWidth) left = window.innerWidth - 328;
-  pop.style.top  = top + 'px';
-  pop.style.left = left + 'px';
+  positionTooltip(pop, btn);
   setTimeout(() => { pop.remove(); _shPopupEl = null; }, 4000);
 }
 
@@ -17863,8 +17914,16 @@ const BM = {
     if (!tt) return;
     tt.style.display = 'block';
     tt.textContent = text;
-    tt.style.left = (e.clientX + 14) + 'px';
-    tt.style.top  = (e.clientY - 10) + 'px';
+    const tw = tt.offsetWidth || 280, th = tt.offsetHeight || 60;
+    const TAB_BAR_HEIGHT = 60;
+    let left = e.clientX + 14;
+    let top  = e.clientY - 10;
+    if (left + tw > window.innerWidth - 10) left = e.clientX - tw - 14;
+    if (top + th > window.innerHeight - 10) top = e.clientY - th - 10;
+    if (top < TAB_BAR_HEIGHT + 8) top = TAB_BAR_HEIGHT + 8;
+    if (left < 5) left = 5;
+    tt.style.left = left + 'px';
+    tt.style.top  = top  + 'px';
   },
 
   _hideTip() {
@@ -20462,7 +20521,7 @@ function showInstructions(elementId, btn) {
       }
       const popup = document.createElement('div');
       popup.id = 'instr-popup';
-      popup.style.cssText = 'position:fixed;z-index:9999;max-width:440px;min-width:280px;background:#141414;border:1px solid #4af;border-radius:8px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.85);pointer-events:auto;font-family:inherit';
+      popup.style.cssText = 'position:fixed;z-index:99999;max-width:440px;min-width:280px;background:#141414;border:1px solid #4af;border-radius:8px;padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.85);pointer-events:auto;font-family:inherit';
       popup.innerHTML =
         '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">' +
           '<div style="font-weight:bold;color:#fff;font-size:14px;line-height:1.3;flex:1">' + (data.short_description || '') + '</div>' +
@@ -20472,11 +20531,7 @@ function showInstructions(elementId, btn) {
         buildTopics(data.nested_topics || []);
       document.body.appendChild(popup);
       if (btn) {
-        const r = btn.getBoundingClientRect();
-        let top = r.bottom + 8, left = r.left;
-        if (top + 320 > window.innerHeight) top = Math.max(8, r.top - 330);
-        if (left + 450 > window.innerWidth)  left = Math.max(8, window.innerWidth - 454);
-        popup.style.top = top + 'px'; popup.style.left = left + 'px';
+        positionTooltip(popup, btn);
       } else {
         popup.style.top = '50%'; popup.style.left = '50%'; popup.style.transform = 'translate(-50%,-50%)';
       }

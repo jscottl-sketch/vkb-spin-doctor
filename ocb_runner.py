@@ -970,6 +970,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
     _live_output = []
     if not run_id:
         run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+    print(f"[OCB THREAD] Started — run_id={run_id} dry_run={dry_run}")
 
     obj: dict = {
         "run_id": run_id, "started_at": datetime.now().isoformat(timespec="seconds"),
@@ -1018,6 +1019,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
     try:
         # GUARD 2 — Clean tree check / stash
         set_status("stashing", "checking git working tree")
+        print(f"[OCB THREAD] About to git stash")
         gs = subprocess.run(["git", "status", "--porcelain"],
                             capture_output=True, text=True, cwd=str(HERE), timeout=30)
         if gs.stdout.strip():
@@ -1106,6 +1108,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                 except Exception as exc:
                     failed_reason = f"Exception: {str(exc)[:100]}"
                     _sl(f"  ERROR: {failed_reason}"); break
+            print(f"[OCB THREAD] Phase {phase.get('phase', '')} complete")
 
         if not html_was_edited:
             for k in ("bs4", "js", "registry"):
@@ -1137,6 +1140,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
             # CHECK D — MOT
             set_status("mot_running", "running mcc_full_mot.py")
             _sl("Running MOT check…")
+            print(f"[OCB THREAD] About to run MOT")
             mot_ok, mot_score = _run_mot_check()
             obj["guard_results"]["mot"] = mot_ok
             obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
@@ -1170,6 +1174,24 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                     obj["rollback_available"] = True
                     obj["stash_ref"] = "HEAD"
                     _sl(f"MOT FAILED — {mot_score}")
+    except Exception as e:
+        print(f"[OCB THREAD] EXCEPTION: {e}")
+        import traceback; print(traceback.format_exc())
+        obj["status"] = "failed"
+        obj["current_stage"] = "failed"
+        stream_log(f"THREAD CRASH: {str(e)}")
+        stream_log(f"Type: {type(e).__name__}")
+        import traceback
+        stream_log(traceback.format_exc())
+        import os as _eos
+        if _eos.path.exists(str(_LOCK_FILE)):
+            try:
+                _LOCK_FILE.unlink(missing_ok=True)
+            except Exception:
+                pass
+        _write_status(obj)
+        _last_run_result = obj
+        _check_results = {}
     finally:
         try:
             _LOCK_FILE.unlink(missing_ok=True)
@@ -1526,6 +1548,65 @@ def _cli_status():
     print()
 
 
+# ── Synchronous test mode ─────────────────────────────────────────────────────
+
+def run_test():
+    """Synchronous test run — prints every step to console"""
+    print("[TEST] Starting synchronous OCB test run")
+
+    test_ocb = """
+PHASE 1 — TEST PHASE
+Create a file called ocb_test_output.txt in the project root.
+Write this exact content: OCB Runner test successful
+Report: file created
+"""
+    print("[TEST] Parsing test OCB...")
+    try:
+        parsed = parse_ocb(test_ocb)
+        print(f"[TEST] Parse result: {parsed}")
+    except Exception as e:
+        print(f"[TEST] PARSE FAILED: {e}")
+        import traceback; traceback.print_exc()
+        return
+
+    print("[TEST] Running pre_flight...")
+    try:
+        pf = pre_flight(parsed)
+        print(f"[TEST] Pre-flight: {pf}")
+    except Exception as e:
+        print(f"[TEST] PRE-FLIGHT FAILED: {e}")
+        import traceback; traceback.print_exc()
+        return
+
+    print("[TEST] Checking git stash...")
+    r = subprocess.run(['git', 'status', '--porcelain'],
+                       capture_output=True, text=True, cwd=str(HERE))
+    if r.stdout.strip():
+        r2 = subprocess.run(
+            ['git', 'stash', 'push', '-m', 'ocb-test-backup'],
+            capture_output=True, text=True, cwd=str(HERE))
+        print(f"[TEST] Git stash: {r2.returncode} {r2.stdout} {r2.stderr}")
+        stashed = r2.returncode == 0
+    else:
+        print("[TEST] Git stash: SKIPPED (clean tree)")
+        stashed = False
+
+    print("[TEST] Creating test file...")
+    try:
+        with open(HERE / 'ocb_test_output.txt', 'w') as f:
+            f.write('OCB Runner test successful')
+        print("[TEST] File created OK")
+    except Exception as e:
+        print(f"[TEST] FILE CREATE FAILED: {e}")
+
+    if stashed:
+        r3 = subprocess.run(['git', 'stash', 'drop'],
+                            capture_output=True, text=True, cwd=str(HERE))
+        print(f"[TEST] Stash dropped: {r3.returncode}")
+
+    print("[TEST] COMPLETE — if you see this, the runner works")
+
+
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def _lifeguard_cli():
@@ -1546,6 +1627,9 @@ def _lifeguard_cli():
 # ── Self-test / CLI entry point ───────────────────────────────────────────────
 
 if __name__ == "__main__":
+    if "--test" in sys.argv:
+        run_test()
+        sys.exit(0)
     parser = _lifeguard_cli()
     args, _unknown = parser.parse_known_args()
 
