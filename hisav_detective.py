@@ -1,8 +1,8 @@
 """
-hisav_detective.py — 6-strategy live validator for VKB-SpinDoctor / AAFL project.
+hitsav_detective.py — 6-strategy live validator for VKB-SpinDoctor / AAFL project.
 
-Runs: python hisav_detective.py --once   (single scan, write report, exit)
-      python hisav_detective.py --watch  (loop every 5 minutes)
+Runs: python hitsav_detective.py --once   (single scan, write report, exit)
+      python hitsav_detective.py --watch  (loop every 5 minutes)
 
 Writes: data/detective_report.json
 """
@@ -365,15 +365,15 @@ def strategy_6_dom_verifier():
 
     # Key component element IDs that should exist
     required_elements = [
-        "hisav-accordion",      # HISAV tab
-        "hisav-tl",             # Vehicle History timeline
+        "hitsav-accordion",      # HITSAV tab
+        "hitsav-tl",             # Vehicle History timeline
         "ocb-input",            # OCB Runner
         "ai-status-bar",        # AI Status Bar
         "llow-canvas",          # LLOW canvas
         "hs-pane-selfdiag",     # Health Suite self-diagnosis
         "acca-ticker-bar",      # ACCA ticker
-        "hisav-body-s1",        # HISAV section 1
-        "hisav-body-s3",        # HISAV section 3 (timeline)
+        "hitsav-body-s1",        # HITSAV section 1
+        "hitsav-body-s3",        # HITSAV section 3 (timeline)
     ]
 
     for elem_id in required_elements:
@@ -385,15 +385,15 @@ def strategy_6_dom_verifier():
                 f"Check if element was removed or ID was renamed in a recent OCB"
             ))
 
-    # Check that all HISAV sections 1-9 have their body divs
+    # Check that all HITSAV sections 1-9 have their body divs
     for i in range(1, 10):
-        sid = f"hisav-body-s{i}"
+        sid = f"hitsav-body-s{i}"
         if f'id="{sid}"' not in html_text:
             findings.append(_make_finding(
                 "PHANTOM_UI", "medium",
-                f"HISAV section {i} body (id='{sid}') missing from HTML",
+                f"HITSAV section {i} body (id='{sid}') missing from HTML",
                 f"id='{sid}' not found",
-                f"Add Section {i} to HISAV accordion"
+                f"Add Section {i} to HITSAV accordion"
             ))
 
     return findings
@@ -452,7 +452,7 @@ def run_all_strategies():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="HISAV Detective — 6-strategy project validator")
+    parser = argparse.ArgumentParser(description="HITSAV Detective — 6-strategy project validator")
     parser.add_argument("--once", action="store_true", help="Run once and exit")
     parser.add_argument("--watch", action="store_true", help="Run every 5 minutes continuously")
     args = parser.parse_args()
@@ -465,6 +465,74 @@ def main():
     else:
         # Default: run once
         run_all_strategies()
+
+
+def cross_check_timeline() -> dict:
+    """Compare DONE items from storm_feed.json against project_timeline.json nodes.
+    Returns {missing_from_timeline, already_present} and writes detective_timeline_gaps.json."""
+    storm_feed_path    = DATA / "storm_feed.json"
+    timeline_path      = DATA / "project_timeline.json"
+    gaps_path          = DATA / "detective_timeline_gaps.json"
+
+    missing_from_timeline = []
+    already_present       = []
+    errors                = []
+
+    try:
+        storm = json.loads(storm_feed_path.read_text(encoding="utf-8")) if storm_feed_path.exists() else {}
+    except Exception as e:
+        errors.append(f"storm_feed load: {e}")
+        storm = {}
+
+    try:
+        timeline_data = json.loads(timeline_path.read_text(encoding="utf-8")) if timeline_path.exists() else {}
+    except Exception as e:
+        errors.append(f"timeline load: {e}")
+        timeline_data = {}
+
+    # Collect all text from timeline nodes
+    timeline_nodes = timeline_data.get("nodes", timeline_data.get("entries", []))
+    if isinstance(timeline_data, list):
+        timeline_nodes = timeline_data
+    timeline_texts = set()
+    for node in timeline_nodes:
+        for field in ("title", "label", "description", "text", "name"):
+            val = node.get(field, "")
+            if val:
+                timeline_texts.add(str(val).strip().lower())
+
+    # Get DONE items from storm_feed entries
+    done_items = [
+        e["description"] for e in storm.get("entries", [])
+        if e.get("category") == "done" and e.get("description")
+    ]
+    # Also check sesum_summary
+    for item in storm.get("sesum_summary", {}).get("done", []):
+        if item not in done_items:
+            done_items.append(item)
+
+    for item in done_items:
+        item_lower = item.strip().lower()
+        # Check if any timeline node text contains this item (substring match)
+        found = any(item_lower in tl or tl in item_lower for tl in timeline_texts)
+        if found:
+            already_present.append(item)
+        else:
+            missing_from_timeline.append(item)
+
+    result = {
+        "checked_at":             datetime.now(timezone.utc).isoformat(),
+        "done_items_checked":     len(done_items),
+        "timeline_nodes_checked": len(timeline_nodes),
+        "missing_from_timeline":  missing_from_timeline,
+        "already_present":        already_present,
+        "errors":                 errors,
+    }
+    try:
+        gaps_path.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return result
 
 
 if __name__ == "__main__":

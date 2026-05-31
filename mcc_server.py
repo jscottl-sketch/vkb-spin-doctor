@@ -89,7 +89,13 @@ TIMELINE_FILE       = HERE / "data" / "project_timeline.json"
 SCOUT_SWARM_STATE   = HERE / "data" / "scout_swarm_state.json"
 # ── OCB-O: OCB Runner paths ──────────────────────────────────────────────────
 OCB_STATUS_FILE     = HERE / "data" / "ocb_status.json"
+OCB_ABORT_FILE      = HERE / "data" / "ocb_abort.json"
+OCB_PROGRESS_FILE   = HERE / "data" / "ocb_progress.json"
 CLACHR_RESPONSE     = HERE / "data" / "clachr_response.json"
+# ── OCB-R: Design Vault + Memory + Bridge ────────────────────────────────────
+DESIGN_SAVES_FILE   = HERE / "data" / "design_saves.json"
+CLAUDE_MEMORY_FILE  = HERE / "data" / "claude_memory_snapshot.json"
+CLAUDE_BRIDGE_FILE  = HERE / "data" / "claude_bridge.json"
 # ── OCB-P: Unified session state ─────────────────────────────────────────────
 SESSION_STATE_FILE  = HERE / "data" / "session_state.json"
 PROVIDER_DIAG_FILE  = HERE / "data" / "provider_diagnosis.json"
@@ -520,6 +526,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_api_acca_md()
             elif path == "/api/acca/version":
                 self._handle_acca_version_get()
+            elif path == "/api/rrice":
+                self._handle_api_rrice()
             elif path == "/api/health":
                 self._handle_api_health()
             # ── Fix: AAFL live + bridge + workflow GET ──────────────────────────
@@ -712,6 +720,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/ocb/status/"):
                 run_id = path[len("/api/ocb/status/"):]
                 self._handle_ocb_status(run_id)
+            elif path == "/api/ocb/progress":
+                self._handle_ocb_progress()
             elif path == "/api/ocb/checks":
                 self._handle_ocb_checks()
             elif path == "/api/ocb/results":
@@ -729,14 +739,14 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Provider diagnosis results ──────────────────────────────
             elif path == "/api/provider-diagnosis":
                 self._handle_provider_diagnosis_get()
-            # ── HISAV: combined data ────────────────────────────────────────────
-            elif path == "/api/hisav/data":
+            # ── HITSAV (History Time Save): combined data — /api/hisav/* kept for compat ──
+            elif path in ("/api/hisav/data", "/api/hitsav/data"):
                 self._handle_hisav_data_get()
-            elif path == "/api/hisav/screenshots":
+            elif path in ("/api/hisav/screenshots", "/api/hitsav/screenshots"):
                 self._handle_hisav_screenshots_get()
-            elif path == "/api/hisav/clac-sessions":
+            elif path in ("/api/hisav/clac-sessions", "/api/hitsav/clac-sessions"):
                 self._handle_hisav_clac_sessions_get()
-            elif path == "/api/hisav/wento":
+            elif path in ("/api/hisav/wento", "/api/hitsav/wento"):
                 self._handle_hisav_wento_get()
             elif path.startswith("/data/screenshots/"):
                 self._handle_screenshot_static(path)
@@ -756,6 +766,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_storm_feed_get()
             elif path == "/api/storm/summary":
                 self._handle_storm_summary_get()
+            # ── OCB-R: Design Vault ────────────────────────────────────────────
+            elif path == "/api/design/saves":
+                self._handle_design_saves_get()
+            # ── OCB-R: Memory snapshot ─────────────────────────────────────────
+            elif path == "/api/memory/snapshot":
+                self._handle_memory_snapshot_get()
+            # ── OCB-R: Claude Bridge ───────────────────────────────────────────
+            elif path == "/api/bridge/messages":
+                self._handle_bridge_messages_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -992,6 +1011,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_parse()
             elif path == "/api/ocb/run":
                 self._handle_ocb_run()
+            elif path == "/api/ocb/abort":
+                self._handle_ocb_abort()
             elif path == "/api/ocb/rollback":
                 self._handle_ocb_rollback()
             elif path.startswith("/api/ocb/cancel/"):
@@ -1014,18 +1035,18 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Watchdog start ─────────────────────────────────────────
             elif path == "/api/watchdog/start":
                 self._handle_watchdog_start()
-            # ── HISAV: idea / checklist / clac-session / screenshot ───────────
-            elif path == "/api/hisav/idea":
+            # ── HITSAV: idea / checklist / clac-session / screenshot — /api/hisav/* kept for compat ──
+            elif path in ("/api/hisav/idea", "/api/hitsav/idea"):
                 self._handle_hisav_idea_post()
-            elif path == "/api/hisav/idea/action":
+            elif path in ("/api/hisav/idea/action", "/api/hitsav/idea/action"):
                 self._handle_hisav_idea_action_post()
-            elif path == "/api/hisav/checklist/tick":
+            elif path in ("/api/hisav/checklist/tick", "/api/hitsav/checklist/tick"):
                 self._handle_hisav_checklist_tick_post()
-            elif path == "/api/hisav/clac-session":
+            elif path in ("/api/hisav/clac-session", "/api/hitsav/clac-session"):
                 self._handle_hisav_clac_session_post()
-            elif path == "/api/hisav/screenshot":
+            elif path in ("/api/hisav/screenshot", "/api/hitsav/screenshot"):
                 self._handle_hisav_screenshot_post()
-            elif path == "/api/hisav/wento":
+            elif path in ("/api/hisav/wento", "/api/hitsav/wento"):
                 self._handle_hisav_wento_post()
             elif path == "/api/detective/run":
                 self._handle_detective_run_post()
@@ -1057,6 +1078,23 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_storm_ingest_post()
             elif path == "/api/missions/update-from-sesum":
                 self._handle_missions_update_from_sesum_post()
+            elif path == "/api/mccm/generate-status":
+                self._handle_mccm_generate_status_post()
+            # ── OCB-R: Design Vault ────────────────────────────────────────────
+            elif path == "/api/design/save":
+                self._handle_design_save_post()
+            elif path.startswith("/api/design/apply/"):
+                self._handle_design_apply_post(path[len("/api/design/apply/"):])
+            # ── OCB-R: Memory snapshot refresh ────────────────────────────────
+            elif path == "/api/memory/refresh":
+                self._handle_memory_refresh_post()
+            # ── OCB-R: Claude Bridge ───────────────────────────────────────────
+            elif path == "/api/bridge/send":
+                self._handle_bridge_send_post()
+            elif path.startswith("/api/bridge/resolve/"):
+                self._handle_bridge_resolve_post(path[len("/api/bridge/resolve/"):])
+            elif path == "/api/bridge/sync-check":
+                self._handle_bridge_sync_check_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -1091,6 +1129,16 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             self._handle_llow_delete_workflow(name)
         elif path == "/api/clachr/clear":
             self._handle_clachr_clear()
+        elif path.startswith("/api/design/delete/"):
+            self._handle_design_delete(path[len("/api/design/delete/"):])
+        elif path == "/api/ocb/abort":
+            # DELETE /api/ocb/abort — clear the abort flag before a new run
+            try:
+                if OCB_ABORT_FILE.exists():
+                    OCB_ABORT_FILE.unlink()
+                self._send_json({"cleared": True})
+            except Exception as exc:
+                self._send_json({"error": str(exc)}, 500)
         else:
             self._send_json({"error": "Not found"}, 404)
 
@@ -2956,6 +3004,19 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
         with _acca_lock:
             mtime = _acca_last_modified
         self._send_json({"last_modified": mtime, "count": count})
+
+    # ── GET /api/rrice ────────────────────────────────────────────────────────────
+
+    def _handle_api_rrice(self):
+        rrice_file = HERE / "data" / "rrice.json"
+        try:
+            if rrice_file.exists():
+                data = json.loads(rrice_file.read_text(encoding="utf-8"))
+            else:
+                data = {"error": "rrice.json not found"}
+            self._send_json(data)
+        except Exception as exc:
+            self._send_json({"error": str(exc)}, 500)
 
     # ── MCP: GET /api/health ──────────────────────────────────────────────────────
 
@@ -7534,6 +7595,59 @@ def _handle_ocb_results(self):
 MCCHandler._handle_ocb_results = _handle_ocb_results  # type: ignore[attr-defined]
 
 
+def _handle_ocb_abort(self):
+    """POST /api/ocb/abort — write abort flag to data/ocb_abort.json."""
+    try:
+        data = {"abort": True, "timestamp": datetime.datetime.now().isoformat(timespec="seconds")}
+        import tempfile as _tf, shutil as _sh
+        fd, tmp = _tf.mkstemp(dir=str(OCB_ABORT_FILE.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+        _sh.move(tmp, str(OCB_ABORT_FILE))
+        self._send_json({"aborted": True, "timestamp": data["timestamp"]})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_abort = _handle_ocb_abort  # type: ignore[attr-defined]
+
+
+def _handle_ocb_progress(self):
+    """GET /api/ocb/progress — return {phase_current, phase_total, phase_name, status, percent}."""
+    try:
+        if not OCB_STATUS_FILE.exists():
+            self._send_json({"phase_current": 0, "phase_total": 0, "phase_name": "",
+                             "status": "idle", "percent": 0})
+            return
+        data   = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8"))
+        phases = data.get("phases", [])
+        total  = len(phases)
+        cur_ph = data.get("current_phase", 0)
+        cur_name = ""
+        done   = 0
+        for p in phases:
+            st = (p.get("status") or "").upper()
+            if p.get("phase_num") == cur_ph:
+                cur_name = p.get("phase_name", "")
+            if st in ("DONE", "FAILED", "SKIPPED"):
+                done += 1
+        pct = round(done / total * 100) if total else 0
+        self._send_json({
+            "phase_current": cur_ph,
+            "phase_total":   total,
+            "phase_name":    cur_name,
+            "status":        data.get("status", "idle"),
+            "current_stage": data.get("current_stage", ""),
+            "percent":       pct,
+            "mot_score":     data.get("mot_score", ""),
+        })
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_progress = _handle_ocb_progress  # type: ignore[attr-defined]
+
+
 def _handle_rrclach_save(self):
     """POST /api/rrclach/save — write rrclach_request.json with ocb_text + acceptance_criteria + classification."""
     try:
@@ -7636,6 +7750,108 @@ def _handle_mccm_alerts(self):
 
 
 MCCHandler._handle_mccm_alerts = _handle_mccm_alerts  # type: ignore[attr-defined]
+
+
+def _handle_mccm_generate_status_post(self):
+    """POST /api/mccm/generate-status — read storm_feed + timeline gaps, call Mistral, update STATUS.md."""
+    try:
+        storm_file  = HERE / "data" / "storm_feed.json"
+        gaps_file   = HERE / "data" / "detective_timeline_gaps.json"
+        status_file = HERE / "STATUS.md"
+
+        # Run ingest_sesums if storm_feed is stale
+        try:
+            import storm_bridge as _sb
+            _sb.ingest_sesums(days=3)
+        except Exception:
+            pass
+
+        # Run cross_check_timeline
+        try:
+            import hisav_detective as _hd
+            _hd.cross_check_timeline()
+        except Exception:
+            pass
+
+        storm_data = {}
+        if storm_file.exists():
+            storm_data = json.loads(storm_file.read_text(encoding="utf-8"))
+
+        gaps_data = {}
+        if gaps_file.exists():
+            gaps_data = json.loads(gaps_file.read_text(encoding="utf-8"))
+
+        if not status_file.exists():
+            self._send_json({"error": "STATUS.md not found"}, 404)
+            return
+
+        current_status = status_file.read_text(encoding="utf-8")
+        prev_lines = len(current_status.splitlines())
+
+        # Build prompt summary
+        done_items  = gaps_data.get("already_present", [])[:15]
+        missing     = gaps_data.get("missing_from_timeline", [])[:15]
+        priorities  = storm_data.get("sesum_summary", {}).get("priorities", [])[:8]
+        entries_summary = [e["description"] for e in storm_data.get("entries", [])
+                           if e.get("category") == "done"][:15]
+
+        prompt = (
+            "You are updating a project STATUS.md file. Make minimal, targeted changes only.\n\n"
+            "DONE items to add to the BUILT table if not already present:\n" +
+            "\n".join("- " + d for d in (done_items + entries_summary)) + "\n\n" +
+            "NEW PRIORITIES (add to NEXT PRIORITIES if not present):\n" +
+            "\n".join("- " + p for p in priorities) + "\n\n" +
+            "CURRENT STATUS.md:\n```\n" + current_status[:6000] + "\n```\n\n" +
+            "Rules:\n"
+            "- Update the BUILT table with any missing DONE items\n"
+            "- Update NEXT PRIORITIES with any new priorities\n"
+            "- Do NOT change anything else\n"
+            "- Return ONLY the complete updated STATUS.md content, no commentary\n"
+        )
+
+        # Call Mistral via aafl_core
+        try:
+            from aafl_core import AAFLCore
+            core   = AAFLCore(dry_run=False, allow_paid=False)
+            result = core.run(prompt, task_type="research", max_tokens=4096)
+            if not result.ok or not result.response:
+                self._send_json({"error": "AI provider returned empty response"}, 500)
+                return
+            new_content = result.response.strip()
+        except Exception as exc:
+            self._send_json({"error": "AI call failed: " + str(exc)[:120]}, 500)
+            return
+
+        # Strip accidental markdown fences
+        if new_content.startswith("```"):
+            lines = new_content.splitlines()
+            end = len(lines) - 1 if lines[-1].strip() == "```" else len(lines)
+            new_content = "\n".join(lines[1:end])
+
+        new_lines = len(new_content.splitlines())
+        if new_lines < prev_lines * 0.9:
+            self._send_json({
+                "error": f"Safety check failed — new content too short ({new_lines} vs {prev_lines} lines)",
+                "result": "blocked"
+            }, 400)
+            return
+
+        # Atomic write
+        import tempfile as _tf
+        import shutil as _sh
+        fd, tmp = _tf.mkstemp(dir=str(status_file.parent), suffix=".tmp")
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        _sh.move(tmp, str(status_file))
+
+        lines_added = max(0, new_lines - prev_lines)
+        self._send_json({"result": "updated", "lines_added": lines_added,
+                         "prev_lines": prev_lines, "new_lines": new_lines})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_mccm_generate_status_post = _handle_mccm_generate_status_post  # type: ignore[attr-defined]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -7801,7 +8017,7 @@ MCCHandler._handle_watchdog_start = _handle_watchdog_start  # type: ignore[attr-
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# HISAV: History + Save tab data endpoints
+# HITSAV (History Time Save): History + Save tab data endpoints
 # ═══════════════════════════════════════════════════════════════════════════════
 
 _HISAV_CHECKLIST  = HERE / "data" / "master_checklist.json"
@@ -8905,6 +9121,375 @@ def _handle_missions_update_from_sesum_post(self):
 
 
 MCCHandler._handle_missions_update_from_sesum_post = _handle_missions_update_from_sesum_post  # type: ignore[attr-defined]
+
+
+# ── OCB-R Phase 1: Design Vault ──────────────────────────────────────────────
+
+def _load_design_saves():
+    if DESIGN_SAVES_FILE.exists():
+        try:
+            return json.loads(DESIGN_SAVES_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"saves": [], "max_saves": 20, "last_updated": ""}
+
+
+def _save_design_saves(data):
+    data["last_updated"] = _now_iso()
+    tmp = DESIGN_SAVES_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(DESIGN_SAVES_FILE)
+
+
+def _handle_design_saves_get(self):
+    """GET /api/design/saves — returns all saved theme snapshots."""
+    self._send_json(_load_design_saves())
+
+
+def _handle_design_save_post(self):
+    """POST /api/design/save — save current theme snapshot."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        name = body.get("name", "").strip()
+        if not name:
+            self._send_json({"ok": False, "error": "name required"}, 400)
+            return
+        css_vars = body.get("css_vars", {})
+        layout_settings = body.get("layout_settings", {})
+        data = _load_design_saves()
+        import uuid as _uuid
+        save_id = _uuid.uuid4().hex[:12]
+        entry = {
+            "id": save_id,
+            "name": name,
+            "timestamp": _now_iso(),
+            "css_vars": css_vars,
+            "layout_settings": layout_settings,
+        }
+        data.setdefault("saves", []).append(entry)
+        max_saves = data.get("max_saves", 20)
+        if len(data["saves"]) > max_saves:
+            data["saves"] = data["saves"][-max_saves:]
+        _save_design_saves(data)
+        self._send_json({"ok": True, "id": save_id, "name": name})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_design_apply_post(self, save_id: str):
+    """POST /api/design/apply/{id} — re-apply a saved theme snapshot."""
+    try:
+        data = _load_design_saves()
+        entry = next((s for s in data.get("saves", []) if s.get("id") == save_id), None)
+        if not entry:
+            self._send_json({"ok": False, "error": "Not found"}, 404)
+            return
+        css_vars = entry.get("css_vars", {})
+        ls = entry.get("layout_settings", {})
+        patch = {}
+        if "font" in css_vars:         patch["font"] = css_vars["font"]
+        if "font_size" in css_vars:    patch["font_size"] = css_vars["font_size"]
+        if "text_color" in css_vars:   patch["text_color"] = css_vars["text_color"]
+        if "bg_color" in css_vars:     patch["bg_color"] = css_vars["bg_color"]
+        if "border_radius" in css_vars: patch["border_radius"] = css_vars["border_radius"]
+        if "accent" in css_vars:       patch["tabbar_accent"] = css_vars["accent"]
+        if ls.get("density"):          patch["design_density"] = ls["density"]
+        if ls.get("btn_style"):        patch["btn_style"] = ls["btn_style"]
+        if patch:
+            current = _load_mcc_settings()
+            current.update(patch)
+            _save_mcc_settings(current)
+        self._send_json({"ok": True, "applied": entry["name"], "patch": patch})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_design_delete(self, save_id: str):
+    """DELETE /api/design/delete/{id} — remove a saved theme."""
+    try:
+        data = _load_design_saves()
+        before = len(data.get("saves", []))
+        data["saves"] = [s for s in data.get("saves", []) if s.get("id") != save_id]
+        if len(data["saves"]) == before:
+            self._send_json({"ok": False, "error": "Not found"}, 404)
+            return
+        _save_design_saves(data)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_design_saves_get  = _handle_design_saves_get   # type: ignore[attr-defined]
+MCCHandler._handle_design_save_post  = _handle_design_save_post   # type: ignore[attr-defined]
+MCCHandler._handle_design_apply_post = _handle_design_apply_post  # type: ignore[attr-defined]
+MCCHandler._handle_design_delete     = _handle_design_delete      # type: ignore[attr-defined]
+
+
+# ── OCB-R Phase 3: Memory Snapshot ───────────────────────────────────────────
+
+def _build_memory_snapshot():
+    """Read STATUS.md + INDEX.md and build a structured snapshot."""
+    import re as _re
+    snapshot = {
+        "project_overview": {},
+        "key_decisions": [],
+        "working_style_rules": [],
+        "acca_codes": [],
+        "provider_status": {},
+        "mission_priorities": [],
+        "pending_items": [],
+        "timeline_position": "",
+        "generated_at": _now_iso(),
+    }
+    status_text = ""
+    if STATUS_FILE.exists():
+        status_text = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
+    index_text = ""
+    index_file = HERE / "INDEX.md"
+    if index_file.exists():
+        index_text = index_file.read_text(encoding="utf-8", errors="replace")
+
+    # Extract project overview from STATUS.md header
+    m = _re.search(r"\*\*Last updated:\*\*(.+)", status_text)
+    if m:
+        snapshot["project_overview"]["last_updated"] = m.group(1).strip()
+    m2 = _re.search(r"## CURRENT STATUS — BUILT AND WORKING\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+    if m2:
+        rows = _re.findall(r"\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|", m2.group(1))
+        snapshot["project_overview"]["built_components"] = [
+            {"component": r[0].strip(), "notes": r[1].strip()} for r in rows if r[0].strip() and r[0].strip() != "Component"
+        ]
+
+    # Mission priorities
+    m3 = _re.search(r"## MISSION PRIORITY ORDER\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+    if m3:
+        snapshot["mission_priorities"] = [l.strip() for l in m3.group(1).splitlines() if l.strip() and _re.match(r"^\d+\.", l.strip())]
+
+    # Working style rules
+    m4 = _re.search(r"## WHO IS SCOTT[^\n]*\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+    if m4:
+        snapshot["working_style_rules"] = [l.strip().lstrip("- ") for l in m4.group(1).splitlines() if l.strip() and l.strip().startswith("-")]
+
+    # Pending / next priorities
+    m5 = _re.search(r"## NEXT PRIORITIES\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+    if m5:
+        snapshot["pending_items"] = [l.strip() for l in m5.group(1).splitlines() if l.strip() and l.strip()[0].isdigit()]
+
+    # Current OCB / timeline position
+    m6 = _re.search(r"## CURRENT[^\n]*\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+    if m6:
+        snapshot["timeline_position"] = m6.group(1).strip()[:300]
+
+    # ACCA codes from INDEX.md
+    acca_rows = _re.findall(r"\|\s*([A-Z]{2,10})\s*\|\s*([^|]+?)\s*\|", index_text)
+    snapshot["acca_codes"] = [{"code": r[0], "meaning": r[1].strip()} for r in acca_rows if r[0] != "Code"][:30]
+
+    # Provider status from provider_health endpoint data
+    ph_file = HEALTH_RESULTS / "latest_health.json"
+    if ph_file.exists():
+        try:
+            ph = json.loads(ph_file.read_text(encoding="utf-8"))
+            snapshot["provider_status"] = {
+                "healthy": ph.get("healthy_count", 0),
+                "total": ph.get("total", 14),
+                "checked_at": ph.get("checked_at", ""),
+            }
+        except Exception:
+            pass
+
+    return snapshot
+
+
+def _handle_memory_snapshot_get(self):
+    """GET /api/memory/snapshot — return current memory snapshot."""
+    try:
+        if CLAUDE_MEMORY_FILE.exists():
+            try:
+                data = json.loads(CLAUDE_MEMORY_FILE.read_text(encoding="utf-8"))
+                self._send_json(data)
+                return
+            except Exception:
+                pass
+        snapshot = _build_memory_snapshot()
+        tmp = CLAUDE_MEMORY_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(CLAUDE_MEMORY_FILE)
+        self._send_json(snapshot)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_memory_refresh_post(self):
+    """POST /api/memory/refresh — rebuild snapshot from STATUS.md + INDEX.md."""
+    try:
+        snapshot = _build_memory_snapshot()
+        tmp = CLAUDE_MEMORY_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(CLAUDE_MEMORY_FILE)
+        self._send_json({"ok": True, "generated_at": snapshot["generated_at"]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_memory_snapshot_get  = _handle_memory_snapshot_get   # type: ignore[attr-defined]
+MCCHandler._handle_memory_refresh_post  = _handle_memory_refresh_post   # type: ignore[attr-defined]
+
+
+# ── OCB-R Phase 4: Claude↔MCC Bridge ─────────────────────────────────────────
+
+def _load_bridge():
+    if CLAUDE_BRIDGE_FILE.exists():
+        try:
+            return json.loads(CLAUDE_BRIDGE_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {"messages": []}
+
+
+def _save_bridge(data):
+    tmp = CLAUDE_BRIDGE_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(CLAUDE_BRIDGE_FILE)
+
+
+def _handle_bridge_messages_get(self):
+    """GET /api/bridge/messages — return all bridge messages."""
+    self._send_json(_load_bridge())
+
+
+def _handle_bridge_send_post(self):
+    """POST /api/bridge/send — add a message to the bridge log."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        msg_from = body.get("from", "mcc")
+        msg_type = body.get("type", "alert")
+        content = body.get("content", "")
+        if not content:
+            self._send_json({"ok": False, "error": "content required"}, 400)
+            return
+        import uuid as _uuid
+        data = _load_bridge()
+        entry = {
+            "id": _uuid.uuid4().hex[:12],
+            "timestamp": _now_iso(),
+            "from": msg_from,
+            "type": msg_type,
+            "content": content,
+            "resolved": False,
+        }
+        data.setdefault("messages", []).append(entry)
+        if len(data["messages"]) > 200:
+            data["messages"] = data["messages"][-200:]
+        _save_bridge(data)
+        self._send_json({"ok": True, "id": entry["id"]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_bridge_resolve_post(self, msg_id: str):
+    """POST /api/bridge/resolve/{id} — mark a message resolved."""
+    try:
+        data = _load_bridge()
+        found = False
+        for m in data.get("messages", []):
+            if m.get("id") == msg_id:
+                m["resolved"] = True
+                found = True
+                break
+        if not found:
+            self._send_json({"ok": False, "error": "Not found"}, 404)
+            return
+        _save_bridge(data)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+def _handle_bridge_sync_check_post(self):
+    """POST /api/bridge/sync-check — compare STATUS.md / detective / timeline for mismatches."""
+    import re as _re
+    try:
+        facts = {}
+        mismatches = []
+        aligned = []
+        concerns = []
+
+        # Read STATUS.md
+        status_text = STATUS_FILE.read_text(encoding="utf-8", errors="replace") if STATUS_FILE.exists() else ""
+        m = _re.search(r"\*\*Last updated:\*\*(.+)", status_text)
+        facts["status_last_updated"] = m.group(1).strip() if m else "unknown"
+
+        m2 = _re.search(r"## NEXT PRIORITIES\n(.*?)(?=\n---|\n## )", status_text, _re.DOTALL)
+        status_prios = []
+        if m2:
+            status_prios = [l.strip() for l in m2.group(1).splitlines() if l.strip() and l.strip()[0].isdigit()]
+        facts["status_priorities"] = status_prios
+
+        # Read detective report
+        det_report = {}
+        if (HERE / "data" / "detective_report.json").exists():
+            try:
+                det_report = json.loads((HERE / "data" / "detective_report.json").read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        facts["detective_findings"] = len(det_report.get("findings", []))
+
+        # Read timeline
+        timeline_data = {}
+        if TIMELINE_FILE.exists():
+            try:
+                timeline_data = json.loads(TIMELINE_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        facts["timeline_nodes"] = len(timeline_data.get("nodes", []))
+
+        # Basic checks
+        if status_prios:
+            aligned.append(f"STATUS.md has {len(status_prios)} priority items")
+        else:
+            concerns.append("STATUS.md NEXT PRIORITIES section appears empty")
+
+        det_findings = det_report.get("findings", [])
+        unresolved_det = [f for f in det_findings if not f.get("resolved")]
+        if unresolved_det:
+            concerns.append(f"Detective has {len(unresolved_det)} unresolved finding(s)")
+        else:
+            aligned.append("No unresolved detective findings")
+
+        if facts["timeline_nodes"] > 0:
+            aligned.append(f"Timeline has {facts['timeline_nodes']} nodes")
+        else:
+            concerns.append("Timeline appears empty")
+
+        # Write result as bridge message
+        summary = f"Sync-check: {len(aligned)} aligned, {len(mismatches)} mismatch, {len(concerns)} concern"
+        data = _load_bridge()
+        import uuid as _uuid
+        data.setdefault("messages", []).append({
+            "id": _uuid.uuid4().hex[:12],
+            "timestamp": _now_iso(),
+            "from": "mcc",
+            "type": "cross_check",
+            "content": summary,
+            "resolved": False,
+            "detail": {"aligned": aligned, "mismatches": mismatches, "concerns": concerns, "facts": facts},
+        })
+        _save_bridge(data)
+        self._send_json({
+            "ok": True,
+            "mismatches": mismatches,
+            "aligned": aligned,
+            "concerns": concerns,
+            "facts": facts,
+        })
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_bridge_messages_get  = _handle_bridge_messages_get   # type: ignore[attr-defined]
+MCCHandler._handle_bridge_send_post     = _handle_bridge_send_post      # type: ignore[attr-defined]
+MCCHandler._handle_bridge_resolve_post  = _handle_bridge_resolve_post   # type: ignore[attr-defined]
+MCCHandler._handle_bridge_sync_check_post = _handle_bridge_sync_check_post  # type: ignore[attr-defined]
 
 
 def main():

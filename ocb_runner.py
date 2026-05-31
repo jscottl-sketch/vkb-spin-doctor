@@ -65,6 +65,7 @@ KNOWN_FILES = [
 ]
 
 OCB_STATUS_FILE  = HERE / "data" / "ocb_status.json"
+OCB_ABORT_FILE   = HERE / "data" / "ocb_abort.json"
 CLACHR_RESPONSE  = HERE / "data" / "clachr_response.json"
 MOT_SCRIPT       = HERE / "mcc_full_mot.py"
 
@@ -306,6 +307,16 @@ def _is_cancelled(run_id: str) -> bool:
     try:
         s = _read_status()
         return s.get("run_id") == run_id and bool(s.get("cancelled"))
+    except Exception:
+        return False
+
+
+def _is_aborted() -> bool:
+    """Check if user clicked ABORT via MCC (data/ocb_abort.json)."""
+    try:
+        if not OCB_ABORT_FILE.exists():
+            return False
+        return bool(json.loads(OCB_ABORT_FILE.read_text(encoding="utf-8")).get("abort"))
     except Exception:
         return False
 
@@ -966,6 +977,8 @@ def _run_mot_check() -> tuple:
 
 def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
     """Full safe OCB execution: 4 guards + 4 HTML checks (BS4/JS/Registry/MOT)."""
+    print("[THREAD] Thread function entered")
+    print("[THREAD] run_safe() entered")
     global _live_output, _check_results, _last_run_result
     _live_output = []
     if not run_id:
@@ -1004,6 +1017,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
 
     obj["guard_results"]["lock"] = True
     _sl("GUARD 1 PASS: lock file clear")
+    print("[THREAD] Lock check passed")
 
     if dry_run:
         _sl("DRY RUN: stopping here — no changes made")
@@ -1022,6 +1036,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         print(f"[OCB THREAD] About to git stash")
         gs = subprocess.run(["git", "status", "--porcelain"],
                             capture_output=True, text=True, cwd=str(HERE), timeout=30)
+        print("[THREAD] Git status checked")
         if gs.stdout.strip():
             ts_lbl = f"OCB-Runner-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
             sr     = subprocess.run(["git", "stash", "push", "-m", ts_lbl],
@@ -1035,6 +1050,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
             no_stash = True
             obj["guard_results"]["stash"] = True
             _sl("GUARD 2: clean tree — no stash needed")
+        print("[THREAD] Git stash done")
 
         # GUARD 3 — Phase execution (sequential, stop on first fail)
         set_status("phase_running", "starting phase execution")
@@ -1042,13 +1058,25 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         html_was_edited: bool = False
         failed_reason: str    = ""
 
+        print(f"[THREAD] About to execute phase 1")
         for phase in parsed:
             if failed_reason:
+                break
+            if _is_aborted():
+                obj["status"] = "CANCELLED"
+                _sl(f"⛔ Aborted by user before Phase {phase['phase']}: {phase.get('phase_name','')}")
+                _write_status(obj)
                 break
             set_status("phase_running", f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             _sl(f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             for task in phase.get("tasks", []):
                 if failed_reason:
+                    break
+                if _is_aborted():
+                    failed_reason = f"Aborted by user at Phase {phase['phase']} Task {task.get('num','?')}"
+                    _sl(f"⛔ {failed_reason}")
+                    obj["status"] = "CANCELLED"
+                    _write_status(obj)
                     break
                 _sl(f"  Task {task['num']}: {task['text'][:70]}")
                 filepath = identify_affected_file(task["text"])
@@ -1175,14 +1203,15 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                     obj["stash_ref"] = "HEAD"
                     _sl(f"MOT FAILED — {mot_score}")
     except Exception as e:
-        print(f"[OCB THREAD] EXCEPTION: {e}")
+        print(f"[THREAD] TOP-LEVEL EXCEPTION: {e}")
         import traceback; print(traceback.format_exc())
+        print(f"[OCB THREAD] EXCEPTION: {e}")
+        import traceback as _tb; print(_tb.format_exc())
         obj["status"] = "failed"
         obj["current_stage"] = "failed"
         stream_log(f"THREAD CRASH: {str(e)}")
         stream_log(f"Type: {type(e).__name__}")
-        import traceback
-        stream_log(traceback.format_exc())
+        stream_log(_tb.format_exc())
         import os as _eos
         if _eos.path.exists(str(_LOCK_FILE)):
             try:
@@ -1555,10 +1584,11 @@ def run_test():
     print("[TEST] Starting synchronous OCB test run")
 
     test_ocb = """
-PHASE 1 — TEST PHASE
-Create a file called ocb_test_output.txt in the project root.
-Write this exact content: OCB Runner test successful
-Report: file created
+═══ PHASE 1 — TEST PHASE ═══
+
+1. Create a file called ocb_test_output.txt in the project root.
+2. Write this exact content: OCB Runner test successful
+3. Report: file created
 """
     print("[TEST] Parsing test OCB...")
     try:
@@ -1578,18 +1608,14 @@ Report: file created
         import traceback; traceback.print_exc()
         return
 
-    print("[TEST] Checking git stash...")
+    print("[TEST] Checking git status (no stash in test mode)...")
     r = subprocess.run(['git', 'status', '--porcelain'],
                        capture_output=True, text=True, cwd=str(HERE))
     if r.stdout.strip():
-        r2 = subprocess.run(
-            ['git', 'stash', 'push', '-m', 'ocb-test-backup'],
-            capture_output=True, text=True, cwd=str(HERE))
-        print(f"[TEST] Git stash: {r2.returncode} {r2.stdout} {r2.stderr}")
-        stashed = r2.returncode == 0
+        changed = len(r.stdout.strip().splitlines())
+        print(f"[TEST] Git: {changed} file(s) modified — stash SKIPPED in test mode")
     else:
-        print("[TEST] Git stash: SKIPPED (clean tree)")
-        stashed = False
+        print("[TEST] Git: clean working tree")
 
     print("[TEST] Creating test file...")
     try:
@@ -1598,11 +1624,6 @@ Report: file created
         print("[TEST] File created OK")
     except Exception as e:
         print(f"[TEST] FILE CREATE FAILED: {e}")
-
-    if stashed:
-        r3 = subprocess.run(['git', 'stash', 'drop'],
-                            capture_output=True, text=True, cwd=str(HERE))
-        print(f"[TEST] Stash dropped: {r3.returncode}")
 
     print("[TEST] COMPLETE — if you see this, the runner works")
 

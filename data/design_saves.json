@@ -1,0 +1,30 @@
+{
+  "saves": [
+    {
+      "id": "project-brain-001",
+      "name": "Project Brain",
+      "timestamp": "2026-05-31T00:00:00",
+      "css_vars": {
+        "font": "inherit",
+        "font_size": "14px",
+        "text_color": "#94a3b8",
+        "bg_color": "#1a1a2e",
+        "accent": "#c084fc",
+        "border_radius": "6px",
+        "tab_accent": "#c084fc",
+        "pb_card": "#252540",
+        "pb_active": "#4ade80",
+        "pb_text_muted": "#94a3b8",
+        "pb_border": "#334155",
+        "pb_glow": "#7c3aed",
+        "pb_text": "#e2e8f0"
+      },
+      "layout_settings": {
+        "density": "comfortable",
+        "btn_style": "normal"
+      }
+    }
+  ],
+  "max_saves": 20,
+  "last_updated": "2026-05-31T12:00:00"
+}
