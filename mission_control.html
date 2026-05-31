@@ -29,6 +29,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MCC — Mission Control Center</title>
 <style>
+/* Z-INDEX SCALE:
+   base=1 | cards=10 | panels=100 | dropdowns=500 | tabs=1000
+   tooltips=2000 | popups=3000 | modals=5000 | kill-switch=9999
+   All fixed/absolute overlays must use these tiers exactly.
+   Sticky elements inside panes (e.g. hitsav-sticky-tb) use panels=100. */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d;color:#ccc;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
@@ -143,8 +148,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hitsav-gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 /* tl-detail-popup — deep drill-down. !important guards against [class*="popup"] override */
 .tl-detail-popup{display:none;position:fixed!important;z-index:9999!important;background:#0a0e18!important;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px!important;width:320px;max-width:90vw;max-height:70vh;overflow-y:auto;font-size:12px!important;color:#aab!important;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.75);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
-/* timeline node popup uses absolute positioning within #htl-tl-wrapper */
-#hitsav-tl-popup{position:absolute!important}
+/* timeline node popup: fixed to viewport so it can't be clipped by overflow:auto */
+#hitsav-tl-popup{position:fixed!important;z-index:3000!important}
 .tl-popup-title{font-size:13px;font-weight:bold;color:#dde;margin-bottom:4px}
 .tl-popup-status{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:bold;margin-bottom:8px}
 .tl-popup-summary{font-size:11px;color:#889;margin-bottom:8px;line-height:1.5}
@@ -389,8 +394,17 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 .ocb-badge-failed{background:#2a0a0a;color:#f44}
 .ocb-badge-skipped{background:#2a1a00;color:#fa0}
 @keyframes ocbPulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes ocbGlow{0%,100%{box-shadow:0 0 4px #22c55e55}50%{box-shadow:0 0 14px #22c55eaa,0 0 4px #4af55}}
 .ocb-progress-bar{height:6px;background:#111;border-radius:3px;margin-top:8px;overflow:hidden}
 .ocb-progress-fill{height:100%;background:linear-gradient(90deg,#1a8,#4af);transition:width .4s}
+.ocb-bar-active .ocb-bar-fill,.ocb-bar-active #ocb2-progress-fill{animation:ocbGlow 1.2s ease-in-out infinite}
+.ocb-phase-card{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:5px;background:#0d1218;border:1px solid #1e2a3a;margin-bottom:4px;font-size:12px;transition:.2s}
+.ocb-phase-card.opc-running{border-color:#4af;background:#05101a;animation:ocbPulse 1.2s infinite}
+.ocb-phase-card.opc-done{border-color:#22c55e;background:#04100a}
+.ocb-phase-card.opc-failed{border-color:#ef4444;background:#130505}
+.opc-badge{font-size:11px;font-weight:bold;min-width:80px;flex-shrink:0}
+.opc-name{flex:1;color:#bbc}
+.opc-tasks{font-size:10px;color:#445;flex-shrink:0}
 .ocb-log-area{height:160px;overflow-y:auto;background:#030303;border:1px solid #1a2a3a;border-radius:4px;padding:6px;font:11px 'Consolas','Courier New',monospace;color:#8bc;margin-top:8px;white-space:pre-wrap;word-break:break-word}
 .ocb-log-line{margin:0;line-height:1.5}
 .ocb-log-controls{display:flex;gap:8px;margin-top:6px}
@@ -467,7 +481,7 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 .error-msg{color:#a55;padding:12px}
 
 /* CONFIRM DIALOG */
-.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:.2s}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:5000;opacity:0;pointer-events:none;transition:.2s}
 .confirm-overlay.visible{opacity:1;pointer-events:auto}
 .confirm-box{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:24px;max-width:380px;width:90%}
 .confirm-msg{color:#ddd;margin-bottom:20px;line-height:1.5}
@@ -475,17 +489,18 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 .confirm-btns .btn{min-width:72px;text-align:center}
 
 /* TOAST */
-#toast-container{position:fixed;bottom:16px;right:16px;z-index:2000;display:flex;flex-direction:column;gap:8px}
+#toast-container{position:fixed;bottom:16px;right:16px;z-index:6000;display:flex;flex-direction:column;gap:8px}
 .toast{background:#222;border-left:3px solid #888;padding:8px 14px;border-radius:4px;font-size:12px;animation:fadein .2s;max-width:320px}
 .toast.ok{border-color:#2a7;color:#8f8}
 .toast.error{border-color:#a33;color:#f88}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* scrollbar — thin global style */
+/* scrollbar — Project Brain themed */
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#3a3a3a}
+::-webkit-scrollbar-track{background:var(--scrollbar-track,#1e1e38)}
+::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb,#475569);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#64748b}
+*{scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb,#475569) var(--scrollbar-track,#1e1e38)}
 
 /* ── TOOLTIP WRAP SYSTEM (Task 6) ── */
 .tooltip-wrap { position: relative; display: inline-block; }
@@ -718,7 +733,7 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 .tab-summary span{color:#eee}
 
 /* ── KB OVERLAY ── */
-.kb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:3000;display:none}
+.kb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:5000;display:none}
 .kb-overlay.visible{display:flex}
 .kb-box{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:24px;max-width:420px;width:90%}
 .kb-box h3{color:#eee;margin-bottom:16px;font-size:14px}
@@ -778,7 +793,7 @@ body.theme-light .data-table td{color:#333}
 body.tutorial-on [data-tutorial]:hover .tutorial-tip{display:block}
 body.tutorial-on [data-tutorial]{position:relative}
 /* ── B2-21: COMMAND PALETTE ── */
-.cmdpal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-start;justify-content:center;z-index:4000;padding-top:80px}
+.cmdpal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:flex-start;justify-content:center;z-index:5000;padding-top:80px}
 .cmdpal-overlay.visible{display:flex}
 .cmdpal-box{background:#1a1a1a;border:1px solid #444;border-radius:8px;width:500px;max-width:95vw;overflow:hidden}
 .cmdpal-input{width:100%;background:#111;border:none;border-bottom:1px solid #333;color:#eee;font:14px 'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:12px 16px;outline:none}
@@ -993,9 +1008,9 @@ body.tutorial-on [data-tutorial]{position:relative}
    BUILD 3 — NEW STYLES
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Project Brain default theme (OCB-R Phase 5) ── */
+/* ── Project Brain default theme (OCB-R Phase 5) — FULL TOKEN SET ── */
 :root{
-  /* Project Brain palette */
+  /* Project Brain core palette */
   --pb-bg:        #1a1a2e;
   --pb-card:      #252540;
   --pb-active:    #4ade80;
@@ -1005,14 +1020,32 @@ body.tutorial-on [data-tutorial]{position:relative}
   --pb-glow:      #7c3aed;
   --pb-text:      #e2e8f0;
 
-  /* Shared layout vars used across tabs */
-  --bg-primary:   var(--pb-bg);
-  --bg-secondary: var(--pb-card);
-  --bg-tertiary:  #1f1f38;
-  --text:         var(--pb-text);
-  --text-muted:   var(--pb-text-muted);
-  --border:       var(--pb-border);
-  --accent:       var(--pb-accent);
+  /* Full semantic token set (Phase 5 spec) */
+  --bg-primary:       #1a1a2e;
+  --bg-secondary:     #252540;
+  --bg-card:          #252540;
+  --bg-input:         #1e1e38;
+  --bg-tertiary:      #1f1f38;
+  --text-primary:     #e2e8f0;
+  --text-secondary:   #94a3b8;
+  --text-muted:       #64748b;
+  --text:             #e2e8f0;
+  --accent-primary:   #c084fc;
+  --accent-green:     #4ade80;
+  --accent-purple:    #7c3aed;
+  --accent:           #c084fc;
+  --border-primary:   #334155;
+  --border-subtle:    #1e293b;
+  --border:           #334155;
+  --badge-active:     #4ade80;
+  --badge-warning:    #fbbf24;
+  --badge-error:      #ef4444;
+  --btn-primary-bg:   #7c3aed;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #334155;
+  --btn-secondary-text:#e2e8f0;
+  --scrollbar-thumb:  #475569;
+  --scrollbar-track:  #1e1e38;
 
   /* b3 design system defaults → Project Brain */
   --b3-font:inherit;
@@ -1024,6 +1057,7 @@ body.tutorial-on [data-tutorial]{position:relative}
   --b3-btn-style: normal;
   --tab-accent:   var(--pb-accent);
   --anim-duration:0.2s;
+
 }
 body{font-size:var(--b3-font-size);color:var(--b3-text-color);background:var(--pb-bg)}
 
@@ -1437,7 +1471,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .llow-amc-fb-item{display:flex;align-items:center;gap:6px;font-size:10px;color:#888;padding:2px 4px;background:#0d0d0d;border-radius:3px;cursor:move;user-select:none}
 .llow-amc-fb-item:hover{background:#1a1a1a;color:#ccc}
 /* ── OCB-I Phase 6: LLOW Fullscreen ── */
-.llow-fs-active{position:fixed!important;inset:0!important;z-index:10000!important;background:#070707!important;display:flex!important;flex-direction:column!important;padding:10px!important;overflow:hidden!important}
+.llow-fs-active{position:fixed!important;inset:0!important;z-index:9999!important;background:#070707!important;display:flex!important;flex-direction:column!important;padding:10px!important;overflow:hidden!important}
 .llow-fs-active .llow-topbar{flex-shrink:0}
 .llow-fs-active .llow-amc{flex-shrink:0}
 .llow-fs-active .llow-3panel{flex:1!important;height:calc(100vh - 220px)!important;min-height:300px}
@@ -3539,15 +3573,15 @@ body{padding-bottom:28px}
       if(builtHdr){ var chev=builtHdr.querySelector('.htl-p-chev'); if(chev) chev.textContent='▼'; }
     }
 
-    // Position popup absolute within #htl-tl-wrapper, clamped to wrapper bounds
+    // Position popup fixed to viewport — avoids clipping by overflow:auto containers
     var rect = el.getBoundingClientRect();
-    var wrapper = document.getElementById('htl-tl-wrapper');
-    var cRect = wrapper ? wrapper.getBoundingClientRect() : {left:0, top:0, width:window.innerWidth, height:400};
     var pw = 420;
-    var left = rect.left - cRect.left;
-    var top  = rect.bottom - cRect.top + 8;
-    if(left + pw > cRect.width) left = Math.max(0, cRect.width - pw - 8);
-    if(left < 0) left = 0;
+    var left = rect.left;
+    var top  = rect.bottom + 8;
+    if(left + pw > window.innerWidth) left = Math.max(4, window.innerWidth - pw - 8);
+    if(left < 4) left = 4;
+    var maxTop = window.innerHeight - 360;
+    if(top > maxTop) top = Math.max(4, rect.top - 360);
     popup.style.left = left+'px';
     popup.style.top  = top+'px';
     popup.style.display = 'block';
@@ -5414,7 +5448,7 @@ Find mission_control.html..."
           style="padding:8px 12px;background:var(--bg-tertiary);
           color:var(--text);border:1px solid var(--border);
           border-radius:6px;cursor:pointer">✕</button>
-        <button id="ocb2-abort-btn" onclick="ocb2Abort()" style="display:none">⛔ ABORT</button>
+        <button id="ocb2-abort-btn" onclick="ocb2Abort()" style="display:none;padding:8px 16px;background:#7f1d1d;color:#fca5a5;border:2px solid #ef4444;border-radius:6px;cursor:pointer;font-weight:bold;font-size:13px;letter-spacing:.5px;animation:ocbGlow 1s ease-in-out infinite">⛔ ABORT</button>
       </div>
     </div>
 
@@ -6485,6 +6519,29 @@ Find mission_control.html..."
     <div id="stuck-inbox-list"><div class="loading">Loading…</div></div>
       </div>
     </div><!-- /acc-stuck-inbox -->
+
+    <!-- CLACR RELAY (OCB-R Phase 13) -->
+    <div class="aafl-acc" id="acc-clacr-relay">
+      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('acc-clacr-relay');if(this.parentElement.classList.contains('open'))clacr_loadStatus()">
+        📡 CLACR Relay — MCC↔CLACH Protocol <span class="acc-arrow">▼</span>
+      </div>
+      <div class="aafl-acc-body">
+        <div style="font-size:11px;color:#666;margin-bottom:8px">Submit CLACH shorthand messages to queue tasks for MCC. Format: <code style="background:#111;padding:1px 4px">FIX P4 mission_control.html tooltip z-index broken</code></div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+          <input type="text" id="clacr-msg-input" placeholder="CLACH message — e.g. BUILD P3 ocb_runner.py add timeout…" style="flex:1;min-width:200px;background:var(--bg-input,#111);border:1px solid var(--border,#333);color:var(--text-primary,#ccc);padding:5px 10px;border-radius:4px;font:inherit">
+          <button class="btn" onclick="clacr_submit()" style="background:#1a2a3a;border-color:#4af;color:#4af">📨 Submit</button>
+          <button class="btn" onclick="clacr_loadStatus()">↻ Refresh</button>
+        </div>
+        <div id="clacr-queue" style="max-height:240px;overflow-y:auto;margin-bottom:10px">
+          <div class="empty-msg">No tasks queued.</div>
+        </div>
+        <div class="section-title">Results (for CLACH copy)</div>
+        <div id="clacr-results" style="max-height:160px;overflow-y:auto;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;padding:8px;font:11px 'Consolas','Courier New',monospace;color:#8bc;white-space:pre-wrap">
+          No completed tasks yet.
+        </div>
+        <button class="btn" onclick="clacr_copyResults()" style="margin-top:6px;font-size:11px">📋 Copy for CLACH</button>
+      </div>
+    </div>
 
     <!-- AAFL RUN HISTORY (Task 5 — collapsed by default) -->
     <div class="aafl-acc" id="acc-aafl-run-history">
@@ -13146,14 +13203,24 @@ function ocb2Parse() {
 
   // Animated parse stages before sending to server
   const t1 = setTimeout(function() { _ocb2SetProgress(20, 'Splitting into phases...'); }, 200);
-  const t2 = setTimeout(function() { _ocb2SetProgress(40, 'Analysing structure...'); }, 450);
+  const t2 = setTimeout(function() { _ocb2SetProgress(40, 'Analysing structure...'); }, 600);
+
+  // 30-second timeout — prevents infinite "Analysing structure..." stuck state
+  const _parseCtrl = new AbortController();
+  const _parseTimeout = setTimeout(function() {
+    _parseCtrl.abort();
+  }, 30000);
 
   fetch(BASE + '/api/ocb/parse', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ocb_text: input})
-  }).then(r => r.json()).then(data => {
-    clearTimeout(t1); clearTimeout(t2);
+    body: JSON.stringify({ocb_text: input}),
+    signal: _parseCtrl.signal
+  }).then(r => {
+    if (!r.ok) return r.text().then(t => { throw new Error('Server error ' + r.status + ': ' + t.slice(0, 120)); });
+    return r.json();
+  }).then(data => {
+    clearTimeout(t1); clearTimeout(t2); clearTimeout(_parseTimeout);
     _ocb2SetActive(false);
     if (data.error) {
       _ocb2SetProgress(0, '');
@@ -13165,9 +13232,17 @@ function ocb2Parse() {
     }
     const phases = data.phases || [];
     const total  = phases.length;
+    if (total === 0) {
+      _ocb2SetProgress(0, 'No phases found — check OCB block format (═══ Phase N — Title ═══)');
+      badge.textContent = 'No Phases';
+      badge.style.background = '#f59e0b22';
+      badge.style.color = '#fa0';
+      log.textContent = '[' + _ocb2Ts() + '] ⚠️ No phases found. Format: ═══ Phase 1 — Title ═══';
+      return;
+    }
     // Animate per-phase validation
     let delay = 0;
-    phases.forEach((p, i) => {
+    phases.forEach(function(p, i) {
       const pct = Math.round(50 + (45 * (i + 1) / Math.max(total, 1)));
       setTimeout(function() {
         _ocb2SetProgress(pct, 'Validating phase ' + (i + 1) + ' of ' + total + '...');
@@ -13183,11 +13258,14 @@ function ocb2Parse() {
       badge.style.color = '#4f4';
       _ocb2AppendLog('[' + _ocb2Ts() + '] ✅ Parsed: ' + total + ' phase(s). Ready to run.');
     }, delay + 100);
-  }).catch(e => {
-    clearTimeout(t1); clearTimeout(t2);
+  }).catch(function(e) {
+    clearTimeout(t1); clearTimeout(t2); clearTimeout(_parseTimeout);
     _ocb2SetActive(false);
     _ocb2SetProgress(0, '');
-    log.textContent = '[' + _ocb2Ts() + '] ❌ Parse failed: ' + e.message;
+    const msg = e.name === 'AbortError'
+      ? 'Parse timed out after 30s — check server is running'
+      : e.message;
+    log.textContent = '[' + _ocb2Ts() + '] ❌ Parse failed: ' + msg;
     badge.textContent = 'Error';
     badge.style.background = '#ef444422';
     badge.style.color = '#f66';
@@ -17929,6 +18007,54 @@ async function bridgeSyncCheck() {
     bridgeLoadMessages();
     toast('Sync check complete', 'ok');
   } catch(e) { if(el) el.innerHTML = '<span style="color:#f66">Check failed</span>'; toast('Sync check failed: ' + e, 'error'); }
+}
+
+// ── OCB-R: CLACR Relay (Phase 13) ────────────────────────────────────────────
+async function clacr_submit() {
+  const inp = document.getElementById('clacr-msg-input');
+  const msg = inp ? inp.value.trim() : '';
+  if (!msg) return;
+  try {
+    const d = await apiFetch('/api/clacr/submit', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: msg})});
+    if (d.error) { toast('CLACR submit failed: ' + d.error, 'error'); return; }
+    if (inp) inp.value = '';
+    toast('Task queued: ' + (d.task && d.task.id ? d.task.id : '?'), 'ok');
+    clacr_loadStatus();
+  } catch(e) { toast('CLACR error: ' + e.message, 'error'); }
+}
+async function clacr_loadStatus() {
+  const el = document.getElementById('clacr-queue');
+  if (!el) return;
+  try {
+    const d = await apiFetch('/api/clacr/status');
+    const tasks = d.tasks || [];
+    if (!tasks.length) { el.innerHTML = '<div class="empty-msg">No tasks queued.</div>'; return; }
+    const stClr = {queued:'#fa0',running:'#4af',done:'#4f4',failed:'#f44'};
+    el.innerHTML = tasks.slice().reverse().map(t => {
+      const clr = stClr[t.status] || '#888';
+      return `<div style="background:#0d0d0d;border:1px solid #1a2a3a;border-left:3px solid ${clr};border-radius:4px;padding:6px 9px;margin-bottom:4px;font-size:11px">
+        <span style="color:${clr};font-weight:bold">[${esc(t.type||'?')}]</span>
+        <span style="color:#aaa;margin-left:6px">${esc(t.description||'')}</span>
+        <span style="color:#556;margin-left:6px;float:right">${esc(t.target||'')} · P${t.priority||3} · ${esc(t.status||'')}</span>
+      </div>`;
+    }).join('');
+    clacr_loadResults();
+  } catch(e) { el.innerHTML = '<div class="error-msg">Load failed: ' + esc(e.message) + '</div>'; }
+}
+async function clacr_loadResults() {
+  const el = document.getElementById('clacr-results');
+  if (!el) return;
+  try {
+    const d = await apiFetch('/api/clacr/results');
+    const lines = d.results || [];
+    el.textContent = lines.length ? lines.join('\n') : 'No completed tasks yet.';
+  } catch(e) {}
+}
+function clacr_copyResults() {
+  const el = document.getElementById('clacr-results');
+  if (!el) return;
+  try { navigator.clipboard.writeText(el.textContent); toast('CLACR results copied', 'ok'); }
+  catch(e) { toast('Copy failed', 'error'); }
 }
 
 // ── Build 3 DOMContentLoaded init ─────────────────────────────────────────

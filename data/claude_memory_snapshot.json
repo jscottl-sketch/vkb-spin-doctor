@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-05-31T00:00:00",
+  "source_files": ["STATUS.md", "INDEX.md", "ACCA.md"],
+  "project_overview": "AAFL (AI Agent Feedback Loop) — self-improving AI agent framework. Spin Doctor is the first proof-of-concept (joystick mouse-spin fix for War Thunder/Elite Dangerous/Star Citizen). AASKC is the product brand.",
+  "mission_priorities": [
+    "ALP (Allowance Preservation) — absolute Rule No.1",
+    "AAFL is THE PROJECT — Spin Doctor is the benchmark/test subject",
+    "ACCA codes generated as bonus, organised later",
+    "Spin Doctor = ultimate validation of AAFL",
+    "AAFL + Spin Doctor must be fluid, flexible, reusable on any project"
+  ],
+  "working_style_rules": [
+    "Brain injury (BI) 2023 — ONE STEP AT A TIME. No exceptions.",
+    "Beginner with code — explain what's being built as you go",
+    "Always expand acronyms on first use",
+    "Number all options — Scott replies with just a number",
+    "DSP rule — Before any CLAC block, ask: DSP?",
+    "WCCS triggered automatically — never ask"
+  ],
+  "built_components": [
+    "mission_control.html — MCC 19+ tabs, JS audit complete",
+    "mcc_server.py — 30+ REST endpoints, port 8080",
+    "aafl_core.py — 14 providers, LiteLLM routing",
+    "loop_manager.py — Plan-Work-Verify-Store loop, watchdog wired, cost_guard wired",
+    "aafl_wccs.py — Free Mistral STATUS.md rewriter, timing logs added",
+    "ocb_runner.py — Parse + run_safe with abort flag, parse timeout fix",
+    "OCB-R: z-index scale fixed, CLACR protocol built, Design Vault"
+  ],
+  "pending_items": [
+    "OCB-R remaining phases: MOT + git commit",
+    "LRU cache for knowledge_engine.db lookups (from meta_proposals review)"
+  ],
+  "provider_status": {
+    "tier1_local": ["LM Studio Coder 32B", "LM Studio VL 32B", "DeepSeek R1", "Phi-4 14B"],
+    "tier2_free": ["Cerebras", "Groq", "Gemini", "Mistral", "Cloudflare"],
+    "tier3_fallback": ["OpenRouter", "HuggingFace"],
+    "tier99_paid_blocked": ["Claude Sonnet"]
+  },
+  "acca_codes": {
+    "AAFL": "AI Agent Feedback Loop",
+    "MCC": "Mission Control Center",
+    "LLOW": "Loop Logic Orchestration Workspace",
+    "WCCS": "Write Claude Code Save",
+    "HITSAV": "History Ideas Time Save Vehicle",
+    "STORM": "Selective Targeted Output Remove Merge",
+    "AASKC": "Autonomous AI Simultaneous Knowledge Connection",
+    "OCB": "Operation Code Build",
+    "CLAC": "Claude Code CLI invocation block",
+    "DSP": "--dangerously-skip-permissions flag",
+    "ALP": "Allowance Preservation",
+    "CLACR": "MCC-CLACH relay protocol",
+    "SESUM": "Session Summary",
+    "GRRICE": "Guide Rules Regulation Instructions Codes Education"
+  },
+  "key_file_paths": {
+    "html": "mission_control.html",
+    "server": "mcc_server.py",
+    "core": "aafl_core.py",
+    "loop": "loop_manager.py",
+    "wccs": "aafl_wccs.py",
+    "status": "STATUS.md",
+    "history": "HISTORY.md",
+    "acca": "ACCA.md",
+    "db": "data/knowledge_engine.db"
+  },
+  "next_priorities": [
+    "Run Phase 17 MOT — target 109/109",
+    "Git commit OCB-R",
+    "Review GRRICE tab content"
+  ]
+}

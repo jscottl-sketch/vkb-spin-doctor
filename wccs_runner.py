@@ -1,8 +1,8 @@
 """
-wccs_runner.py — WCCS (Write Claude Code Save) Automation
-Reads chat_latest.txt + current handover, sends to AAFLCore (free LLM) to
-generate updated handover sections, writes vNN+1 handover, session log,
-wccs_log, runs mcu_optimizer + dashboard_builder, updates sfl_agent.py, cleans up.
+wccs_runner.py — WCCS (Write Claude Code Save) Legacy Runner
+Writes session log + wccs_log.md, runs mcu_optimizer + dashboard_builder.
+NEVER creates VKB_SpinDoctor_Handover_vXX.md — STATUS.md is the handover now.
+Use aafl_wccs.py for full WCCS saves (STATUS.md rewrite + HISTORY.md + ACCA.md).
 
 Usage:
     python wccs_runner.py
@@ -30,19 +30,10 @@ AGENT_SYSTEM = (
 
 # ── File finders ──────────────────────────────────────────────────────────────
 
-def find_latest_handover():
-    files = list(HERE.glob("VKB_SpinDoctor_Handover_v*.md"))
-    if not files:
-        return None
-    def _ver(p):
-        m = re.search(r"_v(\d+)\.md$", p.name)
-        return int(m.group(1)) if m else 0
-    return max(files, key=_ver)
-
-
-def handover_version(path):
-    m = re.search(r"_v(\d+)\.md$", path.name)
-    return int(m.group(1)) if m else 0
+# Phase 8 (OCB-R): Handover creation disabled — STATUS.md is the handover.
+# Dead functions kept for reference only, not called from main().
+# def find_latest_handover():  # DISABLED
+# def handover_version(path):  # DISABLED
 
 
 def next_wccs_row_number():

@@ -198,7 +198,7 @@ def _scan_sesum_for_acca(text: str) -> list:
             if code in {"THE","AND","FOR","ARE","BUT","NOT","YOU","ALL","CAN","HER","WAS","ONE","OUR","OUT",
                         "DAY","GET","HAS","HIM","HIS","HOW","ITS","MAY","NOW","OLD","SEE","TWO","WAY","WHO",
                         "BOY","DID","LET","PUT","SAY","SHE","TOO","USE","NEW","FROM","AAFL","ACCA","MCC",
-                        "OCB","MOT","ALP","DSP","CLAC","HISAV","WCCS","LLOW","STORM","SESUM","AASKC"}:
+                        "OCB","MOT","ALP","DSP","CLAC","HITSAV","WCCS","LLOW","STORM","SESUM","AASKC"}:
                 continue
             line = f"| {code} | UNCONFIRMED — from SESUM {today} | {today} |\n"
             appended.append(code)
@@ -726,6 +726,11 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_checks()
             elif path == "/api/ocb/results":
                 self._handle_ocb_results()
+            # ── OCB-R: CLACR Protocol ─────────────────────────────────────────
+            elif path == "/api/clacr/status":
+                self._handle_clacr_status()
+            elif path == "/api/clacr/results":
+                self._handle_clacr_results()
             # ── MCCM / Chief Detective ─────────────────────────────────────────
             elif path == "/api/mccm/status":
                 self._handle_mccm_status()
@@ -1023,6 +1028,11 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_archive(run_id)
             elif path == "/api/rrclach/save":
                 self._handle_rrclach_save()
+            # ── OCB-R: CLACR Protocol ─────────────────────────────────────────
+            elif path == "/api/clacr/submit":
+                self._handle_clacr_submit()
+            elif path == "/api/clacr/resolve":
+                self._handle_clacr_resolve()
             # ── OCB-P: Unified session state POST ─────────────────────────────
             elif path == "/api/session-state":
                 self._handle_session_state_post()
@@ -9490,6 +9500,107 @@ MCCHandler._handle_bridge_messages_get  = _handle_bridge_messages_get   # type: 
 MCCHandler._handle_bridge_send_post     = _handle_bridge_send_post      # type: ignore[attr-defined]
 MCCHandler._handle_bridge_resolve_post  = _handle_bridge_resolve_post   # type: ignore[attr-defined]
 MCCHandler._handle_bridge_sync_check_post = _handle_bridge_sync_check_post  # type: ignore[attr-defined]
+
+
+# ── OCB-R: CLACR Protocol (Phase 13) ─────────────────────────────────────────
+
+_CLACR_QUEUE_FILE = HERE / "data" / "clacr_queue.json"
+
+def _clacr_load() -> list:
+    try:
+        if _CLACR_QUEUE_FILE.exists():
+            return json.loads(_CLACR_QUEUE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return []
+
+def _clacr_save(tasks: list):
+    import tempfile as _tf, shutil as _sh
+    _CLACR_QUEUE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = _tf.mkstemp(dir=str(_CLACR_QUEUE_FILE.parent), suffix=".tmp")
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        json.dump(tasks, f, indent=2)
+    _sh.move(tmp, str(_CLACR_QUEUE_FILE))
+
+
+def _handle_clacr_submit(self):
+    """POST /api/clacr/submit — parse CLACH message, queue task."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        msg  = (body.get("message") or "").strip()
+        if not msg:
+            self._send_json({"error": "message is required"}, 400)
+            return
+        from clacr_protocol import CLACRProtocol
+        proto  = CLACRProtocol()
+        parsed = proto.parse_clach_message(msg)
+        task   = proto.format_for_mcc(parsed)
+        ok, reason = proto.validate_task(task)
+        if not ok:
+            self._send_json({"error": f"Task rejected: {reason}"}, 400)
+            return
+        tasks = _clacr_load()
+        tasks.append(task)
+        _clacr_save(tasks)
+        self._send_json({"ok": True, "task": task})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_clacr_status(self):
+    """GET /api/clacr/status — return all queued/running/completed tasks."""
+    try:
+        tasks = _clacr_load()
+        self._send_json({"tasks": tasks, "count": len(tasks)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_clacr_results(self):
+    """GET /api/clacr/results — completed tasks formatted for CLACH."""
+    try:
+        from clacr_protocol import CLACRProtocol
+        proto  = CLACRProtocol()
+        tasks  = _clacr_load()
+        done   = [t for t in tasks if t.get("status") in ("done", "failed")]
+        lines  = [proto.format_response_for_clach(t) for t in done]
+        self._send_json({"results": lines, "raw": done})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_clacr_resolve(self):
+    """POST /api/clacr/resolve — mark task done/failed, set result."""
+    try:
+        body   = json.loads(self._read_body() or "{}")
+        tid    = (body.get("id") or "").strip()
+        status = (body.get("status") or "done").lower()
+        result = body.get("result", "")
+        if not tid:
+            self._send_json({"error": "id required"}, 400)
+            return
+        tasks  = _clacr_load()
+        matched = False
+        for t in tasks:
+            if t.get("id") == tid:
+                t["status"]       = status
+                t["result"]       = result
+                t["completed_at"] = datetime.datetime.now().isoformat(timespec="seconds")
+                matched = True
+                break
+        if not matched:
+            self._send_json({"error": f"Task {tid} not found"}, 404)
+            return
+        _clacr_save(tasks)
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_clacr_submit  = _handle_clacr_submit   # type: ignore[attr-defined]
+MCCHandler._handle_clacr_status  = _handle_clacr_status   # type: ignore[attr-defined]
+MCCHandler._handle_clacr_results = _handle_clacr_results  # type: ignore[attr-defined]
+MCCHandler._handle_clacr_resolve = _handle_clacr_resolve  # type: ignore[attr-defined]
 
 
 def main():

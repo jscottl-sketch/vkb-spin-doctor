@@ -273,6 +273,11 @@ Return ONLY the new STATUS.md content. No explanation. No code fences."""
     return new
 
 def main():
+    import time as _time
+    _t0 = _time.time()
+    def _elapsed(label):
+        print(f"[WCCS] {label}: {_time.time() - _t0:.1f}s")
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--chat", default=str(CHAT_LATEST))
     parser.add_argument("--dry-run", action="store_true")
@@ -307,7 +312,9 @@ def main():
         shutil.copy2(STATUS, STATUS_BAK)
         print(f"[PRE-BAK] STATUS.md.bak created ({STATUS.stat().st_size} bytes)")
     print(f"[START] aafl_wccs.py {'(DRY RUN)' if args.dry_run else ''}")
+    _t_status_start = _time.time()
     new_status = rewrite_status(chat_text, current_status, args.dry_run)
+    _elapsed(f"STATUS rewrite")
 
     old_n = len(current_status.splitlines())
     new_n = len(new_status.splitlines())
@@ -369,6 +376,7 @@ def main():
         try:
             append_to_file(HISTORY, entry, f"# HISTORY — VKB Spin Doctor\n*Append-only chat log.*\n")
             print(f"[OK] HISTORY.md appended")
+            _elapsed("HISTORY append")
         except Exception as _hist_err:
             _log_wccs_error(f"HISTORY append crashed: {_hist_err}")
             print(f"[WARN] HISTORY.md append failed — see wccs_errors.log. {_hist_err}")
@@ -384,6 +392,7 @@ def main():
                 try:
                     append_to_file(ACCA, entry, f"# ACCA — VKB Spin Doctor\n*Append-only.*\n\n| Code | Meaning | Added |\n|---|---|---|\n")
                     print(f"[OK] ACCA.md appended ({len(additions)} codes)")
+                    _elapsed("ACCA append")
                 except Exception as _acca_err:
                     _log_wccs_error(f"ACCA append crashed: {_acca_err}")
                     print(f"[WARN] ACCA.md append failed — see wccs_errors.log. {_acca_err}")
@@ -393,6 +402,7 @@ def main():
             subprocess.run(["git","add","STATUS.md","HISTORY.md","ACCA.md"], cwd=ROOT, check=False, capture_output=True)
             subprocess.run(["git","commit","-m",msg], cwd=ROOT, check=False, capture_output=True)
             print(f"[OK] Git committed")
+            _elapsed("git commit")
         except Exception as e:
             print(f"[WARN] Git commit failed (non-fatal): {e}")
         try:
@@ -419,7 +429,27 @@ def main():
         _sunday_merge()
     if not args.dry_run:
         archive_old_handovers()
-    print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''}")
+    # Auto-post bridge message after successful save
+    if not args.dry_run:
+        try:
+            import json as _bj, urllib.request as _ur
+            _bmsg = {
+                "from": "claude", "type": "sesum",
+                "content": f"WCCS save complete {dt.date.today().isoformat()} — STATUS/HISTORY/ACCA updated. Total: {_time.time() - _t0:.1f}s",
+                "resolved": False,
+            }
+            _req = _ur.Request(
+                "http://127.0.0.1:8080/api/bridge/send",
+                data=_bj.dumps(_bmsg).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            _ur.urlopen(_req, timeout=3)
+            print("[BRIDGE] Save summary posted to bridge log")
+        except Exception:
+            pass  # Non-fatal — MCC server may not be running
+    _total = _time.time() - _t0
+    print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''} — TOTAL: {_total:.1f}s")
 
 
 def _uprint(msg):

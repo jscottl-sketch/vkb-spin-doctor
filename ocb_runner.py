@@ -79,8 +79,13 @@ SNAPSHOTS_DIR    = HERE / "status_snapshots"
 SESSION_LOGS_DIR = HERE / "session_logs"
 
 _PHASE_SEP = re.compile(
-    r'[═=═]{3,}\s*PHASE\s+(\d+)\s*[—\-—]+\s*(.+?)\s*[═=═]{3,}',
+    r'[═=─\-]{3,}\s*PHASE\s+(\d+)\s*[—\-—]+\s*(.+?)\s*[═=─\-]{3,}',
     re.IGNORECASE,
+)
+# Fallback: match lines like "Phase 3 — Title" or "PHASE 3: Title"
+_PHASE_FALLBACK = re.compile(
+    r'^\s*(?:Phase|PHASE|STEP|TASK)\s+(\d+)\s*[—:\-]+\s*(.+)$',
+    re.IGNORECASE | re.MULTILINE,
 )
 _TASK_LINE = re.compile(r'^\s*(\d+)\.\s+(.+)$')
 
@@ -95,7 +100,7 @@ _STOPWORDS = {
 # ── Parse ─────────────────────────────────────────────────────────────────────
 
 def parse_ocb_block(text: str) -> list:
-    """Split OCB text into structured phases with tasks. Returns list of phase dicts."""
+    """Split OCB text into structured phases. Falls back to line-scan if delimiter regex fails."""
     phases = []
     parts  = _PHASE_SEP.split(text)
     # split() with 2 capturing groups → [pre, num, name, body, num, name, body, ...]
@@ -112,16 +117,30 @@ def parse_ocb_block(text: str) -> list:
         for line in body.splitlines():
             m = _TASK_LINE.match(line)
             if m:
-                tasks.append({
-                    "num":  int(m.group(1)),
-                    "text": m.group(2).strip(),
-                })
-        phases.append({
-            "phase_num":  phase_num,
-            "phase_name": phase_name,
-            "tasks":      tasks,
-        })
+                tasks.append({"num": int(m.group(1)), "text": m.group(2).strip()})
+        phases.append({"phase_num": phase_num, "phase_name": phase_name, "tasks": tasks})
         i += 3
+
+    if phases:
+        return phases
+
+    # Fallback: scan for "Phase N — Title" lines without box-drawing delimiters
+    matches = list(_PHASE_FALLBACK.finditer(text))
+    for idx, m in enumerate(matches):
+        start  = m.end()
+        end    = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
+        body   = text[start:end]
+        tasks  = []
+        for line in body.splitlines():
+            tm = _TASK_LINE.match(line)
+            if tm:
+                tasks.append({"num": int(tm.group(1)), "text": tm.group(2).strip()})
+        try:
+            pnum = int(m.group(1))
+        except ValueError:
+            pnum = idx + 1
+        phases.append({"phase_num": pnum, "phase_name": m.group(2).strip(), "tasks": tasks})
+
     return phases
 
 
