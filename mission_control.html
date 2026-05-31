@@ -66,7 +66,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .auto-interval-wrap input{width:44px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;text-align:center}
 
 /* TABS */
-.tab-bar{background:#161616;border-bottom:1px solid #222;display:flex;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto;z-index:100;position:relative}
+.tab-bar{background:#161616;border-bottom:1px solid #222;display:flex!important;visibility:visible!important;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto;z-index:1000;position:sticky;top:0}
 .tab-btn{background:none;border:none;color:#888;padding:9px 16px;cursor:pointer;font:inherit;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
 .tab-btn:hover{color:#ccc;background:#1a1a1a}
 .tab-btn.active{color:#fff;border-bottom-color:#4af}
@@ -216,6 +216,16 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hisav-tb-save{background:#1a3a1a!important;border-color:#2a6a2a!important;color:#6f6!important}
 .hisav-tb-save:hover{background:#1d5a1d!important}
 .hisav-tb-last{font-size:11px;color:#556;margin-left:auto;white-space:nowrap}
+/* ── 3-STEP SAVE FLOW ── */
+.hisav-step-btn{font-size:15px;font-weight:bold;padding:12px 20px;border-radius:7px;cursor:pointer;min-width:158px;transition:.2s;letter-spacing:.2px;border:2px solid}
+.hisav-step-btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.5)}
+.hisav-step-green{background:#1a3a1a;border-color:#2a7a2a;color:#6f6}
+.hisav-step-green:not(:disabled):hover{background:#1d5a1d}
+.hisav-step-blue{background:#0a1a3a;border-color:#2a4a8a;color:#4af}
+.hisav-step-blue:not(:disabled):hover{background:#0a2050}
+.hisav-step-amber{background:#2a1a00;border-color:#7a4a00;color:#fa0}
+.hisav-step-amber:not(:disabled):hover{background:#3a2800}
+.hisav-step-done{background:#1a1a1a!important;border-color:#3a3a3a!important;color:#555!important;cursor:default!important}
 .hisav-summary-panel{display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;padding:12px 14px}
 /* ── POST-WCCS CHECKLIST ── */
 .pwccs-row{width:100%;display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid #1e2a3a;flex-wrap:nowrap;overflow-x:auto}
@@ -1466,7 +1476,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-lb-score{font-size:12px;font-weight:bold;color:#4af}
 /* ── Phase 3: Global popup/tooltip z-index fix — OCB-E ── */
 /* Excludes .tl-detail-popup (position:fixed popup) and .mcc-popup-safe (button marker class) */
-.mcc-tooltip,[class*="tooltip"]:not(.tl-detail-popup),[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe),[data-tooltip]{z-index:99999!important;position:fixed !important;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;line-height:1.5;word-wrap:break-word;white-space:normal}
+.mcc-tooltip,[class*="tooltip"]:not(.tl-detail-popup),[class*="popup"]:not(.tl-detail-popup):not(.mcc-popup-safe):not(.hisav-popup-safe){z-index:99999!important;position:fixed !important;max-width:360px;background:rgba(30,30,30,0.97);color:#fff;font-size:14px;padding:14px 18px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.6);pointer-events:none;line-height:1.5;word-wrap:break-word;white-space:normal}
 /* mcc-popup-safe: button marker only — popups use inline position:fixed in JS */
 .mcc-popup-safe{z-index:99999!important}
 /* hisav-popup-safe: display:none by default, position set by JS on show */
@@ -2097,27 +2107,21 @@ body{padding-bottom:28px}
 <div class="tab-pane active" id="tab-wccs" style="background:#0d0d0d">
   <div class="pane-scroll" style="position:relative">
 
-    <!-- ═══ OCB-Q: HISAV STICKY TOOLBAR ═══ -->
+    <!-- ═══ 3-STEP SAVE FLOW ═══ -->
     <div class="hisav-sticky-tb" id="hisav-sticky-tb">
-      <button class="hisav-tb-btn hisav-tb-save" id="btn-wccs-hub" onclick="saveSession()" title="Save session now — runs aafl_wccs.py">💾 SAVE NOW</button>
-      <button class="hisav-tb-btn" onclick="copyStatusForClaude()" title="Copy STATUS.md to clipboard — paste into Claude.ai Project Files">📋 WCCS</button>
-      <button class="hisav-tb-btn" id="hisav-tb-summ-btn" onclick="hisavToggleSummary()" title="Open session summary paste area">📝 Session Summary</button>
+      <button id="hisav-step1-btn" class="hisav-step-btn hisav-step-green"
+        onclick="hisavStep1()" title="Step 1: Save session — runs WCCS to update STATUS.md and HISTORY.md">
+        ① Save Session
+      </button>
+      <button id="hisav-step2-btn" class="hisav-step-btn hisav-step-blue"
+        onclick="hisavStep2()" disabled title="Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files">
+        ② Copy STATUS.md
+      </button>
+      <button id="hisav-step3-btn" class="hisav-step-btn hisav-step-amber"
+        onclick="hisavStep3()" disabled title="Step 3: Go to Claude.ai and paste the STATUS.md into Project Files">
+        ③ Go to Claude
+      </button>
       <span class="hisav-tb-last">Last saved: <span id="hisav-tb-ts">—</span></span>
-      <!-- POST-WCCS CHECKLIST ROW -->
-      <div class="pwccs-row" id="pwccs-checklist">
-        <span style="font-size:10px;color:#445;white-space:nowrap;flex-shrink:0">Post-WCCS:</span>
-        <button id="pwccs-1" class="pwccs-pill" onclick="pwccsToggle(1)" title="Step 1: Run WCCS — save session handover">1. Run WCCS ✓</button>
-        <span class="pwccs-arrow">→</span>
-        <button id="pwccs-2" class="pwccs-pill" onclick="pwccsToggle(2)" title="Step 2: Paste session summary into HISAV">2. Post SESUM to HISAV ✓</button>
-        <span class="pwccs-arrow">→</span>
-        <div class="pwccs-step3-wrap">
-          <button id="pwccs-3" class="pwccs-pill" onclick="pwccsToggle(3)"
-            title="Go to claude.ai → your Project → Project Files → Remove old STATUS.md / INDEX.md → Upload new versions from: C:\Users\jscot\OneDrive\Desktop\VKB-SpinDoctor\">3. Update Project Files in Claude ✓</button>
-          <button class="pwccs-copy-btn" onclick="pwccsCopyPath(event)" title="Copy project path to clipboard">📋 Copy path</button>
-        </div>
-        <span class="pwccs-arrow">→</span>
-        <a id="pwccs-4" class="pwccs-pill" href="https://claude.ai" target="_blank" onclick="pwccsToggle(4)">4. Start new chat ✓</a>
-      </div>
     </div>
     <!-- Summary paste panel (hidden by default) -->
     <div class="hisav-summary-panel" id="hisav-summary-panel">
@@ -2995,6 +2999,14 @@ body{padding-bottom:28px}
                 <span id="hisav-ocb-guard-js"    style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">JS ⬜</span>
                 <span id="hisav-ocb-guard-reg"   style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">Registry ⬜</span>
                 <span id="hisav-ocb-guard-mot"   style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">MOT ⬜</span>
+              </div>
+              <!-- Progress bar + status line -->
+              <div id="hisav-ocb-prog-wrap" style="display:none;margin-top:8px">
+                <div id="hisav-ocb-prog-label" style="font-size:11px;color:#4af;margin-bottom:4px;font-weight:bold;min-height:16px"></div>
+                <div style="height:8px;background:#111;border-radius:4px;overflow:hidden;border:1px solid #1a2a3a">
+                  <div id="hisav-ocb-prog-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#1a8,#4af);transition:width .4s;border-radius:4px"></div>
+                </div>
+                <div id="hisav-ocb-status-line" style="font-size:11px;color:#778;margin-top:4px;min-height:16px"></div>
               </div>
               <!-- Live output -->
               <div id="hisav-ocb-log" style="margin-top:7px;background:#060a10;border:1px solid #1e2a3a;border-radius:4px;padding:8px;font:11px monospace;color:#889;max-height:160px;overflow-y:auto;white-space:pre-wrap;display:none">Waiting…</div>
@@ -3890,6 +3902,15 @@ body{padding-bottom:28px}
       if(el){ el.style.background='#111'; el.style.borderColor='#334'; el.style.color='#556'; }
     });
     _ocbResetGuards();
+    var pw = document.getElementById('hisav-ocb-prog-wrap');
+    if(pw) pw.style.display='none';
+    var pf2 = document.getElementById('hisav-ocb-prog-fill');
+    if(pf2){ pf2.style.width='0%'; pf2.style.animation=''; }
+    var pl = document.getElementById('hisav-ocb-prog-label');
+    if(pl) pl.textContent='';
+    var sl = document.getElementById('hisav-ocb-status-line');
+    if(sl) sl.textContent='';
+    window._ocbPhaseCount = 0;
   };
 
   window.hisavOcbParse = function(){
@@ -3900,17 +3921,23 @@ body{padding-bottom:28px}
     if(!input) return;
     var text = input.value.trim();
     if(!text){ if(status) status.textContent='Paste an OCB block first'; return; }
-    if(status) status.textContent='Parsing…';
+    if(status) status.textContent='Parsing... ⏳';
     fetch('/api/ocb/parse',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ocb_text:text})})
     .then(function(r){return r.json();})
     .then(function(d){
-      if(d.error){ if(status) status.textContent='Error: '+d.error; return; }
+      if(d.error){ if(status) status.textContent='❌ Parse failed: '+d.error; return; }
       var phases = d.phases||[];
-      if(!phases.length){ if(status) status.textContent='No phases found'; return; }
+      if(!phases.length){ if(status) status.textContent='❌ No phases found in OCB block'; return; }
       var pf = d.pre_flight||{};
-      // Render parse table
+      window._ocbPhaseCount = phases.length;
+      // Render phase badges (grey=pending) + detail table
       if(badges){
+        var bHtml = '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">';
+        phases.forEach(function(p, i){
+          bHtml += '<span id="ocb-pbadge-'+i+'" style="font-size:10px;padding:2px 10px;border-radius:10px;background:#222;border:1px solid #444;color:#888;white-space:nowrap;transition:background .3s,color .3s,border-color .3s">P'+p.phase+': '+_esc((p.phase_name||'').substring(0,16))+'</span>';
+        });
+        bHtml += '</div>';
         var tbl = '<table style="width:100%;border-collapse:collapse;font-size:10px;margin-bottom:4px">'
                 + '<tr style="color:#556"><th style="text-align:left">Phase</th><th style="text-align:left">Files</th><th>Risk</th></tr>';
         phases.forEach(function(p){
@@ -3924,13 +3951,13 @@ body{padding-bottom:28px}
           tbl += '<div style="font-size:10px;color:#fa0;margin-top:2px">⚠ '
                + pf.warnings.map(function(w){return _esc(w);}).join(' | ')+'</div>';
         }
-        badges.innerHTML = tbl;
+        badges.innerHTML = bHtml + tbl;
       }
-      if(status) status.textContent = phases.length+' phase'+(phases.length===1?'':'s')+' — ready to run';
+      if(status) status.textContent = '✅ Parsed: '+phases.length+' phase'+(phases.length===1?'':'s')+' found — ready to run';
       if(runner) runner.style.display = '';
       _ocbResetGuards();
     })
-    .catch(function(e){ if(status) status.textContent='Parse error: '+(e.message||'?'); });
+    .catch(function(e){ if(status) status.textContent='❌ Parse error: '+(e.message||'?'); });
   };
 
   window.hisavOcbRun = function(){
@@ -3945,20 +3972,29 @@ body{padding-bottom:28px}
     if(log){ log.style.display='block'; log.textContent='Starting OCB run…'; }
     if(status) status.textContent='Running…';
     var isDry = dryrun ? dryrun.checked : false;
+    // Init progress bar
+    var progWrap = document.getElementById('hisav-ocb-prog-wrap');
+    var progFill = document.getElementById('hisav-ocb-prog-fill');
+    var progLabel = document.getElementById('hisav-ocb-prog-label');
+    var statusLine = document.getElementById('hisav-ocb-status-line');
+    if(progWrap) progWrap.style.display='';
+    if(progFill){ progFill.style.width='0%'; progFill.style.animation='ocbPulse 1.5s ease-in-out infinite'; }
+    if(progLabel) progLabel.textContent='⏳ Starting…';
+    if(statusLine) statusLine.textContent='⏳ Waiting for AI provider…';
     // Show parse step as active
     _ocbStepActive('ocb-step-parse');
     fetch('/api/ocb/run',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ocb_text:text, dry_run:isDry})})
     .then(function(r){return r.json();})
     .then(function(d){
-      if(d.error){ if(status) status.textContent='Error: '+d.error; return; }
+      if(d.error){ if(status) status.textContent='Error: '+d.error; if(statusLine) statusLine.textContent='❌ Error: '+d.error; return; }
       var runId = d.run_id||'';
       _ocbStepDone('ocb-step-parse');
       // Poll every 2s
       var pollCount = 0;
       var pollId = setInterval(function(){
         pollCount++;
-        if(pollCount>90){ clearInterval(pollId); if(status) status.textContent='Timed out'; return; }
+        if(pollCount>90){ clearInterval(pollId); if(status) status.textContent='Timed out'; if(statusLine) statusLine.textContent='❌ Timed out'; return; }
         fetch('/api/ocb/status'+(runId?'/'+runId:''))
         .then(function(r){return r.json();})
         .then(function(s){
@@ -3999,11 +4035,59 @@ body{padding-bottom:28px}
           _ocbGuard('hisav-ocb-guard-js',    gr.js);
           _ocbGuard('hisav-ocb-guard-reg',   gr.registry);
           _ocbGuard('hisav-ocb-guard-mot',   gr.mot);
+          // ── Progress bar + phase badges ──
+          var sPhases = s.phases||[];
+          var total = sPhases.length||window._ocbPhaseCount||1;
+          var done = 0;
+          var runningPhase = null;
+          sPhases.forEach(function(p, i){
+            if(p.status==='DONE'||p.status==='SKIPPED') done++;
+            if(p.status==='RUNNING') runningPhase = p;
+            var badge = document.getElementById('ocb-pbadge-'+i);
+            if(!badge) return;
+            if(p.status==='RUNNING'){
+              badge.style.background='#0a2a4a'; badge.style.borderColor='#2a5a8a';
+              badge.style.color='#4af'; badge.style.animation='ocbPulse 1s infinite';
+            } else if(p.status==='DONE'){
+              badge.style.background='#0a2a0a'; badge.style.borderColor='#2a6a2a';
+              badge.style.color='#4f4'; badge.style.animation='';
+            } else if(p.status==='FAILED'||p.status==='CANCELLED'){
+              badge.style.background='#2a0a0a'; badge.style.borderColor='#6a2a2a';
+              badge.style.color='#f44'; badge.style.animation='';
+            }
+          });
+          var pct = Math.min(99, Math.round((done/total)*100));
+          if(progFill) progFill.style.width = pct+'%';
+          if(runningPhase){
+            var rl = '🔧 Phase '+runningPhase.phase_num+': '+(runningPhase.phase_name||'')+'  — running…';
+            if(progLabel) progLabel.textContent = rl;
+            if(statusLine) statusLine.textContent = rl;
+            if(progFill) progFill.style.animation = 'ocbPulse 1.5s ease-in-out infinite';
+          } else if(stage==='locking'||stage==='stashing'){
+            if(statusLine) statusLine.textContent = '⏳ Setting up guards…';
+            if(progLabel) progLabel.textContent = '⏳ Pre-flight…';
+          } else if(stage==='mot_running'){
+            if(statusLine) statusLine.textContent = '⏳ Running MOT checks…';
+          } else if(stage==='committing'){
+            if(statusLine) statusLine.textContent = '⏳ Committing changes…';
+          } else {
+            if(!runningPhase && statusLine && !statusLine.textContent.startsWith('🔧'))
+              statusLine.textContent = '⏳ Waiting for AI provider…';
+          }
           var terminal = ['DONE','PARTIAL','CANCELLED','ROLLED_BACK','FAILED','BLOCKED','DRY_RUN'];
           if(terminal.indexOf(s.status)!==-1){
             clearInterval(pollId);
-            if(s.status==='DONE'){ _ocbStepDone('ocb-step-result'); }
-            else { _ocbStepFail('ocb-step-result'); }
+            if(s.status==='DONE'){
+              _ocbStepDone('ocb-step-result');
+              if(progFill){ progFill.style.width='100%'; progFill.style.animation=''; }
+              if(progLabel) progLabel.textContent='✅ All phases complete';
+              if(statusLine) statusLine.textContent='🎉 All phases complete — OCB finished';
+              sPhases.forEach(function(p,i){ var b=document.getElementById('ocb-pbadge-'+i); if(b&&p.status!=='FAILED'){ b.style.background='#0a2a0a'; b.style.borderColor='#2a6a2a'; b.style.color='#4f4'; b.style.animation=''; } });
+            } else {
+              _ocbStepFail('ocb-step-result');
+              if(progFill) progFill.style.animation='';
+              if(statusLine) statusLine.textContent='❌ Run stopped: '+s.status;
+            }
             fetch('/api/ocb/checks').then(function(r){return r.json();}).then(function(cr){
               s.check_results = cr;
               fetch('/api/ocb/results').then(function(r2){return r2.json();}).then(function(res){
@@ -4049,6 +4133,64 @@ body{padding-bottom:28px}
     // Sections 8-11 load on demand when accordion is toggled
   });
 })();
+
+// ── 3-STEP SAVE FLOW ──────────────────────────────────────────────────────────
+
+window.hisavStep1 = async function(){
+  var btn1 = document.getElementById('hisav-step1-btn');
+  if(btn1){ btn1.disabled=true; btn1.textContent='⏳ Saving…'; }
+  // Hide post-save banner first so we can detect a fresh success
+  var banner = document.getElementById('post-save-banner');
+  if(banner) banner.style.display='none';
+  try {
+    await saveSession();
+    var savedOk = banner && banner.style.display==='block';
+    if(savedOk){
+      if(btn1){ btn1.className='hisav-step-btn hisav-step-done'; btn1.textContent='① Save Session ✅'; btn1.disabled=true; }
+      var btn2 = document.getElementById('hisav-step2-btn');
+      if(btn2) btn2.disabled=false;
+    } else {
+      if(btn1){ btn1.disabled=false; btn1.textContent='① Save Session'; }
+    }
+  } catch(e){
+    if(btn1){ btn1.disabled=false; btn1.textContent='① Save Session'; }
+  }
+};
+
+window.hisavStep2 = async function(){
+  var btn2 = document.getElementById('hisav-step2-btn');
+  if(btn2){ btn2.disabled=true; btn2.textContent='⏳ Copying…'; }
+  try {
+    var resp = await fetch('/api/status');
+    var data = await resp.json();
+    await navigator.clipboard.writeText(data.content);
+    if(btn2){ btn2.className='hisav-step-btn hisav-step-done'; btn2.textContent='② Copy STATUS.md ✅'; btn2.disabled=true; }
+    var btn3 = document.getElementById('hisav-step3-btn');
+    if(btn3) btn3.disabled=false;
+    typeof toast==='function'&&toast('STATUS.md copied to clipboard ✅','ok',3000);
+  } catch(e){
+    if(btn2){ btn2.disabled=false; btn2.textContent='② Copy STATUS.md'; }
+    typeof toast==='function'&&toast('Copy failed — is MCC server running?','error',4000);
+  }
+};
+
+window.hisavStep3 = function(){
+  typeof toast==='function'&&toast(
+    '📋 STATUS.md is on your clipboard.\n Go to claude.ai → Project Files → Remove old STATUS.md → Paste new one. ✅ You\'re done!',
+    'ok', 10000
+  );
+  var btn3 = document.getElementById('hisav-step3-btn');
+  if(btn3){ btn3.textContent='③ Go to Claude ✅'; }
+  // Reset all steps after a 60s delay so the flow is ready for next session
+  setTimeout(function(){
+    var b1=document.getElementById('hisav-step1-btn');
+    var b2=document.getElementById('hisav-step2-btn');
+    var b3=document.getElementById('hisav-step3-btn');
+    if(b1){ b1.className='hisav-step-btn hisav-step-green'; b1.textContent='① Save Session'; b1.disabled=false; }
+    if(b2){ b2.className='hisav-step-btn hisav-step-blue';  b2.textContent='② Copy STATUS.md'; b2.disabled=true; }
+    if(b3){ b3.className='hisav-step-btn hisav-step-amber'; b3.textContent='③ Go to Claude'; b3.disabled=true; }
+  }, 60000);
+};
 </script>
 
 <script>
