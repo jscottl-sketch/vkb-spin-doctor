@@ -153,6 +153,64 @@ _auto_wccs_next_fire = None      # datetime
 _auto_wccs_log       = []        # last 5 entries
 _auto_wccs_lock      = threading.Lock()
 
+# ── ACCA live-update watcher ──────────────────────────────────────────────────
+_acca_last_modified: float = 0.0
+_acca_lock          = threading.Lock()
+
+def _acca_watch_thread():
+    global _acca_last_modified
+    while True:
+        try:
+            if ACCA_FILE.exists():
+                mtime = ACCA_FILE.stat().st_mtime
+                with _acca_lock:
+                    if mtime != _acca_last_modified:
+                        _acca_last_modified = mtime
+        except Exception:
+            pass
+        import time as _time; _time.sleep(10)
+
+threading.Thread(target=_acca_watch_thread, daemon=True, name="acca-watcher").start()
+
+
+def _scan_sesum_for_acca(text: str) -> list:
+    """Scan SESUM text for potential new ACCA codes and auto-append unknowns to ACCA.md."""
+    import re as _re
+    new_codes: list = []
+    try:
+        existing = ""
+        if ACCA_FILE.exists():
+            existing = ACCA_FILE.read_text(encoding="utf-8")
+        # Pattern: standalone ALLCAPS word 2-8 chars that looks like a code
+        candidates = set(_re.findall(r'\b([A-Z]{2,8})\b', text))
+        today = datetime.datetime.now().strftime("%Y-%m-%d")
+        appended: list = []
+        for code in sorted(candidates):
+            if code in existing:
+                continue
+            # Skip common English words
+            if code in {"THE","AND","FOR","ARE","BUT","NOT","YOU","ALL","CAN","HER","WAS","ONE","OUR","OUT",
+                        "DAY","GET","HAS","HIM","HIS","HOW","ITS","MAY","NOW","OLD","SEE","TWO","WAY","WHO",
+                        "BOY","DID","LET","PUT","SAY","SHE","TOO","USE","NEW","FROM","AAFL","ACCA","MCC",
+                        "OCB","MOT","ALP","DSP","CLAC","HISAV","WCCS","LLOW","STORM","SESUM","AASKC"}:
+                continue
+            line = f"| {code} | UNCONFIRMED — from SESUM {today} | {today} |\n"
+            appended.append(code)
+            with open(ACCA_FILE, "a", encoding="utf-8") as f:
+                f.write(line)
+        new_codes = appended
+        if appended:
+            # Trigger watcher update
+            with _acca_lock:
+                global _acca_last_modified
+                try:
+                    _acca_last_modified = ACCA_FILE.stat().st_mtime
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return new_codes
+
 
 def _run_scout_bg(goal: str):
     global _scout_running, _scout_proc, _scout_start_time
@@ -460,6 +518,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_api_history_md()
             elif path == "/api/acca":
                 self._handle_api_acca_md()
+            elif path == "/api/acca/version":
+                self._handle_acca_version_get()
             elif path == "/api/health":
                 self._handle_api_health()
             # ── Fix: AAFL live + bridge + workflow GET ──────────────────────────
@@ -2884,6 +2944,19 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 return
         self._send_json({"content": content, "file": str(ACCA_FILE), "exists": ACCA_FILE.exists()})
 
+    # ── GET /api/acca/version ─────────────────────────────────────────────────────
+
+    def _handle_acca_version_get(self):
+        count = 0
+        try:
+            if ACCA_FILE.exists():
+                count = len(ACCA_FILE.read_text(encoding="utf-8").splitlines())
+        except Exception:
+            pass
+        with _acca_lock:
+            mtime = _acca_last_modified
+        self._send_json({"last_modified": mtime, "count": count})
+
     # ── MCP: GET /api/health ──────────────────────────────────────────────────────
 
     def _handle_api_health(self):
@@ -4656,7 +4729,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             out_path = SESSION_LOGS_DIR / f"sesum_imported_{ts}.md"
             SESSION_LOGS_DIR.mkdir(exist_ok=True)
             out_path.write_text(sesum_text, encoding="utf-8")
-            self._send_json({"ok": True, "sesum": sesum_text, "saved_to": str(out_path)})
+            # Scan SESUM for potential new ACCA codes
+            new_codes = _scan_sesum_for_acca(sesum_text)
+            self._send_json({"ok": True, "sesum": sesum_text, "saved_to": str(out_path), "new_acca_codes": new_codes})
         except Exception as exc:
             self._send_json({"ok": False, "error": str(exc)}, 500)
 
@@ -7300,12 +7375,34 @@ def _handle_ocb_run(self):
             return
 
         run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        t = threading.Thread(
-            target=_ocbr.run_safe,
-            args=(parsed,),
-            kwargs={"run_id": run_id, "dry_run": dry_run},
-            daemon=True,
-        )
+
+        def _safe_run():
+            try:
+                _ocbr.run_safe(parsed, run_id=run_id, dry_run=dry_run)
+            except Exception as exc:
+                # Thread died — write failed status so the poller knows
+                try:
+                    import shutil as _sh, tempfile as _tf
+                    data = {"run_id": run_id, "status": "FAILED",
+                            "current_stage": "failed",
+                            "error": str(exc)[:200],
+                            "live_output": [f"[CRASH] {exc}"],
+                            "guard_results": {}}
+                    fd, tmp = _tf.mkstemp(dir=str(OCB_STATUS_FILE.parent), suffix=".tmp")
+                    import os as _os
+                    with _os.fdopen(fd, "w", encoding="utf-8") as f:
+                        import json as _j; _j.dump(data, f, indent=2)
+                    _sh.move(tmp, str(OCB_STATUS_FILE))
+                    try:
+                        from pathlib import Path as _P
+                        lf = _P(__file__).parent / ".ocb_running"
+                        lf.unlink(missing_ok=True)
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
+
+        t = threading.Thread(target=_safe_run, daemon=True)
         t.start()
         self._send_json({"run_id": run_id, "status": "started"})
     except Exception as exc:
@@ -7316,13 +7413,14 @@ MCCHandler._handle_ocb_run = _handle_ocb_run  # type: ignore[attr-defined]
 
 
 def _handle_ocb_status(self, run_id: str):
-    """GET /api/ocb/status[/<run_id>] — return status including live_output and guard_results."""
+    """GET /api/ocb/status[/<run_id>] — return status, current_stage, live_output, guard_results."""
     try:
         if not OCB_STATUS_FILE.exists():
-            self._send_json({"status": "idle", "run_id": "", "phases": [], "log": [], "live_output": [], "guard_results": {}})
+            self._send_json({"status": "idle", "current_stage": "idle", "run_id": "",
+                             "phases": [], "log": [], "live_output": [], "guard_results": {}})
             return
         data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8"))
-        # Merge live module state (guard_results, live_output) from ocb_runner if available
+        # Merge live module state from ocb_runner if available
         try:
             import ocb_runner as _ocbr
             if _ocbr._live_output:
@@ -7333,8 +7431,14 @@ def _handle_ocb_status(self, run_id: str):
                     data["guard_results"] = lr["guard_results"]
                 if lr.get("check_results"):
                     data["check_results"] = lr["check_results"]
+            # Always expose current_stage from module
+            data["current_stage"] = _ocbr._current_stage
+            data["stage_detail"]  = ""
         except Exception:
             pass
+        # Ensure result and error_detail fields present
+        data.setdefault("result", data.get("status", ""))
+        data.setdefault("error_detail", data.get("error", ""))
         self._send_json(data)
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)
@@ -8429,49 +8533,90 @@ def _handle_timeline_full_get_v2(self):
             return
         data = json.loads(_TIMELINE_FULL.read_text(encoding="utf-8"))
         entries = []
-        # Milestones (past)
+        seen_ids: set = set()
+
+        # 1. Milestones (past, from auto-builder)
         for m in data.get("milestones", []):
+            eid = m.get("label", "")
+            if eid in seen_ids:
+                continue
+            seen_ids.add(eid)
             entries.append({
-                "id": m.get("label", ""),
-                "label": m.get("label", ""),
-                "date": m.get("date", ""),
-                "type": "milestone",
-                "is_milestone": True,
-                "status": "done",
-                "zone": "foundation",
+                "id": eid, "label": eid,
+                "date": m.get("date", ""), "type": "milestone",
+                "is_milestone": True, "status": "done", "zone": "PAST",
+                "summary": m.get("detail", ""),
             })
-        # OCB nodes
+
+        # 2. OCB nodes (from auto-builder)
         for o in data.get("ocb_nodes", []):
             ocb_id = o.get("id", "")
+            if ocb_id in seen_ids:
+                continue
+            seen_ids.add(ocb_id)
             entries.append({
-                "id": ocb_id,
-                "label": ocb_id,
-                "date": o.get("date", ""),
-                "type": "ocb",
-                "is_milestone": False,
-                "mot_score": o.get("mot_score", ""),
-                "status": "done",
-                "zone": "ocb",
+                "id": ocb_id, "label": ocb_id,
+                "date": o.get("date", ""), "type": "ocb",
+                "is_milestone": False, "mot_score": o.get("mot_score", ""),
+                "status": "done", "zone": "PAST",
                 "phases": o.get("phases", []),
             })
-        # Sort by date
-        entries.sort(key=lambda e: (e.get("date") or ""))
-        # Mark most recent done as "current"
-        done = [i for i, e in enumerate(entries) if e.get("status") == "done"]
-        if done:
-            entries[done[-1]]["status"] = "current"
-        # Planned from next_priorities
-        for i, p in enumerate(data.get("next_priorities", [])[:7]):
-            lbl = p if isinstance(p, str) else str(p)
+
+        # 3. Rich timeline_nodes (manually curated, authoritative)
+        for tn in data.get("timeline_nodes", []):
+            node_id = tn.get("id", "")
+            if node_id in seen_ids:
+                continue
+            seen_ids.add(node_id)
+            zone = tn.get("zone", "PAST")
+            cat  = tn.get("category", "milestone").lower()
+            if zone == "PRESENT":
+                st = "current"
+            elif zone == "PLANNED":
+                st = "planned"
+            elif cat == "crisis":
+                st = "stopped"
+            else:
+                st = "done"
             entries.append({
-                "id": f"plan_{i}",
-                "label": lbl[:30],
-                "date": "planned",
-                "type": "planned",
-                "is_milestone": False,
-                "status": "planned",
-                "zone": "next",
+                "id": node_id,
+                "label": tn.get("title", ""),
+                "notes": tn.get("subtitle", ""),
+                "date":  tn.get("date", "TBD"),
+                "type":  cat,
+                "is_milestone": cat in ("milestone", "origin"),
+                "status": st,
+                "zone":   zone,
+                "summary": tn.get("detail", ""),
+                "phases":         tn.get("phases", []),
+                "files_changed":  tn.get("files", []),
+                "acca_codes_added": tn.get("acca_codes", []),
+                "endpoints_added":  tn.get("endpoints", []),
             })
+
+        # 4. Sort by date (TBD / planned go last)
+        def _sk(e):
+            d = e.get("date") or ""
+            return "9999-99-99" if d in ("TBD", "planned", "") else d
+        entries.sort(key=_sk)
+
+        # 5. If no explicit PRESENT node, mark last done as current
+        if not any(e.get("status") == "current" for e in entries):
+            done_idxs = [i for i, e in enumerate(entries) if e.get("status") == "done"]
+            if done_idxs:
+                entries[done_idxs[-1]]["status"] = "current"
+
+        # 6. Planned from next_priorities (appended after sorted entries)
+        for i, p in enumerate(data.get("next_priorities", [])[:5]):
+            lbl = p if isinstance(p, str) else str(p)
+            pid = f"plan_{i}"
+            if pid not in seen_ids:
+                entries.append({
+                    "id": pid, "label": lbl[:35],
+                    "date": "planned", "type": "planned",
+                    "is_milestone": False, "status": "planned", "zone": "PLANNED",
+                })
+
         self._send_json({"entries": entries, "generated": data.get("generated")})
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)

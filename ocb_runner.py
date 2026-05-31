@@ -766,6 +766,29 @@ _live_output: list  = []
 _check_results: dict = {}
 _last_run_result: dict = {}
 
+STATUS_STAGES = [
+    "idle", "received", "parsing", "pre_flight",
+    "locking", "stashing", "phase_running",
+    "html_checking", "js_checking", "registry_checking",
+    "mot_running", "committing", "complete", "failed", "rolled_back"
+]
+_current_stage: str = "idle"
+
+
+def set_status(stage: str, detail: str = ""):
+    """Update _current_stage, log the transition, and persist to OCB_STATUS_FILE."""
+    global _current_stage
+    _current_stage = stage
+    msg = f"[STAGE:{stage}]" + (f" {detail}" if detail else "")
+    stream_log(msg)
+    try:
+        data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8")) if OCB_STATUS_FILE.exists() else {}
+        data["current_stage"] = stage
+        data["stage_detail"] = detail
+        _write_status(data)
+    except Exception:
+        pass
+
 _JS_BUILTINS = {
     "if","for","while","switch","do","try","catch","finally","return","typeof",
     "instanceof","new","delete","void","throw","in","of","let","const","var",
@@ -950,7 +973,8 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
 
     obj: dict = {
         "run_id": run_id, "started_at": datetime.now().isoformat(timespec="seconds"),
-        "status": "RUNNING", "live_output": [], "guard_results": {
+        "status": "RUNNING", "current_stage": "received", "stage_detail": "",
+        "live_output": [], "guard_results": {
             "lock": None, "stash": None, "bs4": None, "js": None, "registry": None, "mot": None,
         }, "check_results": {}, "files_changed": [], "git_diff_stat": "",
         "rollback_available": False, "error": "", "stash_ref": None,
@@ -963,10 +987,14 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         _write_status(obj)
 
     # GUARD 1 — Lock file
+    set_status("locking", "checking .ocb_running lock file")
+    obj["current_stage"] = "locking"
+    obj["live_output"] = list(_live_output)
+    _write_status(obj)
     if _LOCK_FILE.exists():
         msg = "Another OCB is running (.ocb_running exists)"
         obj["guard_results"]["lock"] = False
-        obj.update({"status": "BLOCKED", "error": msg})
+        obj.update({"status": "BLOCKED", "error": msg, "current_stage": "failed"})
         _sl(f"GUARD 1 FAIL: {msg}")
         _write_status(obj)
         _last_run_result = obj
@@ -988,7 +1016,8 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
     stash_ref = None
 
     try:
-        # GUARD 2 — Clean tree check
+        # GUARD 2 — Clean tree check / stash
+        set_status("stashing", "checking git working tree")
         gs = subprocess.run(["git", "status", "--porcelain"],
                             capture_output=True, text=True, cwd=str(HERE), timeout=30)
         if gs.stdout.strip():
@@ -1006,6 +1035,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
             _sl("GUARD 2: clean tree — no stash needed")
 
         # GUARD 3 — Phase execution (sequential, stop on first fail)
+        set_status("phase_running", "starting phase execution")
         files_changed:   set  = set()
         html_was_edited: bool = False
         failed_reason: str    = ""
@@ -1013,6 +1043,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         for phase in parsed:
             if failed_reason:
                 break
+            set_status("phase_running", f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             _sl(f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             for task in phase.get("tasks", []):
                 if failed_reason:
@@ -1039,6 +1070,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                         html_was_edited  = True
                         hp               = str(filepath)
                         # CHECK A — BS4
+                        set_status("html_checking", "BS4 structure check")
                         try:
                             from bs4 import BeautifulSoup
                             with open(hp, "r", encoding="utf-8") as fh:
@@ -1052,6 +1084,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                             failed_reason = f"CHECK A (BS4) failed: {str(e)[:80]}"
                             _sl(f"  CHECK A (BS4): FAIL"); break
                         # CHECK B — JS integrity
+                        set_status("js_checking", "JS function integrity check")
                         js_ok, js_det = _check_js_integrity(hp)
                         obj["guard_results"]["js"] = js_ok
                         obj["check_results"]["B_js"] = {"ok": js_ok, "details": js_det}
@@ -1061,6 +1094,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                             failed_reason = f"CHECK B (JS) failed: {js_det}"
                             _sl(f"  CHECK B (JS): FAIL — {js_det}"); break
                         # CHECK C — Element registry
+                        set_status("registry_checking", "element registry cross-check")
                         reg_ok, reg_det = _check_element_registry(hp)
                         obj["guard_results"]["registry"] = reg_ok
                         obj["check_results"]["C_registry"] = {"ok": reg_ok, "details": reg_det}
@@ -1086,11 +1120,13 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         if failed_reason:
             # GUARD 4 — Rollback on failure
             if not no_stash and stash_ref:
+                set_status("rolled_back", failed_reason[:80])
                 subprocess.run(["git", "stash", "pop"],
                                capture_output=True, text=True, cwd=str(HERE), timeout=30)
                 obj["status"] = "ROLLED_BACK"
                 _sl(f"ROLLED BACK — {failed_reason}")
             else:
+                set_status("failed", failed_reason[:80])
                 obj["status"] = "FAILED"
                 obj["rollback_available"] = True
                 _sl(f"FAILED — {failed_reason}")
@@ -1099,12 +1135,14 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
             obj["error"] = failed_reason
         else:
             # CHECK D — MOT
+            set_status("mot_running", "running mcc_full_mot.py")
             _sl("Running MOT check…")
             mot_ok, mot_score = _run_mot_check()
             obj["guard_results"]["mot"] = mot_ok
             obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
             _sl(f"CHECK D (MOT): {'PASS' if mot_ok else 'FAIL'} — {mot_score}")
             if mot_ok:
+                set_status("committing", "MOT passed — committing changes")
                 if not no_stash and stash_ref:
                     subprocess.run(["git", "stash", "drop"],
                                    capture_output=True, text=True, cwd=str(HERE), timeout=30)
@@ -1117,14 +1155,17 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                                     capture_output=True, text=True, cwd=str(HERE), timeout=30)
                 obj["git_diff_stat"] = dr.stdout[:2000]
                 obj["status"] = "DONE"
+                set_status("complete", f"MOT {mot_score}")
                 _sl("All guards passed — changes committed")
             else:
                 if not no_stash and stash_ref:
+                    set_status("rolled_back", f"MOT failed: {mot_score}")
                     subprocess.run(["git", "stash", "pop"],
                                    capture_output=True, text=True, cwd=str(HERE), timeout=30)
                     obj["status"] = "ROLLED_BACK"
                     _sl(f"ROLLED BACK — MOT failed: {mot_score}")
                 else:
+                    set_status("failed", f"MOT failed: {mot_score}")
                     obj["status"] = "FAILED"
                     obj["rollback_available"] = True
                     obj["stash_ref"] = "HEAD"
@@ -1135,6 +1176,9 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
         except Exception:
             pass
         _sl("Lock file released")
+        global _current_stage
+        if _current_stage not in ("complete", "failed", "rolled_back"):
+            _current_stage = "idle"
 
     obj["completed_at"] = datetime.now().isoformat(timespec="seconds")
     _write_status(obj)

@@ -164,6 +164,23 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 /* TODAY marker */
 .htl-today-marker{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#fa0,#c60);z-index:5;pointer-events:none}
 .htl-today-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:bold;color:#fa0;white-space:nowrap;animation:hisavPulse 1.5s ease-in-out infinite}
+@keyframes htlPopupSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.htl-popup-v2{position:absolute;z-index:9999;background:#0a0e18;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px;width:420px;max-width:calc(100% - 16px);max-height:70vh;overflow-y:auto;font-size:12px;color:#aab;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.8);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;animation:htlPopupSlide .15s ease}
+.htl-popup-v2 .htl-p-acc-hdr{cursor:pointer;font-size:11px;font-weight:bold;color:#4af;padding:6px 0;border-top:1px solid #1e2a3a;user-select:none;display:flex;align-items:center;gap:5px}
+.htl-popup-v2 .htl-p-acc-hdr:hover{color:#7df}
+.htl-popup-v2 .htl-p-acc-hdr .htl-p-chev{font-size:9px;transition:transform .2s;display:inline-block}
+.htl-popup-v2 .htl-p-acc-body{display:none;padding:6px 0 8px 8px;font-size:11px;color:#889}
+.htl-popup-v2 .htl-p-acc-body.open{display:block}
+.htl-popup-v2 .htl-p-item{padding:2px 0;line-height:1.5}
+.htl-popup-v2 .htl-p-acca-code{cursor:pointer;color:#fa0;font-weight:bold}
+.htl-popup-v2 .htl-p-acca-code:hover{text-decoration:underline}
+.htl-popup-v2 .htl-p-acca-sub{background:#0d1218;border-left:2px solid #fa0;border-radius:0 4px 4px 0;padding:5px 8px;margin:3px 0 3px 6px;font-size:10px;display:none}
+.htl-popup-v2 .htl-p-acca-sub.open{display:block}
+.htl-popup-v2 .htl-zone-past{background:#1a3a5a22;color:#4af;border:1px solid #2a4a7a44;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:bold;letter-spacing:.8px}
+.htl-popup-v2 .htl-zone-present{background:#1a5a2a22;color:#6f6;border:1px solid #2a7a3a44;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:bold;letter-spacing:.8px}
+.htl-popup-v2 .htl-zone-planned{background:#5a4a1a22;color:#fa0;border:1px solid #7a5a2a44;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:bold;letter-spacing:.8px}
+.htl-acca-pulse{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:#2a8a3a;animation:none;display:inline-block}
+.htl-acca-pulse.pulsing{animation:hisavPulse .8s ease-in-out 3}
 /* timeline outer */
 #htl-outer{overflow-x:auto;overflow-y:visible;padding:40px 8px 12px;position:relative;height:280px;display:flex;flex-direction:column;justify-content:center;scroll-behavior:smooth}
 #htl-outer::-webkit-scrollbar{height:4px}
@@ -2632,41 +2649,33 @@ body{padding-bottom:28px}
               <span>🔴 — stopped</span>
             </div>
 
-            <!-- Deep drill-down popup -->
-            <div class="tl-detail-popup hisav-popup-safe" id="hisav-tl-popup" style="display:none">
-              <!-- Level 0: always visible -->
-              <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px">
+            <!-- Deep drill-down popup v2 — absolute positioned, slide-down animation -->
+            <div class="htl-popup-v2 mcc-popup-safe" id="hisav-tl-popup" style="display:none">
+              <!-- LEVEL 1: Title + date + zone badge + detail + close -->
+              <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px">
                 <div style="flex:1">
-                  <div class="tl-popup-title" id="htl-pop-title">Node</div>
-                  <span class="tl-popup-status" id="htl-pop-status">—</span>
+                  <div style="font-size:13px;font-weight:bold;color:#dde;margin-bottom:3px" id="htl-pop-title">Node</div>
+                  <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+                    <span id="htl-pop-date" style="font-size:10px;color:#556"></span>
+                    <span id="htl-pop-status" style="display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:bold">—</span>
+                    <span id="htl-pop-zone" class="htl-zone-past" style="display:none">PAST</span>
+                  </div>
                 </div>
                 <button onclick="htlClosePopup()" style="background:none;border:1px solid #2a3a4a;color:#556;padding:2px 8px;border-radius:3px;cursor:pointer;font:11px inherit;flex-shrink:0">✕</button>
               </div>
-              <div class="tl-popup-summary" id="htl-pop-summary">—</div>
-              <!-- Jump to tab buttons -->
-              <div id="htl-pop-tabs" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
-
-              <!-- Level 1: Phases accordion -->
-              <div class="tl-popup-acc-hdr" onclick="htlPopL1('phases')">▶ 📋 Phases</div>
-              <div class="tl-popup-acc-body" id="htl-pop-phases">
-                <!-- Level 2: per-phase, files drill-down injected by JS -->
-              </div>
-
-              <!-- Level 1: ACCA codes -->
-              <div class="tl-popup-acc-hdr" onclick="htlPopL1('acca')">▶ 🏷️ ACCA Codes Added</div>
-              <div class="tl-popup-acc-body" id="htl-pop-acca"></div>
-
-              <!-- Level 1: Endpoints -->
-              <div class="tl-popup-acc-hdr" onclick="htlPopL1('endpoints')">▶ 🔌 Endpoints Added</div>
-              <div class="tl-popup-acc-body" id="htl-pop-endpoints"></div>
-
-              <!-- Level 1: Detective flags -->
-              <div class="tl-popup-acc-hdr" onclick="htlPopL1('flags')">▶ 🔍 Detective Flags</div>
-              <div class="tl-popup-acc-body" id="htl-pop-flags"></div>
-
-              <!-- MOT + ALP notes -->
+              <div id="htl-pop-detail" style="font-size:11px;color:#889;margin-bottom:8px;line-height:1.6">—</div>
+              <hr style="border:none;border-top:1px solid #1e2a3a;margin:0 0 2px">
+              <!-- LEVEL 2: 4 collapsible dropdowns -->
+              <div class="htl-p-acc-hdr" onclick="htlPopL1('built')"><span class="htl-p-chev">▶</span> WHAT WAS BUILT</div>
+              <div class="htl-p-acc-body" id="htl-pop-built"></div>
+              <div class="htl-p-acc-hdr" onclick="htlPopL1('files')"><span class="htl-p-chev">▶</span> FILES CHANGED</div>
+              <div class="htl-p-acc-body" id="htl-pop-files"></div>
+              <div class="htl-p-acc-hdr" onclick="htlPopL1('acca')"><span class="htl-p-chev">▶</span> NEW ACCA CODES</div>
+              <div class="htl-p-acc-body" id="htl-pop-acca"></div>
+              <div class="htl-p-acc-hdr" onclick="htlPopL1('endpoints')"><span class="htl-p-chev">▶</span> API ENDPOINTS</div>
+              <div class="htl-p-acc-body" id="htl-pop-endpoints"></div>
+              <!-- MOT note -->
               <div id="htl-pop-mot" style="font-size:11px;color:#2a8;margin-top:6px"></div>
-              <div id="htl-pop-alp" style="font-size:11px;color:#fa0;margin-top:2px"></div>
             </div>
 
             </div><!-- /htl-tl-wrapper -->
@@ -2922,7 +2931,20 @@ body{padding-bottom:28px}
             <div id="hisav-ocb-badges" style="margin-top:8px;min-height:16px"></div>
             <!-- RUNNER panel — appears after parse succeeds -->
             <div id="hisav-ocb-runner-panel" style="display:none;margin-top:10px;border-top:1px solid #1e2a3a;padding-top:8px">
-              <button class="hisav-save-btn" style="background:#0a2a0a;border-color:#1a5a1a;color:#6f6" onclick="hisavOcbRun()" title="Run with full guard suite — stash, HTML check, MOT">▶ Confirm &amp; Run</button>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button class="hisav-save-btn" style="background:#0a2a0a;border-color:#1a5a1a;color:#6f6" onclick="hisavOcbRun()" title="Run with full guard suite — stash, HTML check, MOT">▶ Confirm &amp; Run</button>
+                <span id="hisav-ocb-stage-pill" style="display:none;font-size:10px;padding:2px 10px;border-radius:10px;background:#1a2a4a;border:1px solid #2a4a7a;color:#4af;font-weight:bold"></span>
+              </div>
+              <!-- Parse → Pre-flight → Run → Result steps -->
+              <div style="display:flex;gap:4px;margin-top:7px;flex-wrap:wrap" id="hisav-ocb-steps">
+                <span class="hisav-ocb-step" id="ocb-step-parse"     style="font-size:10px;padding:2px 8px;border-radius:3px;background:#111;border:1px solid #334;color:#556">📋 Parse</span>
+                <span style="font-size:10px;color:#334;align-self:center">→</span>
+                <span class="hisav-ocb-step" id="ocb-step-guards"    style="font-size:10px;padding:2px 8px;border-radius:3px;background:#111;border:1px solid #334;color:#556">🔒 Guards</span>
+                <span style="font-size:10px;color:#334;align-self:center">→</span>
+                <span class="hisav-ocb-step" id="ocb-step-run"       style="font-size:10px;padding:2px 8px;border-radius:3px;background:#111;border:1px solid #334;color:#556">⚙️ Run</span>
+                <span style="font-size:10px;color:#334;align-self:center">→</span>
+                <span class="hisav-ocb-step" id="ocb-step-result"    style="font-size:10px;padding:2px 8px;border-radius:3px;background:#111;border:1px solid #334;color:#556">✅ Result</span>
+              </div>
               <!-- Guard status indicators -->
               <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">
                 <span id="hisav-ocb-guard-lock"  style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">Lock ⬜</span>
@@ -3232,178 +3254,178 @@ body{padding-bottom:28px}
   };
 
   // Show popup for node at idx
+  // ── Timeline popup v2 — absolute-positioned, 4-dropdown design ─────────────
+
+  function _htlFilteredEntries(){
+    if(_tlFilter==='all') return _tlData;
+    return _tlData.filter(function(e){
+      if(_tlFilter==='milestone') return e.is_milestone||e.type==='milestone';
+      if(_tlFilter==='ocb') return (e.label||'').toLowerCase().indexOf('ocb')>=0;
+      if(_tlFilter==='build') return e.type==='build'||e.type==='milestone';
+      if(_tlFilter==='stopped') return e.status==='stopped';
+      if(_tlFilter==='planned') return e.status==='planned';
+      return true;
+    });
+  }
+
   window.htlShowPopup = function(idx, el){
     var popup = document.getElementById('hisav-tl-popup');
     if(!popup) return;
-    // Toggle same node closes
     if(_tlOpenIdx===idx && popup.style.display==='block'){
       popup.style.display='none'; _tlOpenIdx=-1; return;
     }
     _tlOpenIdx = idx;
-    var entries = _tlData;
-    if(_tlFilter!=='all'){
-      entries = _tlData.filter(function(e){
-        if(_tlFilter==='milestone') return e.is_milestone||e.type==='milestone';
-        if(_tlFilter==='ocb') return (e.label||'').toLowerCase().indexOf('ocb')>=0;
-        if(_tlFilter==='build') return e.type==='build'||e.type==='milestone';
-        if(_tlFilter==='stopped') return e.status==='stopped';
-        if(_tlFilter==='planned') return e.status==='planned';
-        return true;
-      });
-    }
-    var e = entries[idx];
+    var e = _htlFilteredEntries()[idx];
     if(!e) return;
 
-    // Level 0: title, status, summary, jump-to-tab buttons
+    // LEVEL 1: title
     var titleEl = document.getElementById('htl-pop-title');
     if(titleEl) titleEl.textContent = e.label||'';
 
+    // Date
+    var dateEl = document.getElementById('htl-pop-date');
+    if(dateEl) dateEl.textContent = (e.date && e.date!=='planned' && e.date!=='TBD') ? e.date : (e.date||'');
+
+    // Status badge
     var stEl = document.getElementById('htl-pop-status');
     if(stEl){
       var sc = _STATUS_COL(e.status);
       stEl.textContent = _STATUS_LABEL(e.status);
-      stEl.style.background = sc+'22';
-      stEl.style.color = sc;
-      stEl.style.border = '1px solid '+sc+'44';
+      stEl.style.cssText = 'display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:bold;background:'+sc+'22;color:'+sc+';border:1px solid '+sc+'44';
     }
 
-    var sumEl = document.getElementById('htl-pop-summary');
-    if(sumEl){
-      var dstr = e.date&&e.date!=='planned' ? e.date+' — ' : '';
-      sumEl.textContent = dstr + (e.summary || e.notes || '');
+    // Zone badge
+    var zoneEl = document.getElementById('htl-pop-zone');
+    if(zoneEl){
+      var zone = (e.zone||'PAST').toUpperCase();
+      zoneEl.textContent = zone;
+      zoneEl.className = 'htl-zone-'+(zone==='PRESENT'?'present':zone==='PLANNED'?'planned':'past');
+      zoneEl.style.display = '';
     }
 
-    // Jump-to-tab buttons
-    var tabsEl = document.getElementById('htl-pop-tabs');
-    if(tabsEl){
-      var tabs = e.related_mcc_tabs||[];
-      var _TAB_NAMES = {'tab-wccs':'HISAV','tab-kanban':'Kanban','tab-aafl-runs':'AAFL Runs','tab-scout':'Scout','tab-costs':'Costs','tab-aafl-control':'AAFL Control','tab-health-suite':'Health Suite','tab-storage':'Storage','tab-missions':'Missions','tab-design':'Design','tab-promo':'Promo','tab-code-editor':'Code Editor','tab-home':'Home'};
-      tabsEl.innerHTML = tabs.length ? tabs.map(function(t){
-        var n=_TAB_NAMES[t]||t;
-        return '<button onclick="goToTab(\''+t.replace(/^tab-/,'')+'\');htlClosePopup()" style="background:#1a2a3a;border:1px solid #2a4a6a;color:#4af;padding:2px 8px;border-radius:3px;cursor:pointer;font:10px inherit">→ '+escHisav(n)+'</button>';
-      }).join(''): '';
-    }
+    // Detail text (LEVEL 1 — always visible)
+    var detEl = document.getElementById('htl-pop-detail');
+    if(detEl) detEl.textContent = e.summary || e.notes || '—';
 
-    // Level 1: Phases (with Level 2 file drill-down)
-    var phasesEl = document.getElementById('htl-pop-phases');
-    if(phasesEl){
+    // LEVEL 2: WHAT WAS BUILT (phases)
+    var builtEl = document.getElementById('htl-pop-built');
+    if(builtEl){
       var ph = e.phases||[];
       if(!ph.length){
-        phasesEl.innerHTML = '<div style="color:#445;font-size:11px">—</div>';
+        builtEl.innerHTML = '<div class="htl-p-item" style="color:#445">No phases logged</div>';
       } else {
-        phasesEl.innerHTML = ph.map(function(p,pi){
-          var label = typeof p==='string'?p:(p.label||'');
-          var result = typeof p==='object'?p.result:'pass';
-          var detail = typeof p==='object'?p.detail:'';
-          var rc = result==='pass'?'#2a8':result==='fail'?'#c44':'#fa0';
-          var fid = 'htl-p2-'+idx+'-'+pi;
-          return '<div style="padding:3px 0;border-bottom:1px solid #111820">'+
-            '<span style="width:8px;height:8px;border-radius:50%;background:'+rc+';display:inline-block;margin-right:5px;flex-shrink:0"></span>'+
-            '<span style="color:#bbc;font-size:11px">'+escHisav(label)+'</span>'+
-            (detail?'<div class="tl-lvl2-hdr" onclick="htlL2Toggle(\''+fid+'\')">▶ '+escHisav(detail.substring(0,60))+'</div>'+
-              '<div class="tl-lvl2-body" id="'+fid+'">'+escHisav(detail)+'</div>':'') +
-          '</div>';
+        builtEl.innerHTML = '<ol style="margin:0;padding-left:16px">'+ph.map(function(p,pi){
+          var label = typeof p==='string'?p:(p.name||p.label||'');
+          if(!label && typeof p==='object') label = (p.phase?(p.phase+': '):'')+(p.notes||'');
+          return '<li class="htl-p-item">'+escHisav(label)+'</li>';
+        }).join('')+'</ol>';
+      }
+    }
+
+    // LEVEL 2: FILES CHANGED
+    var filesEl = document.getElementById('htl-pop-files');
+    if(filesEl){
+      var fc = e.files_changed||[];
+      if(!fc.length){
+        filesEl.innerHTML = '<div class="htl-p-item" style="color:#445">No files logged</div>';
+      } else {
+        filesEl.innerHTML = fc.map(function(f){
+          var fname = typeof f==='string'?f:(f.name||'');
+          return '<div class="htl-p-item"><span style="color:#7a9">'+escHisav(fname)+'</span></div>';
         }).join('');
       }
     }
 
-    // Level 1: Files changed (with Level 3 endpoints drill-down)
-    var phasesBody = document.getElementById('htl-pop-phases');
-    // Add files into phases or a separate accordion
-    // Add to endpoints
-    var epEl = document.getElementById('htl-pop-endpoints');
-    if(epEl){
-      var eps = e.endpoints_added||[];
-      var fc = e.files_changed||[];
-      var html = '';
-      if(fc.length){
-        html += '<div style="font-size:11px;font-weight:bold;color:#778;margin-bottom:4px">Files changed:</div>';
-        fc.forEach(function(f,fi){
-          var fname = typeof f==='string'?f:(f.name||'');
-          var what = typeof f==='object'?f.what:'';
-          var added = typeof f==='object'?f.lines_added:0;
-          var fid2 = 'htl-p3-'+idx+'-'+fi;
-          html += '<div style="padding:2px 0">'+
-            '<span style="color:#7a9;font-size:11px">'+escHisav(fname)+'</span>'+
-            (added?'<span style="color:#2a8;font-size:10px;margin-left:6px">+'+added+'</span>':'')+
-            (what?'<div class="tl-lvl2-hdr" onclick="htlL2Toggle(\''+fid2+'\')">▶ what changed</div>'+
-              '<div class="tl-lvl2-body" id="'+fid2+'" style="color:#667">'+escHisav(what)+'</div>':'')+
-          '</div>';
-        });
-      }
-      if(eps.length){
-        html += '<div style="font-size:11px;font-weight:bold;color:#778;margin:8px 0 4px">Endpoints added:</div>';
-        eps.forEach(function(ep){
-          html += '<div style="color:#4af;font-size:11px;font-family:monospace;padding:1px 0">'+escHisav(ep)+'</div>';
-        });
-      }
-      epEl.innerHTML = html || '<div style="color:#445;font-size:11px">—</div>';
-    }
-
-    // Level 1: ACCA codes
+    // LEVEL 2: NEW ACCA CODES (clickable for Level 3 sub-panel)
     var accaEl = document.getElementById('htl-pop-acca');
     if(accaEl){
       var codes = e.acca_codes_added||[];
-      accaEl.innerHTML = codes.length ? codes.map(function(c){
-        return '<div style="color:#fa0;font-size:11px;padding:1px 0"><strong>'+escHisav(c.split('=')[0])+'</strong> = '+escHisav((c.split('=')[1]||'').trim())+'</div>';
-      }).join('') : '<div style="color:#445;font-size:11px">None</div>';
+      if(!codes.length){
+        accaEl.innerHTML = '<div class="htl-p-item" style="color:#445">None this milestone</div>';
+      } else {
+        accaEl.innerHTML = codes.map(function(c,ci){
+          // c may be "CODE = meaning" or just "CODE"
+          var code = c.indexOf('=')>=0 ? c.split('=')[0].trim() : c;
+          var meaning = c.indexOf('=')>=0 ? c.split('=').slice(1).join('=').trim() : '';
+          var subId = 'htl-acca-sub-'+idx+'-'+ci;
+          return '<div class="htl-p-item">'
+            +'<span class="htl-p-acca-code" onclick="htlAccaExpand(\''+escHisav(code)+'\',\''+subId+'\')">'+escHisav(code)+'</span>'
+            +(meaning?'<span style="color:#556;margin-left:5px">— '+escHisav(meaning)+'</span>':'')
+            +'<div class="htl-p-acca-sub" id="'+subId+'"></div></div>';
+        }).join('');
+      }
     }
 
-    // Level 1: Detective flags
-    var flagsEl = document.getElementById('htl-pop-flags');
-    if(flagsEl){
-      var flags = e.detective_flags||[];
-      flagsEl.innerHTML = flags.length ? flags.map(function(f){
-        return '<div style="color:#f88;font-size:11px;padding:1px 0">⚠ '+escHisav(f)+'</div>';
-      }).join('') : '<div style="color:#2a8;font-size:11px">✅ No issues found</div>';
+    // LEVEL 2: API ENDPOINTS
+    var epEl = document.getElementById('htl-pop-endpoints');
+    if(epEl){
+      var eps = e.endpoints_added||[];
+      if(!eps.length){
+        epEl.innerHTML = '<div class="htl-p-item" style="color:#445">No new endpoints</div>';
+      } else {
+        epEl.innerHTML = eps.map(function(ep){
+          return '<div class="htl-p-item" style="font-family:monospace;color:#4af">'+escHisav(ep)+'</div>';
+        }).join('');
+      }
     }
 
-    // MOT + ALP notes
+    // MOT note
     var motEl = document.getElementById('htl-pop-mot');
     if(motEl) motEl.textContent = e.mot_score ? '🔧 MOT: '+e.mot_score : '';
-    var alpEl = document.getElementById('htl-pop-alp');
-    if(alpEl) alpEl.textContent = e.alp_notes ? '💰 ALP: '+e.alp_notes : '';
 
-    // Reset accordion states (close all Level 1)
-    ['phases','acca','endpoints','flags'].forEach(function(k){
+    // Reset all dropdowns closed, then open "built" by default
+    ['built','files','acca','endpoints'].forEach(function(k){
       var b=document.getElementById('htl-pop-'+k);
-      if(b) b.classList.remove('open');
-      if(b && b.previousElementSibling) b.previousElementSibling.textContent = (b.previousElementSibling.textContent||'').replace(/^▼/,'▶');
+      if(b){ b.classList.remove('open'); }
+      var hdr = b&&b.previousElementSibling;
+      if(hdr){ var chev=hdr.querySelector('.htl-p-chev'); if(chev) chev.textContent='▶'; }
     });
-    // Open phases by default
-    var ph2 = document.getElementById('htl-pop-phases');
-    if(ph2){ ph2.classList.add('open'); }
+    var builtBody = document.getElementById('htl-pop-built');
+    if(builtBody){
+      builtBody.classList.add('open');
+      var builtHdr = builtBody.previousElementSibling;
+      if(builtHdr){ var chev=builtHdr.querySelector('.htl-p-chev'); if(chev) chev.textContent='▼'; }
+    }
 
-    // Position popup: absolute within #htl-tl-wrapper, clamped to container width
+    // Position popup absolute within #htl-tl-wrapper, clamped to wrapper bounds
     var rect = el.getBoundingClientRect();
     var wrapper = document.getElementById('htl-tl-wrapper');
     var cRect = wrapper ? wrapper.getBoundingClientRect() : {left:0, top:0, width:window.innerWidth, height:400};
-    var pw = 320;
+    var pw = 420;
     var left = rect.left - cRect.left;
     var top  = rect.bottom - cRect.top + 8;
-    if(left + pw > cRect.width) left = Math.max(0, cRect.width - pw - 10);
+    if(left + pw > cRect.width) left = Math.max(0, cRect.width - pw - 8);
     if(left < 0) left = 0;
     popup.style.left = left+'px';
     popup.style.top  = top+'px';
     popup.style.display = 'block';
+    popup.style.animation = 'none';
+    popup.offsetHeight; // reflow to restart animation
+    popup.style.animation = '';
   };
 
-  // Toggle Level 2 drill-down
-  window.htlL2Toggle = function(id){
-    var el = document.getElementById(id);
-    if(!el) return;
-    var hdr = el.previousElementSibling;
-    var open = el.classList.toggle('open');
-    if(hdr) hdr.textContent = (open?'▼ ':'▶ ') + hdr.textContent.replace(/^[▼▶]\s*/,'');
+  // LEVEL 3: ACCA code click → sub-panel with code/meaning/date
+  window.htlAccaExpand = function(code, subId){
+    var sub = document.getElementById(subId);
+    if(!sub) return;
+    if(sub.classList.toggle('open')){
+      // Look up in ticker cache for meaning
+      var found = (_accaCodesCache||[]).find(function(x){ return x.code===code; });
+      var meaning = found ? found.meaning : '(not in ACCA ticker cache — may be new)';
+      var added   = found ? (found.added||'') : '';
+      sub.innerHTML = '<div style="color:#aac"><strong>Code:</strong> '+escHisav(code)+'</div>'
+        +'<div style="color:#aac"><strong>Meaning:</strong> '+escHisav(meaning)+'</div>'
+        +(added?'<div style="color:#556"><strong>First defined:</strong> '+escHisav(added)+'</div>':'');
+    }
   };
 
-  // Toggle Level 1 popup accordion
+  // Toggle Level 2 accordion (4 dropdowns inside popup)
   window.htlPopL1 = function(key){
     var body = document.getElementById('htl-pop-'+key);
     if(!body) return;
-    var hdr = body.previousElementSibling;
     var open = body.classList.toggle('open');
-    if(hdr) hdr.textContent = (open?'▼ ':'▶ ') + hdr.textContent.replace(/^[▼▶]\s*/,'');
+    var hdr = body.previousElementSibling;
+    if(hdr){ var chev=hdr.querySelector('.htl-p-chev'); if(chev) chev.textContent=open?'▼':'▶'; }
   };
 
   // Close popup
@@ -3413,16 +3435,17 @@ body{padding-bottom:28px}
     _tlOpenIdx = -1;
   };
 
-  // Click outside closes popup
+  // Click outside closes
   document.addEventListener('click', function(ev){
     var popup = document.getElementById('hisav-tl-popup');
-    if(!popup||popup.style.display==='none') return;
-    if(!popup.contains(ev.target)&&!ev.target.closest('.htl-node')){
-      popup.style.display='none'; _tlOpenIdx=-1;
+    if(!popup||popup.style.display==='block'){
+      if(popup&&!popup.contains(ev.target)&&!ev.target.closest('.htl-node')){
+        popup.style.display='none'; _tlOpenIdx=-1;
+      }
     }
   });
 
-  // Escape key closes popup
+  // Escape closes
   document.addEventListener('keydown', function(ev){
     if(ev.key==='Escape'){
       var popup = document.getElementById('hisav-tl-popup');
@@ -3430,7 +3453,8 @@ body{padding-bottom:28px}
     }
   });
 
-  // Legacy alias (still called from older code)
+  // Legacy aliases
+  window.htlL2Toggle = function(){};
   window.hisavShowTlPopup = htlShowPopup;
   window.hisavPopupAcc = htlPopL1;
 
@@ -3736,6 +3760,22 @@ body{padding-bottom:28px}
     .forEach(function(id){ _ocbGuard(id, null); });
   }
 
+  function _ocbStepActive(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.style.background='#1a3a5a'; el.style.borderColor='#2a5a8a'; el.style.color='#4af';
+  }
+  function _ocbStepDone(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.style.background='#0a2a0a'; el.style.borderColor='#1a5a1a'; el.style.color='#6f6';
+  }
+  function _ocbStepFail(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.style.background='#2a0a0a'; el.style.borderColor='#5a1a1a'; el.style.color='#f66';
+  }
+
   function _ocbRenderResults(d){
     var panel = document.getElementById('hisav-ocb-results-panel');
     var body  = document.getElementById('hisav-ocb-results-body');
@@ -3801,6 +3841,12 @@ body{padding-bottom:28px}
     if(results) results.style.display = 'none';
     var log = document.getElementById('hisav-ocb-log');
     if(log){ log.style.display='none'; log.textContent='Waiting…'; }
+    var pill = document.getElementById('hisav-ocb-stage-pill');
+    if(pill) pill.style.display='none';
+    ['ocb-step-parse','ocb-step-guards','ocb-step-run','ocb-step-result'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el){ el.style.background='#111'; el.style.borderColor='#334'; el.style.color='#556'; }
+    });
     _ocbResetGuards();
   };
 
@@ -3857,12 +3903,15 @@ body{padding-bottom:28px}
     if(log){ log.style.display='block'; log.textContent='Starting OCB run…'; }
     if(status) status.textContent='Running…';
     var isDry = dryrun ? dryrun.checked : false;
+    // Show parse step as active
+    _ocbStepActive('ocb-step-parse');
     fetch('/api/ocb/run',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({ocb_text:text, dry_run:isDry})})
     .then(function(r){return r.json();})
     .then(function(d){
       if(d.error){ if(status) status.textContent='Error: '+d.error; return; }
       var runId = d.run_id||'';
+      _ocbStepDone('ocb-step-parse');
       // Poll every 2s
       var pollCount = 0;
       var pollId = setInterval(function(){
@@ -3872,8 +3921,35 @@ body{padding-bottom:28px}
         .then(function(r){return r.json();})
         .then(function(s){
           var lo = s.live_output||s.log||[];
-          if(log && lo.length) log.textContent = lo.join('\n');
+          if(log && lo.length){
+            log.textContent = lo.join('\n');
+            log.scrollTop = log.scrollHeight;
+          }
           if(status) status.textContent = s.status||'Running…';
+          // Stage pill
+          var stage = s.current_stage||'';
+          var stagePill = document.getElementById('hisav-ocb-stage-pill');
+          if(stagePill && stage){
+            stagePill.style.display = '';
+            stagePill.textContent = stage.replace(/_/g,' ').toUpperCase();
+            var _stageCols = {
+              locking:'#2a4a7a',stashing:'#2a4a7a',phase_running:'#2a5a2a',
+              html_checking:'#5a4a10',js_checking:'#5a4a10',registry_checking:'#5a4a10',
+              mot_running:'#3a2a6a',committing:'#2a5a2a',complete:'#1a4a1a',
+              failed:'#4a1a1a',rolled_back:'#4a2a10'
+            };
+            stagePill.style.background = (_stageCols[stage]||'#1a2a4a');
+            stagePill.style.color = (stage==='complete'?'#6f6':stage==='failed'||stage==='rolled_back'?'#f66':'#4af');
+          }
+          // Step indicators
+          var gs = s.status||'';
+          if(stage==='locking'||stage==='stashing') _ocbStepActive('ocb-step-guards');
+          if(stage==='phase_running'||stage==='html_checking'||stage==='js_checking'||stage==='registry_checking') {
+            _ocbStepDone('ocb-step-guards'); _ocbStepActive('ocb-step-run');
+          }
+          if(stage==='mot_running'||stage==='committing') {
+            _ocbStepDone('ocb-step-run'); _ocbStepActive('ocb-step-result');
+          }
           var gr = s.guard_results||{};
           _ocbGuard('hisav-ocb-guard-lock',  gr.lock);
           _ocbGuard('hisav-ocb-guard-stash', gr.stash);
@@ -3884,6 +3960,8 @@ body{padding-bottom:28px}
           var terminal = ['DONE','PARTIAL','CANCELLED','ROLLED_BACK','FAILED','BLOCKED','DRY_RUN'];
           if(terminal.indexOf(s.status)!==-1){
             clearInterval(pollId);
+            if(s.status==='DONE'){ _ocbStepDone('ocb-step-result'); }
+            else { _ocbStepFail('ocb-step-result'); }
             fetch('/api/ocb/checks').then(function(r){return r.json();}).then(function(cr){
               s.check_results = cr;
               fetch('/api/ocb/results').then(function(r2){return r2.json();}).then(function(res){
@@ -20416,52 +20494,72 @@ function showInstructions(elementId, btn) {
 </script>
 
 <!-- ── OCB-N: ACCA Ticker Bar ── -->
-<div id="acca-ticker-bar">
+<div id="acca-ticker-bar" style="position:relative">
   <div id="acca-ticker-scroll">
     <div id="acca-ticker-inner">
       <span class="acca-chip"><span class="acca-code">ACCA</span><span class="acca-meaning">Loading codes…</span></span>
     </div>
   </div>
+  <span id="acca-updated-label" style="position:absolute;right:36px;top:50%;transform:translateY(-50%);font-size:9px;color:#2a4a2a;pointer-events:none;white-space:nowrap"></span>
+  <span id="acca-pulse-dot" class="htl-acca-pulse"></span>
 </div>
 <!-- ACCA code expand tooltip -->
 <div id="acca-expand"></div>
 
 <script>
-// ── OCB-N: ACCA Ticker ─────────────────────────────────────────────────────
+// ── OCB-N: ACCA Ticker (live update v2) ───────────────────────────────────
 let _accaCodesCache = [];
+let _accaLastModified = 0;
+let _accaLoadedAt = 0;
 
 async function accaTickerLoad() {
   try {
     const data = await apiFetch('/acca-codes');
     const codes = Array.isArray(data) ? data : (data.codes || []);
     _accaCodesCache = codes;
+    _accaLoadedAt = Date.now();
     _accaTickerRender(codes);
+    _accaUpdateLabel();
+  } catch(e) {}
+}
+
+function _accaUpdateLabel() {
+  const lbl = document.getElementById('acca-updated-label');
+  if (!lbl || !_accaLoadedAt) return;
+  const secs = Math.round((Date.now() - _accaLoadedAt) / 1000);
+  lbl.textContent = secs < 60 ? 'Updated just now' : 'Updated ' + Math.round(secs/60) + 'm ago';
+}
+
+async function _accaVersionPoll() {
+  try {
+    const d = await apiFetch('/acca/version');
+    const mtime = d.last_modified || 0;
+    if (mtime && mtime !== _accaLastModified) {
+      if (_accaLastModified !== 0) {
+        // New codes detected — pulse the dot and reload
+        const dot = document.getElementById('acca-pulse-dot');
+        if (dot) { dot.classList.add('pulsing'); setTimeout(()=>dot.classList.remove('pulsing'), 2500); }
+      }
+      _accaLastModified = mtime;
+      await accaTickerLoad();
+    } else {
+      _accaUpdateLabel();
+    }
   } catch(e) {}
 }
 
 function _accaTickerRender(codes) {
   const inner = document.getElementById('acca-ticker-inner');
   if (!inner) return;
-  // Category colour map (mirroring LLOW element categories)
-  const catColours = {
-    'communication': '#4af','protocol': '#4af','response': '#888',
-    'modes': '#4A90D9','inputs': '#50C878','outputs': '#FF6B6B',
-    'modifiers': '#FFD700','approval_gates': '#FF9500','quality_checks': '#8B5CF6',
-    'cycle_controls': '#EC4899','endings': '#6B7280','junctions': '#00D4FF',
-    'ai_providers': '#00D4FF','data_sources': '#F59E0B',
-  };
-  // Build doubled array for seamless loop
   const chips = codes.map(c => {
-    const col = '#888';
     return `<span class="acca-chip" title="${c.code}: ${c.meaning}" onclick="accaExpandCode('${c.code}',event)" style="border-color:#222">` +
       `<span class="acca-code" style="color:#ccc">${c.code}</span>` +
       `<span class="acca-meaning">${c.meaning.length > 40 ? c.meaning.slice(0,38)+'…' : c.meaning}</span>` +
       `</span>`;
   }).join('');
-  inner.innerHTML = chips + chips; // doubled for seamless ticker
-  // Reset animation
+  inner.innerHTML = chips + chips;
   inner.style.animation = 'none';
-  inner.offsetHeight; // reflow
+  inner.offsetHeight;
   const duration = Math.max(30, codes.length * 2);
   inner.style.animation = `accaTicker ${duration}s linear infinite`;
 }
@@ -20488,12 +20586,11 @@ function accaExpandCode(code, evt) {
   }, 60);
 }
 
-// Auto-load ticker on page connect
-const _origConnectData = typeof connectData === 'function' ? connectData : null;
+// Auto-load ticker on page connect; poll version every 15s
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(accaTickerLoad, 3000);
-  // Reload every 5 minutes
-  setInterval(accaTickerLoad, 300000);
+  setInterval(_accaVersionPoll, 15000);
+  setInterval(_accaUpdateLabel, 30000);
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
