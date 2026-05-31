@@ -4054,10 +4054,13 @@ body{padding-bottom:28px}
     var text = input.value.trim();
     if(!text){ if(status) status.textContent='Paste an OCB block first'; return; }
     if(status) status.textContent='Parsing... ⏳';
+    var _hCtrl = new AbortController();
+    var _hTout = setTimeout(function(){ _hCtrl.abort(); }, 10000);
     fetch('/api/ocb/parse',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ocb_text:text})})
+      body:JSON.stringify({ocb_text:text}), signal:_hCtrl.signal})
     .then(function(r){return r.json();})
     .then(function(d){
+      clearTimeout(_hTout);
       if(d.error){ if(status) status.textContent='❌ Parse failed: '+d.error; return; }
       var phases = d.phases||[];
       if(!phases.length){ if(status) status.textContent='❌ No phases found in OCB block'; return; }
@@ -4089,7 +4092,11 @@ body{padding-bottom:28px}
       if(runner) runner.style.display = '';
       _ocbResetGuards();
     })
-    .catch(function(e){ if(status) status.textContent='❌ Parse error: '+(e.message||'?'); });
+    .catch(function(e){
+      clearTimeout(_hTout);
+      var msg = (e.name==='AbortError') ? '❌ Parse timed out — server may be stuck' : '❌ Parse error: '+(e.message||'?');
+      if(status) status.textContent=msg;
+    });
   };
 
   window.hitsavOcbRun = function(){
@@ -13129,6 +13136,7 @@ async function ocbArchiveRun() {
 }
 
 // ── OCB Runner standalone tab functions (v4 — visual overhaul + ABORT) ────────
+const BASE = '';  // same-origin API prefix — all /api/* endpoints on this server
 let _ocb2RunId = null;
 let _ocb2Timer = null;
 let _ocb2LogSeen = 0;
@@ -13215,11 +13223,11 @@ function ocb2Parse() {
   const t1 = setTimeout(function() { _ocb2SetProgress(20, 'Splitting into phases...'); }, 200);
   const t2 = setTimeout(function() { _ocb2SetProgress(40, 'Analysing structure...'); }, 600);
 
-  // 30-second hard timeout
+  // 10-second hard timeout
   const _parseCtrl = new AbortController();
   const _parseTimeout = setTimeout(function() {
     _parseCtrl.abort();
-  }, 30000);
+  }, 10000);
 
   fetch(BASE + '/api/ocb/parse', {
     method: 'POST',
@@ -13275,7 +13283,7 @@ function ocb2Parse() {
     _ocb2SetActive(false);
     _ocb2SetBarColor('error');
     const msg = e.name === 'AbortError'
-      ? 'Parse timed out after 30s — server did not respond'
+      ? '❌ Parse timed out — server may be stuck'
       : e.message;
     _ocb2SetProgress(0, '❌ ' + msg);
     log.textContent += '\n[' + _ocb2Ts() + '] ❌ Parse failed: ' + msg;

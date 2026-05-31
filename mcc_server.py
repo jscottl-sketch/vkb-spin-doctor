@@ -7419,13 +7419,15 @@ def _handle_ocb_parse(self):
             return
         import ocb_runner as _ocbr
         import concurrent.futures as _cf
-        with _cf.ThreadPoolExecutor(max_workers=1) as _ex:
-            _fut = _ex.submit(_ocbr.parse_ocb, ocb_text)
-            try:
-                phases = _fut.result(timeout=10.0)
-            except _cf.TimeoutError:
-                self._send_json({"error": "Parse timed out — try simpler input format"}, 500)
-                return
+        _ex = _cf.ThreadPoolExecutor(max_workers=1)
+        _fut = _ex.submit(_ocbr.parse_ocb, ocb_text)
+        try:
+            phases = _fut.result(timeout=10.0)
+        except _cf.TimeoutError:
+            _ex.shutdown(wait=False)
+            self._send_json({"error": "Parse timed out — try simpler input format"}, 500)
+            return
+        _ex.shutdown(wait=False)
         pre_flight = _ocbr.pre_flight(phases) if phases else {}
         self._send_json({"phases": phases, "phase_count": len(phases), "pre_flight": pre_flight})
     except Exception as exc:
