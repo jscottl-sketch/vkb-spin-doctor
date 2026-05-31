@@ -759,6 +759,414 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
     return status
 
 
+# ── v2 API: parse_ocb / pre_flight / run_safe / read_results / stream_log ─────
+
+_LOCK_FILE        = HERE / ".ocb_running"
+_live_output: list  = []
+_check_results: dict = {}
+_last_run_result: dict = {}
+
+_JS_BUILTINS = {
+    "if","for","while","switch","do","try","catch","finally","return","typeof",
+    "instanceof","new","delete","void","throw","in","of","let","const","var",
+    "parseInt","parseFloat","isNaN","isFinite","encodeURIComponent",
+    "decodeURIComponent","encodeURI","decodeURI","eval","atob","btoa",
+    "clearInterval","setInterval","setTimeout","clearTimeout","requestAnimationFrame",
+    "fetch","JSON","Object","Array","String","Number","Boolean","Math","Date",
+    "RegExp","Function","Error","Promise","Map","Set","WeakMap","WeakSet",
+    "Symbol","Proxy","Reflect","Uint8Array","Int32Array","Float64Array","ArrayBuffer",
+    "console","document","window","event","location","navigator","history","screen",
+    "performance","localStorage","sessionStorage","XMLHttpRequest","WebSocket","Worker",
+    "Blob","URL","alert","confirm","prompt","open","close","postMessage",
+    "addEventListener","removeEventListener","dispatchEvent",
+    "querySelector","querySelectorAll","getElementById","getElementsByClassName",
+    "getElementsByTagName","createElement","createTextNode","getAttribute",
+    "setAttribute","removeAttribute","appendChild","removeChild","insertBefore",
+    "replaceChild","scrollIntoView","focus","blur","click","submit",
+    "undefined","null","true","false","NaN","Infinity","this","super","arguments",
+    "constructor","prototype","hasOwnProperty","toString","valueOf",
+    "log","warn","error","info","debug",
+}
+
+
+def stream_log(msg: str):
+    """Append timestamped msg to _live_output and update OCB_STATUS_FILE for polling."""
+    global _live_output
+    ts    = datetime.now().strftime("%H:%M:%S")
+    entry = f"[{ts}] {msg}"
+    _live_output.append(entry)
+    if len(_live_output) > 500:
+        _live_output[:] = _live_output[-500:]
+    try:
+        data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8")) if OCB_STATUS_FILE.exists() else {}
+        data["live_output"] = list(_live_output)
+        _write_status(data)
+    except Exception:
+        pass
+
+
+def parse_ocb(text: str) -> list:
+    """Extended parse: returns [{phase, phase_name, task_type, files_affected, commands, risk_level, tasks}]."""
+    result = []
+    for p in parse_ocb_block(text):
+        files_affected: list = []
+        commands: list       = []
+        for task in p["tasks"]:
+            fname = identify_affected_file(task["text"]).name
+            if fname not in files_affected:
+                files_affected.append(fname)
+            if re.search(r'\b(run|execute|install|python|pip)\b', task["text"], re.I):
+                commands.append(task["text"][:80])
+        if "mission_control.html" in files_affected:
+            risk = "HIGH"
+        elif any(f.endswith(".py") for f in files_affected):
+            risk = "MEDIUM"
+        else:
+            risk = "LOW"
+        result.append({
+            "phase":          p["phase_num"],
+            "phase_name":     p["phase_name"],
+            "tasks":          p["tasks"],
+            "task_type":      "code_edit",
+            "files_affected": files_affected,
+            "commands":       commands,
+            "risk_level":     risk,
+        })
+    return result
+
+
+def pre_flight(parsed: list) -> dict:
+    """Return preview dict: {files, risk, html_flag, warnings, phase_count}."""
+    all_files: list = []
+    max_risk        = "LOW"
+    _rord           = {"HIGH": 2, "MEDIUM": 1, "LOW": 0}
+    warnings: list  = []
+    for phase in parsed:
+        for f in phase.get("files_affected", []):
+            if f not in all_files:
+                all_files.append(f)
+        r = phase.get("risk_level", "LOW")
+        if _rord.get(r, 0) > _rord.get(max_risk, 0):
+            max_risk = r
+    html_flag = "mission_control.html" in all_files
+    if html_flag:
+        warnings.append("JS integrity check will run after edit")
+    return {
+        "files": all_files, "risk": max_risk, "html_flag": html_flag,
+        "warnings": warnings, "phase_count": len(parsed),
+    }
+
+
+def _check_js_integrity(html_path: str) -> tuple:
+    """CHECK B — JS integrity. Returns (ok, details_dict)."""
+    try:
+        from bs4 import BeautifulSoup
+        with open(html_path, "r", encoding="utf-8") as fh:
+            content = fh.read()
+        soup = BeautifulSoup(content, "html.parser")
+
+        script_texts = [s.string for s in soup.find_all("script") if s.string]
+        all_scripts  = "\n".join(script_texts)
+
+        defined = set(re.findall(r'function\s+(\w+)\s*\(', all_scripts))
+        defined.update(re.findall(r'(?:window|this)\.(\w+)\s*=\s*function', all_scripts))
+        defined.update(re.findall(r'(?:var|let|const)\s+(\w+)\s*=\s*function', all_scripts))
+
+        ev_attrs = ["onclick","onchange","onsubmit","onkeydown","onkeyup","oninput"]
+        called: set = set()
+        for tag in soup.find_all(True):
+            for attr in ev_attrs:
+                val = tag.get(attr) or ""
+                if not val:
+                    continue
+                for m in re.finditer(r'(?<!\.)(\b[a-zA-Z_]\w*)\s*\(', val):
+                    fn = m.group(1)
+                    if fn not in _JS_BUILTINS:
+                        called.add(fn)
+
+        missing_funcs = [fn for fn in called if fn not in defined]
+
+        id_calls = set(re.findall(r"getElementById\(['\"](\w[\w-]*)['\"]", all_scripts))
+        dom_ids  = {tag["id"] for tag in soup.find_all(id=True)}
+        missing_ids = [iid for iid in id_calls if iid not in dom_ids]
+
+        if missing_funcs or missing_ids:
+            det: dict = {}
+            if missing_funcs:
+                det["missing_functions"] = missing_funcs[:20]
+            if missing_ids:
+                det["missing_ids"] = missing_ids[:20]
+            return False, det
+        return True, {"defined": len(defined), "called": len(called), "id_calls": len(id_calls)}
+    except Exception as exc:
+        return False, {"error": str(exc)[:200]}
+
+
+def _check_element_registry(html_path: str) -> tuple:
+    """CHECK C — Element registry. Returns (ok, details_dict)."""
+    reg_path = HERE / "data" / "element_registry.json"
+    if not reg_path.exists():
+        return True, {"note": "element_registry.json not found — skipped"}
+    try:
+        elements = json.loads(reg_path.read_text(encoding="utf-8")).get("elements", [])
+        with open(html_path, "r", encoding="utf-8") as fh:
+            content = fh.read()
+        dom_ids = set(re.findall(r'id=["\']([^"\']+)["\']', content))
+        missing = [e["id"] for e in elements if e.get("id") and e["id"] not in dom_ids]
+        if missing:
+            return False, {"missing_registry_ids": missing[:20]}
+        return True, {"checked": len(elements)}
+    except Exception as exc:
+        return False, {"error": str(exc)[:200]}
+
+
+def _run_mot_check() -> tuple:
+    """CHECK D — MOT. Returns (ok, score_str)."""
+    try:
+        r      = subprocess.run([sys.executable, str(MOT_SCRIPT)],
+                                capture_output=True, text=True, timeout=180, cwd=str(HERE))
+        output = r.stdout + r.stderr
+        score  = ""
+        for line in output.splitlines():
+            if "passed" in line.lower() and ("failed" in line.lower() or "/" in line):
+                score = line.strip(); break
+        if not score:
+            for line in output.splitlines():
+                if "verdict" in line.lower() or "all clear" in line.lower():
+                    score = line.strip(); break
+        if not score:
+            score = f"exit {r.returncode}"
+        return r.returncode == 0 or "all clear" in score.lower(), score
+    except Exception as exc:
+        return False, f"MOT error: {str(exc)[:80]}"
+
+
+def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
+    """Full safe OCB execution: 4 guards + 4 HTML checks (BS4/JS/Registry/MOT)."""
+    global _live_output, _check_results, _last_run_result
+    _live_output = []
+    if not run_id:
+        run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    obj: dict = {
+        "run_id": run_id, "started_at": datetime.now().isoformat(timespec="seconds"),
+        "status": "RUNNING", "live_output": [], "guard_results": {
+            "lock": None, "stash": None, "bs4": None, "js": None, "registry": None, "mot": None,
+        }, "check_results": {}, "files_changed": [], "git_diff_stat": "",
+        "rollback_available": False, "error": "", "stash_ref": None,
+    }
+    _write_status(obj)
+
+    def _sl(msg: str):
+        stream_log(msg)
+        obj["live_output"] = list(_live_output)
+        _write_status(obj)
+
+    # GUARD 1 — Lock file
+    if _LOCK_FILE.exists():
+        msg = "Another OCB is running (.ocb_running exists)"
+        obj["guard_results"]["lock"] = False
+        obj.update({"status": "BLOCKED", "error": msg})
+        _sl(f"GUARD 1 FAIL: {msg}")
+        _write_status(obj)
+        _last_run_result = obj
+        _check_results   = {}
+        return obj
+
+    obj["guard_results"]["lock"] = True
+    _sl("GUARD 1 PASS: lock file clear")
+
+    if dry_run:
+        _sl("DRY RUN: stopping here — no changes made")
+        obj["status"] = "DRY_RUN"
+        _write_status(obj)
+        _last_run_result = obj
+        return obj
+
+    _LOCK_FILE.write_text(datetime.now().isoformat(), encoding="utf-8")
+    no_stash  = False
+    stash_ref = None
+
+    try:
+        # GUARD 2 — Clean tree check
+        gs = subprocess.run(["git", "status", "--porcelain"],
+                            capture_output=True, text=True, cwd=str(HERE), timeout=30)
+        if gs.stdout.strip():
+            ts_lbl = f"OCB-Runner-{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            sr     = subprocess.run(["git", "stash", "push", "-m", ts_lbl],
+                                    capture_output=True, text=True, cwd=str(HERE), timeout=30)
+            stash_out = (sr.stdout + sr.stderr).strip()
+            stash_ref = ts_lbl if "saved" in stash_out.lower() else None
+            obj["stash_ref"] = stash_ref
+            obj["guard_results"]["stash"] = True
+            _sl(f"GUARD 2: dirty tree stashed ({ts_lbl})")
+        else:
+            no_stash = True
+            obj["guard_results"]["stash"] = True
+            _sl("GUARD 2: clean tree — no stash needed")
+
+        # GUARD 3 — Phase execution (sequential, stop on first fail)
+        files_changed:   set  = set()
+        html_was_edited: bool = False
+        failed_reason: str    = ""
+
+        for phase in parsed:
+            if failed_reason:
+                break
+            _sl(f"Phase {phase['phase']}: {phase.get('phase_name','')}")
+            for task in phase.get("tasks", []):
+                if failed_reason:
+                    break
+                _sl(f"  Task {task['num']}: {task['text'][:70]}")
+                filepath = identify_affected_file(task["text"])
+                ext      = filepath.suffix.lower()
+                try:
+                    sd = extract_relevant_section(filepath, task["text"])
+                    if not sd["section_text"]:
+                        _sl(f"  SKIP: cannot read {filepath.name}"); continue
+                    new_text = run_task(filepath, sd, task["text"])
+                    if not new_text:
+                        failed_reason = f"AI returned empty for task: {task['text'][:60]}"
+                        _sl(f"  FAIL: {failed_reason}"); break
+                    ok = apply_result(filepath, sd["start_line"], sd["end_line"], new_text)
+                    if not ok:
+                        failed_reason = f"Apply/syntax check failed for {filepath.name}"
+                        _sl(f"  FAIL: {failed_reason}"); break
+                    files_changed.add(filepath.name)
+                    _sl(f"  DONE: {filepath.name} updated")
+
+                    if ext == ".html":
+                        html_was_edited  = True
+                        hp               = str(filepath)
+                        # CHECK A — BS4
+                        try:
+                            from bs4 import BeautifulSoup
+                            with open(hp, "r", encoding="utf-8") as fh:
+                                BeautifulSoup(fh.read(), "html.parser")
+                            obj["guard_results"]["bs4"] = True
+                            obj["check_results"]["A_bs4"] = {"ok": True}
+                            _sl("  CHECK A (BS4): PASS")
+                        except Exception as e:
+                            obj["guard_results"]["bs4"] = False
+                            obj["check_results"]["A_bs4"] = {"ok": False, "error": str(e)[:120]}
+                            failed_reason = f"CHECK A (BS4) failed: {str(e)[:80]}"
+                            _sl(f"  CHECK A (BS4): FAIL"); break
+                        # CHECK B — JS integrity
+                        js_ok, js_det = _check_js_integrity(hp)
+                        obj["guard_results"]["js"] = js_ok
+                        obj["check_results"]["B_js"] = {"ok": js_ok, "details": js_det}
+                        if js_ok:
+                            _sl("  CHECK B (JS): PASS")
+                        else:
+                            failed_reason = f"CHECK B (JS) failed: {js_det}"
+                            _sl(f"  CHECK B (JS): FAIL — {js_det}"); break
+                        # CHECK C — Element registry
+                        reg_ok, reg_det = _check_element_registry(hp)
+                        obj["guard_results"]["registry"] = reg_ok
+                        obj["check_results"]["C_registry"] = {"ok": reg_ok, "details": reg_det}
+                        if reg_ok:
+                            _sl("  CHECK C (Registry): PASS")
+                        else:
+                            failed_reason = f"CHECK C (registry) failed: {reg_det}"
+                            _sl(f"  CHECK C (Registry): FAIL"); break
+                except Exception as exc:
+                    failed_reason = f"Exception: {str(exc)[:100]}"
+                    _sl(f"  ERROR: {failed_reason}"); break
+
+        if not html_was_edited:
+            for k in ("bs4", "js", "registry"):
+                if obj["guard_results"][k] is None:
+                    obj["guard_results"][k] = True
+            for k, lbl in (("A_bs4","BS4"),("B_js","JS"),("C_registry","Registry")):
+                if k not in obj["check_results"]:
+                    obj["check_results"][k] = {"ok": True, "note": "no HTML edited"}
+
+        obj["files_changed"] = sorted(files_changed)
+
+        if failed_reason:
+            # GUARD 4 — Rollback on failure
+            if not no_stash and stash_ref:
+                subprocess.run(["git", "stash", "pop"],
+                               capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                obj["status"] = "ROLLED_BACK"
+                _sl(f"ROLLED BACK — {failed_reason}")
+            else:
+                obj["status"] = "FAILED"
+                obj["rollback_available"] = True
+                _sl(f"FAILED — {failed_reason}")
+            obj["guard_results"]["mot"] = False
+            obj["check_results"]["D_mot"] = {"ok": False, "error": failed_reason}
+            obj["error"] = failed_reason
+        else:
+            # CHECK D — MOT
+            _sl("Running MOT check…")
+            mot_ok, mot_score = _run_mot_check()
+            obj["guard_results"]["mot"] = mot_ok
+            obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
+            _sl(f"CHECK D (MOT): {'PASS' if mot_ok else 'FAIL'} — {mot_score}")
+            if mot_ok:
+                if not no_stash and stash_ref:
+                    subprocess.run(["git", "stash", "drop"],
+                                   capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                summary = "; ".join(t["text"][:40] for p in parsed for t in p.get("tasks",[]))[:120]
+                subprocess.run(["git", "add", "-A"],
+                               capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                subprocess.run(["git", "commit", "-m", f"OCB-Runner: {summary}"],
+                               capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                dr = subprocess.run(["git", "diff", "--stat", "HEAD~1", "HEAD"],
+                                    capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                obj["git_diff_stat"] = dr.stdout[:2000]
+                obj["status"] = "DONE"
+                _sl("All guards passed — changes committed")
+            else:
+                if not no_stash and stash_ref:
+                    subprocess.run(["git", "stash", "pop"],
+                                   capture_output=True, text=True, cwd=str(HERE), timeout=30)
+                    obj["status"] = "ROLLED_BACK"
+                    _sl(f"ROLLED BACK — MOT failed: {mot_score}")
+                else:
+                    obj["status"] = "FAILED"
+                    obj["rollback_available"] = True
+                    obj["stash_ref"] = "HEAD"
+                    _sl(f"MOT FAILED — {mot_score}")
+    finally:
+        try:
+            _LOCK_FILE.unlink(missing_ok=True)
+        except Exception:
+            pass
+        _sl("Lock file released")
+
+    obj["completed_at"] = datetime.now().isoformat(timespec="seconds")
+    _write_status(obj)
+    _last_run_result = obj
+    _check_results   = obj["check_results"]
+    return obj
+
+
+def read_results() -> dict:
+    """Return enriched last run: file line deltas, check results, git diff stat, pass/fail."""
+    global _last_run_result
+    out = dict(_last_run_result)
+    file_details = []
+    for fname in out.get("files_changed", []):
+        added = removed = 0
+        try:
+            dr = subprocess.run(
+                ["git", "diff", "--numstat", "HEAD~1", "HEAD", "--", fname],
+                capture_output=True, text=True, cwd=str(HERE), timeout=15,
+            )
+            parts = dr.stdout.strip().split()
+            if len(parts) >= 2:
+                added   = int(parts[0]) if parts[0] != "-" else 0
+                removed = int(parts[1]) if parts[1] != "-" else 0
+        except Exception:
+            pass
+        file_details.append({"name": fname, "lines_added": added, "lines_removed": removed})
+    out["file_details"] = file_details
+    out["live_output"]  = list(_live_output)
+    return out
+
+
 # ── Lifeguard Protocol helpers ────────────────────────────────────────────────
 
 def _lp_now_ts():

@@ -652,6 +652,10 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             elif path.startswith("/api/ocb/status/"):
                 run_id = path[len("/api/ocb/status/"):]
                 self._handle_ocb_status(run_id)
+            elif path == "/api/ocb/checks":
+                self._handle_ocb_checks()
+            elif path == "/api/ocb/results":
+                self._handle_ocb_results()
             # ── MCCM / Chief Detective ─────────────────────────────────────────
             elif path == "/api/mccm/status":
                 self._handle_mccm_status()
@@ -928,6 +932,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_parse()
             elif path == "/api/ocb/run":
                 self._handle_ocb_run()
+            elif path == "/api/ocb/rollback":
+                self._handle_ocb_rollback()
             elif path.startswith("/api/ocb/cancel/"):
                 run_id = path[len("/api/ocb/cancel/"):]
                 self._handle_ocb_cancel(run_id)
@@ -7258,16 +7264,17 @@ MCCHandler._handle_code_run = _handle_code_run  # type: ignore[attr-defined]
 # ── OCB-O: OCB Runner endpoints ────────────────────────────────────────────────
 
 def _handle_ocb_parse(self):
-    """POST /api/ocb/parse — parse OCB block, return phase list."""
+    """POST /api/ocb/parse — parse OCB block, return structured phase list + pre_flight."""
     try:
-        body = json.loads(self._read_body() or "{}")
+        body     = json.loads(self._read_body() or "{}")
         ocb_text = (body.get("ocb_text") or "").strip()
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
             return
-        from ocb_runner import parse_ocb_block
-        phases = parse_ocb_block(ocb_text)
-        self._send_json({"phases": phases, "phase_count": len(phases)})
+        import ocb_runner as _ocbr
+        phases    = _ocbr.parse_ocb(ocb_text)
+        pre_flight = _ocbr.pre_flight(phases) if phases else {}
+        self._send_json({"phases": phases, "phase_count": len(phases), "pre_flight": pre_flight})
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)
 
@@ -7276,56 +7283,27 @@ MCCHandler._handle_ocb_parse = _handle_ocb_parse  # type: ignore[attr-defined]
 
 
 def _handle_ocb_run(self):
-    """POST /api/ocb/run — launch OCB run in background thread. Supports failed_phases_only flag."""
+    """POST /api/ocb/run — parse then launch run_safe in background thread."""
     try:
-        body                = json.loads(self._read_body() or "{}")
-        provider            = (body.get("provider") or "auto").strip()
-        max_retries         = int(body.get("max_retries", 3))
-        acceptance_criteria = body.get("acceptance_criteria", [])
-        failed_phases_only  = bool(body.get("failed_phases_only", False))
-        original_run_id     = (body.get("run_id") or "").strip()
-        if not isinstance(acceptance_criteria, list):
-            acceptance_criteria = []
-
-        if failed_phases_only and original_run_id:
-            # Rebuild OCB text from failed phases only
-            import ocb_runner as _ocbr
-            ocb_text = ""
-            try:
-                if CLACHR_RESPONSE.exists():
-                    cr = json.loads(CLACHR_RESPONSE.read_text(encoding="utf-8"))
-                    orig_text = cr.get("ocb_text", "")
-                    failed_names = set(cr.get("phases_failed", []))
-                    if orig_text and failed_names:
-                        all_phases = _ocbr.parse_ocb_block(orig_text)
-                        filtered = [p for p in all_phases if p["phase_name"] in failed_names]
-                        if filtered:
-                            lines = []
-                            for p in filtered:
-                                lines.append(f"═══ PHASE {p['phase_num']} — {p['phase_name']} ═══")
-                                lines.append("")
-                                for t in p["tasks"]:
-                                    lines.append(f"{t['num']}. {t['text']}")
-                                lines.append("")
-                            ocb_text = "\n".join(lines)
-                if not ocb_text:
-                    ocb_text = (body.get("ocb_text") or "").strip()
-            except Exception:
-                ocb_text = (body.get("ocb_text") or "").strip()
-        else:
-            ocb_text = (body.get("ocb_text") or "").strip()
+        body     = json.loads(self._read_body() or "{}")
+        ocb_text = (body.get("ocb_text") or "").strip()
+        dry_run  = bool(body.get("dry_run", False))
 
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
             return
 
+        import ocb_runner as _ocbr
+        parsed = _ocbr.parse_ocb(ocb_text)
+        if not parsed:
+            self._send_json({"error": "No phases found in OCB text"}, 400)
+            return
+
         run_id = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        import ocb_runner
         t = threading.Thread(
-            target=ocb_runner.run_all,
-            args=(ocb_text, run_id),
-            kwargs={"max_retries": max_retries, "provider": provider,
-                    "acceptance_criteria": acceptance_criteria},
+            target=_ocbr.run_safe,
+            args=(parsed,),
+            kwargs={"run_id": run_id, "dry_run": dry_run},
             daemon=True,
         )
         t.start()
@@ -7338,13 +7316,25 @@ MCCHandler._handle_ocb_run = _handle_ocb_run  # type: ignore[attr-defined]
 
 
 def _handle_ocb_status(self, run_id: str):
-    """GET /api/ocb/status/<run_id> — return current run status from ocb_status.json."""
+    """GET /api/ocb/status[/<run_id>] — return status including live_output and guard_results."""
     try:
         if not OCB_STATUS_FILE.exists():
-            self._send_json({"status": "idle", "run_id": "", "phases": [], "log": []})
+            self._send_json({"status": "idle", "run_id": "", "phases": [], "log": [], "live_output": [], "guard_results": {}})
             return
         data = json.loads(OCB_STATUS_FILE.read_text(encoding="utf-8"))
-        # If run_id is given and doesn't match, still return (client may poll stale id)
+        # Merge live module state (guard_results, live_output) from ocb_runner if available
+        try:
+            import ocb_runner as _ocbr
+            if _ocbr._live_output:
+                data["live_output"] = list(_ocbr._live_output)
+            if _ocbr._last_run_result:
+                lr = _ocbr._last_run_result
+                if lr.get("guard_results"):
+                    data["guard_results"] = lr["guard_results"]
+                if lr.get("check_results"):
+                    data["check_results"] = lr["check_results"]
+        except Exception:
+            pass
         self._send_json(data)
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)
@@ -7390,6 +7380,54 @@ def _handle_ocb_archive(self, run_id: str):
 
 
 MCCHandler._handle_ocb_archive = _handle_ocb_archive  # type: ignore[attr-defined]
+
+
+def _handle_ocb_rollback(self):
+    """POST /api/ocb/rollback — git stash pop if stash ref exists in last run result."""
+    try:
+        import ocb_runner as _ocbr
+        lr = _ocbr._last_run_result or {}
+        if not lr.get("rollback_available"):
+            self._send_json({"ok": False, "error": "No rollback available (run succeeded or no stash)"})
+            return
+        result = subprocess.run(
+            ["git", "stash", "pop"],
+            capture_output=True, text=True, cwd=str(HERE), timeout=30,
+        )
+        ok  = result.returncode == 0
+        out = (result.stdout + result.stderr).strip()
+        if ok:
+            _ocbr._last_run_result["rollback_available"] = False
+        self._send_json({"ok": ok, "output": out[:300]})
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_rollback = _handle_ocb_rollback  # type: ignore[attr-defined]
+
+
+def _handle_ocb_checks(self):
+    """GET /api/ocb/checks — return latest check A/B/C/D results."""
+    try:
+        import ocb_runner as _ocbr
+        self._send_json(_ocbr._check_results or {})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_checks = _handle_ocb_checks  # type: ignore[attr-defined]
+
+
+def _handle_ocb_results(self):
+    """GET /api/ocb/results — return enriched last run results (file deltas, checks, diff)."""
+    try:
+        import ocb_runner as _ocbr
+        self._send_json(_ocbr.read_results())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_results = _handle_ocb_results  # type: ignore[attr-defined]
 
 
 def _handle_rrclach_save(self):

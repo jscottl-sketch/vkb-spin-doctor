@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T21:38:04",
+  "generated_at": "2026-05-30T23:03:58",
   "tabs": [
     {
       "id": "wccs",
@@ -500,6 +500,51 @@
       "onclick": "saveSession()",
       "parent_tab": "tab-wccs",
       "label": "💾 Save with summary"
+    },
+    {
+      "id": "post-save-btn1",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "postSaveStep1()",
+      "parent_tab": "tab-wccs",
+      "label": "1 — Copy SESUM"
+    },
+    {
+      "id": "post-save-btn2",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "postSaveStep2()",
+      "parent_tab": "tab-wccs",
+      "label": "2 — Paste to HISAV SESUM box"
+    },
+    {
+      "id": "post-save-btn3",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "postSaveStep3()",
+      "parent_tab": "tab-wccs",
+      "label": "3 — Update Claude Project Files"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "postSaveDismiss()",
+      "parent_tab": "tab-wccs",
+      "label": "Done ✓"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "navigator.clipboard.writeText(\n          'C:\\\\\\\\Users\\\\\\\\jscot\\\\\\\\OneDrive\\\\\\\\Desktop\\\\\\\\VKB-SpinDoctor\\\\\\\\')",
+      "parent_tab": "tab-wccs",
+      "label": "📋 Copy path"
     },
     {
       "id": "",

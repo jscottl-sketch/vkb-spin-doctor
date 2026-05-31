@@ -82,3 +82,5 @@
 | 67 | 2026-05-30 | legacy | {} | None |
 | 68 | 2026-05-30 | legacy | test chat text for recovery check | None |
 | 69 | 2026-05-30 | v75 -> v76 | OCB-R1 global bug sweep: z-index CSS fix for all popups (z-index:99999 + position:fixed), ? audit (30 found, 0 empty, 0 removed), post-save SESUM banner added to HISAV toolbar (showPostSaveBanner() wired to both save buttons). 109/109 MOT ALL CLEAR. | None |
+| 70 | 2026-05-30 | legacy | test chat text for recovery check | None |
+| 71 | 2026-05-31 | v76 -> v77 | OCB-Runner v2: parse_ocb/pre_flight/run_safe/read_results/stream_log; 4 guards (Lock/Stash/Phase/Rollback) + 4 checks (BS4/JS-integrity/Registry/MOT); HISAV S11 3-panel board (Reader/Runner/Results); 3 new endpoints (/api/ocb/rollback, /api/ocb/checks, /api/ocb/results); beautifulsoup4 installed. 109/109 MOT ALL CLEAR. | None |

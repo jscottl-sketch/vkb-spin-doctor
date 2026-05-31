@@ -1276,5 +1276,29 @@
     "cat": "persist_test",
     "msg": "test entry",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T23:03:58",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-05-30T23:03:59",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T23:03:59",
+    "cat": "integration",
+    "msg": "int_test_1780178639",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-05-30T23:04:00",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
   }
 ]

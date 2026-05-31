@@ -2909,18 +2909,38 @@ body{padding-bottom:28px}
         </div>
         <div class="hisav-body" id="hisav-body-s11">
           <div class="hisav-body-inner">
-            <div style="font-size:11px;color:#556;margin-bottom:8px">Paste an OCB build block, parse phases, then run. Git stash auto-backup + HTML check + auto-rollback on fail.</div>
-            <textarea id="hisav-ocb-input" class="hisav-idea-ta" style="height:120px;font-family:monospace;font-size:11px" placeholder="Paste OCB block here…&#10;═══ PHASE 1 — Fix popup ═══&#10;1. Find the button…" spellcheck="false"></textarea>
-            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
-              <button class="hisav-save-btn" onclick="hisavOcbParse()" title="Parse OCB block into phases">🔍 Parse</button>
-              <button class="hisav-save-btn" style="background:#0a2a0a;border-color:#1a5a1a;color:#6f6" onclick="hisavOcbRun()" title="Run OCB block — git stash before, auto-rollback on fail">▶ Run</button>
-              <button class="hisav-idea-btn" onclick="document.getElementById('hisav-ocb-input').value=''" title="Clear input">✕ Clear</button>
-              <span id="hisav-ocb-status" style="font-size:11px;color:#4af;margin-left:auto;align-self:center"></span>
+            <!-- READER panel -->
+            <div style="font-size:11px;color:#556;margin-bottom:6px">Paste an OCB build block. Parse to preview phases, then Confirm &amp; Run with full guard suite.</div>
+            <textarea id="hisav-ocb-input" class="hisav-idea-ta" style="height:110px;font-family:monospace;font-size:11px" placeholder="Paste OCB block here…&#10;═══ PHASE 1 — Fix popup ═══&#10;1. Find the button…" spellcheck="false"></textarea>
+            <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center">
+              <button class="hisav-save-btn" onclick="hisavOcbParse()" title="Parse OCB block into phases — calls /api/ocb/parse">🔍 Parse</button>
+              <button class="hisav-idea-btn" onclick="hisavOcbClear()" title="Clear input and reset all panels">✕ Clear</button>
+              <label style="font-size:10px;color:#889;cursor:pointer;display:flex;align-items:center;gap:3px"><input type="checkbox" id="hisav-ocb-dryrun"> Dry Run</label>
+              <span id="hisav-ocb-status" style="font-size:11px;color:#4af;margin-left:auto"></span>
             </div>
-            <!-- Phase badges -->
-            <div id="hisav-ocb-badges" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:20px"></div>
-            <!-- Live log -->
-            <div id="hisav-ocb-log" style="margin-top:8px;background:#060a10;border:1px solid #1e2a3a;border-radius:4px;padding:8px;font:11px monospace;color:#889;max-height:160px;overflow-y:auto;white-space:pre-wrap;display:none">Waiting…</div>
+            <!-- Phase preview table (repurposed badges area) -->
+            <div id="hisav-ocb-badges" style="margin-top:8px;min-height:16px"></div>
+            <!-- RUNNER panel — appears after parse succeeds -->
+            <div id="hisav-ocb-runner-panel" style="display:none;margin-top:10px;border-top:1px solid #1e2a3a;padding-top:8px">
+              <button class="hisav-save-btn" style="background:#0a2a0a;border-color:#1a5a1a;color:#6f6" onclick="hisavOcbRun()" title="Run with full guard suite — stash, HTML check, MOT">▶ Confirm &amp; Run</button>
+              <!-- Guard status indicators -->
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">
+                <span id="hisav-ocb-guard-lock"  style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">Lock ⬜</span>
+                <span id="hisav-ocb-guard-stash" style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">Stash ⬜</span>
+                <span id="hisav-ocb-guard-bs4"   style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">BS4 ⬜</span>
+                <span id="hisav-ocb-guard-js"    style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">JS ⬜</span>
+                <span id="hisav-ocb-guard-reg"   style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">Registry ⬜</span>
+                <span id="hisav-ocb-guard-mot"   style="font-size:10px;padding:2px 7px;border-radius:10px;background:#111;border:1px solid #334">MOT ⬜</span>
+              </div>
+              <!-- Live output -->
+              <div id="hisav-ocb-log" style="margin-top:7px;background:#060a10;border:1px solid #1e2a3a;border-radius:4px;padding:8px;font:11px monospace;color:#889;max-height:160px;overflow-y:auto;white-space:pre-wrap;display:none">Waiting…</div>
+            </div>
+            <!-- RESULTS panel — appears after run completes -->
+            <div id="hisav-ocb-results-panel" style="display:none;margin-top:10px;border-top:1px solid #1e2a3a;padding-top:8px">
+              <div style="font-size:11px;font-weight:bold;color:#aac;margin-bottom:5px">Results</div>
+              <div id="hisav-ocb-results-body" style="font-size:11px;color:#889"></div>
+              <button id="hisav-ocb-rollback-btn" class="hisav-idea-btn" style="display:none;margin-top:6px;color:#f66;border-color:#622" onclick="hisavOcbRollback()" title="Rollback changes via git stash pop">↩ Rollback</button>
+            </div>
           </div>
         </div>
       </div><!-- /hisav-section s11 -->
@@ -3692,64 +3712,208 @@ body{padding-bottom:28px}
     }).catch(function(){ typeof toast==='function'&&toast('Save failed','error',2000); });
   };
 
-  // ── OCB Runner Panel (Section 11) ────────────────────────────────────────
+  // ── OCB Runner Panel (Section 11) v2 ─────────────────────────────────────
+
+  function _ocbGuard(id, ok){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var label = el.textContent.split(' ')[0];
+    if(ok===null||ok===undefined){
+      el.textContent = label+' ⬜';
+      el.style.background='#111'; el.style.borderColor='#334'; el.style.color='#889';
+    } else if(ok){
+      el.textContent = label+' ✅';
+      el.style.background='#0a2a0a'; el.style.borderColor='#1a5a1a'; el.style.color='#6f6';
+    } else {
+      el.textContent = label+' ❌';
+      el.style.background='#2a0a0a'; el.style.borderColor='#5a1a1a'; el.style.color='#f66';
+    }
+  }
+
+  function _ocbResetGuards(){
+    ['hisav-ocb-guard-lock','hisav-ocb-guard-stash','hisav-ocb-guard-bs4',
+     'hisav-ocb-guard-js','hisav-ocb-guard-reg','hisav-ocb-guard-mot']
+    .forEach(function(id){ _ocbGuard(id, null); });
+  }
+
+  function _ocbRenderResults(d){
+    var panel = document.getElementById('hisav-ocb-results-panel');
+    var body  = document.getElementById('hisav-ocb-results-body');
+    var rbtn  = document.getElementById('hisav-ocb-rollback-btn');
+    if(!panel||!body) return;
+    panel.style.display = '';
+    var html = '';
+    // Files changed table
+    var files = d.file_details||[];
+    if(files.length){
+      html += '<table style="width:100%;border-collapse:collapse;margin-bottom:8px">';
+      html += '<tr style="color:#556;font-size:10px"><th style="text-align:left">File</th><th>+</th><th>−</th></tr>';
+      files.forEach(function(f){
+        html += '<tr style="font-size:10px"><td style="color:#aac">'+_esc(f.name)+'</td>'
+              +'<td style="color:#6f6;text-align:center">+'+f.lines_added+'</td>'
+              +'<td style="color:#f66;text-align:center">−'+f.lines_removed+'</td></tr>';
+      });
+      html += '</table>';
+    }
+    // Check results A/B/C/D
+    var cr = d.check_results||{};
+    var checks = [
+      ['A_bs4','A: BS4 structure'],['B_js','B: JS integrity'],
+      ['C_registry','C: Element registry'],['D_mot','D: MOT']
+    ];
+    checks.forEach(function(c){
+      var key=c[0], lbl=c[1], r=cr[key]||{};
+      var col = r.ok ? '#6f6' : '#f66';
+      var sym = r.ok ? '✅' : '❌';
+      var det = r.score||r.note||(r.ok?'':''+JSON.stringify(r.details||r.error||'')).substring(0,80);
+      html += '<div style="font-size:10px;color:'+col+';margin-bottom:3px">'+sym+' '+_esc(lbl)
+            +(det?' — <span style="color:#889">'+_esc(det)+'</span>':'')+'</div>';
+    });
+    // MOT score badge
+    var mot = cr['D_mot']||{};
+    var motScore = mot.score||'';
+    if(motScore){
+      var motCol = mot.ok ? '#0a2a0a' : '#2a0a0a';
+      var motBdr = mot.ok ? '#1a5a1a' : '#5a1a1a';
+      html += '<div style="margin-top:6px;display:inline-block;padding:3px 10px;border-radius:10px;background:'+motCol+';border:1px solid '+motBdr
+            +';font-size:11px;color:'+(mot.ok?'#6f6':'#f66')+'">'+_esc(motScore)+'</div>';
+    }
+    // Git diff accordion
+    if(d.git_diff_stat){
+      html += '<details style="margin-top:8px"><summary style="font-size:10px;color:#556;cursor:pointer">Git diff (first 50 lines)</summary>'
+            +'<pre style="font-size:10px;color:#779;background:#060a10;padding:6px;border-radius:3px;overflow-x:auto;max-height:120px">'
+            +_esc(d.git_diff_stat.split('\n').slice(0,50).join('\n'))+'</pre></details>';
+    }
+    body.innerHTML = html;
+    if(rbtn) rbtn.style.display = d.rollback_available ? '' : 'none';
+  }
+
+  window.hisavOcbClear = function(){
+    var inp = document.getElementById('hisav-ocb-input');
+    if(inp) inp.value = '';
+    var badges = document.getElementById('hisav-ocb-badges');
+    if(badges) badges.innerHTML = '';
+    var status = document.getElementById('hisav-ocb-status');
+    if(status) status.textContent = '';
+    var runner = document.getElementById('hisav-ocb-runner-panel');
+    if(runner) runner.style.display = 'none';
+    var results = document.getElementById('hisav-ocb-results-panel');
+    if(results) results.style.display = 'none';
+    var log = document.getElementById('hisav-ocb-log');
+    if(log){ log.style.display='none'; log.textContent='Waiting…'; }
+    _ocbResetGuards();
+  };
+
   window.hisavOcbParse = function(){
-    var input = document.getElementById('hisav-ocb-input');
+    var input  = document.getElementById('hisav-ocb-input');
     var badges = document.getElementById('hisav-ocb-badges');
     var status = document.getElementById('hisav-ocb-status');
-    if(!input||!badges) return;
-    var text = input.value;
-    var phases = text.match(/[═=]{3,}\s*PHASE\s+\d+[^═=]*/gi)||[];
-    if(!phases.length){ if(status) status.textContent='No phases found'; return; }
-    badges.innerHTML = phases.map(function(p,i){
-      var m = p.match(/PHASE\s+(\d+)\s*[—\-]+\s*([^\n]+)/i);
-      var name = m ? m[2].trim().substring(0,30) : 'Phase '+(i+1);
-      return '<span style="background:#0a1a2a;border:1px solid #2a4a6a;color:#4af;padding:2px 8px;border-radius:10px;font-size:10px">P'+(i+1)+': '+_esc(name)+'</span>';
-    }).join('');
-    if(status) status.textContent = phases.length+' phase'+(phases.length===1?'':'s')+' found';
+    var runner = document.getElementById('hisav-ocb-runner-panel');
+    if(!input) return;
+    var text = input.value.trim();
+    if(!text){ if(status) status.textContent='Paste an OCB block first'; return; }
+    if(status) status.textContent='Parsing…';
+    fetch('/api/ocb/parse',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ocb_text:text})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.error){ if(status) status.textContent='Error: '+d.error; return; }
+      var phases = d.phases||[];
+      if(!phases.length){ if(status) status.textContent='No phases found'; return; }
+      var pf = d.pre_flight||{};
+      // Render parse table
+      if(badges){
+        var tbl = '<table style="width:100%;border-collapse:collapse;font-size:10px;margin-bottom:4px">'
+                + '<tr style="color:#556"><th style="text-align:left">Phase</th><th style="text-align:left">Files</th><th>Risk</th></tr>';
+        phases.forEach(function(p){
+          var rCol = p.risk_level==='HIGH'?'#f66':p.risk_level==='MEDIUM'?'#fa0':'#6f6';
+          tbl += '<tr><td style="color:#4af;padding:2px 4px">P'+p.phase+': '+_esc((p.phase_name||'').substring(0,22))+'</td>'
+               + '<td style="color:#889;padding:2px 4px">'+(p.files_affected||[]).map(function(f){return _esc(f);}).join(', ')+'</td>'
+               + '<td style="color:'+rCol+';text-align:center;padding:2px 4px">'+_esc(p.risk_level||'LOW')+'</td></tr>';
+        });
+        tbl += '</table>';
+        if((pf.warnings||[]).length){
+          tbl += '<div style="font-size:10px;color:#fa0;margin-top:2px">⚠ '
+               + pf.warnings.map(function(w){return _esc(w);}).join(' | ')+'</div>';
+        }
+        badges.innerHTML = tbl;
+      }
+      if(status) status.textContent = phases.length+' phase'+(phases.length===1?'':'s')+' — ready to run';
+      if(runner) runner.style.display = '';
+      _ocbResetGuards();
+    })
+    .catch(function(e){ if(status) status.textContent='Parse error: '+(e.message||'?'); });
   };
 
   window.hisavOcbRun = function(){
-    var input = document.getElementById('hisav-ocb-input');
-    var log = document.getElementById('hisav-ocb-log');
+    var input  = document.getElementById('hisav-ocb-input');
+    var log    = document.getElementById('hisav-ocb-log');
     var status = document.getElementById('hisav-ocb-status');
-    var badges = document.getElementById('hisav-ocb-badges');
+    var dryrun = document.getElementById('hisav-ocb-dryrun');
     if(!input) return;
     var text = input.value.trim();
     if(!text){ typeof toast==='function'&&toast('Paste an OCB block first','error',2000); return; }
-    if(log){ log.style.display='block'; log.textContent='Sending to OCB Runner…'; }
+    _ocbResetGuards();
+    if(log){ log.style.display='block'; log.textContent='Starting OCB run…'; }
     if(status) status.textContent='Running…';
-    fetch('/api/ocb/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ocb_text:text})})
-    .then(function(r){return r.json();}).then(function(d){
-      if(status) status.textContent = d.status||'Done';
-      if(log) log.textContent = (d.log||[]).join('\n')||'No log output.';
-      if(badges&&d.phases){
-        badges.innerHTML = d.phases.map(function(p){
-          var col = p.status==='DONE'?'#2a7':p.status==='FAILED'?'#c44':p.status==='RUNNING'?'#fa0':'#334';
-          return '<span style="background:'+col+'22;border:1px solid '+col+'44;color:'+col+';padding:2px 8px;border-radius:10px;font-size:10px">P'+p.phase_num+': '+_esc((p.phase_name||'').substring(0,20))+' ('+p.status+')</span>';
-        }).join('');
-      }
-    }).catch(function(e){
+    var isDry = dryrun ? dryrun.checked : false;
+    fetch('/api/ocb/run',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ocb_text:text, dry_run:isDry})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.error){ if(status) status.textContent='Error: '+d.error; return; }
+      var runId = d.run_id||'';
+      // Poll every 2s
+      var pollCount = 0;
+      var pollId = setInterval(function(){
+        pollCount++;
+        if(pollCount>90){ clearInterval(pollId); if(status) status.textContent='Timed out'; return; }
+        fetch('/api/ocb/status'+(runId?'/'+runId:''))
+        .then(function(r){return r.json();})
+        .then(function(s){
+          var lo = s.live_output||s.log||[];
+          if(log && lo.length) log.textContent = lo.join('\n');
+          if(status) status.textContent = s.status||'Running…';
+          var gr = s.guard_results||{};
+          _ocbGuard('hisav-ocb-guard-lock',  gr.lock);
+          _ocbGuard('hisav-ocb-guard-stash', gr.stash);
+          _ocbGuard('hisav-ocb-guard-bs4',   gr.bs4);
+          _ocbGuard('hisav-ocb-guard-js',    gr.js);
+          _ocbGuard('hisav-ocb-guard-reg',   gr.registry);
+          _ocbGuard('hisav-ocb-guard-mot',   gr.mot);
+          var terminal = ['DONE','PARTIAL','CANCELLED','ROLLED_BACK','FAILED','BLOCKED','DRY_RUN'];
+          if(terminal.indexOf(s.status)!==-1){
+            clearInterval(pollId);
+            fetch('/api/ocb/checks').then(function(r){return r.json();}).then(function(cr){
+              s.check_results = cr;
+              fetch('/api/ocb/results').then(function(r2){return r2.json();}).then(function(res){
+                _ocbRenderResults(res);
+              }).catch(function(){ _ocbRenderResults(s); });
+            }).catch(function(){ _ocbRenderResults(s); });
+          }
+        }).catch(function(){});
+      }, 2000);
+    })
+    .catch(function(e){
       if(log) log.textContent='Error: '+(e.message||'unknown');
       if(status) status.textContent='Error';
     });
-    // Poll for live updates every 2s
-    var pollCount = 0;
-    var pollId = setInterval(function(){
-      pollCount++;
-      if(pollCount>60){ clearInterval(pollId); return; }
-      fetch('/api/ocb/status').then(function(r){return r.json();}).then(function(d){
-        if(log) log.textContent = (d.log||[]).join('\n')||log.textContent;
-        if(status) status.textContent = d.status||'Running…';
-        if(badges&&d.phases){
-          badges.innerHTML = d.phases.map(function(p){
-            var col = p.status==='DONE'?'#2a7':p.status==='FAILED'?'#c44':p.status==='RUNNING'?'#fa0':'#334';
-            return '<span style="background:'+col+'22;border:1px solid '+col+'44;color:'+col+';padding:2px 8px;border-radius:10px;font-size:10px">P'+p.phase_num+': '+_esc((p.phase_name||'').substring(0,20))+' ('+p.status+')</span>';
-          }).join('');
-        }
-        if(d.status==='DONE'||d.status==='PARTIAL'||d.status==='CANCELLED'||d.status==='ROLLED_BACK') clearInterval(pollId);
-      }).catch(function(){});
-    }, 2000);
+  };
+
+  window.hisavOcbRollback = function(){
+    var btn  = document.getElementById('hisav-ocb-rollback-btn');
+    var status = document.getElementById('hisav-ocb-status');
+    if(btn) btn.disabled = true;
+    fetch('/api/ocb/rollback',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(status) status.textContent = d.ok ? 'Rolled back ✅' : 'Rollback failed: '+(d.error||'?');
+      if(btn){ btn.disabled=false; if(d.ok) btn.style.display='none'; }
+    })
+    .catch(function(e){
+      if(status) status.textContent='Rollback error: '+(e.message||'?');
+      if(btn) btn.disabled=false;
+    });
   };
 
   // Wire s10/s11 toggle load

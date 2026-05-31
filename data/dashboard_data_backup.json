@@ -1,29 +1,19 @@
 {
   "meta": {
-    "generated": "2026-05-30T21:37:52",
+    "generated": "2026-05-30T21:38:12",
     "generator": "dashboard_builder.py"
   },
   "tasks": {
-    "last_updated": "2026-05-30T21:37:52",
+    "last_updated": "2026-05-30T21:38:12",
     "data": [
-      {
-        "id": "t001",
-        "title": "Star Citizen full support",
-        "column": "Up Next",
-        "notes": "v0.2 milestone. Config path: C:\\Program Files\\Roberts Space Industries\\StarCitizen",
-        "priority": "high",
-        "tool": "AAFL",
-        "created": "2026-05-20",
-        "updated": "2026-05-30"
-      },
       {
         "id": "t031",
         "title": "Run meta-loop dry-run (Scott reviews proposal)",
         "column": "Up Next",
         "notes": "Run meta_loop.bat --once. Confirm one .md appears in meta_proposals/. Review the proposal.",
         "priority": "high",
-        "tool": "Meta Loop",
-        "created": "2026-05-25",
+        "tool": "meta_loop.bat",
+        "created": "2026-05-29",
         "updated": "2026-05-30"
       },
       {
@@ -32,8 +22,18 @@
         "column": "Up Next",
         "notes": "Use Windows Task Scheduler to run meta_loop.bat --once nightly (e.g. 3am). Set working directory.",
         "priority": "high",
-        "tool": "Meta Loop",
-        "created": "2026-05-25",
+        "tool": "Windows Task Scheduler",
+        "created": "2026-05-29",
+        "updated": "2026-05-30"
+      },
+      {
+        "id": "t001",
+        "title": "Star Citizen full support",
+        "column": "Up Next",
+        "notes": "v0.2 milestone. Config path: C:\\Program Files\\Roberts Space Industries\\StarCitizen",
+        "priority": "high",
+        "tool": "AAFL",
+        "created": "2026-05-28",
         "updated": "2026-05-30"
       },
       {
@@ -42,8 +42,8 @@
         "column": "Up Next",
         "notes": "Needs CLOUDFLARE_API_KEY + CLOUDFLARE_ACCOUNT_ID. Get token: dash.cloudflare.com",
         "priority": "medium",
-        "tool": "Cloudflare",
-        "created": "2026-05-22",
+        "tool": "Cloudflare Dashboard",
+        "created": "2026-05-27",
         "updated": "2026-05-30"
       },
       {
@@ -52,8 +52,8 @@
         "column": "In Progress",
         "notes": "Manual check — make sure all 6 Claude skills are enabled at claude.ai/customize/",
         "priority": "medium",
-        "tool": "Claude",
-        "created": "2026-05-21",
+        "tool": "Claude Web UI",
+        "created": "2026-05-26",
         "updated": "2026-05-30"
       },
       {
@@ -62,8 +62,8 @@
         "column": "Blocked",
         "notes": "Blocked: console.groq.com login broken. Google OAuth loops back to login page.",
         "priority": "high",
-        "tool": "Groq",
-        "created": "2026-05-23",
+        "tool": "Groq Console",
+        "created": "2026-05-25",
         "updated": "2026-05-30"
       },
       {
@@ -83,17 +83,17 @@
         "notes": "v0.3 milestone. Wire Gemma 4 / Qwen2.5-VL into AAFL loop. LM Studio v0.4.12 installed.",
         "priority": "medium",
         "tool": "LM Studio",
-        "created": "2026-05-26",
+        "created": "2026-05-23",
         "updated": "2026-05-30"
       },
       {
         "id": "t007",
         "title": "config module — 6 problems (v0.2)",
         "column": "Backlog",
-        "notes": "Config Mediator module. Handles game config files — WT spin fix lives here. Drop into /modules/",
+        "notes": "Config Mediator module. Handles game config files — WT spin fix lives here. Drop into /problems/ directory",
         "priority": "medium",
-        "tool": "Config Mediator",
-        "created": "2026-05-27",
+        "tool": "Python",
+        "created": "2026-05-22",
         "updated": "2026-05-30"
       },
       {
@@ -103,7 +103,7 @@
         "notes": "AI learns your setup across sessions. Replace or augment SQLite knowledge store.",
         "priority": "medium",
         "tool": "ChromaDB",
-        "created": "2026-05-28",
+        "created": "2026-05-21",
         "updated": "2026-05-30"
       },
       {
@@ -112,18 +112,18 @@
         "column": "Backlog",
         "notes": "Detect game, auto-install community keybind profile. SubliminalsTV SC profiles ready.",
         "priority": "medium",
-        "tool": "Keybinding Profiles",
-        "created": "2026-05-29",
+        "tool": "Python",
+        "created": "2026-05-20",
         "updated": "2026-05-30"
       },
       {
         "id": "t008",
         "title": "identity module — 7 problems (v0.3)",
         "column": "Backlog",
-        "notes": "Device Identity module. Device naming, VID/PID, config name mismatch. Drop into /modules/",
+        "notes": "Device Identity module. Device naming, VID/PID, config name mismatch. Drop into /problems/ directory",
         "priority": "low",
-        "tool": "Identity Module",
-        "created": "2026-05-30",
+        "tool": "Python",
+        "created": "2026-05-19",
         "updated": "2026-05-30"
       },
       {
@@ -132,8 +132,8 @@
         "column": "Backlog",
         "notes": "USB port, hub, power — detect only (no auto-fix). Drop into /problems/ directory",
         "priority": "low",
-        "tool": "Physical Diagnostics",
-        "created": "2026-05-30",
+        "tool": "Python",
+        "created": "2026-05-18",
         "updated": "2026-05-30"
       },
       {
@@ -142,28 +142,28 @@
         "column": "Backlog",
         "notes": "AI builds custom profiles from user history. Warns when a game patch breaks existing profiles.",
         "priority": "low",
-        "tool": "AI Preferences",
-        "created": "2026-05-30",
+        "tool": "Python",
+        "created": "2026-05-17",
         "updated": "2026-05-30"
       },
       {
         "id": "t013",
         "title": "Ko-fi + Itch.io links to README",
         "column": "Backlog",
-        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero dependencies.",
+        "notes": "Fastest path to first £. Itch.io PWYW + Ko-fi donate button. ~30 min work. Zero coding.",
         "priority": "low",
-        "tool": "Ko-fi",
-        "created": "2026-05-30",
+        "tool": "GitHub",
+        "created": "2026-05-16",
         "updated": "2026-05-30"
       },
       {
         "id": "t014",
         "title": "Get Spin Doctor public on GitHub",
         "column": "Backlog",
-        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with v0.2 release.",
+        "notes": "Repo: jscottl-sketch/vkb-spin-doctor. Currently private backup only. Go public with v0.2 milestone.",
         "priority": "low",
         "tool": "GitHub",
-        "created": "2026-05-30",
+        "created": "2026-05-15",
         "updated": "2026-05-30"
       },
       {
@@ -173,7 +173,7 @@
         "notes": "Any hardware, any game. No Python needed. Use PyInstaller or Nuitka. Full install guide.",
         "priority": "low",
         "tool": "PyInstaller",
-        "created": "2026-05-30",
+        "created": "2026-05-14",
         "updated": "2026-05-30"
       },
       {
@@ -328,14 +328,21 @@
       }
     ],
     "meta": {
-      "updated": "2026-05-30T21:37:52",
+      "updated": "2026-05-30T21:38:12",
       "updated_by": "mcu_optimizer",
       "version": "1.0"
     }
   },
   "activity_feed": {
-    "last_updated": "2026-05-30T21:37:52",
+    "last_updated": "2026-05-30T21:38:12",
     "data": [
+      {
+        "timestamp": "2026-05-30T21:37:59",
+        "type": "session_log",
+        "title": "Session Log -- 2026-05-30-cc11",
+        "detail": "2026-05-30-cc11.md",
+        "file": "2026-05-30-cc11.md"
+      },
       {
         "timestamp": "2026-05-30T21:37:39",
         "type": "session_log",
@@ -372,13 +379,6 @@
         "file": "2026-05-30_15-47_not_json_at_all.md"
       },
       {
-        "timestamp": "2026-05-30T15:46:32",
-        "type": "session_log",
-        "title": "Session Log — 2026-05-30 Detective + Timeline + Scroll Fix",
-        "detail": "session_2026-05-30-detective-timeline.md",
-        "file": "session_2026-05-30-detective-timeline.md"
-      },
-      {
         "timestamp": "2026-05-29T12:05:00",
         "type": "loop_run",
         "title": "not json at all }{",
@@ -388,7 +388,7 @@
     ]
   },
   "aafl_runs": {
-    "last_updated": "2026-05-30T21:37:52",
+    "last_updated": "2026-05-30T21:38:12",
     "data": [
       {
         "id": 10,
@@ -513,12 +513,12 @@
     ]
   },
   "cost_tracker": {
-    "last_updated": "2026-05-30T21:37:52",
+    "last_updated": "2026-05-30T21:38:12",
     "data": {
-      "total_spent": 0.558031,
-      "avg_per_run": 0.001163,
-      "runs_today": 41,
-      "runs_total": 480
+      "total_spent": 0.565099,
+      "avg_per_run": 0.001168,
+      "runs_today": 45,
+      "runs_total": 484
     }
   }
 }
