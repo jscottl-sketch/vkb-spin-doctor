@@ -99,49 +99,95 @@ _STOPWORDS = {
 
 # ── Parse ─────────────────────────────────────────────────────────────────────
 
+_SEP_CHARS   = frozenset('═=─-')
+_PH_NUM_RE   = re.compile(r'(?:Phase|STEP|TASK)\s+(\d+)', re.IGNORECASE)
+_PH_NAME_RE  = re.compile(r'(?:Phase|STEP|TASK)\s+\d+\s*[—–:\-]+\s*(.+)', re.IGNORECASE)
+
+
+def _is_sep_line(s: str) -> bool:
+    """True if line starts with 3+ separator chars AND contains 'Phase/STEP/TASK N'."""
+    if len(s) < 6 or s[0] not in _SEP_CHARS:
+        return False
+    n = 0
+    for c in s[:8]:
+        if c in _SEP_CHARS:
+            n += 1
+        else:
+            break
+    return n >= 3 and bool(_PH_NUM_RE.search(s))
+
+
+def _body_tasks(body_lines: list) -> list:
+    tasks = []
+    for bl in body_lines[:1000]:
+        m = _TASK_LINE.match(bl)
+        if m:
+            tasks.append({"num": int(m.group(1)), "text": m.group(2).strip()})
+    return tasks
+
+
 def parse_ocb_block(text: str) -> list:
-    """Split OCB text into structured phases. Falls back to line-scan if delimiter regex fails."""
-    phases = []
-    parts  = _PHASE_SEP.split(text)
-    # split() with 2 capturing groups → [pre, num, name, body, num, name, body, ...]
-    i = 1
-    while i + 2 < len(parts):
-        try:
-            phase_num  = int(parts[i])
-        except ValueError:
-            i += 3
-            continue
-        phase_name = parts[i + 1].strip()
-        body       = parts[i + 2]
-        tasks = []
-        for line in body.splitlines():
-            m = _TASK_LINE.match(line)
-            if m:
-                tasks.append({"num": int(m.group(1)), "text": m.group(2).strip()})
-        phases.append({"phase_num": phase_num, "phase_name": phase_name, "tasks": tasks})
-        i += 3
+    """
+    O(n) line-scan parser. Never hangs. Three passes:
+    1) Lines starting with 3+ sep chars + 'Phase N' (═══ Phase 1 — Title ═══)
+    2) Bare 'Phase N — Title' lines
+    3) Fallback: entire text as one phase
+    Hard cap: 10 000 lines, 1 000 body lines per phase.
+    """
+    lines = text.splitlines()
+    phases: list = []
+    cur_num  = None
+    cur_name = None
+    cur_body: list = []
+
+    for raw in lines[:10000]:
+        s = raw.strip()
+        if _is_sep_line(s):
+            if cur_num is not None:
+                phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+            nm = _PH_NUM_RE.search(s)
+            try:
+                cur_num = int(nm.group(1))
+            except (ValueError, AttributeError):
+                continue
+            nm2 = _PH_NAME_RE.search(s)
+            raw_name = nm2.group(1) if nm2 else ""
+            cur_name = raw_name.rstrip('═=─- ').strip() or f"Phase {cur_num}"
+            cur_body = []
+        elif cur_num is not None:
+            cur_body.append(raw)
+
+    if cur_num is not None:
+        phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
 
     if phases:
         return phases
 
-    # Fallback: scan for "Phase N — Title" lines without box-drawing delimiters
-    matches = list(_PHASE_FALLBACK.finditer(text))
-    for idx, m in enumerate(matches):
-        start  = m.end()
-        end    = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
-        body   = text[start:end]
-        tasks  = []
-        for line in body.splitlines():
-            tm = _TASK_LINE.match(line)
-            if tm:
-                tasks.append({"num": int(tm.group(1)), "text": tm.group(2).strip()})
-        try:
-            pnum = int(m.group(1))
-        except ValueError:
-            pnum = idx + 1
-        phases.append({"phase_num": pnum, "phase_name": m.group(2).strip(), "tasks": tasks})
+    # Pass 2: bare "Phase N — Title" lines (no leading separator chars)
+    cur_num = cur_name = None
+    cur_body = []
+    _bare = re.compile(r'^\s*(?:Phase|STEP|TASK)\s+(\d+)\s*[—–:\-]+\s*(.+)$', re.IGNORECASE)
+    for raw in lines[:10000]:
+        m = _bare.match(raw)
+        if m:
+            if cur_num is not None:
+                phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+            try:
+                cur_num = int(m.group(1))
+                cur_name = m.group(2).strip()
+                cur_body = []
+            except ValueError:
+                pass
+        elif cur_num is not None:
+            cur_body.append(raw)
+    if cur_num is not None:
+        phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
 
-    return phases
+    if phases:
+        return phases
+
+    # Pass 3: treat entire text as one phase
+    return [{"phase_num": 1, "phase_name": "Task Block", "tasks": _body_tasks(lines)}]
 
 
 # ── File identification ───────────────────────────────────────────────────────
@@ -197,16 +243,20 @@ def extract_relevant_section(filepath: Path, task_text: str) -> dict:
         return {"section_text": "\n".join(raw_lines[:end]),
                 "start_line": 1, "end_line": end}
 
-    # Score each line using a ±50-line sliding window
+    # Score each line using a ±50-line sliding window.
+    # Capped at 2000 lines to prevent O(n²) blocking on large files.
     best_idx   = 0
     best_score = -1
     half_win   = 50
-    for i in range(total):
+    scan_cap   = min(total, 2000)
+    for i in range(scan_cap):
         chunk = " ".join(raw_lines[max(0, i - half_win): i + half_win + 1]).lower()
         score = sum(1 for kw in keywords if kw in chunk)
         if score > best_score:
             best_score = score
             best_idx   = i
+        if best_score >= len(keywords):
+            break  # All keywords found — stop scanning
 
     start = max(0, best_idx - 150)
     end   = min(total, best_idx + 150)

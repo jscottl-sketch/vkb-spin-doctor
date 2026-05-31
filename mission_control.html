@@ -5457,9 +5457,9 @@ Find mission_control.html..."
       <label style="font-weight:bold">Live Output</label>
       <div id="ocb2-log"
         style="flex:1;overflow-y:auto;font-family:monospace;
-        font-size:0.8rem;background:#0a0a0f;color:#e0e0e0;
-        border:1px solid var(--border);border-radius:6px;
-        padding:12px;min-height:300px;white-space:pre-wrap">Waiting for OCB block...</div>
+        font-size:0.8rem;background:#050a05;color:#22d3a0;
+        border:1px solid #1a3a2a;border-radius:6px;
+        padding:12px;min-height:300px;max-height:300px;white-space:pre-wrap">Waiting for OCB block...</div>
       <!-- Progress bar -->
       <div id="ocb2-progress-wrap" style="background:#1a1a2a;border-radius:4px;height:20px;overflow:hidden;border:1px solid #2a2a3a">
         <div id="ocb2-progress-fill" class="ocb-bar-fill" style="height:100%;width:0%;background:#22c55e;transition:width 0.4s ease;border-radius:4px"></div>
@@ -13148,11 +13148,12 @@ function _ocb2Ts() {
 function _ocb2SetActive(active) {
   const ab = document.getElementById('ocb2-abort-btn');
   const wp = document.getElementById('ocb2-progress-wrap');
-  if (ab) ab.style.display = active ? 'inline-block' : 'none';
+  if (ab) { ab.style.display = active ? 'inline-block' : 'none'; ab.disabled = false; }
   if (wp) {
     if (active) wp.classList.add('ocb-bar-active');
     else wp.classList.remove('ocb-bar-active');
   }
+  _ocb2SetBarColor(active ? 'running' : 'done');
 }
 
 function _ocb2SetProgress(pct, statusText) {
@@ -13160,6 +13161,14 @@ function _ocb2SetProgress(pct, statusText) {
   const sl  = document.getElementById('ocb2-status-line');
   if (bar) bar.style.width = Math.min(100, Math.max(0, pct)) + '%';
   if (sl && statusText !== undefined) sl.textContent = statusText;
+}
+
+function _ocb2SetBarColor(state) {
+  const fill = document.getElementById('ocb2-progress-fill');
+  if (!fill) return;
+  if (state === 'error')    fill.style.background = '#ef4444';
+  else if (state === 'running') fill.style.background = '#f59e0b';
+  else                          fill.style.background = '#22c55e';
 }
 
 function _ocb2RenderPhaseCard(container, index, phaseName, taskCount, status) {
@@ -13189,7 +13198,7 @@ function _ocb2RenderPhaseCard(container, index, phaseName, taskCount, status) {
 
 function ocb2Parse() {
   const input = document.getElementById('ocb2-input').value;
-  if (!input.trim()) return;
+  if (!input.trim()) { _ocb2AppendLog('[' + _ocb2Ts() + '] Paste an OCB block first'); return; }
   const log    = document.getElementById('ocb2-log');
   const badge  = document.getElementById('ocb2-status-badge');
   const cards  = document.getElementById('ocb2-phase-badges');
@@ -13198,14 +13207,15 @@ function ocb2Parse() {
   badge.style.background = '#f59e0b22';
   badge.style.color = '';
   cards.innerHTML = '';
+  window.ocbAbort = false;
   _ocb2SetActive(true);
   _ocb2SetProgress(5, 'Reading input...');
 
-  // Animated parse stages before sending to server
+  // Animated parse stages (cleared immediately on server response)
   const t1 = setTimeout(function() { _ocb2SetProgress(20, 'Splitting into phases...'); }, 200);
   const t2 = setTimeout(function() { _ocb2SetProgress(40, 'Analysing structure...'); }, 600);
 
-  // 30-second timeout — prevents infinite "Analysing structure..." stuck state
+  // 30-second hard timeout
   const _parseCtrl = new AbortController();
   const _parseTimeout = setTimeout(function() {
     _parseCtrl.abort();
@@ -13223,7 +13233,8 @@ function ocb2Parse() {
     clearTimeout(t1); clearTimeout(t2); clearTimeout(_parseTimeout);
     _ocb2SetActive(false);
     if (data.error) {
-      _ocb2SetProgress(0, '');
+      _ocb2SetBarColor('error');
+      _ocb2SetProgress(0, '❌ ' + data.error);
       log.textContent = '[' + _ocb2Ts() + '] ❌ Parse failed: ' + data.error;
       badge.textContent = 'Parse Error';
       badge.style.background = '#ef444422';
@@ -13233,11 +13244,12 @@ function ocb2Parse() {
     const phases = data.phases || [];
     const total  = phases.length;
     if (total === 0) {
-      _ocb2SetProgress(0, 'No phases found — check OCB block format (═══ Phase N — Title ═══)');
+      _ocb2SetBarColor('running');
+      _ocb2SetProgress(0, '⚠️ No phases found — check format: ═══ Phase 1 — Title ═══');
       badge.textContent = 'No Phases';
       badge.style.background = '#f59e0b22';
       badge.style.color = '#fa0';
-      log.textContent = '[' + _ocb2Ts() + '] ⚠️ No phases found. Format: ═══ Phase 1 — Title ═══';
+      log.textContent += '\n[' + _ocb2Ts() + '] ⚠️ No phases found. Format: ═══ Phase 1 — Title ═══';
       return;
     }
     // Animate per-phase validation
@@ -13261,11 +13273,12 @@ function ocb2Parse() {
   }).catch(function(e) {
     clearTimeout(t1); clearTimeout(t2); clearTimeout(_parseTimeout);
     _ocb2SetActive(false);
-    _ocb2SetProgress(0, '');
+    _ocb2SetBarColor('error');
     const msg = e.name === 'AbortError'
-      ? 'Parse timed out after 30s — check server is running'
+      ? 'Parse timed out after 30s — server did not respond'
       : e.message;
-    log.textContent = '[' + _ocb2Ts() + '] ❌ Parse failed: ' + msg;
+    _ocb2SetProgress(0, '❌ ' + msg);
+    log.textContent += '\n[' + _ocb2Ts() + '] ❌ Parse failed: ' + msg;
     badge.textContent = 'Error';
     badge.style.background = '#ef444422';
     badge.style.color = '#f66';
@@ -13274,12 +13287,13 @@ function ocb2Parse() {
 
 function ocb2Run() {
   const input = document.getElementById('ocb2-input').value;
-  if (!input.trim()) return;
+  if (!input.trim()) { _ocb2AppendLog('[' + _ocb2Ts() + '] Paste an OCB block first'); return; }
   const badge = document.getElementById('ocb2-status-badge');
   const log   = document.getElementById('ocb2-log');
   log.textContent = '';
   _ocb2LogSeen = 0;
-  _ocb2SetProgress(0, '');
+  _ocb2SetProgress(0, 'Launching run...');
+  window.ocbAbort = false;
   _ocb2SetActive(true);
   _ocb2AppendLog('[' + _ocb2Ts() + '] Launching OCB run...');
   badge.textContent = 'Launching...';
@@ -13287,11 +13301,16 @@ function ocb2Run() {
   badge.style.color = '';
   // Clear abort flag before starting
   fetch(BASE + '/api/ocb/abort', {method: 'DELETE'}).catch(function(){});
+  // 60-second timeout on the launch request itself
+  const _runCtrl = new AbortController();
+  const _runTimeout = setTimeout(function() { _runCtrl.abort(); }, 60000);
   fetch(BASE + '/api/ocb/run', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ocb_text: input})
+    body: JSON.stringify({ocb_text: input}),
+    signal: _runCtrl.signal
   }).then(r => r.json()).then(data => {
+    clearTimeout(_runTimeout);
     if (data.error) {
       _ocb2AppendLog('[' + _ocb2Ts() + '] ❌ Launch error: ' + data.error);
       badge.textContent = 'Error';
@@ -13305,7 +13324,11 @@ function ocb2Run() {
     _ocb2AppendLog('[' + _ocb2Ts() + '] Run started (ID: ' + (_ocb2RunId || '?') + ')');
     _ocb2StartPoll();
   }).catch(e => {
-    _ocb2AppendLog('[' + _ocb2Ts() + '] ❌ Error: ' + e.message);
+    clearTimeout(_runTimeout);
+    const msg = e.name === 'AbortError'
+      ? 'Launch timed out after 60s — check server is running'
+      : e.message;
+    _ocb2AppendLog('[' + _ocb2Ts() + '] ❌ Error: ' + msg);
     badge.textContent = 'Error';
     badge.style.background = '#ef444422';
     badge.style.color = '#f66';
@@ -13314,16 +13337,16 @@ function ocb2Run() {
 }
 
 function ocb2Abort() {
+  window.ocbAbort = true;
+  _ocb2AppendLog('[' + _ocb2Ts() + '] ⛔ Abort requested — stopping after current phase...');
+  const badge = document.getElementById('ocb2-status-badge');
+  if (badge) { badge.textContent = 'Aborting...'; badge.style.background = '#ef444422'; badge.style.color = '#fa0'; }
+  const ab = document.getElementById('ocb2-abort-btn');
+  if (ab) ab.disabled = true;
   fetch(BASE + '/api/ocb/abort', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({})
-  }).then(r => r.json()).then(function() {
-    _ocb2AppendLog('[' + _ocb2Ts() + '] ⛔ Abort requested — stopping after current phase...');
-    const badge = document.getElementById('ocb2-status-badge');
-    if (badge) { badge.textContent = 'Aborting...'; badge.style.background = '#ef444422'; badge.style.color = '#fa0'; }
-    const ab = document.getElementById('ocb2-abort-btn');
-    if (ab) ab.disabled = true;
   }).catch(function() {});
 }
 
@@ -13393,6 +13416,9 @@ function _ocb2Poll() {
     if (['DONE','FAILED','PARTIAL','CANCELLED','ROLLED_BACK','COMPLETE'].includes(st)) {
       _ocb2StopPoll();
       _ocb2SetActive(false);
+      // Override bar color after setActive (which defaults to green)
+      if (['FAILED','ROLLED_BACK'].includes(st)) _ocb2SetBarColor('error');
+      else if (['PARTIAL','CANCELLED'].includes(st)) _ocb2SetBarColor('running');
       // Final summary
       if (phases.length) {
         const passed  = phases.filter(p => (p.status||'').toUpperCase() === 'DONE').length;
@@ -13419,9 +13445,20 @@ function ocb2Clear() {
   _ocb2StopPoll();
   _ocb2RunId = null;
   _ocb2LogSeen = 0;
+  window.ocbAbort = false;
   const ab = document.getElementById('ocb2-abort-btn');
   if (ab) ab.disabled = false;
 }
+
+// Escape key abort — fires when OCB Runner is active
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const ab = document.getElementById('ocb2-abort-btn');
+    if (ab && ab.style.display !== 'none' && !ab.disabled) {
+      ocb2Abort();
+    }
+  }
+});
 
 // ── RRCLACH Panel ─────────────────────────────────────────────────
 async function generateRRCLACH() {
