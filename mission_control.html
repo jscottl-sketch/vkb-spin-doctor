@@ -528,8 +528,8 @@ a.pwccs-pill{text-decoration:none;display:inline-block}
 
 /* CUSTOM TOOLTIPS — replace browser grey boxes */
 [data-tip]{position:relative}
-[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:12px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;padding:5px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:99999 !important;max-width:300px;white-space:normal;text-align:center;line-height:1.4;word-wrap:break-word}
-[data-tip]:hover::after{opacity:1}
+[data-tip]::after{display:none !important}
+[data-tip]:hover::after{display:none !important}
 
 /* ── SELF-DIAGNOSIS TAB ── */
 .sd-section{margin-bottom:24px}
@@ -5461,7 +5461,10 @@ Find mission_control.html..."
 
     <!-- Right: Output log -->
     <div style="display:flex;flex-direction:column;gap:8px">
-      <label style="font-weight:bold">Live Output</label>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <label style="font-weight:bold">Live Output</label>
+        <button onclick="ocb2CopyLog()" style="padding:4px 10px;font-size:0.75rem;background:#1e3a5f;color:#7ad;border:1px solid #2a5a8a;border-radius:4px;cursor:pointer" title="Copy live output to clipboard">📋 Copy</button>
+      </div>
       <div id="ocb2-log"
         style="flex:1;overflow-y:auto;font-family:monospace;
         font-size:0.8rem;background:#050a05;color:#22d3a0;
@@ -9277,6 +9280,8 @@ async function saveSession() {
     });
     if (res.ok) {
       toast('Session saved — PASS', 'ok', 4000);
+      if (btn) { btn.textContent = '✅ Saved!'; btn.style.background = '#16a34a'; btn.style.color = '#fff'; }
+      setTimeout(() => { if (btn) { btn.textContent = '💾 Save Session Now'; btn.style.background = ''; btn.style.color = ''; } }, 3000);
       if (chatInput) chatInput.value = '';
       const meta = document.getElementById('wccs-chat-meta');
       if (meta) meta.textContent = '0 chars';
@@ -9291,7 +9296,7 @@ async function saveSession() {
   } catch (e) {
     toast('Save error: ' + e.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Save Session Now'; }
+    if (btn) { btn.disabled = false; if (btn.textContent === '⏳ Saving…') btn.textContent = '💾 Save Session Now'; }
   }
 }
 
@@ -13458,6 +13463,18 @@ function ocb2Clear() {
   window.ocbAbort = false;
   const ab = document.getElementById('ocb2-abort-btn');
   if (ab) ab.disabled = false;
+}
+
+function ocb2CopyLog() {
+  const log = document.getElementById('ocb2-log');
+  if (!log) return;
+  const text = log.textContent || '';
+  navigator.clipboard.writeText(text).then(() => toast('Output copied', 'ok', 2000)).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+    toast('Output copied', 'ok', 2000);
+  });
 }
 
 // Escape key abort — fires when OCB Runner is active
@@ -21678,6 +21695,36 @@ function showInstructions(elementId, btn) {
     })
     .catch(() => {});
 }
+
+// Global fixed tooltip for [data-tip] elements — position:fixed so overflow:hidden can't clip it
+(function(){
+  let _gtt = null;
+  function _showGtt(el) {
+    const tip = el.getAttribute('data-tip'); if (!tip) return;
+    if (!_gtt) {
+      _gtt = document.createElement('div'); _gtt.id = '_gtt';
+      _gtt.style.cssText = 'position:fixed;z-index:99999;background:#1a1a1a;border:1px solid #333;color:#ddd;font-size:12px;font-family:inherit;padding:5px 10px;border-radius:5px;pointer-events:none;max-width:300px;white-space:normal;text-align:center;line-height:1.4;word-wrap:break-word;box-shadow:0 2px 8px rgba(0,0,0,.7);display:none';
+      document.body.appendChild(_gtt);
+    }
+    _gtt.textContent = tip; _gtt.style.display = 'block';
+    const r = el.getBoundingClientRect();
+    const bw = _gtt.offsetWidth || 200, bh = _gtt.offsetHeight || 30;
+    let left = r.left + r.width / 2 - bw / 2;
+    let top  = r.top - bh - 8;
+    if (left < 4) left = 4;
+    if (left + bw > window.innerWidth - 4) left = window.innerWidth - bw - 4;
+    if (top < 4) top = r.bottom + 8;
+    _gtt.style.left = left + 'px'; _gtt.style.top = top + 'px';
+  }
+  document.addEventListener('mouseover', function(e) {
+    const el = e.target.closest('[data-tip]');
+    if (el) _showGtt(el);
+    else if (_gtt) _gtt.style.display = 'none';
+  });
+  document.addEventListener('mouseout', function(e) {
+    if (_gtt && !e.relatedTarget?.closest('[data-tip]')) _gtt.style.display = 'none';
+  });
+})();
 
 </script>
 

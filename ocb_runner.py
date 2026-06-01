@@ -1191,6 +1191,48 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
                     _write_status(obj)
                     break
                 _sl(f"  Task {task['num']}: {task['text'][:70]}")
+
+                # ── Direct: run script ────────────────────────────────────────
+                _tl = task["text"].lower().strip()
+                if _tl.startswith("run script:") or (_tl.startswith("execute ") and not _tl.startswith("execute the")):
+                    _sname = task["text"].split(":", 1)[-1].strip() if ":" in task["text"] else task["text"].split(None, 1)[-1].strip()
+                    _spath = HERE / _sname
+                    _sl(f"  Run Script: {_sname}")
+                    try:
+                        _cmd = [sys.executable, str(_spath)] if _spath.suffix == ".py" else [str(_spath)]
+                        _sr = subprocess.run(_cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
+                        _sl(f"  exit={_sr.returncode} | {(_sr.stdout+_sr.stderr).strip()[:200]}")
+                        if _sr.returncode != 0:
+                            failed_reason = f"Script {_sname} exited {_sr.returncode}"
+                            _sl(f"  FAIL: {failed_reason}")
+                    except Exception as _se:
+                        failed_reason = f"Script error: {str(_se)[:80]}"
+                        _sl(f"  FAIL: {failed_reason}")
+                    continue
+
+                # ── Direct: create / write file ───────────────────────────────
+                _cfm = re.search(
+                    r'(?:create|write(?:\s+to)?)\s+(?:a\s+)?(?:new\s+)?file\s+(?:called\s+|named\s+)?["\']?([^\s"\'<>:|?*]+\.[a-zA-Z0-9]+)["\']?',
+                    task["text"], re.IGNORECASE,
+                )
+                if _cfm:
+                    _cfname = _cfm.group(1).strip()
+                    _cftarget = HERE / _cfname
+                    _ccm = re.search(
+                        r'(?:content[:\s]+|write(?:\s+this)?(?:\s+exact)?(?:\s+content)?[:\s]+)["\']?(.+?)(?:["\']?\s*$)',
+                        task["text"], re.IGNORECASE | re.DOTALL,
+                    )
+                    _cfcontent = _ccm.group(1).strip() if _ccm else f"# Created by OCB Runner\n# Task: {task['text'][:80]}\n"
+                    try:
+                        _cftarget.parent.mkdir(parents=True, exist_ok=True)
+                        _cftarget.write_text(_cfcontent, encoding="utf-8")
+                        files_changed.add(_cfname)
+                        _sl(f"  DONE: created {_cfname} ({len(_cfcontent)} chars)")
+                    except Exception as _cfe:
+                        failed_reason = f"File create failed: {str(_cfe)[:80]}"
+                        _sl(f"  FAIL: {failed_reason}")
+                    continue
+
                 filepath = identify_affected_file(task["text"])
                 ext      = filepath.suffix.lower()
                 try:
@@ -1692,52 +1734,49 @@ def _cli_status():
 # ── Synchronous test mode ─────────────────────────────────────────────────────
 
 def run_test():
-    """Synchronous test run — prints every step to console"""
-    print("[TEST] Starting synchronous OCB test run")
+    """Synchronous test run — exercises the full autonomous pipeline."""
+    print("[TEST] Starting autonomous OCB test run")
 
     test_ocb = """
-═══ PHASE 1 — TEST PHASE ═══
+═══ PHASE 1 — CREATE FILE TEST ═══
 
-1. Create a file called ocb_test_output.txt in the project root.
-2. Write this exact content: OCB Runner test successful
-3. Report: file created
+1. Create a file called ocb_test_output.txt with content: OCB Runner test successful
 """
-    print("[TEST] Parsing test OCB...")
+    print("[TEST] Parsing OCB block...")
     try:
         parsed = parse_ocb(test_ocb)
-        print(f"[TEST] Parse result: {parsed}")
+        print(f"[TEST] Phases found: {len(parsed)}")
+        for p in parsed:
+            print(f"  Phase {p['phase']}: {p['phase_name']} — {len(p['tasks'])} tasks")
+            for t in p["tasks"]:
+                print(f"    {t['num']}. {t['text']}")
     except Exception as e:
         print(f"[TEST] PARSE FAILED: {e}")
         import traceback; traceback.print_exc()
         return
 
-    print("[TEST] Running pre_flight...")
+    print("[TEST] Running run_safe() — full autonomous pipeline...")
+    test_file = HERE / "ocb_test_output.txt"
+    if test_file.exists():
+        test_file.unlink()
+        print("[TEST] Cleaned up pre-existing test file")
+
     try:
-        pf = pre_flight(parsed)
-        print(f"[TEST] Pre-flight: {pf}")
+        result = run_safe(parsed, run_id="test_" + datetime.now().strftime("%H%M%S"))
+        print(f"\n[TEST] run_safe status: {result.get('status')}")
+        print("[TEST] Live output:")
+        for line in result.get("live_output", []):
+            print(f"  {line}")
     except Exception as e:
-        print(f"[TEST] PRE-FLIGHT FAILED: {e}")
+        print(f"[TEST] run_safe FAILED: {e}")
         import traceback; traceback.print_exc()
-        return
 
-    print("[TEST] Checking git status (no stash in test mode)...")
-    r = subprocess.run(['git', 'status', '--porcelain'],
-                       capture_output=True, text=True, cwd=str(HERE))
-    if r.stdout.strip():
-        changed = len(r.stdout.strip().splitlines())
-        print(f"[TEST] Git: {changed} file(s) modified — stash SKIPPED in test mode")
+    if test_file.exists():
+        content = test_file.read_text(encoding="utf-8").strip()
+        print(f"\n[TEST] PASS — ocb_test_output.txt exists with content: {content!r}")
     else:
-        print("[TEST] Git: clean working tree")
-
-    print("[TEST] Creating test file...")
-    try:
-        with open(HERE / 'ocb_test_output.txt', 'w') as f:
-            f.write('OCB Runner test successful')
-        print("[TEST] File created OK")
-    except Exception as e:
-        print(f"[TEST] FILE CREATE FAILED: {e}")
-
-    print("[TEST] COMPLETE — if you see this, the runner works")
+        print(f"\n[TEST] FAIL — ocb_test_output.txt was NOT created")
+    print("[TEST] COMPLETE")
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────

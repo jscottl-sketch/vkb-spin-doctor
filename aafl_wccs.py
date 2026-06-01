@@ -308,6 +308,7 @@ def main():
         subprocess.run([sys.executable, "ocb_runner.py", "--sync-master"],
                        capture_output=True, cwd=ROOT)
         print("[LIFEGUARD] MOT all-clear detected — STATUS_MASTER.md synced")
+    _elapsed("LIFEGUARD protocol")
     current_status = read_text(STATUS)
     if not current_status:
         print("[FATAL] STATUS.md not found. Run handover split first.")
@@ -316,6 +317,7 @@ def main():
     if not args.dry_run and STATUS.exists():
         shutil.copy2(STATUS, STATUS_BAK)
         print(f"[PRE-BAK] STATUS.md.bak created ({STATUS.stat().st_size} bytes)")
+        _elapsed("pre-bak")
     print(f"[START] aafl_wccs.py {'(DRY RUN)' if args.dry_run else ''}")
     _t_status_start = _time.time()
     new_status = rewrite_status(chat_text, current_status, args.dry_run)
@@ -370,6 +372,7 @@ def main():
                 STATUS_TMP.replace(STATUS)
                 print(f"[OK] STATUS.md written via merge ({tmp_n} lines, was {old_n})")
                 _wccs_update_session_state("STATUS.md")
+                _elapsed("STATUS write")
         except Exception as _write_err:
             _log_wccs_error(f"STATUS write crashed: {_write_err}")
             print(f"[ERROR] STATUS.md write crashed — see wccs_errors.log. {_write_err}")
@@ -436,8 +439,6 @@ def main():
             _elapsed("timeline build (failed)")
     if not args.dry_run:
         _sunday_merge()
-    if not args.dry_run:
-        archive_old_handovers()
     # Auto-post bridge message after successful save
     if not args.dry_run:
         try:
@@ -469,20 +470,6 @@ def _uprint(msg):
     except UnicodeEncodeError:
         print(msg.encode(sys.stdout.encoding or "utf-8", errors="replace")
                  .decode(sys.stdout.encoding or "utf-8", errors="replace"))
-
-
-def archive_old_handovers():
-    """Move any VKB_SpinDoctor_Handover_v*.md files from root to archive_dead/."""
-    found = sorted(ROOT.glob("VKB_SpinDoctor_Handover_v*.md"))
-    if not found:
-        _uprint("✅ No handover files to archive")
-        return
-    archive = ROOT / "archive_dead"
-    archive.mkdir(exist_ok=True)
-    for f in found:
-        dst = archive / f.name
-        shutil.move(str(f), str(dst))
-        _uprint(f"\U0001f5c4️ Archived handover: {f.name}")
 
 
 def _sunday_merge():
