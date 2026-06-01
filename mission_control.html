@@ -13400,6 +13400,7 @@ function _ocb2Poll() {
     let stLine = '';
     if (st === 'RUNNING' || stg === 'phase_running') {
       stLine = '⚡ Running Phase ' + curP + '... [' + stg + ']';
+      document.getElementById('mcc-emergency-reset').style.backgroundColor = 'blue';
     } else if (stg === 'mot_running') {
       stLine = '🧪 Running MOT test suite...';
       _ocb2SetProgress(95);
@@ -13407,6 +13408,7 @@ function _ocb2Poll() {
       stLine = '🎉 All phases complete' + (data.mot_score ? ' — MOT: ' + data.mot_score : '');
       _ocb2SetProgress(100, stLine);
       badge.textContent = 'Complete ✓'; badge.style.background = '#22c55e22'; badge.style.color = '#4f4';
+      document.getElementById('mcc-emergency-reset').style.backgroundColor = 'green';
     } else if (st === 'FAILED' || st === 'ROLLED_BACK') {
       stLine = '❌ Error: ' + (data.error || data.error_detail || st);
       _ocb2SetProgress(100, stLine);
