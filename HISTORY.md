@@ -1078,6 +1078,25 @@ self_health.py, system_monitor.py, work_checker.py, mission_control.html, mcc_se
 - MOT: 108/108
 - WCCS: v67 current
 
+
+---
+
+### 2026-06-01 (Claude Code session 2)
+**Key decisions:** OCB-S full-fix pass — all 9 items completed in one session. Forgiving OCB parser, z-index full audit (htl-popup-v2 fixed to position:fixed), WCCS timing, investigations DB created.
+**New ACCA codes:** None
+**Bugs fixed:**
+- wccs_runner.py: removed 6 dead handover write functions (_handover_excerpt, build_llm_prompt, parse_llm_response, build_new_handover, update_sfl_agent, write_session_log)
+- aafl_wccs.py: added per-step timing with SLOW >10s warning; git push now has 30s timeout
+- mission_control.html: .htl-popup-v2 position:absolute->fixed (was clipped by overflow:auto parent); .tab-bar z-index 1000->100; .hs-tab-bar z-index 10->100; CSS theme variables normalised to dark palette
+- ocb_runner.py: 30-second parse timeout via concurrent.futures; forgiving Pass 3 fallback (N. or === lines = phase boundary)
+**Ideas discussed:** Investigations DB as structured bug/fix log; z-index scale standardisation; forgiving parser pattern
+**Next priorities:**
+1. Test OCB Runner in MCC with a real OCB block to confirm parser works end-to-end
+2. Complete STORM <-> MCCM live loop testing
+3. Wire aafl_wccs.py SESUM output -> STORM -> Mission Launcher
+4. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements
+5. Star Citizen v0.2 benchmark via AAFL autonomous run
+
 <!-- END_OF_FILE -->
 
 
@@ -2484,5 +2503,24 @@ aafl_wccs.py failed — LM Studio returned too-short STATUS.md, safety guard blo
 - MOT: 109/109 ALL CLEAR
 
 **Files changed:** mission_control.html, data/project_timeline.json, HISTORY.md
+
+
+---
+
+### 2026-06-01 (Claude Code session 2)
+**Key decisions:** OCB-S full-fix pass — all 9 items completed in one session. Forgiving OCB parser, z-index full audit (htl-popup-v2 fixed to position:fixed), WCCS timing, investigations DB created.
+**New ACCA codes:** None
+**Bugs fixed:**
+- wccs_runner.py: removed 6 dead handover write functions (_handover_excerpt, build_llm_prompt, parse_llm_response, build_new_handover, update_sfl_agent, write_session_log)
+- aafl_wccs.py: added per-step timing with SLOW >10s warning; git push now has 30s timeout
+- mission_control.html: .htl-popup-v2 position:absolute->fixed (was clipped by overflow:auto parent); .tab-bar z-index 1000->100; .hs-tab-bar z-index 10->100; CSS theme variables normalised to dark palette
+- ocb_runner.py: 30-second parse timeout via concurrent.futures; forgiving Pass 3 fallback (N. or === lines = phase boundary)
+**Ideas discussed:** Investigations DB as structured bug/fix log; z-index scale standardisation; forgiving parser pattern
+**Next priorities:**
+1. Test OCB Runner in MCC with a real OCB block to confirm parser works end-to-end
+2. Complete STORM <-> MCCM live loop testing
+3. Wire aafl_wccs.py SESUM output -> STORM -> Mission Launcher
+4. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements
+5. Star Citizen v0.2 benchmark via AAFL autonomous run
 
 <!-- END_OF_FILE -->
