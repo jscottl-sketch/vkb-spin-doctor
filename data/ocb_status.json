@@ -1,85 +1,53 @@
 {
-  "run_id": "20260531_230615",
-  "started_at": "2026-05-31T23:06:15",
-  "status": "ROLLED_BACK",
-  "current_stage": "locking",
-  "stage_detail": "",
+  "run_id": "20260601_214209",
+  "started_at": "2026-06-01T21:42:09",
+  "status": "RUNNING",
+  "current_stage": "committing",
+  "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[23:06:15] [STAGE:locking] checking .ocb_running lock file",
-    "[23:06:15] GUARD 1 PASS: lock file clear",
-    "[23:06:15] [STAGE:stashing] checking git working tree",
-    "[23:06:15] GUARD 2: dirty tree stashed (OCB-Runner-20260531_230615)",
-    "[23:06:15] [STAGE:phase_running] starting phase execution",
-    "[23:06:15] [STAGE:phase_running] Phase 1: TEST",
-    "[23:06:15] Phase 1: TEST",
-    "[23:06:15]   Task 1: In mission_control.html, find the OCB Runner section. At the very bott",
-    "[23:06:17]   DONE: mission_control.html updated",
-    "[23:06:17] [STAGE:html_checking] BS4 structure check",
-    "[23:06:17]   CHECK A (BS4): PASS",
-    "[23:06:17] [STAGE:js_checking] JS function integrity check",
-    "[23:06:17]   CHECK B (JS): FAIL \u2014 {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
-    "[23:06:17] [STAGE:rolled_back] CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPla",
-    "[23:06:17] ROLLED BACK \u2014 CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
-    "[23:06:17] Lock file released"
+    "[21:42:09] [STAGE:locking] checking .ocb_running lock file",
+    "[21:42:09] GUARD 1 PASS: lock file clear",
+    "[21:42:09] [STAGE:stashing] checking git working tree",
+    "[21:42:09] GUARD 2: dirty tree stashed (OCB-Runner-20260601_214209)",
+    "[21:42:09] [STAGE:phase_running] starting phase execution",
+    "[21:42:09] [STAGE:phase_running] Phase 1: SAFE TEST",
+    "[21:42:09] Phase 1: SAFE TEST",
+    "[21:42:09] [STAGE:phase_running] Phase 2: VERIFY",
+    "[21:42:09] Phase 2: VERIFY",
+    "[21:42:09] [STAGE:mot_running] running mcc_full_mot.py",
+    "[21:42:09] Running MOT check\u2026",
+    "[21:42:33] CHECK D (MOT): PASS \u2014 VERDICT: ALL CLEAR",
+    "[21:42:33] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
     "stash": true,
     "bs4": true,
-    "js": false,
-    "registry": null,
-    "mot": false
+    "js": true,
+    "registry": true,
+    "mot": true
   },
   "check_results": {
     "A_bs4": {
-      "ok": true
+      "ok": true,
+      "note": "no HTML edited"
     },
     "B_js": {
-      "ok": false,
-      "details": {
-        "missing_functions": [
-          "Summary",
-          "theme",
-          "wcLoadActionPlanV2",
-          "wcLoadMiniTimeline",
-          "hitsavStep1",
-          "hitsavStep2"
-        ],
-        "missing_ids": [
-          "qa-panel",
-          "det-td-",
-          "search-results",
-          "llow-pout-",
-          "llow-node-",
-          "ce-ctx-menu",
-          "det-prog-",
-          "save-nudge-label",
-          "b2-kbp-list",
-          "b2-kbp-filter-device",
-          "pv-dot-",
-          "ph-grid",
-          "hs-pane-",
-          "aafl-runs-table",
-          "session-view",
-          "wc-tl-detail",
-          "wc-ap-list",
-          "wc-deep-scan-input",
-          "qa-input",
-          "pd-"
-        ]
-      }
+      "ok": true,
+      "note": "no HTML edited"
+    },
+    "C_registry": {
+      "ok": true,
+      "note": "no HTML edited"
     },
     "D_mot": {
-      "ok": false,
-      "error": "CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}"
+      "ok": true,
+      "score": "VERDICT: ALL CLEAR"
     }
   },
-  "files_changed": [
-    "mission_control.html"
-  ],
+  "files_changed": [],
   "git_diff_stat": "",
   "rollback_available": false,
-  "error": "CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
-  "stash_ref": "OCB-Runner-20260531_230615",
-  "completed_at": "2026-05-31T23:06:17"
+  "error": "",
+  "stash_ref": "OCB-Runner-20260601_214209"
 }
