@@ -127,7 +127,27 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hitsav-idea-card.stale{border-left-color:#6a1a1a}
 .hitsav-idea-meta{font-size:10px;color:#556;margin-bottom:4px}
 .hitsav-idea-text{font-size:12px;color:#bbc;margin-bottom:6px}
-.hitsav-idea-btns{display:flex;gap:6px
+.hitsav-idea-btns{display:flex;gap:6px}
+.hitsav-idea-btn{background:#111820;border:1px solid #2a3a4a;color:#778;padding:3px 8px;border-radius:4px;cursor:pointer;font:11px inherit}
+.hitsav-idea-btn:hover{color:#aac;border-color:#4af}
+/* action plan */
+.hitsav-ap-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #111820}
+.hitsav-ap-num{font-size:14px;font-weight:bold;color:#4af;min-width:20px;flex-shrink:0}
+.hitsav-ap-text{flex:1;font-size:12px;color:#bbc}
+.hitsav-ap-btn{background:#1a2a3a;border:1px solid #2a4a6a;color:#4af;padding:3px 8px;border-radius:4px;cursor:pointer;font:11px inherit;white-space:nowrap}
+/* CLAC session */
+.hitsav-clac-btns{display:flex;gap:12px;margin-bottom:12px}
+.hitsav-clac-done{background:#0a2a0a;border:2px solid #2a6a2a;color:#6f6;padding:10px 20px;border-radius:6px;cursor:pointer;font:bold 13px inherit;flex:1}
+.hitsav-clac-stop{background:#2a0a0a;border:2px solid #6a2a2a;color:#f66;padding:10px 20px;border-radius:6px;cursor:pointer;font:bold 13px inherit;flex:1}
+.hitsav-clac-card{padding:8px 10px;border-radius:5px;border-left:3px solid #2a4a2a;background:#0d1318;margin-bottom:6px}
+.hitsav-clac-card.stopped{border-left-color:#6a2a2a}
+/* screenshot upload */
+.hitsav-drop-zone{border:2px dashed #2a3a4a;border-radius:6px;padding:18px;text-align:center;color:#556;cursor:pointer;transition:border-color .15s;margin-bottom:10px}
+.hitsav-drop-zone:hover,.hitsav-drop-zone.drag-over{border-color:#4af;color:#4af}
+.hitsav-thumb{width:72px;height:54px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid #2a3a4a}
+.hitsav-gallery{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+/* tl-detail-popup — deep drill-down */
+.tl-detail-popup{display:none;position:fixed!important;z-index:9999!important;background:#0a0e18!important;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px!important;width:320px;max-width:90vw;max-height:70vh;overflow-y:auto;font-size:12px!important;color:#aab!important;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.75);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent}
 /* timeline node popup: fixed to viewport so it can't be clipped by overflow:auto */
 #hitsav-tl-popup{position:fixed!important;z-index:3000!important}
 .tl-popup-title{font-size:13px;font-weight:bold;color:#dde;margin-bottom:4px}
