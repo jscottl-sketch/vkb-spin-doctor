@@ -92,3 +92,4 @@
 | 77 | 2026-06-01 | v83 -> v84 | CSS hotfix: MOT stub fix (c3b366e) had removed closing } from .hitsav-idea-btns rule at line 130, corrupting all CSS below � sidebar and tab bar invisible. Restored missing brace + 20 deleted HITSAV CSS rules (.hitsav-idea-btn, .hitsav-ap-*, .hitsav-clac-*, .hitsav-drop-zone, .hitsav-thumb, .hitsav-gallery, .tl-detail-popup). 109/109 MOT ALL CLEAR. | None |
 | 78 | 2026-06-01 | legacy | OCB-S: handover writes removed + z-index audit + OCB parser timeout + investigations DB (109/109 MOT) | None |
 | 79 | 2026-06-01 | v85 -> v86 | OCB Runner Reset MCC button: blue on RUNNING, green on DONE/COMPLETE; 2-line change in _ocb2Poll() mission_control.html; 109/109 MOT ALL CLEAR | None |
+| 80 | 2026-06-01 | v86 -> v87 | Four fixes: WCCS archive_old_handovers removed + timing; [data-tip] position:fixed JS tooltip; saveSession green tick + OCB Copy button; run_safe() direct create/script ops; 109/109 MOT ALL CLEAR | None |
