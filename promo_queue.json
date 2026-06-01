@@ -1294,5 +1294,14 @@
     "status": "pending",
     "created_at": "2026-05-31T00:00:21.362850",
     "updated_at": null
+  },
+  {
+    "item_id": "7473e3b1",
+    "content": "**Executive Summary**\n\nThe objective is to eliminate JSON from every aspect of the three GitHub pull‑request (PR) changes listed in the “Chief Scout briefing.”  This requires a systematic replacement of JSON‑based request bodies, response payloads, and any internal JSON handling with an alternative data representation (binary protobuf, URL‑encoded form data, or a custom binary protocol).  The plan below details **what** must be changed, **how** to change it, and **why** each step guarantees a “n",
+    "source": "not json at all }{",
+    "reason": "Auto-promoted: score 9.17/10",
+    "status": "pending",
+    "created_at": "2026-06-01T00:00:24.230988",
+    "updated_at": null
   }
 ]

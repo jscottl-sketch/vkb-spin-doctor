@@ -1,56 +1,85 @@
 {
-  "run_id": "20260529_170837",
-  "started_at": "2026-05-29T17:08:37",
-  "provider": "auto",
-  "max_retries": 3,
-  "phases": [
-    {
-      "phase_num": 1,
-      "phase_name": "TEST",
-      "status": "DONE",
-      "tasks": [
-        {
-          "num": 1,
-          "text": "In mission_control.html, find the OCB Runner section in the WCCS tab. At the ver",
-          "status": "DONE"
-        }
-      ]
+  "run_id": "20260531_230615",
+  "started_at": "2026-05-31T23:06:15",
+  "status": "ROLLED_BACK",
+  "current_stage": "locking",
+  "stage_detail": "",
+  "live_output": [
+    "[23:06:15] [STAGE:locking] checking .ocb_running lock file",
+    "[23:06:15] GUARD 1 PASS: lock file clear",
+    "[23:06:15] [STAGE:stashing] checking git working tree",
+    "[23:06:15] GUARD 2: dirty tree stashed (OCB-Runner-20260531_230615)",
+    "[23:06:15] [STAGE:phase_running] starting phase execution",
+    "[23:06:15] [STAGE:phase_running] Phase 1: TEST",
+    "[23:06:15] Phase 1: TEST",
+    "[23:06:15]   Task 1: In mission_control.html, find the OCB Runner section. At the very bott",
+    "[23:06:17]   DONE: mission_control.html updated",
+    "[23:06:17] [STAGE:html_checking] BS4 structure check",
+    "[23:06:17]   CHECK A (BS4): PASS",
+    "[23:06:17] [STAGE:js_checking] JS function integrity check",
+    "[23:06:17]   CHECK B (JS): FAIL \u2014 {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
+    "[23:06:17] [STAGE:rolled_back] CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPla",
+    "[23:06:17] ROLLED BACK \u2014 CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
+    "[23:06:17] Lock file released"
+  ],
+  "guard_results": {
+    "lock": true,
+    "stash": true,
+    "bs4": true,
+    "js": false,
+    "registry": null,
+    "mot": false
+  },
+  "check_results": {
+    "A_bs4": {
+      "ok": true
     },
-    {
-      "phase_num": 2,
-      "phase_name": "MOT",
-      "status": "DONE",
-      "tasks": [
-        {
-          "num": 2,
-          "text": "Run python mcc_full_mot.py. Must pass 108/108.",
-          "status": "DONE"
-        }
-      ]
+    "B_js": {
+      "ok": false,
+      "details": {
+        "missing_functions": [
+          "Summary",
+          "theme",
+          "wcLoadActionPlanV2",
+          "wcLoadMiniTimeline",
+          "hitsavStep1",
+          "hitsavStep2"
+        ],
+        "missing_ids": [
+          "qa-panel",
+          "det-td-",
+          "search-results",
+          "llow-pout-",
+          "llow-node-",
+          "ce-ctx-menu",
+          "det-prog-",
+          "save-nudge-label",
+          "b2-kbp-list",
+          "b2-kbp-filter-device",
+          "pv-dot-",
+          "ph-grid",
+          "hs-pane-",
+          "aafl-runs-table",
+          "session-view",
+          "wc-tl-detail",
+          "wc-ap-list",
+          "wc-deep-scan-input",
+          "qa-input",
+          "pd-"
+        ]
+      }
+    },
+    "D_mot": {
+      "ok": false,
+      "error": "CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}"
     }
-  ],
-  "current_phase": 2,
-  "current_task": 2,
-  "log": [
-    "[17:08:37] [P1] Starting: TEST",
-    "[17:08:37] [P1.T1] Task: In mission_control.html, find the OCB Runner section in the WCCS tab. ",
-    "[17:08:37] [P1.T1] Target: mission_control.html",
-    "[17:08:38] [P1.T1] Attempt 1: lines 1737\u20132036",
-    "[17:08:40] [P1.T1] DONE \u2014 mission_control.html updated",
-    "[17:08:40] [P2] Starting: MOT",
-    "[17:08:40] [P2.T2] Task: Run python mcc_full_mot.py. Must pass 108/108.",
-    "[17:08:40] [P2.T2] Target: mcc_full_mot.py",
-    "[17:08:40] [P2.T2] Attempt 1: lines 1\u2013559",
-    "[17:08:41] [P2.T2] DONE \u2014 mcc_full_mot.py updated",
-    "[17:08:41] [SYS] Running MOT test suite\u2026",
-    "[17:08:41] [SYS] MOT: exit 0"
-  ],
-  "mot_score": "exit 0",
-  "status": "DONE",
-  "cancelled": false,
+  },
   "files_changed": [
-    "mcc_full_mot.py",
     "mission_control.html"
   ],
-  "completed_at": "2026-05-29T17:08:41"
+  "git_diff_stat": "",
+  "rollback_available": false,
+  "error": "CHECK B (JS) failed: {'missing_functions': ['Summary', 'theme', 'wcLoadActionPlanV2', 'wcLoadMiniTimeline', 'hitsavStep1', 'hitsavStep2'], 'missing_ids': ['qa-panel', 'det-td-', 'search-results', 'llow-pout-', 'llow-node-', 'ce-ctx-menu', 'det-prog-', 'save-nudge-label', 'b2-kbp-list', 'b2-kbp-filter-device', 'pv-dot-', 'ph-grid', 'hs-pane-', 'aafl-runs-table', 'session-view', 'wc-tl-detail', 'wc-ap-list', 'wc-deep-scan-input', 'qa-input', 'pd-']}",
+  "stash_ref": "OCB-Runner-20260531_230615",
+  "completed_at": "2026-05-31T23:06:17"
 }

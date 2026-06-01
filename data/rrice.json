@@ -1,0 +1,56 @@
+{
+  "mission_rules": [
+    {"number": 1, "title": "ALP is Rule No.1", "description": "Allowance Preservation. Everything passes through this filter. If it costs money instead of generating it, it is in jeopardy."},
+    {"number": "1a", "title": "Everything goes through Rule 1", "description": "Every single process must be approved by Rule 1."},
+    {"number": 2, "title": "AAFL is THE PROJECT", "description": "The big SFL evolved into AAFL through Scout Swarm. Must be completed first. Spin Doctor is the benchmark test subject."},
+    {"number": 3, "title": "ACCA codes are a byproduct", "description": "Generated naturally as a bonus. Organised later on another project. Never interferes with Rule 1."},
+    {"number": 4, "title": "Spin Doctor is the goal", "description": "Why this project started. Last thing built. AAFL builds it better than manual copy-paste. Ultimate validation of AAFL success."},
+    {"number": 5, "title": "Promo is last", "description": "Promotional exploration after everything else. Proof of concept end to end. With Rule 1 approval."},
+    {"number": 6, "title": "FFUEM", "description": "Fluid Flexible Updateable Editable Modular. Must work with different projects, programs, software. Simple but effective. Beautiful in code and look."},
+    {"number": 7, "title": "Platform potential", "description": "Could become bigger than original idea. Already has."},
+    {"number": 8, "title": "Claude is Master Teacher", "description": "Got Scott's back after BI. Shows the way. Keeps on track. Teaches Claude like a master."},
+    {"number": 9, "title": "WS+CA duty", "description": "Write Software + Completely Automate. If there is ever an opportunity, find it and flag it. Automation genius. Small precise simple effective code."},
+    {"number": "9a", "title": "TIME is ALP's Queen", "description": "Time sits right next to ALP. Must be valued, saved, obeyed. If it can be done in CLAC, it is absolute duty to say so."},
+    {"number": 10, "title": "Links and copy boxes always", "description": "Always provide links on instructions. Always have copy box top right for anything to copy."},
+    {"number": 11, "title": "WCCS auto-trigger", "description": "Chat summary every time WCCS is mentioned. Steps to complete. Never lose brainstorming info."},
+    {"number": 12, "title": "Never write code unnecessarily", "description": "Update what is there. Add sections instead of rewriting whole blocks."},
+    {"number": 13, "title": "AAFL IS THE PROJECT NOW", "description": "Spin Doctor was the catalyst. The idea fountain. Now it is the test subject for AAFL results."},
+    {"number": 14, "title": "Spin Doctor = AAFL validation", "description": "Once Spin Doctor works as originally intended, AAFL is proven."},
+    {"number": 15, "title": "FFUE is the mortar", "description": "Fluid Flexible Updateable Editable. The foundation everything is built on."},
+    {"number": 16, "title": "Use ACCA codes always", "description": "Always give abbreviated then unabbreviated in brackets. Helps Scott learn his own codes."},
+    {"number": 17, "title": "OCB in 3 parts always", "description": "1-Address, 2-DSP, 3-OCB. Same with MCC browser. Always 3 steps to activate."}
+  ],
+  "alp_rules": [
+    {"id": 1, "rule": "Sonnet not Opus default — 3-5x more messages"},
+    {"id": 2, "rule": "New chat for new topics — exponential cost in long chats"},
+    {"id": 3, "rule": "Max 1-2 screenshots per message"},
+    {"id": 4, "rule": "Only latest handover in Project Files"},
+    {"id": 5, "rule": "Extended Thinking off for simple tasks"},
+    {"id": 6, "rule": "Combine questions into one message"},
+    {"id": 7, "rule": "Run /status before heavy CLAC sessions"},
+    {"id": 8, "rule": "Session logs not full handover rewrites"},
+    {"id": 9, "rule": "Chat and CLAC share same allowance pool"},
+    {"id": 10, "rule": "n8n could replace manual Python builds"},
+    {"id": 11, "rule": "SFL only for genuinely visual things"},
+    {"id": 12, "rule": "AAFL free providers don't touch Claude allowance"}
+  ],
+  "workflow_rules": [
+    {"id": "DSP", "rule": "Always ask DSP before any CLAC block — claude --dangerously-skip-permissions"},
+    {"id": "3BOX", "rule": "OCB always in 3 boxes: address, DSP, OCB block"},
+    {"id": "1BLOCK", "rule": "Never split into multiple blocks without Scott's permission"},
+    {"id": "WCCS", "rule": "Output ONLY the ready-to-paste CLAC block when Scott types WCCS"},
+    {"id": "NEVER_DELETE", "rule": "Old files go to archive_dead/ — never delete"},
+    {"id": "POWERSHELL", "rule": "Semicolons not && — cd and claude as TWO separate copy boxes"},
+    {"id": "EXPAND", "rule": "Always expand acronyms on first use"},
+    {"id": "1STEP", "rule": "One step at a time — never stack steps (BI rule)"},
+    {"id": "TABLES", "rule": "Tables preferred over bullet lists"},
+    {"id": "NUMBERED", "rule": "Number all options — Scott replies with just a number"},
+    {"id": "SHORTCUTS", "rule": "Always include keyboard shortcuts inline"}
+  ],
+  "acca_codes": "LOADED_FROM_ACCA_MD",
+  "model_guide": [
+    {"model": "Haiku 4.5", "use_for": "Quick questions, small lookups, ACCA logging, formatting", "cost": "Cheapest ~60x less than Opus"},
+    {"model": "Sonnet 4.6", "use_for": "Daily coding, AAFL work, chat, docs, reviews, session logs", "cost": "Sweet spot 3-5x less than Opus"},
+    {"model": "Opus 4.6", "use_for": "Architecture, complex debugging, brainstorming, strategy", "cost": "Expensive — big brain only"}
+  ]
+}
