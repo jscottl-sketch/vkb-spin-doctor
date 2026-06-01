@@ -1,0 +1,50 @@
+{
+  "run_at": "2026-06-01T21:23:52",
+  "elapsed_s": 0.01,
+  "passed": 8,
+  "failed": 0,
+  "total": 8,
+  "verdict": "ALL CLEAR",
+  "tests": [
+    {
+      "name": "standard_sep_format",
+      "status": "PASS",
+      "detail": "found 2 phases"
+    },
+    {
+      "name": "bare_phase_format",
+      "status": "PASS",
+      "detail": "found 2 phases, first=Setup"
+    },
+    {
+      "name": "forgiving_numbered_lines",
+      "status": "PASS",
+      "detail": "phases=3, has_tasks=True"
+    },
+    {
+      "name": "empty_input_no_hang",
+      "status": "PASS",
+      "detail": "elapsed=0.00s phases=1"
+    },
+    {
+      "name": "large_input_timeout",
+      "status": "PASS",
+      "detail": "elapsed=0.00s phases=1"
+    },
+    {
+      "name": "file_identification",
+      "status": "PASS",
+      "detail": "Add a button to mission_contro->mission_control.htmlOK | Fix the handler in mcc_server.->mcc_server.pyOK | Update aafl_core.py routing ta->aafl_core.pyOK | Generic task with no file ment->mission_control.htmlOK"
+    },
+    {
+      "name": "parse_ocb_extended_format",
+      "status": "PASS",
+      "detail": "phases=2, risk0=HIGH"
+    },
+    {
+      "name": "colour_change_task_parsed",
+      "status": "PASS",
+      "detail": "phases=1 tasks=3 colour_task=True"
+    }
+  ]
+}

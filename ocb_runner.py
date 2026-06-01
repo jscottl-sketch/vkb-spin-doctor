@@ -126,12 +126,13 @@ def _body_tasks(body_lines: list) -> list:
     return tasks
 
 
-def parse_ocb_block(text: str) -> list:
+def _parse_ocb_block_inner(text: str) -> list:
     """
-    O(n) line-scan parser. Never hangs. Three passes:
+    O(n) line-scan parser. Four passes:
     1) Lines starting with 3+ sep chars + 'Phase N' (═══ Phase 1 — Title ═══)
     2) Bare 'Phase N — Title' lines
-    3) Fallback: entire text as one phase
+    3) Forgiving: any line starting with a number+dot or === is a new phase
+    4) Fallback: entire text as one phase
     Hard cap: 10 000 lines, 1 000 body lines per phase.
     """
     lines = text.splitlines()
@@ -186,8 +187,50 @@ def parse_ocb_block(text: str) -> list:
     if phases:
         return phases
 
-    # Pass 3: treat entire text as one phase
+    # Pass 3: forgiving fallback — every line starting with N. or === is a new phase
+    _forgiving_sep = re.compile(r'^\s*(?:(\d+)\s*[.):]\s+(.+)|={3,}\s*(.+?)\s*={0,})\s*$')
+    cur_num = 0
+    cur_name = None
+    cur_body = []
+    for raw in lines[:10000]:
+        m = _forgiving_sep.match(raw)
+        if m:
+            if cur_num > 0 and cur_body:
+                phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "tasks": _body_tasks(cur_body)})
+            cur_num += 1
+            # Use the matched text as both phase name and first task
+            label = m.group(2) or m.group(3) or raw.strip()
+            cur_name = label[:60].strip()
+            cur_body = [raw]
+        elif cur_num > 0:
+            cur_body.append(raw)
+
+    if cur_num > 0 and cur_body:
+        phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "tasks": _body_tasks(cur_body)})
+
+    if phases:
+        return phases
+
+    # Pass 4: treat entire text as one phase
     return [{"phase_num": 1, "phase_name": "Task Block", "tasks": _body_tasks(lines)}]
+
+
+def parse_ocb_block(text: str) -> list:
+    """
+    Parse an OCB block with a 30-second hard timeout.
+    Falls back to a single-phase block if parsing exceeds the limit.
+    """
+    import concurrent.futures as _cf
+    try:
+        with _cf.ThreadPoolExecutor(max_workers=1) as _ex:
+            future = _ex.submit(_parse_ocb_block_inner, text)
+            return future.result(timeout=30)
+    except _cf.TimeoutError:
+        # Hard fallback: return a single phase so the runner can continue
+        lines = text.splitlines()[:10000]
+        return [{"phase_num": 1, "phase_name": "Task Block (timeout fallback)", "tasks": _body_tasks(lines)}]
+    except Exception:
+        return [{"phase_num": 1, "phase_name": "Task Block (error fallback)", "tasks": []}]
 
 
 # ── File identification ───────────────────────────────────────────────────────

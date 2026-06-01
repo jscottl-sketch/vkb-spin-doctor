@@ -1,0 +1,116 @@
+{
+  "version": "1.0",
+  "created": "2026-06-01",
+  "investigations": [
+    {
+      "id": "INV-001",
+      "title": "Legacy handover writes in wccs_runner.py",
+      "status": "fixed",
+      "severity": "medium",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "wccs_runner.py contained dead functions (_handover_excerpt, build_llm_prompt, parse_llm_response, build_new_handover, update_sfl_agent, write_session_log) that referenced and wrote VKB_SpinDoctor_Handover_vXX.md files. STATUS/HISTORY/ACCA are the source of truth — handover files must never be created.",
+      "steps_taken": [
+        "Searched aafl_wccs.py and wccs_runner.py for VKB_SpinDoctor_Handover writes",
+        "Found 6 dead functions in wccs_runner.py referencing handover files",
+        "Removed all 6 dead functions: _handover_excerpt, build_llm_prompt, parse_llm_response, build_new_handover, update_sfl_agent, write_session_log",
+        "Verified main() does not call any handover-writing code",
+        "aafl_wccs.py: archive_old_handovers() already present and correct (moves, not creates)"
+      ],
+      "files_changed": ["wccs_runner.py"]
+    },
+    {
+      "id": "INV-002",
+      "title": "WCCS speed — missing step timings",
+      "status": "fixed",
+      "severity": "low",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "aafl_wccs.py had timing on STATUS rewrite, HISTORY append, ACCA append, and git commit steps but was missing timing on git push, clipboard copy, timeline build, and bridge post. No slow-step warning existed (>10s threshold).",
+      "steps_taken": [
+        "Audited all steps in aafl_wccs.py main()",
+        "Enhanced _elapsed() to report per-step time AND cumulative time",
+        "Added *** SLOW >10s *** warning when any step exceeds threshold",
+        "Added timing to: git push, clipboard copy, timeline build, bridge post",
+        "Added 30-second timeout to git push subprocess call"
+      ],
+      "files_changed": ["aafl_wccs.py"]
+    },
+    {
+      "id": "INV-003",
+      "title": "Info panels hidden behind tabs — z-index full audit",
+      "status": "fixed",
+      "severity": "high",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "This bug has failed twice before (OCB-E Phase 3, OCB-Q Phase 2). Root cause: .htl-popup-v2 used position:absolute inside an overflow:auto container (#htl-outer), which clips the popup. The main tab-bar had z-index:1000 which buried it above tooltips. Inner health-suite tab bar had z-index:10 which was too low.",
+      "steps_taken": [
+        "Full grep of position:absolute, position:fixed, position:relative across mission_control.html",
+        "Found .htl-popup-v2{position:absolute;z-index:9999} inside #htl-outer{overflow-x:auto;overflow-y:visible}",
+        "CSS rule: overflow-x:auto overrides overflow-y:visible to overflow-y:auto, clipping the popup",
+        "Fix: changed .htl-popup-v2 to position:fixed — JS already uses getBoundingClientRect() so coords are correct",
+        "Updated z-index scale comment: tab-bar=100, panels=100, popups=9999, tooltips=99999",
+        "Changed .tab-bar{z-index:1000} to z-index:100 to stop tab bar covering popups",
+        "Changed .hs-tab-bar{z-index:10} to z-index:100 for consistency",
+        "Updated CSS variables for theme consistency: --pb-bg, --pb-card, --pb-accent, --pb-border"
+      ],
+      "files_changed": ["mission_control.html"]
+    },
+    {
+      "id": "INV-004",
+      "title": "OCB Runner parser stuck at analysing structure",
+      "status": "fixed",
+      "severity": "high",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "parse_ocb_block() had no timeout, so pathological inputs could block the thread indefinitely. The forgiving fallback (pass 3) was missing — inputs without === Phase N === headers or bare Phase N: lines produced empty task lists.",
+      "steps_taken": [
+        "Read ocb_runner.py parse_ocb_block() function",
+        "Found no timeout protection on the parse loop",
+        "Added concurrent.futures.ThreadPoolExecutor with 30-second timeout",
+        "Renamed inner function to _parse_ocb_block_inner()",
+        "Added Pass 3 forgiving fallback: matches lines starting with N. or === as phase boundaries",
+        "Added Pass 4 (was Pass 3) fallback: entire text as one Task Block",
+        "Wrote ocb_runner_tests.py with 8 tests including colour-change test",
+        "Results written to data/ocb_runner_test_results.json"
+      ],
+      "files_changed": ["ocb_runner.py", "ocb_runner_tests.py"]
+    },
+    {
+      "id": "INV-005",
+      "title": "Theme consistency — CSS variable mismatch",
+      "status": "fixed",
+      "severity": "medium",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "The Project Brain theme CSS variables (--pb-bg: #1a1a2e, --pb-card: #252540, --pb-accent: #c084fc) used purple/navy colours that were inconsistent with the hardcoded dark theme values (#0d0d0d, #111, #4af) used throughout the rest of the HTML.",
+      "steps_taken": [
+        "Audited all CSS variables and hardcoded colour values in mission_control.html",
+        "Found mismatch: --pb-bg=#1a1a2e vs body background #0d0d0d at line 38 (line 1062 override wins)",
+        "Updated CSS variables to match existing dark theme: --pb-bg=#0d0d0d, --pb-card=#111820, --pb-accent=#4af, --pb-border=#1e2a3a, --pb-text=#ccd, --pb-text-muted=#778, --pb-active=#4f4"
+      ],
+      "files_changed": ["mission_control.html"]
+    },
+    {
+      "id": "INV-006",
+      "title": "Investigations tracking database",
+      "status": "complete",
+      "severity": "low",
+      "date_found": "2026-06-01",
+      "date_fixed": "2026-06-01",
+      "ocb": "OCB-S",
+      "description": "No structured log existed for investigations, bugs found, and fixes applied. Created data/investigations_db.json and added GET /api/investigations + POST /api/investigations/add endpoints to mcc_server.py.",
+      "steps_taken": [
+        "Created data/investigations_db.json with all 5 preceding investigations logged",
+        "Added GET /api/investigations endpoint to mcc_server.py",
+        "Added POST /api/investigations/add endpoint to mcc_server.py"
+      ],
+      "files_changed": ["data/investigations_db.json", "mcc_server.py"]
+    }
+  ]
+}

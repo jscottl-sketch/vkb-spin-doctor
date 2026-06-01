@@ -780,6 +780,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-R: Claude Bridge ───────────────────────────────────────────
             elif path == "/api/bridge/messages":
                 self._handle_bridge_messages_get()
+            # ── OCB-S: Investigations DB ───────────────────────────────────────
+            elif path == "/api/investigations":
+                self._handle_investigations_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -1105,6 +1108,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_bridge_resolve_post(path[len("/api/bridge/resolve/"):])
             elif path == "/api/bridge/sync-check":
                 self._handle_bridge_sync_check_post()
+            # ── OCB-S: Investigations DB ────────────────────────────────────
+            elif path == "/api/investigations/add":
+                self._handle_investigations_add_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -9610,6 +9616,63 @@ MCCHandler._handle_clacr_submit  = _handle_clacr_submit   # type: ignore[attr-de
 MCCHandler._handle_clacr_status  = _handle_clacr_status   # type: ignore[attr-defined]
 MCCHandler._handle_clacr_results = _handle_clacr_results  # type: ignore[attr-defined]
 MCCHandler._handle_clacr_resolve = _handle_clacr_resolve  # type: ignore[attr-defined]
+
+
+# ── OCB-S: Investigations DB ──────────────────────────────────────────────────
+
+_INVESTIGATIONS_FILE = HERE / "data" / "investigations_db.json"
+
+
+def _investigations_load() -> dict:
+    try:
+        if _INVESTIGATIONS_FILE.exists():
+            return json.loads(_INVESTIGATIONS_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return {"version": "1.0", "created": datetime.datetime.now().strftime("%Y-%m-%d"), "investigations": []}
+
+
+def _investigations_save(data: dict):
+    tmp = str(_INVESTIGATIONS_FILE) + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+    shutil.move(tmp, str(_INVESTIGATIONS_FILE))
+
+
+def _handle_investigations_get(self):
+    """GET /api/investigations — returns investigations_db.json."""
+    self._send_json(_investigations_load())
+
+
+def _handle_investigations_add_post(self):
+    """POST /api/investigations/add — append a new investigation entry."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        data = _investigations_load()
+        entries = data.get("investigations", [])
+        new_id = f"INV-{len(entries) + 1:03d}"
+        entry = {
+            "id": body.get("id", new_id),
+            "title": body.get("title", "Untitled"),
+            "status": body.get("status", "open"),
+            "severity": body.get("severity", "medium"),
+            "date_found": body.get("date_found", datetime.datetime.now().strftime("%Y-%m-%d")),
+            "date_fixed": body.get("date_fixed", ""),
+            "ocb": body.get("ocb", ""),
+            "description": body.get("description", ""),
+            "steps_taken": body.get("steps_taken", []),
+            "files_changed": body.get("files_changed", []),
+        }
+        entries.append(entry)
+        data["investigations"] = entries
+        _investigations_save(data)
+        self._send_json({"ok": True, "id": entry["id"]})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_investigations_get      = _handle_investigations_get       # type: ignore[attr-defined]
+MCCHandler._handle_investigations_add_post = _handle_investigations_add_post  # type: ignore[attr-defined]
 
 
 def main():

@@ -29,11 +29,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>MCC — Mission Control Center</title>
 <style>
-/* Z-INDEX SCALE:
-   base=1 | cards=10 | panels=100 | dropdowns=500 | tabs=1000
-   tooltips=2000 | popups=3000 | modals=5000 | kill-switch=9999
-   All fixed/absolute overlays must use these tiers exactly.
-   Sticky elements inside panes (e.g. hitsav-sticky-tb) use panels=100. */
+/* Z-INDEX SCALE (OCB-S full audit — do NOT override without reason):
+   base=1 | cards=10 | panels=100 | tab-bar=100 | sticky-inner=100
+   dropdowns=500 | popups=9999 | tooltips=99999
+   RULE: every popup must use position:fixed OR be a direct child of body.
+   position:absolute inside overflow:hidden/auto is BANNED for popups — it clips them. */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d;color:#ccc;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
@@ -71,7 +71,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .auto-interval-wrap input{width:44px;background:#1a1a1a;border:1px solid #333;color:#ccc;padding:2px 4px;border-radius:4px;font:inherit;text-align:center}
 
 /* TABS — Project Brain theme */
-.tab-bar{background:var(--pb-card);border-bottom:1px solid var(--pb-border);display:flex!important;visibility:visible!important;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto;z-index:1000;position:sticky;top:0}
+.tab-bar{background:var(--pb-card);border-bottom:1px solid var(--pb-border);display:flex!important;visibility:visible!important;padding:0 8px;gap:2px;flex-shrink:0;overflow-x:auto;z-index:100;position:sticky;top:0}
 .tab-btn{background:none;border:none;color:var(--pb-text-muted);padding:9px 16px;cursor:pointer;font:inherit;font-size:13px;border-bottom:2px solid transparent;white-space:nowrap;transition:.15s}
 .tab-btn:hover{color:var(--pb-text);background:rgba(192,132,252,0.06)}
 .tab-btn.active{color:var(--pb-accent);border-bottom-color:var(--pb-accent)}
@@ -170,7 +170,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .htl-today-marker{position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,#fa0,#c60);z-index:5;pointer-events:none}
 .htl-today-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:bold;color:#fa0;white-space:nowrap;animation:hitsavPulse 1.5s ease-in-out infinite}
 @keyframes htlPopupSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.htl-popup-v2{position:absolute;z-index:9999;background:#0a0e18;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px;width:420px;max-width:calc(100% - 16px);max-height:70vh;overflow-y:auto;font-size:12px;color:#aab;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.8);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;animation:htlPopupSlide .15s ease}
+.htl-popup-v2{position:fixed;z-index:9999;background:#0a0e18;border:1px solid #2a3a4a;border-radius:8px;padding:14px 16px;width:420px;max-width:calc(100% - 16px);max-height:70vh;overflow-y:auto;font-size:12px;color:#aab;line-height:1.6;box-shadow:0 6px 28px rgba(0,0,0,.8);scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;animation:htlPopupSlide .15s ease}
 .htl-popup-v2 .htl-p-acc-hdr{cursor:pointer;font-size:11px;font-weight:bold;color:#4af;padding:6px 0;border-top:1px solid #1e2a3a;user-select:none;display:flex;align-items:center;gap:5px}
 .htl-popup-v2 .htl-p-acc-hdr:hover{color:#7df}
 .htl-popup-v2 .htl-p-acc-hdr .htl-p-chev{font-size:9px;transition:transform .2s;display:inline-block}
@@ -1008,17 +1008,17 @@ body.tutorial-on [data-tutorial]{position:relative}
    BUILD 3 — NEW STYLES
    ═══════════════════════════════════════════════════════════════ */
 
-/* ── Project Brain default theme (OCB-R Phase 5) — FULL TOKEN SET ── */
+/* ── Project Brain default theme (OCB-R Phase 5 / OCB-S theme consistency fix) — FULL TOKEN SET ── */
 :root{
-  /* Project Brain core palette */
-  --pb-bg:        #1a1a2e;
-  --pb-card:      #252540;
-  --pb-active:    #4ade80;
-  --pb-accent:    #c084fc;
-  --pb-text-muted:#94a3b8;
-  --pb-border:    #334155;
-  --pb-glow:      #7c3aed;
-  --pb-text:      #e2e8f0;
+  /* Project Brain core palette — normalised to match dark-theme hardcoded values */
+  --pb-bg:        #0d0d0d;
+  --pb-card:      #111820;
+  --pb-active:    #4f4;
+  --pb-accent:    #4af;
+  --pb-text-muted:#778;
+  --pb-border:    #1e2a3a;
+  --pb-glow:      #2a6a8a;
+  --pb-text:      #ccd;
 
   /* Full semantic token set (Phase 5 spec) */
   --bg-primary:       #1a1a2e;
@@ -1099,7 +1099,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .urgency-wrap span{font-size:11px;color:#4af;font-weight:bold;min-width:14px;text-align:right}
 
 /* Health Suite sub-tabs */
-.hs-tab-bar{display:flex;gap:4px;padding:0 0 10px;flex-wrap:wrap;position:sticky;top:0;background:#0d0d0d;z-index:10}
+.hs-tab-bar{display:flex;gap:4px;padding:0 0 10px;flex-wrap:wrap;position:sticky;top:0;background:#0d0d0d;z-index:100}
 .hs-tab-btn{background:#111;border:1px solid #222;color:#888;padding:6px 14px;border-radius:4px;cursor:pointer;font:inherit;font-size:12px;transition:.15s}
 .hs-tab-btn:hover{color:#ccc;border-color:#444}
 .hs-tab-btn.active{background:#1a2a3a;border-color:#4af;color:#4af}

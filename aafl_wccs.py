@@ -275,8 +275,13 @@ Return ONLY the new STATUS.md content. No explanation. No code fences."""
 def main():
     import time as _time
     _t0 = _time.time()
+    _step_t0 = [_time.time()]
     def _elapsed(label):
-        print(f"[WCCS] {label}: {_time.time() - _t0:.1f}s")
+        elapsed = _time.time() - _t0
+        step_elapsed = _time.time() - _step_t0[0]
+        _step_t0[0] = _time.time()
+        warn = " *** SLOW >10s ***" if step_elapsed > 10 else ""
+        print(f"[WCCS] {label}: step={step_elapsed:.1f}s total={elapsed:.1f}s{warn}")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--chat", default=str(CHAT_LATEST))
@@ -406,25 +411,29 @@ def main():
         except Exception as e:
             print(f"[WARN] Git commit failed (non-fatal): {e}")
         try:
-            push_res = subprocess.run(["git", "push"], cwd=ROOT, capture_output=True, text=True)
+            push_res = subprocess.run(["git", "push"], cwd=ROOT, capture_output=True, text=True, timeout=30)
             if push_res.returncode == 0:
                 print("[GIT PUSH] Pushed to remote")
             else:
                 print(f"[GIT PUSH] Failed — run manually. Error: {push_res.stderr.strip()}")
         except Exception as e:
             print(f"[GIT PUSH] Failed — run manually. Error: {e}")
+        _elapsed("git push")
     try:
         status_content = open('STATUS.md', 'r', encoding='utf-8').read()
         subprocess.run(['clip'], input=status_content, text=True)
-        print("📋 STATUS.md copied to clipboard — paste into Project Files now")
+        print("[OK] STATUS.md copied to clipboard — paste into Project Files now")
     except Exception:
         print("[WARN] Could not copy STATUS.md to clipboard")
+    _elapsed("clipboard copy")
     if not args.dry_run:
         try:
             import project_timeline_builder
             project_timeline_builder.build()
+            _elapsed("timeline build")
         except Exception as _tl_err:
             print(f"[WARN] Timeline build failed (non-fatal): {_tl_err}")
+            _elapsed("timeline build (failed)")
     if not args.dry_run:
         _sunday_merge()
     if not args.dry_run:
@@ -448,6 +457,7 @@ def main():
             print("[BRIDGE] Save summary posted to bridge log")
         except Exception:
             pass  # Non-fatal — MCC server may not be running
+        _elapsed("bridge post")
     _total = _time.time() - _t0
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''} — TOTAL: {_total:.1f}s")
 
