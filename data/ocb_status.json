@@ -1,21 +1,21 @@
 {
-  "run_id": "test_brain_062911",
-  "started_at": "2026-06-02T06:29:11",
+  "run_id": "test_brain_063117",
+  "started_at": "2026-06-02T06:31:17",
   "status": "RUNNING",
   "current_stage": "committing",
   "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[06:29:11] [STAGE:locking] checking .ocb_running lock file",
-    "[06:29:11] GUARD 1 PASS: lock file clear",
-    "[06:29:11] [STAGE:stashing] checking git working tree",
-    "[06:29:11] GUARD 2: dirty tree stashed (OCB-Runner-20260602_062911)",
-    "[06:29:11] [STAGE:phase_running] starting phase execution",
-    "[06:29:11] [STAGE:phase_running] Phase 1: Create Brain Test File",
-    "[06:29:11] Phase 1: Create Brain Test File",
-    "[06:29:11]   Task 1: create a file ocb_brain_test.txt content: OCB Runner AI brain wired 20",
-    "[06:29:11]   DONE: created ocb_brain_test.txt (36 chars)",
-    "[06:29:11] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[06:29:11] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[06:31:17] [STAGE:locking] checking .ocb_running lock file",
+    "[06:31:17] GUARD 1 PASS: lock file clear",
+    "[06:31:17] [STAGE:stashing] checking git working tree",
+    "[06:31:17] GUARD 2: dirty tree stashed (OCB-Runner-20260602_063117)",
+    "[06:31:17] [STAGE:phase_running] starting phase execution",
+    "[06:31:17] [STAGE:phase_running] Phase 1: Create Brain Test File",
+    "[06:31:17] Phase 1: Create Brain Test File",
+    "[06:31:17]   Task 1: create a file ocb_brain_test.txt content: OCB Runner AI brain wired 20",
+    "[06:31:17]   DONE: created ocb_brain_test.txt (36 chars)",
+    "[06:31:17] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
+    "[06:31:17] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -50,7 +50,9 @@
   "git_diff_stat": "",
   "rollback_available": false,
   "error": "",
-  "stash_ref": "OCB-Runner-20260602_062911",
+  "stash_ref": "OCB-Runner-20260602_063117",
+  "current_phase": 1,
+  "mot_score": "SKIPPED (skip_mot=True)",
   "phases": [
     {
       "phase_num": 1,
@@ -64,7 +66,5 @@
         }
       ]
     }
-  ],
-  "current_phase": 1,
-  "mot_score": "SKIPPED (skip_mot=True)"
+  ]
 }
