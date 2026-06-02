@@ -4557,13 +4557,12 @@ window.hitsavStep2 = async function(){
   var btn2 = document.getElementById('hitsav-step2-btn');
   if(btn2){ btn2.disabled=true; btn2.textContent='⏳ Copying…'; }
   try {
-    var resp = await fetch('/api/status');
-    var data = await resp.json();
-    await navigator.clipboard.writeText(data.content);
+    var text = await (await fetch('/api/status')).text();
+    await navigator.clipboard.writeText(text);
     if(btn2){ btn2.className='hitsav-step-btn hitsav-step-done'; btn2.textContent='② Copy STATUS.md ✅'; btn2.disabled=true; }
     var btn3 = document.getElementById('hitsav-step3-btn');
     if(btn3) btn3.disabled=false;
-    typeof toast==='function'&&toast('STATUS.md copied to clipboard ✅','ok',3000);
+    typeof toast==='function'&&toast('Copied','ok',3000);
   } catch(e){
     if(btn2){ btn2.disabled=false; btn2.textContent='② Copy STATUS.md'; }
     typeof toast==='function'&&toast('Copy failed — is MCC server running?','error',4000);
@@ -9709,42 +9708,23 @@ function copySesum() {
 async function saveSession() {
   const chatInput = document.getElementById('wccs-chat-input');
   const chatText  = chatInput ? chatInput.value.trim() : '';
-
-  if (!chatText) {
-    try {
-      const caps = await apiFetch('/captures');
-      if (!caps.content || !caps.content.trim()) {
-        const proceed = await showConfirmDialog(
-          'No captures yet — save will have empty history. Continue?'
-        );
-        if (!proceed) return;
-      }
-    } catch { /* network error — proceed anyway */ }
-  }
-
   const btn = document.getElementById('btn-wccs-hub');
   if (btn) { btn.disabled = true; btn.textContent = '⏳ Saving…'; }
-
   try {
-    const body = chatText ? { chat: chatText } : {};
-    const res  = await apiFetch('/api/wccs', {
+    const res = await apiFetch('/api/hisav/save-session', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify({ text: chatText }),
     });
     if (res.ok) {
-      toast('Session saved — PASS', 'ok', 4000);
+      toast('Session saved ✅', 'ok', 3000);
       if (btn) { btn.textContent = '✅ Saved!'; btn.style.background = '#16a34a'; btn.style.color = '#fff'; }
       setTimeout(() => { if (btn) { btn.textContent = '💾 Save Session Now'; btn.style.background = ''; btn.style.color = ''; } }, 3000);
       if (chatInput) chatInput.value = '';
       const meta = document.getElementById('wccs-chat-meta');
       if (meta) meta.textContent = '0 chars';
-      await loadTimeline();
-      renderWccsTab();
-      triggerSaveNudge();
       showPostSaveBanner();
     } else {
-      const detail = res.error || (res.stdout ? res.stdout.slice(0, 100) : 'unknown');
-      toast('Save failed: ' + detail, 'error', 6000);
+      toast('Save failed: ' + (res.error || 'unknown'), 'error', 4000);
     }
   } catch (e) {
     toast('Save error: ' + e.message, 'error');
@@ -14287,8 +14267,14 @@ async function copyProjectFile(which) {
   try {
     const r = await fetch(BASE + ep);
     if (!r.ok) { showToast('Server error: ' + r.status, 'error'); return; }
-    const d = await r.json();
-    const text = d.content || '';
+    // /api/status returns raw text; /api/history returns JSON with .content
+    let text;
+    if (which === 'history') {
+      const d = await r.json();
+      text = d.content || '';
+    } else {
+      text = await r.text();
+    }
     await navigator.clipboard.writeText(text);
     showToast('Copied ' + label + ' (' + text.split('\n').length + ' lines)', 'ok', 2000);
   } catch(e) {
@@ -14346,13 +14332,12 @@ function clearSaveNudge() {
 
 async function copyStatusForClaude() {
   try {
-    const resp = await fetch('/api/status');
-    const data = await resp.json();
-    await navigator.clipboard.writeText(data.content);
+    const text = await (await fetch('/api/status')).text();
+    await navigator.clipboard.writeText(text);
     clearSaveNudge();
     document.getElementById('copyStatusMsg').innerHTML = '<span style="color:#22c55e;">✅ Copied! Now paste into Claude Project Files</span>';
     setTimeout(() => { document.getElementById('copyStatusMsg').innerHTML = ''; }, 10000);
-    toast('✅ Copied — paste into Project Files to update Claude.', 'ok', 6000);
+    toast('Copied', 'ok', 3000);
     showPostSaveBanner();
   } catch(e) {
     document.getElementById('copyStatusMsg').innerHTML = '<span style="color:red;">❌ Failed - is MCC server running?</span>';

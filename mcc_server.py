@@ -1090,6 +1090,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-P: Watchdog start ─────────────────────────────────────────
             elif path == "/api/watchdog/start":
                 self._handle_watchdog_start()
+            # ── HITSAV: direct session save (no AI, no subprocess) ─────────────────
+            elif path in ("/api/hisav/save-session", "/api/hitsav/save-session"):
+                self._handle_hitsav_save_session_direct()
             # ── HITSAV: idea / checklist / clac-session / screenshot — /api/hisav/* kept for compat ──
             elif path in ("/api/hisav/idea", "/api/hitsav/idea"):
                 self._handle_hisav_idea_post()
@@ -3055,9 +3058,19 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             try:
                 content = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
             except Exception as exc:
-                self._send_json({"error": str(exc)}, 500)
+                self.send_response(500)
+                self._cors()
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(str(exc).encode("utf-8", errors="replace"))
                 return
-        self._send_json({"content": content, "file": str(STATUS_FILE), "exists": STATUS_FILE.exists()})
+        body = content.encode("utf-8", errors="replace")
+        self.send_response(200)
+        self._cors()
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
     # ── MCP: GET /api/history ─────────────────────────────────────────────────────
 
@@ -8707,6 +8720,28 @@ def _handle_hisav_wento_post(self):
         self._send_json({"error": str(exc)}, 500)
 
 MCCHandler._handle_hisav_wento_post = _handle_hisav_wento_post  # type: ignore[attr-defined]
+
+
+# ── HITSAV: Direct session save (no AI, no subprocess) ───────────────────────
+
+def _handle_hitsav_save_session_direct(self):
+    """POST /api/hisav/save-session — write session text straight to session_logs/ with timestamp. No AI."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        text = (body.get("text") or "").strip()
+        now = datetime.datetime.now()
+        fname = now.strftime("%Y-%m-%d-mcc-%H%M%S.md")
+        dest = HERE / "session_logs" / fname
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        lines = [f"# MCC Session Save — {now.strftime('%Y-%m-%d %H:%M:%S')}\n"]
+        if text:
+            lines.append(f"\n## Summary\n{text}\n")
+        dest.write_text("".join(lines), encoding="utf-8")
+        self._send_json({"ok": True, "file": "session_logs/" + fname})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_hitsav_save_session_direct = _handle_hitsav_save_session_direct  # type: ignore[attr-defined]
 
 
 # ── OCB-Q: Detective screenshot analysis ─────────────────────────────────────
