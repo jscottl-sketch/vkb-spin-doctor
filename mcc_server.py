@@ -783,6 +783,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-S: Investigations DB ───────────────────────────────────────
             elif path == "/api/investigations":
                 self._handle_investigations_get()
+            # ── Learning Machine ──────────────────────────────────────────────
+            elif path == "/api/rag/stats":
+                self._handle_rag_stats_get()
+            elif path == "/api/training/stats":
+                self._handle_training_stats_get()
+            elif path == "/api/learning/report":
+                self._handle_learning_report_get()
+            elif path == "/api/learning/failures":
+                self._handle_learning_failures_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -1113,6 +1122,13 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── OCB-S: Investigations DB ────────────────────────────────────
             elif path == "/api/investigations/add":
                 self._handle_investigations_add_post()
+            # ── Learning Machine ──────────────────────────────────────────────
+            elif path == "/api/rag/reindex":
+                self._handle_rag_reindex_post()
+            elif path == "/api/rag/query":
+                self._handle_rag_query_post()
+            elif path == "/api/training/rebuild":
+                self._handle_training_rebuild_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -9690,6 +9706,84 @@ def _handle_investigations_add_post(self):
 
 MCCHandler._handle_investigations_get      = _handle_investigations_get       # type: ignore[attr-defined]
 MCCHandler._handle_investigations_add_post = _handle_investigations_add_post  # type: ignore[attr-defined]
+
+
+# ── Learning Machine endpoints ─────────────────────────────────────────────────
+
+def _handle_rag_stats_get(self):
+    try:
+        from learning_machine.rag_engine import get_stats
+        self._send_json(get_stats())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_rag_reindex_post(self):
+    try:
+        from learning_machine.rag_engine import reindex_all
+        stats = reindex_all()
+        self._send_json({"ok": True, **stats})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_rag_query_post(self):
+    try:
+        import json as _j
+        length = int(self.headers.get("Content-Length", 0))
+        body = _j.loads(self.rfile.read(length).decode("utf-8")) if length else {}
+        query_text = body.get("query", "")
+        if not query_text:
+            self._send_json({"error": "query field required"}, 400)
+            return
+        from learning_machine.rag_engine import query
+        results = query(query_text, n_results=5)
+        self._send_json({"results": results, "count": len(results)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_training_stats_get(self):
+    try:
+        from learning_machine.training_prep import get_stats
+        self._send_json(get_stats())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_training_rebuild_post(self):
+    try:
+        from learning_machine.training_prep import scan_results
+        stats = scan_results()
+        self._send_json({"ok": True, **stats})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_learning_report_get(self):
+    try:
+        from learning_machine.feedback_loop import get_report
+        report = get_report()
+        self._send_json(report if report else {"note": "no report yet"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+def _handle_learning_failures_get(self):
+    try:
+        from learning_machine.feedback_loop import get_failures
+        self._send_json({"failures": get_failures(50)})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_rag_stats_get         = _handle_rag_stats_get          # type: ignore[attr-defined]
+MCCHandler._handle_rag_reindex_post      = _handle_rag_reindex_post       # type: ignore[attr-defined]
+MCCHandler._handle_rag_query_post        = _handle_rag_query_post         # type: ignore[attr-defined]
+MCCHandler._handle_training_stats_get    = _handle_training_stats_get     # type: ignore[attr-defined]
+MCCHandler._handle_training_rebuild_post = _handle_training_rebuild_post  # type: ignore[attr-defined]
+MCCHandler._handle_learning_report_get   = _handle_learning_report_get    # type: ignore[attr-defined]
+MCCHandler._handle_learning_failures_get = _handle_learning_failures_get  # type: ignore[attr-defined]
 
 
 def main():

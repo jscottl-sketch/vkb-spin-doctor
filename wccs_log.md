@@ -94,3 +94,4 @@
 | 79 | 2026-06-01 | v85 -> v86 | OCB Runner Reset MCC button: blue on RUNNING, green on DONE/COMPLETE; 2-line change in _ocb2Poll() mission_control.html; 109/109 MOT ALL CLEAR | None |
 | 80 | 2026-06-01 | v86 -> v87 | Four fixes: WCCS archive_old_handovers removed + timing; [data-tip] position:fixed JS tooltip; saveSession green tick + OCB Copy button; run_safe() direct create/script ops; 109/109 MOT ALL CLEAR | None |
 | 81 | 2026-06-02 | v87 -> v88 | OCB lock stale-detect (>10min auto-clear); /api/ocb/clear-lock endpoint; Clear Lock button in OCB Runner; HTML corruption restore from git HEAD; 109/109 MOT ALL CLEAR | None |
+| 82 | 2026-06-02 | v88 -> v89 | Learning Machine: RAG engine (ChromaDB, 91 docs/531 chunks), training pipeline (alpaca JSONL), feedback loop (after_run wired into loop_manager); RAG injected into aafl_core.py; 7 new MCC endpoints; 5 OCB test scripts all PASS; 109/109 MOT ALL CLEAR | RAG = Retrieval Augmented Generation |

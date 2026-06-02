@@ -77,6 +77,13 @@ try:
 except ImportError:
     _add_stuck = None
 
+try:
+    from learning_machine.feedback_loop import after_run as _feedback_after_run
+    _FEEDBACK_OK = True
+except ImportError:
+    _feedback_after_run = None
+    _FEEDBACK_OK = False
+
 # Injected into every LLM call so models behave as agents, not chatbots.
 AGENT_SYSTEM = (
     "You are an autonomous AI agent operating inside an automated feedback loop. "
@@ -475,6 +482,19 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         }
         if best_attempt is None or score > best_attempt.get("quality_score", 0):
             best_attempt = attempt
+
+        # ── Feedback loop ─────────────────────────────────────────────────────
+        if _FEEDBACK_OK and _feedback_after_run is not None:
+            try:
+                _feedback_after_run(
+                    goal=goal,
+                    result={"plan": plan_text, "work": work_text,
+                            "failure_reason": prev_feedback if not goal_met else None},
+                    score=score,
+                    provider=work_result.provider_id,
+                )
+            except Exception as _fe:
+                print(f"[FEEDBACK] after_run error (non-fatal): {_fe}")
 
         if goal_met:
             stop_reason = "goal_met"

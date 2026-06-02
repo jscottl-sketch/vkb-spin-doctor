@@ -20,6 +20,39 @@ import litellm
 litellm.set_verbose = False
 litellm.suppress_debug_info = True
 
+# ── RAG (Retrieval Augmented Generation) ─────────────────────────────────────
+_rag_engine = None
+_RAG_ENABLED = True  # global kill-switch for tests / dry-run
+
+def _get_rag():
+    global _rag_engine
+    if _rag_engine is None:
+        try:
+            from learning_machine.rag_engine import query as _rag_query, get_stats as _rag_stats
+            _rag_engine = {"query": _rag_query, "stats": _rag_stats}
+        except Exception:
+            _rag_engine = {}
+    return _rag_engine
+
+def _rag_context(goal: str, n: int = 3) -> str:
+    """Return top-N RAG results as a formatted context block. Empty string on any failure."""
+    if not _RAG_ENABLED:
+        return ""
+    try:
+        eng = _get_rag()
+        if not eng or "query" not in eng:
+            return ""
+        results = eng["query"](goal, n_results=n)
+        if not results:
+            return ""
+        parts = ["--- Relevant context from project knowledge base ---"]
+        for r in results:
+            parts.append(f"[{r['source']}]\n{r['text'][:400]}")
+        parts.append("--- End of context ---")
+        return "\n\n".join(parts)
+    except Exception:
+        return ""
+
 # ── Paths ────────────────────────────────────────────────────────────────────
 HERE          = Path(__file__).parent
 LOG_FILE      = HERE / "aafl_log.txt"
@@ -311,9 +344,15 @@ class AAFLCore:
 
     def run(self, task: str, task_type: str = "fast",
             max_tokens: int = 512, system: str = "",
-            image_b64: str = "") -> CallResult:
+            image_b64: str = "", use_rag: bool = True) -> CallResult:
         if task_type not in ROUTING:
             task_type = "fast"
+
+        # ── RAG context injection ─────────────────────────────────────────────
+        if use_rag and not self.dry_run:
+            rag_ctx = _rag_context(task[:300])
+            if rag_ctx:
+                task = rag_ctx + "\n\n" + task
 
         route = ROUTING[task_type]
         t0    = time.time()
