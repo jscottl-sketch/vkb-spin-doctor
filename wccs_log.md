@@ -102,3 +102,4 @@
 | 87 | 2026-06-02 | legacy | test chat text for recovery check | None |
 | 88 | 2026-06-02 | v91 -> v92 | ANCOREG tab (system doctor: diagnosis/fix-db/save-validator/MOT-grid/error-timeline) + BSTP tab (drag-drop canvas + 5 element types + action launcher) + ACCA export (41 codes, 2 endpoints) + ancoreg_validator.py (8 checks) + 15 new endpoints; 109/109 MOT ALL CLEAR | ANCOREG, BSTP |
 | 89 | 2026-06-02 | v92 -> v93 | ANCOREG accordion merged into Health Suite + BSTP accordion merged into Missions + Mission Mode toggle + GRRICE Changelog + ACCA info boxes + WCCS direct log speed fix + POST /api/acca/command; STATUS.md: AAFL_Overnight_Task disabled + CCR PENDING; 109/109 MOT ALL CLEAR | CCR = Claude Chat Relay |
+| 90 | 2026-06-02 | v93 -> v94 | HITSAV Copy STATUS.md button un-disabled + OCB Runner Parse/Run ghost-button styling + SpinDoctor Dark CSS theme (:root overrides + full selector block); mcc_settings.json active_theme set; 109/109 MOT ALL CLEAR | None |

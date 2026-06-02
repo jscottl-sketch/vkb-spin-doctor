@@ -1686,6 +1686,250 @@ body{padding-bottom:28px}
 #ocb2-abort-btn:hover{background:#5a1010}
 #ocb2-clear-lock-btn{background:#0a1a3a;border:2px solid #3b82f6;color:#93c5fd;padding:7px 14px;border-radius:6px;cursor:pointer;font:bold 12px inherit;white-space:nowrap;margin-left:4px}
 #ocb2-clear-lock-btn:hover{background:#1e3a5f}
+
+/* ══════════════════════════════════════════════════════════════
+   SPINDOCTOR DARK THEME — Full Variable Override + Application
+   DO NOT TOUCH: #ai-status-bar, .sidebar, .tab-bar
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --bg-primary:       #0a0a18;
+  --bg-secondary:     #111128;
+  --bg-card:          #16163a;
+  --bg-card-hover:    #1c1c45;
+  --bg-input:         #111128;
+  --bg-tertiary:      #16163a;
+  --accent-green:     #00e676;
+  --accent-orange:    #ff9800;
+  --accent-purple:    #7c4dff;
+  --accent-blue:      #5b8dee;
+  --accent-cyan:      #00bcd4;
+  --accent-red:       #ff5252;
+  --text-primary:     #ffffff;
+  --text-secondary:   #b0b0cc;
+  --text-muted:       #6060aa;
+  --border-subtle:    rgba(92,100,180,0.25);
+  --border-active:    rgba(124,77,255,0.5);
+  --border:           rgba(92,100,180,0.25);
+  --border-primary:   rgba(92,100,180,0.35);
+  --shadow-card:      0 2px 16px rgba(0,0,0,0.5);
+  /* propagate to legacy tokens */
+  --pb-bg:            #0a0a18;
+  --pb-card:          #16163a;
+  --pb-border:        rgba(92,100,180,0.25);
+  --pb-text:          #b0b0cc;
+  --pb-text-muted:    #6060aa;
+  --pb-accent:        #5b8dee;
+  --b4-bg:            #0a0a18;
+  --b4-panel:         #16163a;
+  --b4-border:        rgba(92,100,180,0.25);
+  --b4-text:          #ffffff;
+  --b4-text2:         #6060aa;
+  --badge-active:     #00e676;
+  --badge-warning:    #ff9800;
+  --badge-error:      #ff5252;
+  --btn-primary-bg:   #7c4dff;
+  --btn-primary-text: #ffffff;
+  --scrollbar-thumb:  rgba(124,77,255,0.6);
+  --scrollbar-track:  #111128;
+  --text:             #ffffff;
+  --accent:           #7c4dff;
+  --accent-primary:   #7c4dff;
+}
+
+/* ── Body background ── */
+body{ background: var(--bg-primary); color: var(--text-primary); }
+
+/* ── Tab panes ── */
+.tab-pane{ background: var(--bg-primary); }
+.pane-scroll{ background: var(--bg-primary); scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
+
+/* ── Cards, panels, accordion bodies, hitsav sections ── */
+.hitsav-section,
+.card, .panel, .info-box, .qa-panel,
+.ocb-section, .ocb-phase-list, .ocb-log-wrap,
+.wccs-section,
+.llow-panel, .sc-panel, .wf-panel,
+.detector-card, .det-card,
+.timeline-zone,
+.modal-box, .popup-box,
+.kpi-card, .stat-card,
+.accordion-item,
+.b2-card,
+.detective-board,
+.idea-card, .task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── Accordion headers ── */
+.accordion-header{
+  background: var(--bg-card);
+  color: var(--accent-orange);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.accordion-header:hover{ background: var(--bg-card-hover); }
+
+/* ── Accordion body ── */
+.accordion-body{ background: var(--bg-secondary); color: var(--text-primary); }
+
+/* ── HITSAV section headers ── */
+.hitsav-section-header,
+.hitsav-title,
+.hitsav-acc-header {
+  color: var(--accent-orange) !important;
+}
+
+/* ── Section titles / h2 / h3 (exclude sidebar, exclude AI bar) ── */
+.tab-pane .section-title,
+.tab-pane h2,
+.tab-pane h3,
+.pane-scroll .section-title,
+.pane-scroll h2,
+.pane-scroll h3,
+.wccs-section-title {
+  color: var(--accent-orange);
+}
+
+/* ── Body text ── */
+.tab-pane p,
+.tab-pane li,
+.tab-pane label,
+.tab-pane span:not(.badge):not(.pill):not(.chip):not(.tag),
+.pane-scroll p {
+  color: var(--text-primary);
+}
+
+/* ── Muted / sub text ── */
+.tab-pane .muted,
+.tab-pane .hint,
+.tab-pane .sub,
+.tab-pane small,
+.section-subtitle {
+  color: var(--text-secondary);
+}
+
+/* ── Status badges ── */
+.badge-active, .status-active, .pill-active,
+span.active-badge, .ok-badge, .status-ok { color: var(--accent-green); font-weight: bold; }
+.badge-pending, .status-pending { color: var(--accent-orange); }
+.badge-error, .badge-fail, .status-error, .status-fail { color: var(--accent-red); }
+
+/* ── Primary action buttons (not Parse/Run which are custom styled above) ── */
+.btn-primary, .hitsav-save-btn, .btn-save,
+.cta-btn, .action-btn:not(.btn-ghost) {
+  background: var(--accent-purple) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+.btn-primary:hover{ opacity: 0.85; }
+
+/* ── .btn override — ghost style ── */
+.btn{
+  background: transparent !important;
+  border: 1px solid var(--border-active) !important;
+  color: var(--accent-purple) !important;
+  border-radius: 6px !important;
+}
+.btn:hover{
+  background: rgba(124,77,255,0.12) !important;
+  border-color: var(--accent-purple) !important;
+  color: var(--accent-purple) !important;
+}
+
+/* ── Input fields, textareas, selects ── */
+input[type="text"]:not(#ai-status-bar input),
+input[type="number"]:not(#ai-status-bar input),
+input[type="search"],
+select:not(#ai-status-bar select),
+textarea:not(#ai-status-bar textarea) {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  border-radius: 6px !important;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--border-active) !important;
+  outline: none;
+}
+
+/* ── Tables ── */
+.tab-pane table th,
+.pane-scroll table th { background: var(--bg-secondary); color: var(--text-secondary); border-color: var(--border-subtle); }
+.tab-pane table td,
+.pane-scroll table td { background: var(--bg-card); color: var(--text-primary); border-color: var(--border-subtle); }
+.tab-pane table tr:nth-child(even) td,
+.pane-scroll table tr:nth-child(even) td { background: var(--bg-primary); }
+
+/* ── List items with left accent bars ── */
+.accent-list li,
+.log-list li,
+.evo-list li,
+.activity-item {
+  border-left: 3px solid var(--accent-purple);
+  padding-left: 10px;
+}
+
+/* ── Evolution log entries ── */
+.evo-entry, .timeline-entry, .history-entry {
+  border-left: 3px solid var(--accent-purple);
+  padding-left: 8px;
+  background: var(--bg-card);
+}
+
+/* ── Fork chosen / alternative ── */
+.fork-chosen { color: var(--accent-cyan); }
+.fork-alt, .fork-rejected { color: var(--text-muted); }
+
+/* ── Toast notifications ── */
+.toast.ok, .toast.success { background: var(--accent-green); color: #000; }
+.toast.error { background: var(--accent-red); color: #fff; }
+.toast.info { background: var(--accent-blue); color: #fff; }
+.toast.warn { background: var(--accent-orange); color: #000; }
+
+/* ── Number / count badges ── */
+.count-badge, .num-badge, .badge-num {
+  background: var(--accent-blue);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* ── Progress bars ── */
+.ocb-progress-fill,
+.progress-fill,
+.h-gauge-fill,
+#ocb2-progress-fill {
+  background: var(--accent-purple) !important;
+}
+.ocb-progress-bar,
+.progress-track,
+.h-gauge-track { background: var(--bg-secondary); }
+
+/* ── Scrollbars (webkit) ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+/* ── ACCA info boxes ── */
+.acca-info-box {
+  background: rgba(124,77,255,0.08);
+  border: 1px solid var(--border-active);
+  color: var(--text-secondary);
+}
+
+/* ── Modal / popup boxes ── */
+.modal-inner, .popup-inner, .htl-popup-v2 {
+  background: var(--bg-card);
+  border: 1px solid var(--border-active);
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
 </head>
@@ -2191,7 +2435,7 @@ body{padding-bottom:28px}
         ① Save Session
       </button>
       <button id="hitsav-step2-btn" class="hitsav-step-btn hitsav-step-blue"
-        onclick="hitsavStep2()" disabled title="Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files">
+        onclick="hitsavStep2()" title="Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files">
         ② Copy STATUS.md
       </button>
       <button id="hitsav-step3-btn" class="hitsav-step-btn hitsav-step-amber"
@@ -4466,7 +4710,14 @@ window.hitsavAutoUpdateStatus = function() {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (btn) { btn.textContent = '⚡ Auto-Update STATUS.md'; btn.disabled = false; }
-      if (d.error) { toast('❌ Error: ' + d.error, 'error'); return; }
+      if (d.error) {
+        if (d.error.toLowerCase().indexOf('empty') !== -1) {
+          toast('Provider returned nothing — try again', 'warn', 4000);
+        } else {
+          toast('❌ Error: ' + d.error, 'error');
+        }
+        return;
+      }
       toast('STATUS.md updated — ' + (d.lines_added || 0) + ' lines added ✅', 'ok');
     })
     .catch(function(e) {
@@ -5453,23 +5704,18 @@ window.pwccsCopyPath = function(ev){
     <!-- Left: OCB input -->
     <div style="display:flex;flex-direction:column;gap:8px">
       <label style="font-weight:bold">OCB Block Input</label>
-      <textarea id="ocb2-input" placeholder="Paste your OCB block here...
-Example:
-&#x2550;&#x2550;&#x2550; PHASE 1 &#x2014; Fix popup &#x2550;&#x2550;&#x2550;
-Find mission_control.html..."
+      <textarea id="ocb2-input" placeholder="Read STATUS.md. Count the lines in the BUILT AND WORKING table. Report the number only."
         style="flex:1;resize:none;font-family:monospace;font-size:0.85rem;
         background:var(--bg-tertiary);color:var(--text);
         border:1px solid var(--border);border-radius:6px;
         padding:12px;min-height:300px"></textarea>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button onclick="ocb2Parse()"
-          style="flex:1;padding:8px;background:var(--accent);
-          color:#fff;border:none;border-radius:6px;cursor:pointer;
-          font-weight:bold">🔍 Parse</button>
+          style="flex:1;padding:6px 18px;border:2px solid #5b8dee;background:transparent;color:#5b8dee;border-radius:6px;cursor:pointer;font-weight:bold;transition:all 0.2s ease"
+          onmouseover="this.style.background='rgba(91,141,238,0.15)'" onmouseout="this.style.background='transparent'">🔍 Parse</button>
         <button onclick="ocb2Run()"
-          style="flex:1;padding:8px;background:#22c55e;
-          color:#fff;border:none;border-radius:6px;cursor:pointer;
-          font-weight:bold">▶ Run</button>
+          style="flex:1;padding:6px 18px;border:2px solid #3ecf8e;background:transparent;color:#3ecf8e;border-radius:6px;cursor:pointer;font-weight:bold;transition:all 0.2s ease"
+          onmouseover="this.style.background='rgba(62,207,142,0.15)'" onmouseout="this.style.background='transparent'">▶ Run</button>
         <button onclick="ocb2Clear()"
           style="padding:8px 12px;background:var(--bg-tertiary);
           color:var(--text);border:1px solid var(--border);
@@ -17125,7 +17371,7 @@ document.addEventListener('click', () => {
 
 // Auto-refresh AI bar every 15s (OCB-O)
 setInterval(updateAiStatusBar, 15000);
-setTimeout(updateAiStatusBar, 2000);  // initial load after page ready
+setTimeout(updateAiStatusBar, 10000);  // initial load — 10s delay so page renders first
 
 function hsUpdateTicker() {
   const inner = document.getElementById('hs-ticker-inner');
