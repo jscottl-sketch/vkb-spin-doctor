@@ -1021,6 +1021,8 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_ocb_run()
             elif path == "/api/ocb/abort":
                 self._handle_ocb_abort()
+            elif path == "/api/ocb/clear-lock":
+                self._handle_ocb_clear_lock()
             elif path == "/api/ocb/rollback":
                 self._handle_ocb_rollback()
             elif path.startswith("/api/ocb/cancel/"):
@@ -7635,6 +7637,21 @@ def _handle_ocb_abort(self):
 
 
 MCCHandler._handle_ocb_abort = _handle_ocb_abort  # type: ignore[attr-defined]
+
+
+def _handle_ocb_clear_lock(self):
+    """POST /api/ocb/clear-lock — delete stale .ocb_running lock file."""
+    try:
+        lock_path = HERE / ".ocb_running"
+        existed = lock_path.exists()
+        if existed:
+            lock_path.unlink(missing_ok=True)
+        self._send_json({"cleared": existed, "message": "Lock cleared" if existed else "No lock present"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+
+MCCHandler._handle_ocb_clear_lock = _handle_ocb_clear_lock  # type: ignore[attr-defined]
 
 
 def _handle_ocb_progress(self):

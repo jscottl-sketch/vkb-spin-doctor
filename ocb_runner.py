@@ -1118,14 +1118,25 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
     obj["live_output"] = list(_live_output)
     _write_status(obj)
     if _LOCK_FILE.exists():
-        msg = "Another OCB is running (.ocb_running exists)"
-        obj["guard_results"]["lock"] = False
-        obj.update({"status": "BLOCKED", "error": msg, "current_stage": "failed"})
-        _sl(f"GUARD 1 FAIL: {msg}")
-        _write_status(obj)
-        _last_run_result = obj
-        _check_results   = {}
-        return obj
+        try:
+            lock_age = time.time() - _LOCK_FILE.stat().st_mtime
+        except Exception:
+            lock_age = 999
+        if lock_age > 600:  # stale lock — older than 10 minutes, process is dead
+            try:
+                _LOCK_FILE.unlink(missing_ok=True)
+            except Exception:
+                pass
+            _sl(f"GUARD 1: stale lock cleared (age {lock_age:.0f}s) — continuing")
+        else:
+            msg = "Another OCB is running (.ocb_running exists)"
+            obj["guard_results"]["lock"] = False
+            obj.update({"status": "BLOCKED", "error": msg, "current_stage": "failed"})
+            _sl(f"GUARD 1 FAIL: {msg}")
+            _write_status(obj)
+            _last_run_result = obj
+            _check_results   = {}
+            return obj
 
     obj["guard_results"]["lock"] = True
     _sl("GUARD 1 PASS: lock file clear")
