@@ -1,9 +1,9 @@
 {
   "run_id": "test_brain_063117",
   "started_at": "2026-06-02T06:31:17",
-  "status": "RUNNING",
-  "current_stage": "committing",
-  "stage_detail": "MOT passed \u2014 committing changes",
+  "status": "DONE",
+  "current_stage": "locking",
+  "stage_detail": "",
   "live_output": [
     "[06:31:17] [STAGE:locking] checking .ocb_running lock file",
     "[06:31:17] GUARD 1 PASS: lock file clear",
@@ -15,7 +15,10 @@
     "[06:31:17]   Task 1: create a file ocb_brain_test.txt content: OCB Runner AI brain wired 20",
     "[06:31:17]   DONE: created ocb_brain_test.txt (36 chars)",
     "[06:31:17] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[06:31:17] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[06:31:17] [STAGE:committing] MOT passed \u2014 committing changes",
+    "[06:31:17] [STAGE:complete] MOT SKIPPED (skip_mot=True)",
+    "[06:31:17] All guards passed \u2014 changes committed",
+    "[06:31:17] Lock file released"
   ],
   "guard_results": {
     "lock": true,
@@ -47,7 +50,7 @@
   "files_changed": [
     "ocb_brain_test.txt"
   ],
-  "git_diff_stat": "",
+  "git_diff_stat": " data/ocb_progress.json | 24 ++++++++++++++++--------\n data/ocb_status.json   | 34 +++++++++++++++++-----------------\n 2 files changed, 33 insertions(+), 25 deletions(-)\n",
   "rollback_available": false,
   "error": "",
   "stash_ref": "OCB-Runner-20260602_063117",
@@ -66,5 +69,6 @@
         }
       ]
     }
-  ]
+  ],
+  "completed_at": "2026-06-02T06:31:17"
 }
