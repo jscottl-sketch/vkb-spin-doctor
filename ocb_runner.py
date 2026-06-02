@@ -406,6 +406,33 @@ def _write_status(status_obj: dict):
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(status_obj, f, indent=2)
     shutil.move(tmp, str(OCB_STATUS_FILE))
+    # Write compact progress file for MCC progress bar polling
+    ph_list = status_obj.get("phases", [])
+    if ph_list:
+        try:
+            ph_total = len(ph_list)
+            ph_done = sum(1 for p in ph_list if (p.get("status") or "").upper() in ("DONE","FAILED","SKIPPED"))
+            ph_cur = status_obj.get("current_phase", 0)
+            ph_cur_name = next((p.get("phase_name","") for p in ph_list if p.get("phase_num") == ph_cur), "")
+            prog = {
+                "phases": [{"phase_num": p.get("phase_num"), "phase_name": p.get("phase_name",""),
+                            "status": (p.get("status") or "PENDING").upper(),
+                            "tasks_done": sum(1 for t in p.get("tasks",[]) if (t.get("status") or "").upper() in ("DONE","FAILED","SKIPPED")),
+                            "tasks_total": len(p.get("tasks",[]))} for p in ph_list],
+                "phase_current": ph_cur, "phase_name": ph_cur_name, "phase_total": ph_total,
+                "percent": round(ph_done / ph_total * 100) if ph_total else 0,
+                "status": status_obj.get("status", "RUNNING"),
+                "current_stage": status_obj.get("current_stage", ""),
+                "mot_score": status_obj.get("mot_score", ""),
+                "updated_at": datetime.now().isoformat(timespec="seconds"),
+            }
+            pf = OCB_STATUS_FILE.parent / "ocb_progress.json"
+            ptmp = str(pf) + ".tmp"
+            with open(ptmp, "w", encoding="utf-8") as pf_:
+                json.dump(prog, pf_, indent=2)
+            shutil.move(ptmp, str(pf))
+        except Exception:
+            pass
 
 
 def _read_status() -> dict:
@@ -1105,6 +1132,12 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
             "lock": None, "stash": None, "bs4": None, "js": None, "registry": None, "mot": None,
         }, "check_results": {}, "files_changed": [], "git_diff_stat": "",
         "rollback_available": False, "error": "", "stash_ref": None,
+        "current_phase": 0, "mot_score": "",
+        "phases": [
+            {"phase_num": p2["phase"], "phase_name": p2.get("phase_name",""), "status": "PENDING",
+             "tasks": [{"num": t2["num"], "text": t2["text"][:80], "status": "PENDING"} for t2 in p2.get("tasks",[])]}
+            for p2 in parsed
+        ],
     }
     _write_status(obj)
 
@@ -1183,14 +1216,19 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
         failed_reason: str    = ""
 
         print(f"[THREAD] About to execute phase 1")
-        for phase in parsed:
+        for ph_idx, phase in enumerate(parsed):
             if failed_reason:
+                if ph_idx < len(obj["phases"]):
+                    obj["phases"][ph_idx]["status"] = "SKIPPED"
                 break
             if _is_aborted():
                 obj["status"] = "CANCELLED"
                 _sl(f"⛔ Aborted by user before Phase {phase['phase']}: {phase.get('phase_name','')}")
                 _write_status(obj)
                 break
+            obj["current_phase"] = phase["phase"]
+            if ph_idx < len(obj["phases"]):
+                obj["phases"][ph_idx]["status"] = "RUNNING"
             set_status("phase_running", f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             _sl(f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             for task in phase.get("tasks", []):
@@ -1302,6 +1340,9 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
                 except Exception as exc:
                     failed_reason = f"Exception: {str(exc)[:100]}"
                     _sl(f"  ERROR: {failed_reason}"); break
+            if ph_idx < len(obj["phases"]):
+                obj["phases"][ph_idx]["status"] = "FAILED" if failed_reason else "DONE"
+            _write_status(obj)
             print(f"[OCB THREAD] Phase {phase.get('phase', '')} complete")
 
         if not html_was_edited:
@@ -1336,6 +1377,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
                 mot_score = "SKIPPED (skip_mot=True)"
                 obj["guard_results"]["mot"] = True
                 obj["check_results"]["D_mot"] = {"ok": True, "score": mot_score, "skipped": True}
+                obj["mot_score"] = mot_score
                 _sl(f"CHECK D (MOT): SKIPPED — non-HTML task flag set")
                 mot_ok = True
             else:
@@ -1345,6 +1387,7 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
                 mot_ok, mot_score = _run_mot_check()
                 obj["guard_results"]["mot"] = mot_ok
                 obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
+                obj["mot_score"] = mot_score
                 _sl(f"CHECK D (MOT): {'PASS' if mot_ok else 'FAIL'} — {mot_score}")
             if mot_ok:
                 set_status("committing", "MOT passed — committing changes")

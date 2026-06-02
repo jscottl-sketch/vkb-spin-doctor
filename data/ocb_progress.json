@@ -12,8 +12,8 @@
   "phase_name": "Create Brain Test File",
   "phase_total": 1,
   "percent": 100,
-  "status": "RUNNING",
-  "current_stage": "committing",
+  "status": "DONE",
+  "current_stage": "locking",
   "mot_score": "SKIPPED (skip_mot=True)",
   "updated_at": "2026-06-02T06:31:17"
 }
