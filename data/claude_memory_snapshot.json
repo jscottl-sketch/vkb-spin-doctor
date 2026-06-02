@@ -1,71 +1,772 @@
 {
-  "generated_at": "2026-05-31T00:00:00",
-  "source_files": ["STATUS.md", "INDEX.md", "ACCA.md"],
-  "project_overview": "AAFL (AI Agent Feedback Loop) — self-improving AI agent framework. Spin Doctor is the first proof-of-concept (joystick mouse-spin fix for War Thunder/Elite Dangerous/Star Citizen). AASKC is the product brand.",
-  "mission_priorities": [
-    "ALP (Allowance Preservation) — absolute Rule No.1",
-    "AAFL is THE PROJECT — Spin Doctor is the benchmark/test subject",
-    "ACCA codes generated as bonus, organised later",
-    "Spin Doctor = ultimate validation of AAFL",
-    "AAFL + Spin Doctor must be fluid, flexible, reusable on any project"
-  ],
+  "project_overview": {
+    "last_updated": "2026-05-31 (OCB-Q+P: STORM bridge + WENTO queue + Timeline zones + OCB Runner safety) | **Updated by:** aafl_wccs.py",
+    "built_components": [
+      {
+        "component": "---",
+        "notes": "---"
+      },
+      {
+        "component": "v0.1 spin fix",
+        "notes": "War Thunder confirmed working"
+      },
+      {
+        "component": "spin_doctor.py",
+        "notes": "~1057 lines, 3 tabs (Fix / Conductor / KB)"
+      },
+      {
+        "component": "sfl_agent.py v3",
+        "notes": "~920 lines, ACP v1, handover injection, call_aafl()"
+      },
+      {
+        "component": "aafl_core.py",
+        "notes": "14 providers, Cerebras=gpt-oss-120b, reasoning_content fallback"
+      },
+      {
+        "component": "loop_manager.py",
+        "notes": "Plan-Work-Verify-Store. Phases B+C+D. AGENT_SYSTEM injected. 4 bugs fixed."
+      },
+      {
+        "component": "evaluator.py",
+        "notes": "Result scorer 0-10"
+      },
+      {
+        "component": "researcher.py",
+        "notes": "research() + scout() with source reputation"
+      },
+      {
+        "component": "memory_bank.py",
+        "notes": "SQLite — knowledge, solution_log, source_reputation"
+      },
+      {
+        "component": "meta_loop.py",
+        "notes": "Self-improving meta-loop. Real data injection fixed."
+      },
+      {
+        "component": "chief_scout.py",
+        "notes": "Parallel scout — 5 strategies, Mistral synthesis"
+      },
+      {
+        "component": "mcu_optimizer.py",
+        "notes": "Reads handover + session logs + board, sends to Mistral, rewrites kanban JSON. WCCS step 6."
+      },
+      {
+        "component": "dashboard_builder.py",
+        "notes": "MCC data builder. Atomic write. --dry-run flag."
+      },
+      {
+        "component": "task_router.py",
+        "notes": "Classifies AAFL/CLAC/SONNET/OPUS. 88 lines."
+      },
+      {
+        "component": "problems/conductor.py",
+        "notes": "619 lines, 22 problems"
+      },
+      {
+        "component": "problems/win_hardener.py",
+        "notes": "9 problems W-001-W-009"
+      },
+      {
+        "component": "problems/ed_bind_reset.py",
+        "notes": "ED Bind Reset prevention"
+      },
+      {
+        "component": "mission_control.html",
+        "notes": "MCC — 19+ tabs, JS audit complete, zero missing functions"
+      },
+      {
+        "component": "mcc_server.py",
+        "notes": "Bridges MCC HTML to filesystem. 30+ endpoints."
+      },
+      {
+        "component": "data/devices.json",
+        "notes": "98 devices with VID/PID lookup"
+      },
+      {
+        "component": "AAFL autonomous runs",
+        "notes": "4 goals, scores 8.07-9.33, DB cache hit confirmed"
+      },
+      {
+        "component": "Regression test",
+        "notes": "PASS 8.83/10"
+      },
+      {
+        "component": "ALP_Database.md",
+        "notes": "17 entries"
+      },
+      {
+        "component": "Handover split",
+        "notes": "INDEX/STATUS/HISTORY/ACCA applied 2026-05-20"
+      },
+      {
+        "component": "aafl_wccs.py",
+        "notes": "Built 2026-05-20. Permanent WCCS fix (free Mistral)."
+      },
+      {
+        "component": "merge_sessions.py + .bat",
+        "notes": "Built 2026-05-23. DSP required"
+      },
+      {
+        "component": "MCC MOT 108/108",
+        "notes": "ALL CLEAR 2026-05-23"
+      },
+      {
+        "component": "mss library",
+        "notes": "Installed 2026-05-23 (fixes sfl_agent pre-existing error)"
+      },
+      {
+        "component": "Build 1 (10 features)",
+        "notes": "13/13 modules, 12/12 tests PASS. Complete 2026-05-23"
+      },
+      {
+        "component": "Plugin/module architecture",
+        "notes": "modules/, module_registry.json, module_loader.py"
+      },
+      {
+        "component": "Preset system",
+        "notes": "presets/, 3 starters, preset bar in MCC"
+      },
+      {
+        "component": "aafl_config.json",
+        "notes": "Confidence threshold + cost cap controls"
+      },
+      {
+        "component": "retry_manager.py",
+        "notes": "Auto-retry with retry_log.json"
+      },
+      {
+        "component": "smart_suggester.py",
+        "notes": "Goal suggestion engine"
+      },
+      {
+        "component": "chain_runner.py",
+        "notes": "Chain mode for sequential goals"
+      },
+      {
+        "component": "scout_timer.py",
+        "notes": "Timed scout with indefinite mode"
+      },
+      {
+        "component": "sources_library.json",
+        "notes": "Source discovery library"
+      },
+      {
+        "component": "storage_manager.py",
+        "notes": "Storage tab + storage_config.json"
+      },
+      {
+        "component": "Stuck Inbox (MCC)",
+        "notes": "Severity field, bulk resolve, AFNA suggestions"
+      },
+      {
+        "component": "MCC UI drill-downs",
+        "notes": "WCCS tab: Auto-Save Log, History Search, Session Logs, Rewind+Edit, Diff Viewer. Home: Provider Health drill-down, Self-Diagnosis tab, 6 gauges, 4 quick-action buttons"
+      },
+      {
+        "component": "SAVE_NOW.bat",
+        "notes": "One-click save, auto-creates chat_latest.txt if missing"
+      },
+      {
+        "component": "Auto-Sunday merge",
+        "notes": "Wired into aafl_wccs.py, runs merge_sessions on Sundays"
+      },
+      {
+        "component": "Pre-flight ALP check",
+        "notes": "Added to aafl_wccs.py"
+      },
+      {
+        "component": "WCCS skill v2",
+        "notes": "Uploaded 2026-05-24"
+      },
+      {
+        "component": "Action plan skill",
+        "notes": "Uploaded 2026-05-24"
+      },
+      {
+        "component": "MCC copy buttons",
+        "notes": "Home tab — Copy STATUS.md + Copy HISTORY.md with green toast"
+      },
+      {
+        "component": "MCP endpoints",
+        "notes": "/api/status, /api/history, /api/acca, /api/health all live in mcc_server.py"
+      },
+      {
+        "component": "Auto git push",
+        "notes": "aafl_wccs.py pushes to remote after every commit (non-fatal on failure)"
+      },
+      {
+        "component": "DESIGN_RULES.md",
+        "notes": "FFUE + dual-mode (workstation/API) documented. All 4 components covered."
+      },
+      {
+        "component": "LiteLLM installed",
+        "notes": "Already installed + comment at aafl_core.py:201. Full integration pending."
+      },
+      {
+        "component": "mcc_test.py",
+        "notes": "Test session completed successfully 2026-05-24. 133/138 PASS"
+      },
+      {
+        "component": "mcc_test.py captures",
+        "notes": "5 test sessions added from mcc_test.py"
+      },
+      {
+        "component": "wccs_runner.py",
+        "notes": "Original WCCS runner (pre-aafl_wccs). Still present."
+      },
+      {
+        "component": "aafl_watchdog.py",
+        "notes": "Safety watchdog — built 2026-05-20. Wiring status UNCONFIRMED — must verify before overnight run."
+      },
+      {
+        "component": "cost_guard.py",
+        "notes": "Cost cap safety net — built ~2026-05-15. Rule No.1 brake. Wiring status UNCONFIRMED."
+      },
+      {
+        "component": "meta_loop.py + meta_loop.bat",
+        "notes": "Self-improving meta-loop. Dry-run default. 3 proposals in meta_proposals/ (never actioned)."
+      },
+      {
+        "component": "queue_runner.py + queue_runner.bat",
+        "notes": "Batch goal runner — reads goal_queue.txt, runs loop --once per goal. ACTIVE."
+      },
+      {
+        "component": "morning_report.md",
+        "notes": "Auto-copy of latest AAFL result. Updated each AAFL run."
+      },
+      {
+        "component": "mcc_full_mot.py",
+        "notes": "108-check MOT test suite. MOT result: 108/108 ALL CLEAR 2026-05-23."
+      },
+      {
+        "component": "provider_health.py",
+        "notes": "Provider health system — 3 tiers, 29 tests."
+      },
+      {
+        "component": "source_library_manager.py",
+        "notes": "Sources library management — reads/writes sources_library.json."
+      },
+      {
+        "component": "preset_manager.py",
+        "notes": "Build 1 Feature 2 — standalone preset utility (save/load/list/delete). ACTIVE."
+      },
+      {
+        "component": "docs/MCC_FULL_GUIDE.md",
+        "notes": "Plain-English MCC user guide. Created 2026-05-24."
+      },
+      {
+        "component": "afna_strategies.json",
+        "notes": "AFNA (Attack From New Angle) strategy definitions."
+      },
+      {
+        "component": "Auto-refresh polling (MCC)",
+        "notes": "30s pollCoreData(), manual ↻ Refresh button, Last updated label. Added 2026-05-24."
+      },
+      {
+        "component": "AAFL Live Output panel",
+        "notes": "Live streaming AAFL output in AAFL Control tab. Phase + provider badges. Added 2026-05-24."
+      },
+      {
+        "component": "AAFL↔Scout Bridge",
+        "notes": "Trigger scout for current goal, result feeds back to MCC. Added 2026-05-24."
+      },
+      {
+        "component": "Workflow Builder",
+        "notes": "Provider sequence builder (add/remove steps), save/load named presets. Added 2026-05-24."
+      },
+      {
+        "component": "Scout Strategies section",
+        "notes": "5 individual strategy buttons (DDG/Reddit/GitHub/YouTube/Forum) + All Parallel. Added 2026-05-24."
+      },
+      {
+        "component": "/aafl/run-goal endpoint",
+        "notes": "Fixes \"Failed to fetch\" — now actually launches loop_manager.py. Added 2026-05-24."
+      },
+      {
+        "component": "/scout/strategy endpoint",
+        "notes": "Individual scout strategy launcher. Added 2026-05-24."
+      },
+      {
+        "component": "docs/PROJECT_AUDIT.md",
+        "notes": "Created 2026-05-24. Lists 22 missing items."
+      },
+      {
+        "component": "ACCA.md cleanup",
+        "notes": "5 codes added (CLACH/CNP/RIBS/SESUM/SBS), 5 mode codes reformatted, CAP duplicate confirmed clean."
+      },
+      {
+        "component": "FFUE correction",
+        "notes": "FFUE corrected to Fluid Flexible Upgradeable Editable."
+      },
+      {
+        "component": "aafl_wccs.py attempt",
+        "notes": "All providers failed, manual session log cc2 committed."
+      },
+      {
+        "component": "Coder 32B loaded",
+        "notes": "Ready for retry."
+      },
+      {
+        "component": "STATUS.md restore",
+        "notes": "Completed 2026-05-27 — 168/195 lines (86%) restored from chat history"
+      },
+      {
+        "component": "aafl_wccs.py read-merge-write",
+        "notes": "Completed 2026-05-27 — merged 3 session logs into aafl_wccs.py"
+      },
+      {
+        "component": "90% sanity check",
+        "notes": "Completed 2026-05-27 — mcc_server.py verified stable"
+      },
+      {
+        "component": "Line count warning",
+        "notes": "Added to WCCS tab — highlights when STATUS.md exceeds 250 lines"
+      },
+      {
+        "component": "Old saves scanner",
+        "notes": "Added to WCCS tab — scans session_logs/ for old saves"
+      },
+      {
+        "component": "chat→SESUM",
+        "notes": "Added to WCCS tab — converts chat history to SESUM format"
+      },
+      {
+        "component": "Missions tab",
+        "notes": "Added to MCC — shows current mission priorities"
+      },
+      {
+        "component": "UI shuffle",
+        "notes": "Completed 2026-05-27 — removed ALP/Memory tabs from top bar"
+      },
+      {
+        "component": "Tooltips",
+        "notes": "Added to all MCC buttons — shows keyboard shortcuts"
+      },
+      {
+        "component": "IBR scan",
+        "notes": "Added to WCCS tab — scans for Investigate Brainstorm Reports"
+      },
+      {
+        "component": "Red banner fix",
+        "notes": "Replaced with blue pulse glow + bouncing arrow (Block D)"
+      },
+      {
+        "component": "SESUM saved",
+        "notes": "Saved to session_logs/sesum_2026-05-27.md"
+      },
+      {
+        "component": "Build 4 (MCC)",
+        "notes": "Quick Ask, AAFL Results, Scout Search, Loop Presets, Chain Builder — 108/108 MOT"
+      },
+      {
+        "component": "Build 4b (Health Suite)",
+        "notes": "Sidebar nav tree, sticky scroll fix, duplicate ID removal — 109/109 MOT"
+      },
+      {
+        "component": "Build 5a (Unified Query)",
+        "notes": "Unified query bar (AAFL + Scout tabs), quick-ask endpoint fix, hsTabSwitch fix"
+      },
+      {
+        "component": "OCB-A (MCC Self-Health)",
+        "notes": "work_checker.py, self_health.py, data/health.db, data/element_registry.json, data/solution_database.json"
+      },
+      {
+        "component": "OCB-B (Body Map + Auto-Fix)",
+        "notes": "auto_fixer.py, Body Map SVG in MCC, real-time Health Suite polling"
+      },
+      {
+        "component": "OCB-C Phase 1 (Missions)",
+        "notes": "8-card mission launcher, KB Profiles merged into Missions, launch-spindoctor API"
+      },
+      {
+        "component": "OCB-C Phase 2 (Workflow)",
+        "notes": "Workflow Builder + Chain Mode + B2-07 merged into single accordion with SVG flowchart"
+      },
+      {
+        "component": "OCB-C Phase 3 (Storage)",
+        "notes": "8 visual elements + 3 API endpoints — pie chart, bar graphs, dial, trend, forecast, sliders"
+      },
+      {
+        "component": "OCB-C Phase 4 (System Monitor)",
+        "notes": "system_monitor.py, 4-dial hs-pane-system, AI process cards, timeline SVG, 6 API endpoints"
+      },
+      {
+        "component": "STORM (deduplication)",
+        "notes": "deduplicate_status/sesums/history methods in storage_manager.py — ACCA: STORM"
+      },
+      {
+        "component": "OCB-D Phase 1 (LLOW Engine)",
+        "notes": "llow_engine.py, data/llow_elements.json (35 elements), data/llow_arrows.json (15 types)"
+      },
+      {
+        "component": "OCB-D Phase 2 (LLOW Canvas UI)",
+        "notes": "3-panel drag-drop canvas in AAFL Control tab — palette, canvas, properties, exec log"
+      },
+      {
+        "component": "OCB-D Phase 3 (LLOW Endpoints)",
+        "notes": "10 /api/llow/* endpoints in mcc_server.py + run_llow_workflow() in loop_manager.py"
+      },
+      {
+        "component": "OCB-D Phase 4 (Starter Workflows)",
+        "notes": "basic_research, full_dev_cycle, overnight_aafl in data/llow_workflows/"
+      },
+      {
+        "component": "OCB-E Phase 1 (LLOW Population)",
+        "notes": "38 elements (added DRR, DWR, WENTO, moved CNP) — retry logic fixed"
+      },
+      {
+        "component": "OCB-E Phase 3 (Popup z-index)",
+        "notes": ".mcc-popup-safe CSS class + z-index:9999 global fix"
+      },
+      {
+        "component": "OCB-E Phase 4 (Visual Overhaul)",
+        "notes": "Ticker bar, AI provider cards, leaderboard, cost savings counter in Health Suite"
+      },
+      {
+        "component": "OCB-E Phase 5 (Storage Visuals)",
+        "notes": "Treemap, archive timeline heatmap, cleanup suggestions, 4 new API endpoints"
+      },
+      {
+        "component": "OCB-E Phase 6 (SESUM+ACCA)",
+        "notes": "sesum_2026-05-28_combined.md saved. ACCA: WRC, LLOW, STORM, AASKC added"
+      },
+      {
+        "component": "OCB-F Phase 1 (Arrow Drop Fix)",
+        "notes": "`llowOnDrop` now handles type=arrow; sets `pendingArrowType` for next port connection. Badge in topbar shows active type. All 15 arrow types draggable."
+      },
+      {
+        "component": "OCB-F Phase 2 (Colour Strategy)",
+        "notes": "⚙️ Settings slide-in panel. Phase Flow / Element Mirror / Snap Glow — three independent toggles. Starter workflow auto-suggest hints. 108/108 MOT."
+      },
+      {
+        "component": "OCB-G Phase 1 (CONNECTORS)",
+        "notes": "Palette section renamed \"Arrow Types\" → \"CONNECTORS\". Per-type line styles for all 15: dotted timer/scheduled, dashed jump/branch/alp/hard_stop, solid+width for trigger/repeat/ab_split."
+      },
+      {
+        "component": "OCB-G Phase 2 (Junction Boxes)",
+        "notes": "8 new junction types in junctions category (llow_elements.json): Decision/Merge/Split/Gate/Counter/Logger/Router/Delay. CSS clip-path shapes per type. Double-click popup for Gate/Counter/Router/Delay editable params. Props panel \"Edit Options\" button."
+      },
+      {
+        "component": "OCB-G Phase 3 (Preset Load)",
+        "notes": "Dropdown renamed \"Preset Load…\". 8 new workflow presets: Tutorial Load, Bug Hunt, ALP Audit Run, Scout Deep Dive, Morning Report, Meta Improve, New Project Bootstrap, Star Citizen Benchmark. Strategy auto-suggest extended to all 11 presets."
+      },
+      {
+        "component": "OCB-G Phase 4 (Colour Strategy)",
+        "notes": "Phase Flow now renders visible zone header labels at canvas top: \"INPUT\", \"PROCESS\", \"OUTPUT\" with full subtitles. Strict Mode 4th toggle: wrong-zone drop = canvas shake + red zone flash + snap-back + log message. Requires Phase Flow ON."
+      },
+      {
+        "component": "OCB-H Phase 1 (Snap Mode)",
+        "notes": "\"Strict Mode\" renamed to \"Snap Mode\" everywhere in code, CSS, JS, and UI label. Ghost bug fixed: only grabbed LEL ghosts/moves, all others stay solid. Custom drag image for palette elements. 108/108 MOT."
+      },
+      {
+        "component": "OCB-H Phase 2 (Tab Renames)",
+        "notes": "\"Scout\" → \"Scout Swarm\" in tab bar. KB Profiles tab button hidden from main tab bar — already lives in Missions tab as sub-section."
+      },
+      {
+        "component": "OCB-H Phase 3 (AI Status Bar)",
+        "notes": "Persistent bar across top of all MCC tabs. Shows all AI providers with live pulse dots, latency, score. Scrolling ticker. Updates on every provider health refresh."
+      },
+      {
+        "component": "OCB-H Phase 4 (Health Suite)",
+        "notes": "Timeline: 60-reading cap removed — full session history with grid lines + elapsed time label. AI Process Table: per-process CPU/RAM bars + detailed table with Kill buttons. Leaderboard: animated score bars + crown/medal icons."
+      },
+      {
+        "component": "OCB-H Phase 5 (Storage)",
+        "notes": "Pie chart: 160px, animated segments, darker=more used, centre shows % used. Legend shows per-slot % with colour coding."
+      },
+      {
+        "component": "OCB-H Phase 6 (Animations)",
+        "notes": "Scout card hover, memory card hover, cost savings counter pulse glow, cardSlideIn/fadeInUp/countUp CSS keyframes added."
+      },
+      {
+        "component": "OCB-H Phase 7 (Instructions)",
+        "notes": "Full reorganisation into 9 areas: General MCC, WCCS/Saving, Scout Swarm, LLOW Canvas, Health Suite, Storage/Missions/Design/Promo, AAFL Engine, Data Flow, ACCA Codes by category. Documents all OCB-A through OCB-H features."
+      },
+      {
+        "component": "OCB-H Phase 8 (Design Tab)",
+        "notes": "Animation speed slider, Layout density (comfortable/compact/spacious), Tab bar style (default/pills/minimal), Sidebar accent colour, Tab bar accent colour picker."
+      },
+      {
+        "component": "OCB-H Phase 9 (Promo Tab)",
+        "notes": "Project story + description, stat counters (14 providers/108 MOT/9.33 score), competitive comparison table (AAFL vs LangGraph/CrewAI/AutoGPT), links section (Ko-fi/Itch.io/GitHub/r/LocalLLaMA)."
+      },
+      {
+        "component": "OCB-H Phase 10 (Missions)",
+        "notes": "Progress overview panel: 6 animated progress bars per mission, AAFL score trend SVG chart, milestone markers (done/pending/planned)."
+      },
+      {
+        "component": "OCB-H Phase 11 (MOT)",
+        "notes": "108/108 ALL CLEAR 2026-05-28"
+      },
+      {
+        "component": "OCB-I Phase 1 (LEL Options)",
+        "notes": "Every LEL has 3-4 configurable options. Palette click → options panel below. Canvas double-click → popup. GOEB tooltips on all options."
+      },
+      {
+        "component": "OCB-I Phase 2 (Junction Boxes)",
+        "notes": "All 8 JB types fully rebuilt with 4 options each: Decision/Merge/Split/Gate/Counter/Logger/Router/Delay. Full double-click popup for all."
+      },
+      {
+        "component": "OCB-I Phase 3 (AI Master Control)",
+        "notes": "Collapsible panel above LLOW canvas: per-phase AI dropdowns, parallel workers slider, cost cap, temperature, Smart Auto-Assign, fallback chain drag-reorder, provider toggles."
+      },
+      {
+        "component": "OCB-I Phase 4 (Snap Mode Fix)",
+        "notes": "Snap Mode now works with BOTH Phase Flow AND Element Mirror. Element Mirror: each LEL snaps to its own colour zone. Phase Flow: 3-zone INPUT/PROCESS/OUTPUT enforcement."
+      },
+      {
+        "component": "OCB-I Phase 5 (Zone Labels)",
+        "notes": "All 3 zones (INPUT/PROCESS/OUTPUT) have visible headers with subtitle text, GOEB tooltip, colour-coded borders."
+      },
+      {
+        "component": "OCB-I Phase 6 (LLOW Fullscreen)",
+        "notes": "↗ button in LLOW toolbar expands canvas to fill viewport. Escape or ↙ exits. Works in fullscreen for all LLOW functions."
+      },
+      {
+        "component": "OCB-I Phase 7 (Scrollbar Width)",
+        "notes": "All LLOW scrollbars widened to 10px: palette, canvas, props panel, settings, exec log."
+      },
+      {
+        "component": "OCB-I Phase 8 (Loop Behaviour → LLOW)",
+        "notes": "Loop Behaviour absorbed into LLOW section as collapsible accordion. All 8 loop action LELs present. Loop presets saved to localStorage."
+      },
+      {
+        "component": "OCB-I Phase 9 (Section Reorganiser)",
+        "notes": "All aafl-acc sections get ⠿ drag handle + ▲ minimise button. Drag-to-reorder within tab. Order saved to localStorage per tab."
+      },
+      {
+        "component": "OCB-I Phase 10 (MOT)",
+        "notes": "108/108 ALL CLEAR 2026-05-28"
+      },
+      {
+        "component": "mcc-instructions-keeper",
+        "notes": "data/instructions_db.json (132 entries) + /api/instructions endpoints + 7 ? help buttons in MCC headers + showInstructions() JS. Skill file uploaded to Project Files 2026-05-28."
+      },
+      {
+        "component": "OCB-K Finish",
+        "notes": "data/project_awareness.json + CLAUDE.md (project orientation) — both created 2026-05-28."
+      },
+      {
+        "component": "OCB-L Phase 1 (OCB-K finish)",
+        "notes": "data/project_awareness.json built, CLAUDE.md written, data/help_history.json + data/mcc_settings.json created."
+      },
+      {
+        "component": "OCB-L Phase 2 (System Monitor fix)",
+        "notes": "_refreshSystemMonitor() dual-source (system/snapshot + resources/snapshot). GPU shows grey N/A when unavailable. LM Studio status pill added. RAM AMBER >80%, RED only >95%."
+      },
+      {
+        "component": "OCB-L Phase 3 (AI Status Bar)",
+        "notes": "/api/provider-health endpoint with location/model_loaded/VRAM. Bar height 44px. Richer provider cards with GPU/CPU/CLOUD/PAID badges. Click = expandable tooltip. Auto-refresh 20s."
+      },
+      {
+        "component": "OCB-L Phase 4 (System Drill-Downs)",
+        "notes": "All 5 dials clickable. CPU/RAM/Disk/GPU/LMStudio expand panels below dials. 5 new /api/resources/* endpoints."
+      },
+      {
+        "component": "OCB-L Phase 5 (Help Tab)",
+        "notes": "🔍 Help tab added. /api/help/ask (SSE streaming). /api/help/history. AI hierarchy selector. Q&A history accordion. ask() routing via aafl_core provider chain."
+      },
+      {
+        "component": "OCB-L Phase 6 (Settings Persistence)",
+        "notes": "data/mcc_settings.json. GET/POST /api/settings. Design tab saves to disk. section_order_per_tab to disk. mccLoadSettings() on DOMContentLoaded. Restore Defaults button. 9 localStorage calls replaced with API."
+      },
+      {
+        "component": "OCB-L Phase 7 (MOT)",
+        "notes": "108/108 ALL CLEAR 2026-05-28"
+      },
+      {
+        "component": "OCB-N Phase 1 (Scout Swarm LEL)",
+        "notes": "DATA SOURCES category + SCOUT_SWARM LEL in llow_elements.json. Time limit/counter/status/params on canvas node. /api/llow/scout-swarm endpoints."
+      },
+      {
+        "component": "OCB-N Phase 2 (Project Timeline)",
+        "notes": "project_timeline_builder.py — scans git/session_logs/STATUS/HISTORY/ACCA. Saves data/project_timeline.json. Wired into aafl_wccs.py on every save. /api/timeline-data endpoint."
+      },
+      {
+        "component": "OCB-N Phase 3 (Work Checker upgrade)",
+        "notes": "3 new panels: TIMELINE (horizontal OCB track), CHECKLIST (STATUS.md PENDING as live checkboxes), ACTION PLAN (top 5 priorities + Delegate buttons). 5 new endpoints."
+      },
+      {
+        "component": "OCB-N Phase 4 (ACCA Ticker)",
+        "notes": "Persistent bottom bar scrolling all ACCA codes. Click-to-expand. Auto-loads on connect. Colour coded. Auto-reload every 5min."
+      },
+      {
+        "component": "OCB-N Phase 5 (Remove handover writes)",
+        "notes": "wccs_runner.py no longer creates VKB_SpinDoctor_Handover_vXX.md files. STATUS/HISTORY/ACCA are source of truth."
+      },
+      {
+        "component": "OCB-N Phase 6 (MOT)",
+        "notes": "108/108 ALL CLEAR 2026-05-29"
+      },
+      {
+        "component": "Scout context injection",
+        "notes": "get_project_context() added to chief_scout.py. Reads first 30 lines STATUS.md + 20 lines INDEX.md, prepends to every query as project context. --no-context flag added. Built 2026-05-29."
+      },
+      {
+        "component": "CLACKER Protocol",
+        "notes": "clacker_router.py, clacker_safety.py, clacker_validator.py, data/session_state.json, data/ocb_status.json built. CLACH→MCC task dispatch circuit. Built 2026-05-29."
+      },
+      {
+        "component": "OCB-K Build 2 Phase 1 (Kanban B2-01+B2-02)",
+        "notes": "Sub-task progress bar on cards. 🔒 icon + muted colour for blocked cards. Dependency chain display on card. \"Blocked by\" set via dep button (numbered list prompt). AAFL Goal template (replaced Research). Bulk Archive action. Bulk Move to any column (selector). b2SetDep(), b2BulkArchive(), b2BulkMoveToCol() functions."
+      },
+      {
+        "component": "OCB-K Build 2 Phase 2 (Activity Feed B2-03)",
+        "notes": "12 filter buttons updated to spec: AAFL Run/Scout/WCCS/Error/Warning/Info/Kanban/Medical/Storage/Provider/User/System. \"Clear\" button added. Export date range picker (from/to date inputs). b2ActClear() function."
+      },
+      {
+        "component": "OCB-K Build 2 Phase 3 (AAFL Runs B2-04+B2-05)",
+        "notes": "Checkbox on each run row — auto-opens compare panel when 2 selected. b2RunCmpSelect(), b2CompareByCheckboxes() with change-highlighting. Failure analysis: phase breakdown + suggested fix heuristic. Success patterns: time-of-day slot analysis + goal-type breakdown."
+      },
+      {
+        "component": "OCB-K Build 2 Phase 4 (AAFL Control B2-06+B2-08+B2-09)",
+        "notes": "All already built (Step Mode, Pause, Benchmark Runner, Second Opinion AI)."
+      },
+      {
+        "component": "OCB-K Build 2 Phase 5 (MOT)",
+        "notes": "108/108 ALL CLEAR 2026-05-29"
+      },
+      {
+        "component": "HISAV tab",
+        "notes": "Replaces WCCS tab label. 7 accordion sections: Save &amp; Handoff, Idea Dump, Vehicle History, Checklist Health, Idea Buffer, Action Plan, CLAC Sessions. DTA data files created. Popup z-index global fix applied. 109/109 MOT ALL CLEAR 2026-05-30."
+      },
+      {
+        "component": "data/master_checklist.json",
+        "notes": "5 categories, 25 checklist items with status tracking"
+      },
+      {
+        "component": "data/idea_buffer.json",
+        "notes": "Idea capture system — age-flagged, 14-day red alert"
+      },
+      {
+        "component": "data/mot_gaps.json",
+        "notes": "MOT to MCCM dialogue file"
+      },
+      {
+        "component": "data/clac_sessions.json",
+        "notes": "CLAC session logger — completed/stopped with timeline integration"
+      },
+      {
+        "component": "data/screenshot_log.json",
+        "notes": "Screenshot intake log — metadata for uploaded screenshots"
+      },
+      {
+        "component": "Handover auto-archive",
+        "notes": "aafl_wccs.py archives VKB_SpinDoctor_Handover_v*.md automatically on every WCCS run"
+      },
+      {
+        "component": "HISAV /api/hisav/* endpoints",
+        "notes": "GET /data, POST /idea, POST /idea/action, POST /checklist/tick, POST /clac-session, POST /screenshot, GET /screenshots, GET /data/screenshots/&lt;file&gt;"
+      },
+      {
+        "component": "OCB-O (OCB Runner)",
+        "notes": "ocb_runner.py 503 lines, 5 methods. MCC panel: textarea+Parse+Run+live log+badges. 5 /api/ocb/* endpoints. First test: engine works (Codestral parsed+MOT exit 0) but HTML edit broke tabs. Rolled back to v67. Needs safety layer."
+      },
+      {
+        "component": "MCC v67 rollback",
+        "notes": "git checkout -- mission_control.html — frozen MCC fix"
+      },
+      {
+        "component": "hisav_detective.py",
+        "notes": "6-strategy live validator: GHOST_FILE (STATUS vs disk), DEAD_ENDPOINT (ping all routes), STATUS_CONTRADICTION (BUILT+PENDING overlaps), STALE_MOT (48h freshness), MISSING_FROM_STATUS (session log cross-check), PHANTOM_UI (DOM element check). --once and --watch modes. Detective banner in HISAV. GET /api/detective/report, POST /api/detective/run, POST /api/detective/dismiss."
+      },
+      {
+        "component": "Timeline full population",
+        "notes": "37 nodes from STATUS/HISTORY/session_logs/git/ACCA. Foundation→Build Sprint→OCB Era→Next zones. Deep 4-level drill-down popup: phases+files+endpoints+ACCA codes+detective flags. Filter (All/Milestones/OCBs/Builds/Stopped/Planned) + Zoom (Compact/Normal/Expanded) + Jump to Today. Stats bar. GET /api/timeline/full, GET /api/timeline/node/{id}."
+      },
+      {
+        "component": "Global scroll fix",
+        "notes": "All MCC tab panes: overflow-y:auto, min-height:0, padding-bottom:80px. scrollIntoView on accordion expand. Thin scrollbar globally. HISAV pane overflow:visible removed."
+      },
+      {
+        "component": "HISAV restructured 9 sections",
+        "notes": "Screenshots moved to own Section 8. Work Checker moved from Health Suite to Section 9. Health Suite Work Checker replaced with redirect notice. hisavLoadGallery alias added. 109/109 MOT ALL CLEAR 2026-05-30."
+      },
+      {
+        "component": "OCB-Q Phase 1 (Save & Handoff sticky toolbar)",
+        "notes": "S1 removed from accordion. Sticky toolbar pinned at HISAV top: SAVE NOW / WCCS / Session Summary toggle / Last saved label. Old S1 content archived (hidden)."
+      },
+      {
+        "component": "OCB-Q Phase 2 (? button fix)",
+        "notes": "Removed position:fixed from .mcc-popup-safe CSS — all ? tip buttons now scroll with their parent in every tab."
+      },
+      {
+        "component": "OCB-Q Phase 3 (Detective 5-panel board)",
+        "notes": "Detective banner rebuilt: Panel A (Active Investigation), B (What I've Checked), C (Failures+Fixes), D (Learning Database — 12 solutions), E (Screenshot Intake + AI analysis). New endpoints: /api/detective/analyse-screenshot, /api/detective/learning-db, /api/timeline/add-node."
+      },
+      {
+        "component": "OCB-Q Phase 4 (Timeline entries format)",
+        "notes": "_handle_timeline_full_get rebuilt — transforms project_timeline.json milestones+ocb_nodes+next_priorities into entries[] format the JS htlRender() expects."
+      },
+      {
+        "component": "OCB-Q Phase 5 (Work Checker Action Plan v2)",
+        "notes": "Priority cards with → Send to AAFL / Add to Kanban / Done buttons. Mini timeline panel (last 5 entries). New endpoints: /api/kanban/add-card, /api/history/append."
+      },
+      {
+        "component": "OCB-Q Phase 6 (CLAC Sessions v2)",
+        "notes": "Card view with View brief/Copy brief. + Log New Session modal (inline). Loads from /api/hisav/clac-sessions which scans session_logs/ for .md files."
+      },
+      {
+        "component": "OCB-Q Phase 7 (Checklist Health filter)",
+        "notes": "Filter bar [All][Complete][Incomplete][Unconfirmed]. Category headers with completion % bar. Incomplete items: amber border; unconfirmed: dark border."
+      },
+      {
+        "component": "OCB-Q Phase 8 (MOT)",
+        "notes": "109/109 ALL CLEAR 2026-05-30. mcc_full_mot.py Windows Unicode crash fixed (sys.stdout.reconfigure)."
+      },
+      {
+        "component": "STORM + MCCM architecture",
+        "notes": "storm_bridge.py — STORM receives feeds from detective/WCCS/screenshots. MCCM mission launcher auto-updates from SESOMs. All data flows through storm_feed.json. Built 2026-05-31."
+      },
+      {
+        "component": "WENTO Queue",
+        "notes": "HISAV Section 10 — standalone WENTO capture with timestamp list. GET/POST /api/hisav/wento. data/wento_queue.json. Built 2026-05-31."
+      },
+      {
+        "component": "OCB Runner safety layer",
+        "notes": "git stash + HTML syntax check + auto-rollback on fail. Run Script task type. run_ocb() callable via /api/ocb/run. HISAV Section 11 panel. Built 2026-05-31."
+      }
+    ]
+  },
+  "key_decisions": [],
   "working_style_rules": [
-    "Brain injury (BI) 2023 — ONE STEP AT A TIME. No exceptions.",
+    "Brain injury (BI) 2023 — ONE STEP AT A TIME. No exceptions. Never stack steps.",
     "Beginner with code — explain what's being built as you go",
     "Always expand acronyms on first use",
+    "Always include keyboard shortcuts inline (e.g. Windows key + X)",
+    "Tables preferred for structured info",
     "Number all options — Scott replies with just a number",
-    "DSP rule — Before any CLAC block, ask: DSP?",
-    "WCCS triggered automatically — never ask"
+    "No bullshit — if something's hard or slow, say so upfront",
+    "DSP rule — Before giving ANY CLAC block, ALWAYS ask \"DSP? (claude --dangerously-skip-permissions)\""
   ],
-  "built_components": [
-    "mission_control.html — MCC 19+ tabs, JS audit complete",
-    "mcc_server.py — 30+ REST endpoints, port 8080",
-    "aafl_core.py — 14 providers, LiteLLM routing",
-    "loop_manager.py — Plan-Work-Verify-Store loop, watchdog wired, cost_guard wired",
-    "aafl_wccs.py — Free Mistral STATUS.md rewriter, timing logs added",
-    "ocb_runner.py — Parse + run_safe with abort flag, parse timeout fix",
-    "OCB-R: z-index scale fixed, CLACR protocol built, Design Vault"
-  ],
-  "pending_items": [
-    "OCB-R remaining phases: MOT + git commit",
-    "LRU cache for knowledge_engine.db lookups (from meta_proposals review)"
+  "acca_codes": [
+    {
+      "code": "GUI",
+      "meaning": "Double-click RUN_VKB.bat"
+    }
   ],
   "provider_status": {
-    "tier1_local": ["LM Studio Coder 32B", "LM Studio VL 32B", "DeepSeek R1", "Phi-4 14B"],
-    "tier2_free": ["Cerebras", "Groq", "Gemini", "Mistral", "Cloudflare"],
-    "tier3_fallback": ["OpenRouter", "HuggingFace"],
-    "tier99_paid_blocked": ["Claude Sonnet"]
+    "healthy": 0,
+    "total": 14,
+    "checked_at": ""
   },
-  "acca_codes": {
-    "AAFL": "AI Agent Feedback Loop",
-    "MCC": "Mission Control Center",
-    "LLOW": "Loop Logic Orchestration Workspace",
-    "WCCS": "Write Claude Code Save",
-    "HITSAV": "History Ideas Time Save Vehicle",
-    "STORM": "Selective Targeted Output Remove Merge",
-    "AASKC": "Autonomous AI Simultaneous Knowledge Connection",
-    "OCB": "Operation Code Build",
-    "CLAC": "Claude Code CLI invocation block",
-    "DSP": "--dangerously-skip-permissions flag",
-    "ALP": "Allowance Preservation",
-    "CLACR": "MCC-CLACH relay protocol",
-    "SESUM": "Session Summary",
-    "GRRICE": "Guide Rules Regulation Instructions Codes Education"
-  },
-  "key_file_paths": {
-    "html": "mission_control.html",
-    "server": "mcc_server.py",
-    "core": "aafl_core.py",
-    "loop": "loop_manager.py",
-    "wccs": "aafl_wccs.py",
-    "status": "STATUS.md",
-    "history": "HISTORY.md",
-    "acca": "ACCA.md",
-    "db": "data/knowledge_engine.db"
-  },
-  "next_priorities": [
-    "Run Phase 17 MOT — target 109/109",
-    "Git commit OCB-R",
-    "Review GRRICE tab content"
-  ]
+  "mission_priorities": [
+    "1. ALP (Allowance Preservation) — absolute Rule No.1",
+    "2. AAFL is THE PROJECT now — Spin Doctor is the benchmark/test subject",
+    "3. ACCA codes generated as bonus, organised later",
+    "4. Spin Doctor = ultimate validation of AAFL",
+    "5. Promo explored last — proof of concept",
+    "6. AAFL + Spin Doctor must be fluid, flexible, reusable on any project",
+    "7. Could become bigger platform than original idea",
+    "8. Claude is master teacher — keeps Scott on track",
+    "9. WS+CA opportunities = absolute duty to flag. TIME is ALP's brother.",
+    "10. Always provide links + copy boxes",
+    "11. WCCS triggered automatically — never ask",
+    "12. Never write code unnecessarily — update existing where possible",
+    "13. Spin Doctor games are not end goal — AAFL is",
+    "14. Spin Doctor success = AAFL success"
+  ],
+  "pending_items": [],
+  "timeline_position": "| Component | Notes |\n|---|---|\n| v0.1 spin fix | War Thunder confirmed working |\n| spin_doctor.py | ~1057 lines, 3 tabs (Fix / Conductor / KB) |\n| sfl_agent.py v3 | ~920 lines, ACP v1, handover injection, call_aafl() |\n| aafl_core.py | 14 providers, Cerebras=gpt-oss-120b, reasoning_content fallback",
+  "generated_at": "2026-06-02T04:23:43"
 }
