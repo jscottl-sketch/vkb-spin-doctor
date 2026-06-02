@@ -7467,6 +7467,7 @@ def _handle_ocb_run(self):
         body     = json.loads(self._read_body() or "{}")
         ocb_text = (body.get("ocb_text") or "").strip()
         dry_run  = bool(body.get("dry_run", False))
+        skip_mot = bool(body.get("skip_mot", False))
 
         if not ocb_text:
             self._send_json({"error": "ocb_text is required"}, 400)
@@ -7482,7 +7483,7 @@ def _handle_ocb_run(self):
 
         def _safe_run():
             try:
-                _ocbr.run_safe(parsed, run_id=run_id, dry_run=dry_run)
+                _ocbr.run_safe(parsed, run_id=run_id, dry_run=dry_run, skip_mot=skip_mot)
             except Exception as exc:
                 # Thread died — write failed status so the poller knows
                 try:

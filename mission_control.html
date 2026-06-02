@@ -2612,6 +2612,9 @@ body{padding-bottom:28px}
           style="width:48px;background:#0a0a0a;border:1px solid #2a3a4a;color:#ccc;padding:4px 6px;border-radius:4px;font:inherit"
           title="Max retry attempts per task if AI returns empty or apply fails">
         <button class="btn" onclick="ocbParse()" title="Parse the OCB block and show phase list without running anything">Parse Phases</button>
+        <label style="font-size:11px;color:#888;display:inline-flex;align-items:center;gap:4px;cursor:pointer" title="Skip MOT check — use for Python scripts, API calls, colour changes (non-HTML tasks)">
+          <input type="checkbox" id="ocb-skip-mot" style="accent-color:#4af">Skip MOT
+        </label>
         <button class="btn-ocb-run" id="btn-ocb-run" onclick="ocbRun()" title="Parse and execute the full OCB block using free AI">▶ Run OCB</button>
         <button class="btn" onclick="ocbCancel()" id="btn-ocb-cancel" style="display:none;background:#3a0a0a;color:#f88;border-color:#622" title="Cancel the running OCB">■ Cancel</button>
         <span id="ocb-run-status" style="font-size:11px;color:#888;margin-left:auto"></span>
@@ -13004,6 +13007,7 @@ async function ocbRun() {
   const text     = document.getElementById('ocb-input').value.trim();
   const provider = document.getElementById('ocb-provider').value;
   const retries  = parseInt(document.getElementById('ocb-retries').value, 10) || 3;
+  const skipMot  = document.getElementById('ocb-skip-mot') ? document.getElementById('ocb-skip-mot').checked : false;
   if (!text) { toast('Paste an OCB block first', 'error'); return; }
 
   // Parse first to show phase list
@@ -13022,7 +13026,7 @@ async function ocbRun() {
   try {
     const d = await apiFetch('/api/ocb/run', {
       method: 'POST',
-      body: JSON.stringify({ ocb_text: text, provider, max_retries: retries }),
+      body: JSON.stringify({ ocb_text: text, provider, max_retries: retries, skip_mot: skipMot }),
     });
     if (d.error) { toast('Launch error: ' + d.error, 'error'); return; }
     _ocbRunId = d.run_id;

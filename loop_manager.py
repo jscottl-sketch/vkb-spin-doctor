@@ -349,7 +349,7 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             print("[LOOP] Verify: empty content after provider response — skipping")
             continue
 
-        # ── Save generated code to disk ───────────────────────────────────────
+        # ── Save generated code to disk (always .json) ───────────────────────
         _code_blocks = re.findall(r"```(?:python|py)?\n(.*?)```", work_text, re.DOTALL)
         if _code_blocks:
             _code_dir   = HERE / "loop_output"
@@ -358,10 +358,15 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
             _code_slug  = _goal_slug(goal)
             for _i, _block in enumerate(_code_blocks, 1):
                 _suffix = f"_{_i}" if len(_code_blocks) > 1 else ""
-                (_code_dir / f"{_code_stamp}_{_code_slug}{_suffix}.py").write_text(
-                    _block, encoding="utf-8"
+                _payload = _json_lm.dumps({
+                    "type": "code_block", "valid_json": False,
+                    "raw_output": _block, "goal": goal,
+                    "timestamp": _code_stamp,
+                }, ensure_ascii=False)
+                (_code_dir / f"{_code_stamp}_{_code_slug}{_suffix}.json").write_text(
+                    _payload, encoding="utf-8"
                 )
-            print(f"[CODE] {len(_code_blocks)} code block(s) saved to loop_output/")
+            print(f"[CODE] {len(_code_blocks)} code block(s) saved to loop_output/ (as .json)")
 
         # ── Evaluate ──────────────────────────────────────────────────────────
         scores   = evaluate(work_text, goal)
@@ -472,7 +477,13 @@ def run_loop(max_loop_iters: int = 50, max_llm_calls: int = 200):
         print(f"[DB] Stored — score: {score} | tags: [{tag_display}] | iterations: {iterations}")
 
         out_dir = HERE / "loop_output"; out_dir.mkdir(exist_ok=True)
-        (out_dir / f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')}_result.txt").write_text(work_text, encoding="utf-8")
+        _res_stamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+        try:
+            _parsed_check = _json_lm.loads(work_text)
+            _res_payload  = _json_lm.dumps({"type": "result", "valid_json": True, "data": _parsed_check, "goal": goal, "score": score}, ensure_ascii=False)
+        except Exception:
+            _res_payload  = _json_lm.dumps({"type": "result", "valid_json": False, "raw_output": work_text, "goal": goal, "score": score}, ensure_ascii=False)
+        (out_dir / f"{_res_stamp}_result.json").write_text(_res_payload, encoding="utf-8")
 
         attempt = {
             "id":            entry_id,

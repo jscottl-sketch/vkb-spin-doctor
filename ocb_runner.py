@@ -1087,7 +1087,8 @@ def _run_mot_check() -> tuple:
         return False, f"MOT error: {str(exc)[:80]}"
 
 
-def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
+def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
+             skip_mot: bool = False) -> dict:
     """Full safe OCB execution: 4 guards + 4 HTML checks (BS4/JS/Registry/MOT)."""
     print("[THREAD] Thread function entered")
     print("[THREAD] run_safe() entered")
@@ -1330,14 +1331,21 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False) -> dict:
             obj["check_results"]["D_mot"] = {"ok": False, "error": failed_reason}
             obj["error"] = failed_reason
         else:
-            # CHECK D — MOT
-            set_status("mot_running", "running mcc_full_mot.py")
-            _sl("Running MOT check…")
-            print(f"[OCB THREAD] About to run MOT")
-            mot_ok, mot_score = _run_mot_check()
-            obj["guard_results"]["mot"] = mot_ok
-            obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
-            _sl(f"CHECK D (MOT): {'PASS' if mot_ok else 'FAIL'} — {mot_score}")
+            # CHECK D — MOT (skipped if skip_mot=True)
+            if skip_mot:
+                mot_score = "SKIPPED (skip_mot=True)"
+                obj["guard_results"]["mot"] = True
+                obj["check_results"]["D_mot"] = {"ok": True, "score": mot_score, "skipped": True}
+                _sl(f"CHECK D (MOT): SKIPPED — non-HTML task flag set")
+                mot_ok = True
+            else:
+                set_status("mot_running", "running mcc_full_mot.py")
+                _sl("Running MOT check…")
+                print(f"[OCB THREAD] About to run MOT")
+                mot_ok, mot_score = _run_mot_check()
+                obj["guard_results"]["mot"] = mot_ok
+                obj["check_results"]["D_mot"] = {"ok": mot_ok, "score": mot_score}
+                _sl(f"CHECK D (MOT): {'PASS' if mot_ok else 'FAIL'} — {mot_score}")
             if mot_ok:
                 set_status("committing", "MOT passed — committing changes")
                 if not no_stash and stash_ref:
