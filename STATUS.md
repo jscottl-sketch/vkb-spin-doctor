@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-05-31 (OCB-Q+P: STORM bridge + WENTO queue + Timeline zones + OCB Runner safety) | **Updated by:** aafl_wccs.py
+**Last updated:** 2026-06-02 (Session: CCR build + OCB Runner test pending) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -263,6 +263,8 @@
 | Dead file archive | model_router.py, setup_router.py, quick_fix.py, control_panel.py, aafl_loop.py, full_auto_setup.py, free_providers.py, v40/v41/v43 handovers → archive_dead/ 2026-05-24 |
 | OCB-P (9 items) | OCB Runner safety: git stash + HTML check + auto-rollback. Run script task type. Code Editor bridge. LLOW Results panel. LLOW Task Input LEL. Side slider ghost text fix. Mission Viewer visual info. Sidebar nested dropdowns. LEL options grid. |
 | CLACR system | MCC↔CLACH language protocol — designed, not yet built |
+| AAFL_Overnight_Task | DISABLED — loop_output JSON bug. Re-enable only when fixed: schtasks /Change /TN "AAFL_Overnight_Task" /ENABLE |
+| CCR (Claude Chat Relay) | Not yet built — CLACH→MCC→free provider dispatch circuit |
 
 ---
 
