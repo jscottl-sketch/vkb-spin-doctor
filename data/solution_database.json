@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_updated": "2026-05-27",
+  "last_updated": "2026-06-02",
   "solutions": [
     {
       "id": "fix_001",
@@ -10,7 +10,7 @@
         "taskkill /F /IM python.exe /FI \"WINDOWTITLE eq mcc_server*\" 2>nul",
         "python mcc_server.py"
       ],
-      "success_rate": 0.90,
+      "success_rate": 0.9,
       "last_used": null,
       "times_used": 0,
       "user_approval_required": true,
@@ -24,7 +24,7 @@
         "move data\\health.db data\\health.db.broken",
         "python self_health.py"
       ],
-      "success_rate": 0.90,
+      "success_rate": 0.9,
       "last_used": null,
       "times_used": 0,
       "user_approval_required": true,
@@ -78,7 +78,7 @@
         "copy data\\knowledge_engine.db data\\knowledge_engine.db.bak",
         "python memory_bank.py --init"
       ],
-      "success_rate": 0.80,
+      "success_rate": 0.8,
       "last_used": null,
       "times_used": 0,
       "user_approval_required": true,
@@ -118,7 +118,7 @@
       "fix_steps": [
         "python -c \"import json; open('aafl_control_config.json','w').write(json.dumps({'current_goal':'','provider':'auto','loop_count':1,'enabled':True}, indent=2))\""
       ],
-      "success_rate": 0.90,
+      "success_rate": 0.9,
       "last_used": null,
       "times_used": 0,
       "user_approval_required": true,
@@ -163,6 +163,20 @@
       "times_used": 0,
       "user_approval_required": false,
       "notes": "Resets activity log to empty array — historical entries will be lost (backed up first)"
+    },
+    {
+      "id": "fix_1780385423",
+      "name": "Test problem",
+      "fix_steps": [
+        "Test fix step"
+      ],
+      "date_found": "2026-06-02",
+      "times_used": 0,
+      "auto_fixable": false,
+      "success_rate": 0.0,
+      "last_used": null,
+      "user_approval_required": true,
+      "notes": ""
     }
   ]
 }

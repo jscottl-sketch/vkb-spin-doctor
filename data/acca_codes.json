@@ -1,0 +1,253 @@
+﻿{
+    "version":  "1.0",
+    "last_updated":  "2026-06-02",
+    "description":  "Full ACCA (AI Code Communication Abbreviations) dictionary",
+    "codes":  {
+                  "AAFL":  {
+                               "abbreviation":  "AAFL",
+                               "full_name":  "AI Agent Feedback Loop",
+                               "category":  "system",
+                               "description":  "Core self-improving AI agent framework â€” the main product being built"
+                           },
+                  "AASKC":  {
+                                "abbreviation":  "AASKC",
+                                "full_name":  "Autonomous AI Simultaneous Knowledge Connection",
+                                "category":  "concept",
+                                "description":  "Product brand name for the full AAFL platform"
+                            },
+                  "ACCA":  {
+                               "abbreviation":  "ACCA",
+                               "full_name":  "AI Code Communication Abbreviations",
+                               "category":  "shorthand",
+                               "description":  "The shorthand code system itself â€” the dictionary of codes used in this project"
+                           },
+                  "ACP":  {
+                              "abbreviation":  "ACP",
+                              "full_name":  "Agent Communication Protocol",
+                              "category":  "system",
+                              "description":  "Protocol layer for agent-to-agent and agent-to-UI communication"
+                          },
+                  "AFNA":  {
+                               "abbreviation":  "AFNA",
+                               "full_name":  "Auto-Fix Needs Attention",
+                               "category":  "workflow",
+                               "description":  "Flag raised when an auto-fix proposal requires human review or approval"
+                           },
+                  "AIO":  {
+                              "abbreviation":  "AIO",
+                              "full_name":  "All In One",
+                              "category":  "shorthand",
+                              "description":  "Used to describe consolidated/merged components"
+                          },
+                  "ALP":  {
+                              "abbreviation":  "ALP",
+                              "full_name":  "Allowance Preservation",
+                              "category":  "concept",
+                              "description":  "Rule No.1 â€” preserve Claude API token budget; free providers first, paid last"
+                          },
+                  "ANCOREG":  {
+                                  "abbreviation":  "ANCOREG",
+                                  "full_name":  "Autonomous Node Condition Registry",
+                                  "category":  "system",
+                                  "description":  "System Doctor â€” diagnosis, fixes, save validation, error tracking tab in MCC"
+                              },
+                  "BI":  {
+                             "abbreviation":  "BI",
+                             "full_name":  "Brain Injury",
+                             "category":  "concept",
+                             "description":  "Scott\u0027s brain injury (2023) â€” context for one-step-at-a-time working rule"
+                         },
+                  "BSTP":  {
+                               "abbreviation":  "BSTP",
+                               "full_name":  "Brainstorm Planner",
+                               "category":  "system",
+                               "description":  "Visual workflow planning canvas â€” tasks, decisions, milestones, connectors"
+                           },
+                  "CA":  {
+                             "abbreviation":  "CA",
+                             "full_name":  "Claude Assist",
+                             "category":  "shorthand",
+                             "description":  "Refers to Claude AI being used as a direct coding assistant in a session"
+                         },
+                  "CAWPA":  {
+                                "abbreviation":  "CAWPA",
+                                "full_name":  "Claude Aware Project Architecture",
+                                "category":  "concept",
+                                "description":  "Architecture design principle â€” structure code so Claude can read/modify it safely"
+                            },
+                  "CLAC":  {
+                               "abbreviation":  "CLAC",
+                               "full_name":  "Claude CLI Automated Command",
+                               "category":  "shorthand",
+                               "description":  "A block of instructions formatted for Claude Code CLI execution"
+                           },
+                  "CLACH":  {
+                                "abbreviation":  "CLACH",
+                                "full_name":  "CLAC History",
+                                "category":  "workflow",
+                                "description":  "Log of all past CLAC sessions with outcome tracking"
+                            },
+                  "CLACHR":  {
+                                 "abbreviation":  "CLACHR",
+                                 "full_name":  "CLAC History Relay",
+                                 "category":  "system",
+                                 "description":  "Endpoint/relay that stores and serves CLAC session history to MCC"
+                             },
+                  "CNP":  {
+                              "abbreviation":  "CNP",
+                              "full_name":  "Could Not Proceed",
+                              "category":  "shorthand",
+                              "description":  "Status flag â€” task blocked, cannot continue without input"
+                          },
+                  "CR":  {
+                             "abbreviation":  "CR",
+                             "full_name":  "Code Review",
+                             "category":  "workflow",
+                             "description":  "Formal review pass of changed code before commit"
+                         },
+                  "DRR":  {
+                              "abbreviation":  "DRR",
+                              "full_name":  "Daily Run Report",
+                              "category":  "workflow",
+                              "description":  "Auto-generated summary of daily AAFL activity and results"
+                          },
+                  "DSP":  {
+                              "abbreviation":  "DSP",
+                              "full_name":  "Dangerously Skip Permissions",
+                              "category":  "shorthand",
+                              "description":  "The --dangerously-skip-permissions flag for Claude Code CLI â€” must be confirmed before use"
+                          },
+                  "DWR":  {
+                              "abbreviation":  "DWR",
+                              "full_name":  "Daily Work Record",
+                              "category":  "workflow",
+                              "description":  "Running record of what was built each day"
+                          },
+                  "FFUEM":  {
+                                "abbreviation":  "FFUEM",
+                                "full_name":  "Fail Fast Unblock Exit Mode",
+                                "category":  "concept",
+                                "description":  "Design rule â€” if a step fails, stop fast and surface the error rather than silently continuing"
+                            },
+                  "GRRICE":  {
+                                 "abbreviation":  "GRRICE",
+                                 "full_name":  "Guide Rules Regulation Instructions Codes Education",
+                                 "category":  "system",
+                                 "description":  "MCC tab containing all project rules, ALP rules, workflow rules, model guide and codes"
+                             },
+                  "HISAV":  {
+                                "abbreviation":  "HISAV",
+                                "full_name":  "History Ideas Save And Vehicle",
+                                "category":  "system",
+                                "description":  "MCC tab â€” history, ideas capture, session saves, vehicle history, CLAC sessions"
+                            },
+                  "LLOW":  {
+                               "abbreviation":  "LLOW",
+                               "full_name":  "Loop Logic Orchestration Workspace",
+                               "category":  "system",
+                               "description":  "Visual canvas for designing AAFL loop workflows with elements and connectors"
+                           },
+                  "MCC":  {
+                              "abbreviation":  "MCC",
+                              "full_name":  "Mission Control Center",
+                              "category":  "system",
+                              "description":  "Main UI â€” mission_control.html served at localhost:8080 â€” 19+ tabs"
+                          },
+                  "MCCM":  {
+                               "abbreviation":  "MCCM",
+                               "full_name":  "MCC Memory",
+                               "category":  "system",
+                               "description":  "Snapshot of MCC state for Claude context â€” stored in data/claude_memory_snapshot.json"
+                           },
+                  "OCB":  {
+                              "abbreviation":  "OCB",
+                              "full_name":  "Operation Code Build",
+                              "category":  "workflow",
+                              "description":  "A single build session identifier (e.g. OCB-L = current active build)"
+                          },
+                  "PROF":  {
+                               "abbreviation":  "PROF",
+                               "full_name":  "Provider Profile",
+                               "category":  "shorthand",
+                               "description":  "Configuration profile for a specific AI provider"
+                           },
+                  "RIBS":  {
+                               "abbreviation":  "RIBS",
+                               "full_name":  "Registry Integrity Build System",
+                               "category":  "system",
+                               "description":  "System for tracking element registry integrity across builds"
+                           },
+                  "SBS":  {
+                              "abbreviation":  "SBS",
+                              "full_name":  "Step By Step",
+                              "category":  "shorthand",
+                              "description":  "Instruction to proceed one step at a time â€” key rule for working with Scott"
+                          },
+                  "SESUM":  {
+                                "abbreviation":  "SESUM",
+                                "full_name":  "Session Summary",
+                                "category":  "workflow",
+                                "description":  "Summary block written at end of each Claude session â€” captured by HISAV"
+                            },
+                  "SFL":  {
+                              "abbreviation":  "SFL",
+                              "full_name":  "Spin Fix Logic",
+                              "category":  "system",
+                              "description":  "The core logic that detects and corrects joystick mouse-spin in games"
+                          },
+                  "SIF":  {
+                              "abbreviation":  "SIF",
+                              "full_name":  "System Integrity Flag",
+                              "category":  "concept",
+                              "description":  "A flag raised when a critical system check fails â€” requires human review"
+                          },
+                  "SIB":  {
+                              "abbreviation":  "SIB",
+                              "full_name":  "System Integrity Block",
+                              "category":  "concept",
+                              "description":  "A hard stop block â€” prevents further execution until integrity is restored"
+                          },
+                  "STORM":  {
+                                "abbreviation":  "STORM",
+                                "full_name":  "Selective Targeted Output Remove Merge",
+                                "category":  "workflow",
+                                "description":  "Process for removing duplicate/dead content from sessions before merge"
+                            },
+                  "WCBB":  {
+                               "abbreviation":  "WCBB",
+                               "full_name":  "Write Claude Build Backup",
+                               "category":  "workflow",
+                               "description":  "Backup step within WCCS â€” creates .bak copy before any file write"
+                           },
+                  "WCCS":  {
+                               "abbreviation":  "WCCS",
+                               "full_name":  "Write Claude Code Save",
+                               "category":  "workflow",
+                               "description":  "Automated end-of-session save process â€” writes STATUS/HISTORY/ACCA, commits, pushes"
+                           },
+                  "WENTO":  {
+                                "abbreviation":  "WENTO",
+                                "full_name":  "Work Entry Note To Outbox",
+                                "category":  "workflow",
+                                "description":  "Queue of notes/tasks flagged for action in the next session"
+                            },
+                  "WMBW":  {
+                               "abbreviation":  "WMBW",
+                               "full_name":  "Work Must Be Written",
+                               "category":  "concept",
+                               "description":  "Rule â€” any completed work must be committed and saved before the session ends"
+                           },
+                  "WYM":  {
+                              "abbreviation":  "WYM",
+                              "full_name":  "What You Mean",
+                              "category":  "shorthand",
+                              "description":  "Clarification prompt â€” used when an instruction is ambiguous"
+                          },
+                  "YO":  {
+                             "abbreviation":  "YO",
+                             "full_name":  "Your Output",
+                             "category":  "shorthand",
+                             "description":  "Refers to the last AI-generated output in context"
+                         }
+              }
+}

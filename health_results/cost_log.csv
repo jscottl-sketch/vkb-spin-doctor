@@ -541,3 +541,15 @@ timestamp,provider_name,response_time_seconds,estimated_cost_usd,success
 2026-05-30T21:37:38.806713,lmstudio_coder,0.29,0.0,false
 2026-05-30T21:38:25.119536,lmstudio_vision,46.31,0.0,false
 2026-05-30T21:39:11.652413,lmstudio_reason,46.53,0.0,false
+2026-06-02T08:05:20.234519,lmstudio_coder,0.26,0.0,false
+2026-06-02T08:06:06.706108,lmstudio_vision,46.47,0.0,false
+2026-06-02T08:06:52.922816,lmstudio_reason,46.22,0.0,false
+2026-06-02T08:07:00.285819,lmstudio_fast,7.36,0.0,false
+2026-06-02T08:07:01.153478,cerebras,0.26,0.0,true
+2026-06-02T08:07:01.155879,cerebras,0.0,0.0,true
+2026-06-02T08:07:02.521839,gemini_flash,0.81,0.0,true
+2026-06-02T08:07:02.525357,gemini_flash,0.0,0.0,true
+2026-06-02T08:07:02.868938,mistral_code,0.19,0.0,true
+2026-06-02T08:07:02.871466,mistral_code,0.0,0.0,true
+2026-06-02T08:07:03.144925,openrouter,0.27,0.0,false
+2026-06-02T08:07:03.624619,huggingface,0.48,0.0,false

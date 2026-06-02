@@ -97,3 +97,7 @@
 | 82 | 2026-06-02 | v88 -> v89 | Learning Machine: RAG engine (ChromaDB, 91 docs/531 chunks), training pipeline (alpaca JSONL), feedback loop (after_run wired into loop_manager); RAG injected into aafl_core.py; 7 new MCC endpoints; 5 OCB test scripts all PASS; 109/109 MOT ALL CLEAR | RAG = Retrieval Augmented Generation |
 | 83 | 2026-06-02 | v89 -> v90 | OCB skip-mot flag (run_safe param + MCC checkbox + API field); loop output JSON fix (code blocks/.results now .json; 82 garbage .py → archive_dead/loop_garbage/); learning machine confirmed 92 docs/537 chunks 5/5 PASS; 109/109 MOT ALL CLEAR | None |
 | 84 | 2026-06-02 | v90 -> v91 | OCB Runner AI brain wired (run_task→AAFLCore free providers); live progress (ocb_progress.json atomic write per phase; run_safe phases PENDING/RUNNING/DONE/FAILED); HITSAV S11 Skip MOT checkbox; 2s poll; 63 more loop garbage archived (145 total); 109/109 MOT ALL CLEAR | None |
+| 85 | 2026-06-02 | legacy | {} | None |
+| 86 | 2026-06-02 | legacy | test chat text for recovery check | None |
+| 87 | 2026-06-02 | legacy | test chat text for recovery check | None |
+| 88 | 2026-06-02 | v91 -> v92 | ANCOREG tab (system doctor: diagnosis/fix-db/save-validator/MOT-grid/error-timeline) + BSTP tab (drag-drop canvas + 5 element types + action launcher) + ACCA export (41 codes, 2 endpoints) + ancoreg_validator.py (8 checks) + 15 new endpoints; 109/109 MOT ALL CLEAR | ANCOREG, BSTP |

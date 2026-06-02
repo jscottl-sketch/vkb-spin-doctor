@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T23:03:58",
+  "generated_at": "2026-06-02T08:05:54",
   "tabs": [
     {
       "id": "wccs",
@@ -8,13 +8,19 @@
       "classes": "tab-btn active"
     },
     {
-      "id": "ocb-runner",
+      "id": "ancoreg",
       "label": "",
       "title": "",
       "classes": "tab-btn"
     },
     {
-      "id": "kanban",
+      "id": "bstp",
+      "label": "",
+      "title": "",
+      "classes": "tab-btn"
+    },
+    {
+      "id": "ocb-runner",
       "label": "",
       "title": "",
       "classes": "tab-btn"
@@ -32,49 +38,13 @@
       "classes": "tab-btn"
     },
     {
-      "id": "code-editor",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "memory",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "costs",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "storage",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
       "id": "health-suite",
       "label": "",
       "title": "",
       "classes": "tab-btn"
     },
     {
-      "id": "acca",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "design",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "promo",
+      "id": "rrice",
       "label": "",
       "title": "",
       "classes": "tab-btn"
@@ -430,72 +400,45 @@
       "label": "📋 Copy"
     },
     {
-      "id": "btn-wccs-hub",
+      "id": "hitsav-step1-btn",
       "type": "button",
-      "classes": "hisav-tb-btn hisav-tb-save",
-      "data-tip": "Save session now — runs aafl_wccs.py",
-      "onclick": "saveSession()",
+      "classes": "hitsav-step-btn hitsav-step-green",
+      "data-tip": "Step 1: Save session — runs WCCS to update STATUS.md and HISTORY.md",
+      "onclick": "hitsavStep1()",
       "parent_tab": "tab-wccs",
-      "label": "💾 SAVE NOW"
+      "label": "① Save Session"
+    },
+    {
+      "id": "hitsav-step2-btn",
+      "type": "button",
+      "classes": "hitsav-step-btn hitsav-step-blue",
+      "data-tip": "Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files",
+      "onclick": "hitsavStep2()",
+      "parent_tab": "tab-wccs",
+      "label": "② Copy STATUS.md"
+    },
+    {
+      "id": "hitsav-step3-btn",
+      "type": "button",
+      "classes": "hitsav-step-btn hitsav-step-amber",
+      "data-tip": "Step 3: Go to Claude.ai and paste the STATUS.md into Project Files",
+      "onclick": "hitsavStep3()",
+      "parent_tab": "tab-wccs",
+      "label": "③ Go to Claude"
+    },
+    {
+      "id": "hitsav-autostatus-btn",
+      "type": "button",
+      "classes": "hitsav-tb-btn",
+      "data-tip": "Auto-Update STATUS.md — scans session logs, cross-checks timeline, sends to AI to update BUILT table and priorities",
+      "onclick": "hitsavAutoUpdateStatus()",
+      "parent_tab": "tab-wccs",
+      "label": "⚡ Auto-Update STATUS.md"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-tb-btn",
-      "data-tip": "Copy STATUS.md to clipboard — paste into Claude.ai Project Files",
-      "onclick": "copyStatusForClaude()",
-      "parent_tab": "tab-wccs",
-      "label": "📋 WCCS"
-    },
-    {
-      "id": "hisav-tb-summ-btn",
-      "type": "button",
-      "classes": "hisav-tb-btn",
-      "data-tip": "Open session summary paste area",
-      "onclick": "hisavToggleSummary()",
-      "parent_tab": "tab-wccs",
-      "label": "📝 Session Summary"
-    },
-    {
-      "id": "pwccs-1",
-      "type": "button",
-      "classes": "pwccs-pill",
-      "data-tip": "Step 1: Run WCCS — save session handover",
-      "onclick": "pwccsToggle(1)",
-      "parent_tab": "tab-wccs",
-      "label": "1. Run WCCS ✓"
-    },
-    {
-      "id": "pwccs-2",
-      "type": "button",
-      "classes": "pwccs-pill",
-      "data-tip": "Step 2: Paste session summary into HISAV",
-      "onclick": "pwccsToggle(2)",
-      "parent_tab": "tab-wccs",
-      "label": "2. Post SESUM to HISAV ✓"
-    },
-    {
-      "id": "pwccs-3",
-      "type": "button",
-      "classes": "pwccs-pill",
-      "data-tip": "Go to claude.ai → your Project → Project Files → Remove old STATUS.md / INDEX.md → Upload new versions from: C:\\Users\\jscot\\OneDrive\\Desktop\\VKB-SpinDoctor\\",
-      "onclick": "pwccsToggle(3)",
-      "parent_tab": "tab-wccs",
-      "label": "3. Update Project Files in Claude ✓"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "pwccs-copy-btn",
-      "data-tip": "Copy project path to clipboard",
-      "onclick": "pwccsCopyPath(event)",
-      "parent_tab": "tab-wccs",
-      "label": "📋 Copy path"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "hisav-tb-btn hisav-tb-save",
+      "classes": "hitsav-tb-btn hitsav-tb-save",
       "data-tip": "",
       "onclick": "saveSession()",
       "parent_tab": "tab-wccs",
@@ -517,7 +460,7 @@
       "data-tip": "",
       "onclick": "postSaveStep2()",
       "parent_tab": "tab-wccs",
-      "label": "2 — Paste to HISAV SESUM box"
+      "label": "2 — Paste to HITSAV SESUM box"
     },
     {
       "id": "post-save-btn3",
@@ -551,7 +494,7 @@
       "type": "button",
       "classes": "",
       "data-tip": "Run detective scan now",
-      "onclick": "event.stopPropagation();hisavDetectiveRun()",
+      "onclick": "event.stopPropagation();hitsavDetectiveRun()",
       "parent_tab": "tab-wccs",
       "label": "▶ Run Scan"
     },
@@ -675,7 +618,7 @@
     {
       "id": "det-panel-d-view-btn",
       "type": "button",
-      "classes": "hisav-idea-btn",
+      "classes": "hitsav-idea-btn",
       "data-tip": "",
       "onclick": "detPanelDToggle()",
       "parent_tab": "tab-wccs",
@@ -684,7 +627,7 @@
     {
       "id": "det-browse-btn",
       "type": "button",
-      "classes": "hisav-idea-btn",
+      "classes": "hitsav-idea-btn",
       "data-tip": "",
       "onclick": "",
       "parent_tab": "tab-wccs",
@@ -1098,27 +1041,27 @@
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s2')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s2')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-save-btn",
+      "classes": "hitsav-save-btn",
       "data-tip": "Save idea (Ctrl+Enter also works)",
-      "onclick": "hisavSaveIdea()",
+      "onclick": "hitsavSaveIdea()",
       "parent_tab": "tab-wccs",
       "label": "💾 Save Idea"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s3')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s3')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
@@ -1242,9 +1185,9 @@
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s4')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s4')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
@@ -1253,7 +1196,7 @@
       "type": "button",
       "classes": "cl-filter-btn active",
       "data-tip": "",
-      "onclick": "hisavClFilter(this,'all')",
+      "onclick": "hitsavClFilter(this,'all')",
       "parent_tab": "tab-wccs",
       "label": "All"
     },
@@ -1262,7 +1205,7 @@
       "type": "button",
       "classes": "cl-filter-btn",
       "data-tip": "",
-      "onclick": "hisavClFilter(this,'done')",
+      "onclick": "hitsavClFilter(this,'done')",
       "parent_tab": "tab-wccs",
       "label": "Complete"
     },
@@ -1271,7 +1214,7 @@
       "type": "button",
       "classes": "cl-filter-btn",
       "data-tip": "",
-      "onclick": "hisavClFilter(this,'pending')",
+      "onclick": "hitsavClFilter(this,'pending')",
       "parent_tab": "tab-wccs",
       "label": "Incomplete"
     },
@@ -1280,41 +1223,41 @@
       "type": "button",
       "classes": "cl-filter-btn",
       "data-tip": "",
-      "onclick": "hisavClFilter(this,'unconfirmed')",
+      "onclick": "hitsavClFilter(this,'unconfirmed')",
       "parent_tab": "tab-wccs",
       "label": "Unconfirmed"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s5')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s5')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s6')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s6')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s7')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s7')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-save-btn",
+      "classes": "hitsav-save-btn",
       "data-tip": "Log a new CLAC session",
       "onclick": "clacNewSessionModal()",
       "parent_tab": "tab-wccs",
@@ -1323,43 +1266,43 @@
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-idea-btn",
+      "classes": "hitsav-idea-btn",
       "data-tip": "Reload sessions",
-      "onclick": "hisavLoadClacSessions()",
+      "onclick": "hitsavLoadClacSessions()",
       "parent_tab": "tab-wccs",
       "label": "↺ Refresh"
     },
     {
-      "id": "hisav-clac-btn-done",
+      "id": "hitsav-clac-btn-done",
       "type": "button",
-      "classes": "hisav-clac-done",
+      "classes": "hitsav-clac-done",
       "data-tip": "CLAC session completed successfully",
-      "onclick": "hisavClacSelect('completed')",
+      "onclick": "hitsavClacSelect('completed')",
       "parent_tab": "tab-wccs",
       "label": "✅ Completed"
     },
     {
-      "id": "hisav-clac-btn-stop",
+      "id": "hitsav-clac-btn-stop",
       "type": "button",
-      "classes": "hisav-clac-stop",
+      "classes": "hitsav-clac-stop",
       "data-tip": "CLAC session stopped before finishing",
-      "onclick": "hisavClacSelect('stopped')",
+      "onclick": "hitsavClacSelect('stopped')",
       "parent_tab": "tab-wccs",
       "label": "🛑 Stopped"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-save-btn",
+      "classes": "hitsav-save-btn",
       "data-tip": "",
-      "onclick": "hisavSaveClac()",
+      "onclick": "hitsavSaveClac()",
       "parent_tab": "tab-wccs",
       "label": "💾 Save Session"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-idea-btn",
+      "classes": "hitsav-idea-btn",
       "data-tip": "",
       "onclick": "document.getElementById('clac-modal').style.display='none'",
       "parent_tab": "tab-wccs",
@@ -1368,18 +1311,18 @@
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s8')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s8')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
     {
-      "id": "hisav-ss-save-btn",
+      "id": "hitsav-ss-save-btn",
       "type": "button",
-      "classes": "hisav-save-btn",
+      "classes": "hitsav-save-btn",
       "data-tip": "",
-      "onclick": "hisavSaveScreenshot()",
+      "onclick": "hitsavSaveScreenshot()",
       "parent_tab": "tab-wccs",
       "label": "💾 Save Screenshot"
     },
@@ -1388,16 +1331,16 @@
       "type": "button",
       "classes": "",
       "data-tip": "",
-      "onclick": "document.getElementById('hisav-ss-popup').style.display='none'",
+      "onclick": "document.getElementById('hitsav-ss-popup').style.display='none'",
       "parent_tab": "tab-wccs",
       "label": "✕ Close"
     },
     {
       "id": "",
       "type": "button",
-      "classes": "hisav-min",
+      "classes": "hitsav-min",
       "data-tip": "Minimise",
-      "onclick": "event.stopPropagation();hisavMinimise('s9')",
+      "onclick": "event.stopPropagation();hitsavMinimise('s9')",
       "parent_tab": "tab-wccs",
       "label": "—"
     },
@@ -1418,6 +1361,321 @@
       "onclick": "wcCopyRequeue()",
       "parent_tab": "tab-wccs",
       "label": "📋 Copy CLACR Block"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-min",
+      "data-tip": "Minimise",
+      "onclick": "event.stopPropagation();hitsavMinimise('s10')",
+      "parent_tab": "tab-wccs",
+      "label": "—"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Add to WENTO queue",
+      "onclick": "wentoAdd()",
+      "parent_tab": "tab-wccs",
+      "label": "+ Add"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-min",
+      "data-tip": "Minimise",
+      "onclick": "event.stopPropagation();hitsavMinimise('s11')",
+      "parent_tab": "tab-wccs",
+      "label": "—"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Parse OCB block into phases — calls /api/ocb/parse",
+      "onclick": "hitsavOcbParse()",
+      "parent_tab": "tab-wccs",
+      "label": "🔍 Parse"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-idea-btn",
+      "data-tip": "Clear input and reset all panels",
+      "onclick": "hitsavOcbClear()",
+      "parent_tab": "tab-wccs",
+      "label": "✕ Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Run with full guard suite — stash, HTML check, MOT",
+      "onclick": "hitsavOcbRun()",
+      "parent_tab": "tab-wccs",
+      "label": "▶ Confirm & Run"
+    },
+    {
+      "id": "hitsav-ocb-rollback-btn",
+      "type": "button",
+      "classes": "hitsav-idea-btn",
+      "data-tip": "Rollback changes via git stash pop",
+      "onclick": "hitsavOcbRollback()",
+      "parent_tab": "tab-wccs",
+      "label": "↩ Rollback"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-min",
+      "data-tip": "Minimise",
+      "onclick": "event.stopPropagation();hitsavMinimise('s12')",
+      "parent_tab": "tab-wccs",
+      "label": "—"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Re-read STATUS.md and INDEX.md to regenerate snapshot",
+      "onclick": "brainRefresh()",
+      "parent_tab": "tab-wccs",
+      "label": "↻ Refresh from Files"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-min",
+      "data-tip": "Minimise",
+      "onclick": "event.stopPropagation();hitsavMinimise('s13')",
+      "parent_tab": "tab-wccs",
+      "label": "—"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Compare STATUS.md + detective + timeline for mismatches",
+      "onclick": "bridgeSyncCheck()",
+      "parent_tab": "tab-wccs",
+      "label": "🔍 Sync Check"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-idea-btn",
+      "data-tip": "Refresh message list",
+      "onclick": "bridgeLoadMessages()",
+      "parent_tab": "tab-wccs",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "hitsav-save-btn",
+      "data-tip": "Send message to bridge log",
+      "onclick": "bridgeSendMessage()",
+      "parent_tab": "tab-wccs",
+      "label": "Send"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunDiagnosis()",
+      "parent_tab": "tab-ancoreg",
+      "label": "▶ Run Diagnosis"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregShowAddFix()",
+      "parent_tab": "tab-ancoreg",
+      "label": "+ Add Fix"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregSubmitFix()",
+      "parent_tab": "tab-ancoreg",
+      "label": "Save Fix"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "document.getElementById('ancoreg-add-fix-modal').style.display='none'",
+      "parent_tab": "tab-ancoreg",
+      "label": "Cancel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregValidateSave()",
+      "parent_tab": "tab-ancoreg",
+      "label": "✓ Validate Save System"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunSave()",
+      "parent_tab": "tab-ancoreg",
+      "label": "💾 Run Save Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregPreviewDiff()",
+      "parent_tab": "tab-ancoreg",
+      "label": "📄 Preview Diff"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunMOT()",
+      "parent_tab": "tab-ancoreg",
+      "label": "▶ Run MOT"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save plan",
+      "onclick": "bstpSavePlan()",
+      "parent_tab": "tab-bstp",
+      "label": "💾 Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load plan",
+      "onclick": "bstpLoadPlanDialog()",
+      "parent_tab": "tab-bstp",
+      "label": "📂 Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clear canvas",
+      "onclick": "bstpClearCanvas()",
+      "parent_tab": "tab-bstp",
+      "label": "🗑 Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Undo (Ctrl+Z)",
+      "onclick": "bstpUndo()",
+      "parent_tab": "tab-bstp",
+      "label": "↩ Undo"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Redo (Ctrl+Y)",
+      "onclick": "bstpRedo()",
+      "parent_tab": "tab-bstp",
+      "label": "↪ Redo"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpZoom(1.2)",
+      "parent_tab": "tab-bstp",
+      "label": "+"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpZoom(0.8)",
+      "parent_tab": "tab-bstp",
+      "label": "-"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Fullscreen",
+      "onclick": "bstpFullscreen()",
+      "parent_tab": "tab-bstp",
+      "label": "⛶"
+    },
+    {
+      "id": "bstp-status-undo",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpUndoStatusWrite()",
+      "parent_tab": "tab-bstp",
+      "label": "↩ Undo Last Write"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpSaveInstructions()",
+      "parent_tab": "tab-bstp",
+      "label": "Save Instructions"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send selected task to AAFL goal.txt",
+      "onclick": "bstpLaunchSelected('goal')",
+      "parent_tab": "tab-bstp",
+      "label": "▶ AAFL"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add selected task to Kanban todo",
+      "onclick": "bstpLaunchSelected('kanban')",
+      "parent_tab": "tab-bstp",
+      "label": "📋 Kanban"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Generate CLAC block for selected task",
+      "onclick": "bstpLaunchSelected('clac')",
+      "parent_tab": "tab-bstp",
+      "label": "💻 CLAC"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpLoadHistory()",
+      "parent_tab": "tab-bstp",
+      "label": "📜 Show Saved Plans"
     },
     {
       "id": "",
@@ -1445,6 +1703,33 @@
       "onclick": "ocb2Clear()",
       "parent_tab": "tab-ocb-runner",
       "label": "✕"
+    },
+    {
+      "id": "ocb2-abort-btn",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocb2Abort()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "⛔ ABORT"
+    },
+    {
+      "id": "ocb2-clear-lock-btn",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Clear stale .ocb_running lock file",
+      "onclick": "ocb2ClearLock()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "🔓 Clear Lock"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "Copy live output to clipboard",
+      "onclick": "ocb2CopyLog()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "📋 Copy"
     },
     {
       "id": "",
@@ -2440,6 +2725,33 @@
       "id": "",
       "type": "button",
       "classes": "btn",
+      "data-tip": "",
+      "onclick": "clacr_submit()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📨 Submit"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "clacr_loadStatus()",
+      "parent_tab": "tab-aafl-control",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "clacr_copyResults()",
+      "parent_tab": "tab-aafl-control",
+      "label": "📋 Copy for CLACH"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
       "data-tip": "Reload all AAFL run history from the server",
       "onclick": "loadAaflRuns()",
       "parent_tab": "tab-aafl-control",
@@ -3124,10 +3436,10 @@
       "id": "",
       "type": "button",
       "classes": "hs-tab-btn",
-      "data-tip": "Work Checker has moved to HISAV tab — click to go there",
-      "onclick": "goToTab('wccs');hisavToggle('s9')",
+      "data-tip": "Work Checker has moved to HITSAV tab — click to go there",
+      "onclick": "goToTab('wccs');hitsavToggle('s9')",
       "parent_tab": "tab-health-suite",
-      "label": "🔍 Work Checker →HISAV"
+      "label": "🔍 Work Checker →HITSAV"
     },
     {
       "id": "",
@@ -3143,9 +3455,9 @@
       "type": "button",
       "classes": "btn",
       "data-tip": "",
-      "onclick": "goToTab('wccs');hisavToggle('s9')",
+      "onclick": "goToTab('wccs');hitsavToggle('s9')",
       "parent_tab": "tab-health-suite",
-      "label": "Open Work Checker in HISAV →"
+      "label": "Open Work Checker in HITSAV →"
     },
     {
       "id": "",
@@ -3474,6 +3786,33 @@
     {
       "id": "",
       "type": "button",
+      "classes": "tip-btn",
+      "data-tip": "",
+      "onclick": "b3ShowTip(this,'Save the full current theme (all CSS vars + layout settings) to the server. Max 20 saves — oldest auto-archived.')",
+      "parent_tab": "tab-design",
+      "label": "?"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save current theme to Design Vault",
+      "onclick": "dvSaveTheme()",
+      "parent_tab": "tab-design",
+      "label": "💾 Save Current Theme"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Refresh Theme Gallery",
+      "onclick": "dvLoadGallery()",
+      "parent_tab": "tab-design",
+      "label": "↻ Refresh"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "",
       "data-tip": "",
       "onclick": "",
@@ -3583,46 +3922,88 @@
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-idea-tags",
-      "type": "text",
-      "placeholder": "optional tags e.g. llow, scout, mcc",
-      "classes": "hisav-tag-input",
+      "id": "ocb-skip-mot",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-clac-desc",
+      "id": "hitsav-idea-tags",
+      "type": "text",
+      "placeholder": "optional tags e.g. llow, scout, mcc",
+      "classes": "hitsav-tag-input",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "hitsav-clac-desc",
       "type": "text",
       "placeholder": "What was it doing? e.g. OCB-Q Phase 3",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-clac-reason",
+      "id": "hitsav-clac-reason",
       "type": "text",
       "placeholder": "Why stopped? e.g. ran out of ALP, error, timeout",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-clac-ver",
+      "id": "hitsav-clac-ver",
       "type": "text",
       "placeholder": "version e.g. v76",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-file-inp",
+      "id": "hitsav-file-inp",
       "type": "file",
       "placeholder": "",
       "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-ss-desc",
+      "id": "hitsav-ss-desc",
       "type": "text",
       "placeholder": "What is this screenshot of? e.g. CLAC output, MCC bug",
       "classes": "",
       "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "hitsav-ocb-dryrun",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "bridge-send-content",
+      "type": "text",
+      "placeholder": "Send a message to bridge…",
+      "classes": "",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "ancoreg-fix-search",
+      "type": "text",
+      "placeholder": "Search fixes...",
+      "classes": "",
+      "parent_tab": "tab-ancoreg"
+    },
+    {
+      "id": "ancoreg-new-problem",
+      "type": "text",
+      "placeholder": "Problem description...",
+      "classes": "",
+      "parent_tab": "tab-ancoreg"
+    },
+    {
+      "id": "bstp-status-toggle",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-bstp"
     },
     {
       "id": "kanban-new-title",
@@ -4136,6 +4517,13 @@
       "parent_tab": "tab-aafl-control"
     },
     {
+      "id": "clacr-msg-input",
+      "type": "text",
+      "placeholder": "CLACH message — e.g. BUILD P3 ocb_runner.py add timeout…",
+      "classes": "",
+      "parent_tab": "tab-aafl-control"
+    },
+    {
       "id": "runs-tag-filter2",
       "type": "text",
       "placeholder": "Filter by tag…",
@@ -4388,6 +4776,13 @@
       "parent_tab": "tab-health-suite"
     },
     {
+      "id": "rrice-acca-search",
+      "type": "text",
+      "placeholder": "Search codes...",
+      "classes": "",
+      "parent_tab": "tab-rrice"
+    },
+    {
       "id": "urg-design",
       "type": "range",
       "placeholder": "",
@@ -4456,6 +4851,13 @@
       "placeholder": "Preset name…",
       "classes": "",
       "parent_tab": "tab-design"
+    },
+    {
+      "id": "dv-save-name",
+      "type": "text",
+      "placeholder": "Theme name…",
+      "classes": "",
+      "parent_tab": "tab-design"
     }
   ],
   "textareas": [
@@ -4468,7 +4870,7 @@
     {
       "id": "wccs-chat-input",
       "placeholder": "Paste summary of what was done this session…",
-      "classes": "hisav-idea-ta",
+      "classes": "hitsav-idea-ta",
       "parent_tab": "tab-wccs"
     },
     {
@@ -4508,10 +4910,34 @@
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "hisav-idea-input",
+      "id": "hitsav-idea-input",
       "placeholder": "Drop any idea here — half-formed is fine. Capture it now, flesh it out later.",
-      "classes": "hisav-idea-ta",
+      "classes": "hitsav-idea-ta",
       "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "wento-input",
+      "placeholder": "Note anything here — half-formed, tangential, future idea…",
+      "classes": "hitsav-idea-ta",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "hitsav-ocb-input",
+      "placeholder": "Paste OCB block here…\n═══ PHASE 1 — Fix popup ═══\n1. Find the button…",
+      "classes": "hitsav-idea-ta",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "ancoreg-new-fix",
+      "placeholder": "Fix steps...",
+      "classes": "",
+      "parent_tab": "tab-ancoreg"
+    },
+    {
+      "id": "bstp-instructions",
+      "placeholder": "Write project instructions / narrative here. These get injected into AAFL/Scout context...",
+      "classes": "",
+      "parent_tab": "tab-bstp"
     },
     {
       "id": "ocb2-input",
@@ -4551,6 +4977,11 @@
     {
       "id": "ocb-provider",
       "classes": "ocb-select",
+      "parent_tab": "tab-wccs"
+    },
+    {
+      "id": "bridge-send-type",
+      "classes": "",
       "parent_tab": "tab-wccs"
     },
     {
@@ -4720,14 +5151,29 @@
     "/alp-data",
     "/api/aafl/errors",
     "/api/acca",
+    "/api/acca/codes",
+    "/api/acca/version",
+    "/api/ancoreg/diagnosis",
+    "/api/ancoreg/error-timeline",
+    "/api/ancoreg/fixes",
+    "/api/ancoreg/mot",
+    "/api/ancoreg/validate-save",
     "/api/auto-fix/history",
     "/api/auto-fix/proposals",
     "/api/auto-wccs",
     "/api/backup",
+    "/api/bridge/messages",
+    "/api/bstp/current",
+    "/api/bstp/instructions",
+    "/api/bstp/plan/",
+    "/api/bstp/plans",
     "/api/clachr/queue",
     "/api/clachr/results",
+    "/api/clacr/results",
+    "/api/clacr/status",
     "/api/code/files",
     "/api/code/read",
+    "/api/design/saves",
     "/api/detective/learning-db",
     "/api/detective/queue",
     "/api/detective/report",
@@ -4736,14 +5182,18 @@
     "/api/health/history",
     "/api/health/latest",
     "/api/help/history",
-    "/api/hisav/clac-sessions",
-    "/api/hisav/data",
-    "/api/hisav/screenshots",
+    "/api/hisav/clac-sessions\", \"/api/hitsav/clac-sessions",
+    "/api/hisav/data\", \"/api/hitsav/data",
+    "/api/hisav/screenshots\", \"/api/hitsav/screenshots",
+    "/api/hisav/wento\", \"/api/hitsav/wento",
     "/api/history",
     "/api/ibr-latest",
     "/api/ibr-scan",
     "/api/instructions",
     "/api/instructions/",
+    "/api/investigations",
+    "/api/learning/failures",
+    "/api/learning/report",
     "/api/llow/arrows",
     "/api/llow/elements",
     "/api/llow/scout-swarm",
@@ -4754,8 +5204,13 @@
     "/api/mccm/status",
     "/api/medical-history",
     "/api/medical-report",
+    "/api/memory/snapshot",
     "/api/missions",
     "/api/mot/live",
+    "/api/ocb/checks",
+    "/api/ocb/progress",
+    "/api/ocb/results",
+    "/api/ocb/status",
     "/api/ocb/status/",
     "/api/old-saves-report",
     "/api/processes",
@@ -4763,12 +5218,14 @@
     "/api/project-vision",
     "/api/provider-diagnosis",
     "/api/provider-health",
+    "/api/rag/stats",
     "/api/resources/cpu-detail",
     "/api/resources/disk-detail",
     "/api/resources/gpu-detail",
     "/api/resources/lmstudio-detail",
     "/api/resources/ram-detail",
     "/api/resources/snapshot",
+    "/api/rrice",
     "/api/safety-status",
     "/api/search",
     "/api/self-health/config",
@@ -4803,6 +5260,7 @@
     "/api/timeline-data",
     "/api/timeline/full",
     "/api/timeline/node/",
+    "/api/training/stats",
     "/api/watchdog/status",
     "/api/work-checker/action-plan",
     "/api/work-checker/checklist",
@@ -4865,14 +5323,26 @@
     "/aafl/stop",
     "/aafl/workflow",
     "/alp-add",
+    "/api/acca/add",
+    "/api/ancoreg/add-fix",
+    "/api/ancoreg/run-save",
     "/api/auto-fix/approve",
     "/api/auto-fix/reject",
     "/api/auto-wccs",
+    "/api/bridge/send",
+    "/api/bridge/sync-check",
+    "/api/bstp/action",
+    "/api/bstp/instructions",
+    "/api/bstp/save",
+    "/api/bstp/status-write",
     "/api/chat-to-sesum",
     "/api/clachr/dispatch",
+    "/api/clacr/resolve",
+    "/api/clacr/submit",
     "/api/code/run",
     "/api/code/save",
     "/api/command-bar",
+    "/api/design/save",
     "/api/detective/add-solution",
     "/api/detective/add-to-queue",
     "/api/detective/analyse-screenshot",
@@ -4883,12 +5353,8 @@
     "/api/detective/run",
     "/api/detective/run-all-queued",
     "/api/help/ask",
-    "/api/hisav/checklist/tick",
-    "/api/hisav/clac-session",
-    "/api/hisav/idea",
-    "/api/hisav/idea/action",
-    "/api/hisav/screenshot",
     "/api/history/append",
+    "/api/investigations/add",
     "/api/kanban/add-card",
     "/api/launch-spindoctor",
     "/api/llow/dry-run",
@@ -4897,12 +5363,19 @@
     "/api/llow/scout-swarm",
     "/api/llow/validate",
     "/api/llow/workflow",
+    "/api/mccm/generate-status",
+    "/api/memory/refresh",
     "/api/missions",
     "/api/missions/update-from-sesum",
+    "/api/ocb/abort",
+    "/api/ocb/clear-lock",
     "/api/ocb/parse",
+    "/api/ocb/rollback",
     "/api/ocb/run",
     "/api/project-awareness/update",
     "/api/provider-health/diagnose",
+    "/api/rag/query",
+    "/api/rag/reindex",
     "/api/restore",
     "/api/rrclach/save",
     "/api/run-medical",
@@ -4917,6 +5390,7 @@
     "/api/system/kill",
     "/api/task-inbox",
     "/api/timeline/add-node",
+    "/api/training/rebuild",
     "/api/watchdog/start",
     "/api/wccs",
     "/api/work-checker/check-item",
@@ -5048,20 +5522,27 @@
     "/api/detective/run",
     "/api/detective/run-all-queued",
     "/api/help/ask",
-    "/api/hisav/checklist/tick",
-    "/api/hisav/clac-session",
-    "/api/hisav/clac-sessions",
-    "/api/hisav/data",
-    "/api/hisav/idea",
-    "/api/hisav/idea/action",
-    "/api/hisav/screenshot",
-    "/api/hisav/screenshots",
+    "/api/hitsav/checklist/tick",
+    "/api/hitsav/clac-session",
+    "/api/hitsav/clac-sessions",
+    "/api/hitsav/data",
+    "/api/hitsav/idea",
+    "/api/hitsav/idea/action",
+    "/api/hitsav/screenshot",
+    "/api/hitsav/screenshots",
+    "/api/hitsav/wento",
     "/api/instructions/",
     "/api/mccm/alerts",
     "/api/mccm/detective",
     "/api/mccm/status",
     "/api/missions",
     "/api/missions/",
+    "/api/ocb/checks",
+    "/api/ocb/parse",
+    "/api/ocb/results",
+    "/api/ocb/rollback",
+    "/api/ocb/run",
+    "/api/ocb/status",
     "/api/run-medical",
     "/api/status",
     "/api/timeline/add-node",

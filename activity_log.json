@@ -1300,5 +1300,53 @@
     "cat": "persist_test",
     "msg": "test entry",
     "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:05:37",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-06-02T08:05:38",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:05:38",
+    "cat": "integration",
+    "msg": "int_test_1780383938",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:05:39",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:05:54",
+    "cat": "medical",
+    "msg": "test",
+    "trigger": "auto"
+  },
+  {
+    "ts": "2026-06-02T08:06:15",
+    "cat": "test",
+    "msg": "ep test",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:06:15",
+    "cat": "integration",
+    "msg": "int_test_1780383975",
+    "trigger": "manual"
+  },
+  {
+    "ts": "2026-06-02T08:06:16",
+    "cat": "persist_test",
+    "msg": "test entry",
+    "trigger": "manual"
   }
 ]

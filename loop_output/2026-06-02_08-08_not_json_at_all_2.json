@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "* No additional external packages required.\n\n#### 2.3. Runtime Configuration  \nA new YAML section `xplane_sitl:` was added:\n", "goal": "not json at all }{", "timestamp": "2026-06-02_08-08"}

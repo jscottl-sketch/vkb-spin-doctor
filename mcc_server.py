@@ -792,6 +792,29 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_learning_report_get()
             elif path == "/api/learning/failures":
                 self._handle_learning_failures_get()
+            # ── ANCOREG: System Doctor ─────────────────────────────────────────
+            elif path == "/api/ancoreg/diagnosis":
+                self._handle_ancoreg_diagnosis_get()
+            elif path == "/api/ancoreg/fixes":
+                self._handle_ancoreg_fixes_get()
+            elif path == "/api/ancoreg/validate-save":
+                self._handle_ancoreg_validate_save_get()
+            elif path == "/api/ancoreg/mot":
+                self._handle_ancoreg_mot_get()
+            elif path == "/api/ancoreg/error-timeline":
+                self._handle_ancoreg_error_timeline_get()
+            # ── ACCA Codes ────────────────────────────────────────────────────
+            elif path == "/api/acca/codes":
+                self._handle_acca_codes_get()
+            # ── BSTP: Brainstorm Planner ──────────────────────────────────────
+            elif path == "/api/bstp/current":
+                self._handle_bstp_current_get()
+            elif path == "/api/bstp/plans":
+                self._handle_bstp_plans_get()
+            elif path.startswith("/api/bstp/plan/"):
+                self._handle_bstp_plan_get(path[len("/api/bstp/plan/"):])
+            elif path == "/api/bstp/instructions":
+                self._handle_bstp_instructions_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -1129,6 +1152,23 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_rag_query_post()
             elif path == "/api/training/rebuild":
                 self._handle_training_rebuild_post()
+            # ── ANCOREG: System Doctor ─────────────────────────────────────────
+            elif path == "/api/ancoreg/add-fix":
+                self._handle_ancoreg_add_fix_post()
+            elif path == "/api/ancoreg/run-save":
+                self._handle_ancoreg_run_save_post()
+            # ── ACCA Codes ─────────────────────────────────────────────────────
+            elif path == "/api/acca/add":
+                self._handle_acca_add_post()
+            # ── BSTP: Brainstorm Planner ──────────────────────────────────────
+            elif path == "/api/bstp/save":
+                self._handle_bstp_save_post()
+            elif path == "/api/bstp/action":
+                self._handle_bstp_action_post()
+            elif path == "/api/bstp/instructions":
+                self._handle_bstp_instructions_post()
+            elif path == "/api/bstp/status-write":
+                self._handle_bstp_status_write_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -9785,6 +9825,449 @@ MCCHandler._handle_training_stats_get    = _handle_training_stats_get     # type
 MCCHandler._handle_training_rebuild_post = _handle_training_rebuild_post  # type: ignore[attr-defined]
 MCCHandler._handle_learning_report_get   = _handle_learning_report_get    # type: ignore[attr-defined]
 MCCHandler._handle_learning_failures_get = _handle_learning_failures_get  # type: ignore[attr-defined]
+
+
+# ── ACCA Codes endpoints ──────────────────────────────────────────────────────
+_ACCA_CODES_FILE = HERE / "data" / "acca_codes.json"
+
+
+def _handle_acca_codes_get(self):
+    """GET /api/acca/codes — return full acca_codes.json"""
+    try:
+        if not _ACCA_CODES_FILE.exists():
+            self._send_json({"codes": {}, "version": "0", "count": 0})
+            return
+        data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8"))
+        data["count"] = len(data.get("codes", {}))
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_acca_codes_get = _handle_acca_codes_get  # type: ignore[attr-defined]
+
+
+def _handle_acca_add_post(self):
+    """POST /api/acca/add — add {code, full_name, category} to acca_codes.json (atomic)."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        code = (body.get("code") or "").strip().upper()
+        full_name = (body.get("full_name") or "").strip()
+        category = (body.get("category") or "shorthand").strip()
+        description = (body.get("description") or "").strip()
+        if not code or not full_name:
+            self._send_json({"error": "code and full_name required"}, 400)
+            return
+        data = {}
+        if _ACCA_CODES_FILE.exists():
+            try:
+                data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                data = {"version": "1.0", "codes": {}}
+        data.setdefault("codes", {})[code] = {
+            "abbreviation": code,
+            "full_name": full_name,
+            "category": category,
+            "description": description,
+        }
+        data["last_updated"] = _now_iso()[:10]
+        tmp = _ACCA_CODES_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        import os as _os; _os.replace(tmp, _ACCA_CODES_FILE)
+        self._send_json({"ok": True, "code": code, "total": len(data["codes"])})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_acca_add_post = _handle_acca_add_post  # type: ignore[attr-defined]
+
+
+# ── ANCOREG: System Doctor endpoints ─────────────────────────────────────────
+_ANCOREG_FIXES_FILE = SH_SOLUTIONS   # reuse data/solution_database.json
+
+
+def _handle_ancoreg_diagnosis_get(self):
+    """GET /api/ancoreg/diagnosis — run self_health + detective, return combined results."""
+    try:
+        import time as _time
+        results = {"health": [], "detective": [], "generated": _now_iso()}
+        # Run self-health (lightweight: just load last DB results)
+        try:
+            import sqlite3 as _sq
+            if SH_HEALTH_DB.exists():
+                conn = _sq.connect(str(SH_HEALTH_DB), check_same_thread=False)
+                conn.row_factory = _sq.Row
+                rows = conn.execute(
+                    "SELECT element_id, status, detail, checked_at FROM health_results "
+                    "ORDER BY checked_at DESC LIMIT 200"
+                ).fetchall()
+                conn.close()
+                seen: set = set()
+                for r in rows:
+                    eid = r["element_id"]
+                    if eid in seen:
+                        continue
+                    seen.add(eid)
+                    results["health"].append({
+                        "id": eid, "status": r["status"],
+                        "detail": r["detail"] or "", "checked_at": r["checked_at"],
+                    })
+        except Exception as he:
+            results["health_error"] = str(he)
+        # Load detective report
+        try:
+            det_path = HERE / "data" / "detective_report.json"
+            if det_path.exists():
+                det = json.loads(det_path.read_text(encoding="utf-8"))
+                results["detective"] = det.get("findings", [])[:30]
+        except Exception as de:
+            results["detective_error"] = str(de)
+        self._send_json(results)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_diagnosis_get = _handle_ancoreg_diagnosis_get  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_fixes_get(self):
+    """GET /api/ancoreg/fixes — return solution_database.json"""
+    try:
+        if not _ANCOREG_FIXES_FILE.exists():
+            self._send_json({"solutions": []})
+            return
+        data = json.loads(_ANCOREG_FIXES_FILE.read_text(encoding="utf-8"))
+        self._send_json(data)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_fixes_get = _handle_ancoreg_fixes_get  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_add_fix_post(self):
+    """POST /api/ancoreg/add-fix — add fix entry to solution_database.json (atomic)."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        problem = (body.get("problem") or "").strip()
+        fix = (body.get("fix") or "").strip()
+        if not problem or not fix:
+            self._send_json({"error": "problem and fix required"}, 400)
+            return
+        data = {"version": "1.0", "solutions": []}
+        if _ANCOREG_FIXES_FILE.exists():
+            try:
+                data = json.loads(_ANCOREG_FIXES_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        import time as _time
+        new_id = f"fix_{int(_time.time())}"
+        data.setdefault("solutions", []).append({
+            "id": new_id,
+            "name": problem[:80],
+            "fix_steps": [fix],
+            "date_found": _now_iso()[:10],
+            "times_used": 0,
+            "auto_fixable": body.get("auto_fixable", False),
+            "success_rate": 0.0,
+            "last_used": None,
+            "user_approval_required": True,
+            "notes": body.get("notes", ""),
+        })
+        data["last_updated"] = _now_iso()[:10]
+        tmp = _ANCOREG_FIXES_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        import os as _os; _os.replace(tmp, _ANCOREG_FIXES_FILE)
+        self._send_json({"ok": True, "id": new_id})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_add_fix_post = _handle_ancoreg_add_fix_post  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_validate_save_get(self):
+    """GET /api/ancoreg/validate-save — run ancoreg_validator.validate_save_system()."""
+    try:
+        import importlib.util as _ilu
+        spec = _ilu.spec_from_file_location("ancoreg_validator", HERE / "ancoreg_validator.py")
+        mod = _ilu.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        results = mod.validate_save_system()
+        pass_count = sum(1 for v in results.values() if v.get("status") == "PASS")
+        self._send_json({"checks": results, "pass_count": pass_count,
+                         "total": len(results), "generated": _now_iso()})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_validate_save_get = _handle_ancoreg_validate_save_get  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_run_save_post(self):
+    """POST /api/ancoreg/run-save — trigger aafl_wccs.py via subprocess."""
+    try:
+        wccs_path = HERE / "aafl_wccs.py"
+        if not wccs_path.exists():
+            self._send_json({"ok": False, "error": "aafl_wccs.py not found"})
+            return
+        result = subprocess.run(
+            [PYTHON, str(wccs_path)],
+            capture_output=True, text=True, cwd=str(HERE), timeout=120
+        )
+        self._send_json({
+            "ok": result.returncode == 0,
+            "stdout": result.stdout[-2000:],
+            "stderr": result.stderr[-500:],
+            "returncode": result.returncode,
+        })
+    except subprocess.TimeoutExpired:
+        self._send_json({"ok": False, "error": "aafl_wccs.py timed out after 120s"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_run_save_post = _handle_ancoreg_run_save_post  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_mot_get(self):
+    """GET /api/ancoreg/mot — run mcc_full_mot.py, return results."""
+    try:
+        result = subprocess.run(
+            [PYTHON, str(MOT_SCRIPT)],
+            capture_output=True, text=True, cwd=str(HERE), timeout=180
+        )
+        report_path = HEALTH_DIR / "full_mot_report.json"
+        if report_path.exists():
+            try:
+                report = json.loads(report_path.read_text(encoding="utf-8"))
+                self._send_json(report)
+                return
+            except Exception:
+                pass
+        self._send_json({
+            "ok": result.returncode == 0,
+            "stdout": result.stdout[-3000:],
+            "returncode": result.returncode,
+        })
+    except subprocess.TimeoutExpired:
+        self._send_json({"ok": False, "error": "MOT timed out after 180s"})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_mot_get = _handle_ancoreg_mot_get  # type: ignore[attr-defined]
+
+
+def _handle_ancoreg_error_timeline_get(self):
+    """GET /api/ancoreg/error-timeline — return error history from solution_database for timeline."""
+    try:
+        data = {"solutions": []}
+        if _ANCOREG_FIXES_FILE.exists():
+            try:
+                data = json.loads(_ANCOREG_FIXES_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        timeline = []
+        for s in data.get("solutions", []):
+            timeline.append({
+                "id": s.get("id", ""),
+                "label": s.get("name", "")[:60],
+                "date_found": s.get("date_found") or s.get("last_updated", ""),
+                "last_used": s.get("last_used"),
+                "times_used": s.get("times_used", 0),
+                "type": "fixed" if (s.get("times_used", 0) > 0) else "known",
+                "auto_fixable": s.get("auto_fixable", False),
+            })
+        timeline.sort(key=lambda x: x.get("date_found") or "", reverse=True)
+        self._send_json({"timeline": timeline, "total": len(timeline), "generated": _now_iso()})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_ancoreg_error_timeline_get = _handle_ancoreg_error_timeline_get  # type: ignore[attr-defined]
+
+
+# ── BSTP: Brainstorm Planner endpoints ───────────────────────────────────────
+_BSTP_CURRENT      = HERE / "data" / "bstp_current.json"
+_BSTP_HISTORY      = HERE / "data" / "bstp_history.json"
+_BSTP_INSTRUCTIONS = HERE / "data" / "bstp_instructions.json"
+_BSTP_PLANS_DIR    = HERE / "data" / "bstp_plans"
+
+
+def _bstp_ensure_dirs():
+    _BSTP_PLANS_DIR.mkdir(parents=True, exist_ok=True)
+    (HERE / "data").mkdir(exist_ok=True)
+
+
+def _handle_bstp_current_get(self):
+    """GET /api/bstp/current — return current plan."""
+    try:
+        _bstp_ensure_dirs()
+        if not _BSTP_CURRENT.exists():
+            self._send_json({"elements": [], "arrows": [], "version": 0, "name": "New Plan"})
+            return
+        self._send_json(json.loads(_BSTP_CURRENT.read_text(encoding="utf-8")))
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_current_get = _handle_bstp_current_get  # type: ignore[attr-defined]
+
+
+def _handle_bstp_save_post(self):
+    """POST /api/bstp/save — save current plan + snapshot."""
+    try:
+        _bstp_ensure_dirs()
+        body = json.loads(self._read_body() or "{}")
+        body["saved_at"] = _now_iso()
+        version = body.get("version", 0) + 1
+        body["version"] = version
+        # Atomic write current
+        tmp = _BSTP_CURRENT.with_suffix(".tmp")
+        tmp.write_text(json.dumps(body, indent=2, ensure_ascii=False), encoding="utf-8")
+        import os as _os; _os.replace(tmp, _BSTP_CURRENT)
+        # Snapshot
+        import time as _t
+        snap_file = _BSTP_PLANS_DIR / f"plan_{int(_t.time())}.json"
+        snap_file.write_text(json.dumps(body, indent=2, ensure_ascii=False), encoding="utf-8")
+        # Update history index
+        hist = {"snapshots": []}
+        if _BSTP_HISTORY.exists():
+            try:
+                hist = json.loads(_BSTP_HISTORY.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        hist.setdefault("snapshots", []).insert(0, {
+            "file": snap_file.name,
+            "saved_at": body["saved_at"],
+            "name": body.get("name", "Untitled"),
+            "version": version,
+            "element_count": len(body.get("elements", [])),
+        })
+        hist["snapshots"] = hist["snapshots"][:50]
+        hist_tmp = _BSTP_HISTORY.with_suffix(".tmp")
+        hist_tmp.write_text(json.dumps(hist, indent=2, ensure_ascii=False), encoding="utf-8")
+        _os.replace(hist_tmp, _BSTP_HISTORY)
+        self._send_json({"ok": True, "version": version, "snapshot": snap_file.name})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_save_post = _handle_bstp_save_post  # type: ignore[attr-defined]
+
+
+def _handle_bstp_plans_get(self):
+    """GET /api/bstp/plans — list all saved plans."""
+    try:
+        _bstp_ensure_dirs()
+        hist = {"snapshots": []}
+        if _BSTP_HISTORY.exists():
+            try:
+                hist = json.loads(_BSTP_HISTORY.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        self._send_json(hist)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_plans_get = _handle_bstp_plans_get  # type: ignore[attr-defined]
+
+
+def _handle_bstp_plan_get(self, plan_id: str):
+    """GET /api/bstp/plan/<id> — load specific plan snapshot."""
+    try:
+        _bstp_ensure_dirs()
+        safe = plan_id.replace("..", "").replace("/", "").replace("\\", "")
+        plan_file = _BSTP_PLANS_DIR / safe
+        if not plan_file.exists():
+            plan_file = _BSTP_PLANS_DIR / f"{safe}.json"
+        if not plan_file.exists():
+            self._send_json({"error": "Plan not found"}, 404)
+            return
+        self._send_json(json.loads(plan_file.read_text(encoding="utf-8")))
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_plan_get = _handle_bstp_plan_get  # type: ignore[attr-defined]
+
+
+def _handle_bstp_action_post(self):
+    """POST /api/bstp/action — send task to AAFL/Kanban/CLAC/Scout."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        target = (body.get("target") or "").strip()
+        task = body.get("task", {})
+        title = (task.get("title") or task.get("description") or "BSTP Task").strip()
+        result = {"ok": True, "target": target, "title": title}
+        if target == "kanban":
+            board = self._b2_load_json(KANBAN_JSON, {"todo": [], "doing": [], "done": []})
+            card = {"id": _now_iso(), "title": title, "tags": ["BSTP"], "deps": [], "created": _now_iso()}
+            board.setdefault("todo", []).append(card)
+            self._b2_save_json(KANBAN_JSON, board)
+            result["card_id"] = card["id"]
+        elif target == "goal":
+            GOAL_TXT.write_text(title, encoding="utf-8")
+            result["goal_file"] = str(GOAL_TXT)
+        elif target == "clac":
+            clac_block = f"# BSTP Task → CLAC\n# Generated: {_now_iso()}\n# Task: {title}\n\n{task.get('description', title)}"
+            result["clac_block"] = clac_block
+        self._send_json(result)
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_action_post = _handle_bstp_action_post  # type: ignore[attr-defined]
+
+
+def _handle_bstp_instructions_get(self):
+    """GET /api/bstp/instructions — return instruction pad content."""
+    try:
+        if not _BSTP_INSTRUCTIONS.exists():
+            self._send_json({"content": "", "saved_at": None})
+            return
+        self._send_json(json.loads(_BSTP_INSTRUCTIONS.read_text(encoding="utf-8")))
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_instructions_get = _handle_bstp_instructions_get  # type: ignore[attr-defined]
+
+
+def _handle_bstp_instructions_post(self):
+    """POST /api/bstp/instructions — save instruction pad."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        content = body.get("content", "")
+        data = {"content": content, "saved_at": _now_iso()}
+        tmp = _BSTP_INSTRUCTIONS.with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        import os as _os; _os.replace(tmp, _BSTP_INSTRUCTIONS)
+        self._send_json({"ok": True, "saved_at": data["saved_at"]})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_instructions_post = _handle_bstp_instructions_post  # type: ignore[attr-defined]
+
+
+def _handle_bstp_status_write_post(self):
+    """POST /api/bstp/status-write — preview or write task to STATUS.md (with backup)."""
+    try:
+        body = json.loads(self._read_body() or "{}")
+        preview_only = body.get("preview_only", True)
+        task = body.get("task", {})
+        title = (task.get("title") or "").strip()
+        status = (task.get("status") or "planned").strip()
+        if not title:
+            self._send_json({"error": "title required"}, 400)
+            return
+        if status == "done":
+            line = f"| {title} | Added via BSTP {_now_iso()[:10]} |\n"
+            section = "CURRENT STATUS"
+        else:
+            line = f"- {title}\n"
+            section = "NEXT PRIORITIES"
+        if preview_only:
+            self._send_json({"preview": line, "section": section, "would_write": not preview_only})
+            return
+        # Backup then write
+        if STATUS_FILE.exists():
+            bak = STATUS_FILE.with_suffix(".bak")
+            shutil.copy2(STATUS_FILE, bak)
+        with open(STATUS_FILE, "a", encoding="utf-8") as f:
+            f.write(f"\n<!-- BSTP auto-append {_now_iso()} -->\n{line}")
+        self._send_json({"ok": True, "wrote": line, "section": section})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_bstp_status_write_post = _handle_bstp_status_write_post  # type: ignore[attr-defined]
 
 
 def main():

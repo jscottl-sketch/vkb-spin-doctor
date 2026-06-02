@@ -1,4 +1,4 @@
-<!-- ============================================================
+﻿<!-- ============================================================
      MISSION CONTROL HTML — TABLE OF CONTENTS
      One section comment marks the start of each tab pane.
      ============================================================
@@ -1862,6 +1862,8 @@ body{padding-bottom:28px}
 <div class="tab-bar" id="main-tab-bar">
   <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
   <button class="tab-btn active" data-tab="wccs" data-tip="HITSAV — History, Ideas, Save & Vehicle history" data-tooltip="HITSAV — save sessions, capture ideas, track vehicle history, manage checklists and CLAC sessions">💾 HITSAV</button>
+  <button class="tab-btn" data-tab="ancoreg" data-tip="ANCOREG — System doctor — diagnosis, fixes, save validation, error tracking" data-tooltip="ANCOREG (Autonomous Node Condition Registry) — system doctor: live diagnosis, fix database, save validator, MOT dashboard, error timeline">🩺 ANCOREG</button>
+  <button class="tab-btn" data-tab="bstp" data-tip="BSTP — Brainstorm Planner — visual workflow planning, rules, instructions" data-tooltip="BSTP (Brainstorm Planner) — drag-and-drop canvas for planning tasks, decisions and milestones; send to AAFL, Kanban or CLAC">🧠 BSTP</button>
   <button class="tab-btn" data-tab="ocb-runner" data-tip="OCB Runner — paste an OCB build block and run it inside MCC" data-tooltip="OCB Runner — paste an OCB build block and run it safely inside MCC with pre-flight checks">⚙️ OCB Runner</button>
   <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis" data-tooltip="Scout Swarm — run web research across 5 parallel strategies: DDG, Reddit, GitHub, YouTube, Forum with AI synthesis">🔭 Scout Swarm</button>
   <button class="tab-btn" data-tab="aafl-control" data-tip="Run and configure the AAFL AI engine — set goals, pick providers, run workflows" data-tooltip="AAFL Control — run and configure the AI feedback loop, set goals, pick providers and run workflows">⚙️ AAFL Control</button>
@@ -5410,6 +5412,180 @@ window.pwccsCopyPath = function(ev){
 <!-- Auto-Save Log: access via WCCS tab → Auto-Save Log pill -->
 
 <!-- Provider Health: access via Home tab → Provider Health gauge → Show Details -->
+
+
+<!-- ===================================================
+     TAB: ANCOREG (System Doctor)
+     =================================================== -->
+<div class="tab-pane" id="tab-ancoreg" data-tab="ancoreg" style="display:none">
+<div class="pane-scroll" style="padding:14px 18px">
+  <div style="font-size:13px;font-weight:bold;color:#ccc;letter-spacing:1px;margin-bottom:14px">&#x1fa7a; ANCOREG — Autonomous Node Condition Registry</div>
+
+  <!-- Section 1: Live Diagnosis -->
+  <div class="aafl-acc" style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x1 Section 1 — Live Diagnosis</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+      <button class="btn" onclick="ancoregRunDiagnosis()" style="padding:6px 16px;font-size:12px">&#x25B6; Run Diagnosis</button>
+      <span id="ancoreg-diag-status" style="font-size:11px;color:#555">Auto-runs on tab open (cached 60s)</span>
+    </div>
+    <div id="ancoreg-diag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:6px"></div>
+  </div>
+
+  <!-- Section 2: Fix Database -->
+  <div class="aafl-acc" style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x2 Section 2 — Fix Database</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <input id="ancoreg-fix-search" type="text" placeholder="Search fixes..." onkeyup="ancoregFilterFixes()" style="flex:1;background:#111;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px"/>
+      <button class="btn" onclick="ancoregShowAddFix()" style="padding:6px 14px;font-size:12px">+ Add Fix</button>
+    </div>
+    <div id="ancoreg-fix-table" style="overflow-x:auto"></div>
+    <!-- Add Fix modal -->
+    <div id="ancoreg-add-fix-modal" style="display:none;background:#111;border:1px solid #333;border-radius:6px;padding:14px;margin-top:10px">
+      <div style="font-size:12px;color:#aaa;margin-bottom:8px;font-weight:bold">Add New Fix Entry</div>
+      <input id="ancoreg-new-problem" type="text" placeholder="Problem description..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box"/>
+      <textarea id="ancoreg-new-fix" rows="3" placeholder="Fix steps..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box;resize:vertical"></textarea>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="ancoregSubmitFix()" style="padding:6px 14px;font-size:12px">Save Fix</button>
+        <button class="btn" onclick="document.getElementById('ancoreg-add-fix-modal').style.display='none'" style="padding:6px 14px;font-size:12px;background:#1a1a1a">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Save Validator -->
+  <div class="aafl-acc" style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x3 Section 3 — Save Validator</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="btn" onclick="ancoregValidateSave()" style="padding:6px 16px;font-size:12px">&#x2713; Validate Save System</button>
+      <button class="btn" onclick="ancoregRunSave()" style="padding:6px 16px;font-size:12px">&#x1f4be; Run Save Now</button>
+      <button class="btn" onclick="ancoregPreviewDiff()" style="padding:6px 14px;font-size:12px">&#x1f4c4; Preview Diff</button>
+    </div>
+    <div id="ancoreg-save-checks" style="font-size:12px;line-height:1.8"></div>
+    <pre id="ancoreg-diff-preview" style="display:none;background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:10px;font-size:11px;color:#8bc;max-height:200px;overflow:auto;margin-top:8px"></pre>
+  </div>
+
+  <!-- Section 4: MOT Dashboard -->
+  <div class="aafl-acc" style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x4 Section 4 — MOT Dashboard</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+      <button class="btn" onclick="ancoregRunMOT()" style="padding:6px 16px;font-size:12px">&#x25B6; Run MOT</button>
+      <span id="ancoreg-mot-status" style="font-size:11px;color:#555">Click Run MOT to start</span>
+    </div>
+    <div id="ancoreg-mot-score" style="font-size:22px;font-weight:bold;color:#4a4;margin-bottom:8px"></div>
+    <div id="ancoreg-mot-grid" style="display:flex;flex-wrap:wrap;gap:3px;max-width:700px"></div>
+    <div id="ancoreg-mot-detail" style="font-size:11px;color:#888;margin-top:6px"></div>
+  </div>
+
+  <!-- Section 5: Error Timeline -->
+  <div class="aafl-acc" style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x5 Section 5 — Error Timeline</div>
+    <div id="ancoreg-timeline-wrap" style="overflow-x:auto;padding-bottom:8px">
+      <div id="ancoreg-timeline" style="display:flex;gap:10px;min-width:max-content;padding:10px 0;align-items:center"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ===================================================
+     TAB: BSTP (Brainstorm Planner)
+     =================================================== -->
+<div class="tab-pane" id="tab-bstp" data-tab="bstp" style="display:none">
+<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+  <!-- Canvas area + palette -->
+  <div style="display:flex;flex:1;overflow:hidden;border-bottom:1px solid #1a1a1a">
+
+    <!-- Element palette -->
+    <div style="width:110px;flex-shrink:0;background:#0d0d0d;border-right:1px solid #1a1a1a;padding:10px 6px;overflow-y:auto">
+      <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:center">Elements</div>
+      <div class="bstp-palette-item" data-type="TASK" draggable="true" ondragstart="bstpDragStart(event,'TASK')" title="TASK — a thing to do" style="background:#1a2a3a;border:1px solid #2a5a8a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#6af">&#x25a0; TASK</div>
+      <div class="bstp-palette-item" data-type="DECISION" draggable="true" ondragstart="bstpDragStart(event,'DECISION')" title="DECISION — a choice point" style="background:#2a2a0a;border:1px solid #7a7a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#ff8;transform:rotate(0deg)">&#x25c6; DECISION</div>
+      <div class="bstp-palette-item" data-type="MILESTONE" draggable="true" ondragstart="bstpDragStart(event,'MILESTONE')" title="MILESTONE — a checkpoint" style="background:#0a2a1a;border:1px solid #1a7a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#4d8">&#x2b22; MILESTONE</div>
+      <div class="bstp-palette-item" data-type="SPLITTER" draggable="true" ondragstart="bstpDragStart(event,'SPLITTER')" title="SPLITTER — parallel tracks" style="background:#2a1a0a;border:1px solid #7a4a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#f94">&#x25b2; SPLITTER</div>
+      <div class="bstp-palette-item" data-type="NOTE" draggable="true" ondragstart="bstpDragStart(event,'NOTE')" title="NOTE — freeform text" style="background:#1a1a1a;border:1px solid #3a3a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#888">&#x1f4dd; NOTE</div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="bstp-canvas-wrap" style="flex:1;position:relative;overflow:hidden;background:#0a0a0a"
+         ondragover="event.preventDefault()" ondrop="bstpDrop(event)">
+      <svg id="bstp-svg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1"></svg>
+      <div id="bstp-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2">
+        <div id="bstp-elements" style="position:relative;width:100%;height:100%"></div>
+      </div>
+    </div>
+
+    <!-- Properties panel -->
+    <div id="bstp-props" style="width:220px;flex-shrink:0;background:#0d0d0d;border-left:1px solid #1a1a1a;padding:12px;overflow-y:auto;display:none">
+      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Properties</div>
+      <div id="bstp-props-body" style="font-size:12px;color:#ccc"></div>
+    </div>
+  </div>
+
+  <!-- Canvas toolbar -->
+  <div style="background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:6px 10px;display:flex;gap:8px;align-items:center;flex-shrink:0">
+    <button class="btn" onclick="bstpSavePlan()" style="padding:4px 12px;font-size:11px" title="Save plan">&#x1f4be; Save</button>
+    <button class="btn" onclick="bstpLoadPlanDialog()" style="padding:4px 12px;font-size:11px" title="Load plan">&#x1f4c2; Load</button>
+    <button class="btn" onclick="bstpClearCanvas()" style="padding:4px 12px;font-size:11px;background:#2a1010" title="Clear canvas">&#x1f5d1; Clear</button>
+    <button class="btn" onclick="bstpUndo()" style="padding:4px 10px;font-size:11px" title="Undo (Ctrl+Z)">&#x21a9; Undo</button>
+    <button class="btn" onclick="bstpRedo()" style="padding:4px 10px;font-size:11px" title="Redo (Ctrl+Y)">&#x21aa; Redo</button>
+    <button class="btn" onclick="bstpZoom(1.2)" style="padding:4px 8px;font-size:13px">+</button>
+    <button class="btn" onclick="bstpZoom(0.8)" style="padding:4px 8px;font-size:13px">-</button>
+    <button class="btn" onclick="bstpFullscreen()" style="padding:4px 10px;font-size:11px" title="Fullscreen">&#x26f6;</button>
+    <span id="bstp-plan-name" style="margin-left:10px;font-size:12px;color:#888;flex:1">New Plan</span>
+    <span id="bstp-save-status" style="font-size:11px;color:#555"></span>
+  </div>
+
+  <!-- Control Panel -->
+  <div style="background:#0d0d0d;overflow-y:auto;max-height:260px;border-top:1px solid #1a1a1a;flex-shrink:0">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+
+      <!-- A: STATUS.md Toggle -->
+      <div style="padding:12px 14px;border-right:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">A — STATUS.md Write</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <label class="toggle-label" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa;cursor:pointer">
+            <input type="checkbox" id="bstp-status-toggle" onchange="bstpStatusToggleChange()" style="width:14px;height:14px"/>
+            Write to STATUS.md
+          </label>
+        </div>
+        <div id="bstp-status-preview" style="font-size:11px;color:#555;display:none;background:#050505;border:1px solid #1a1a1a;border-radius:4px;padding:6px;margin-top:4px;font-family:monospace"></div>
+        <button id="bstp-status-undo" class="btn" onclick="bstpUndoStatusWrite()" style="display:none;margin-top:6px;padding:4px 12px;font-size:11px">&#x21a9; Undo Last Write</button>
+      </div>
+
+      <!-- B: Instruction Pad -->
+      <div style="padding:12px 14px;border-bottom:1px solid #1a1a1a">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">B — Instruction Pad</div>
+        <textarea id="bstp-instructions" rows="4" placeholder="Write project instructions / narrative here. These get injected into AAFL/Scout context..." style="width:100%;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;color:#ccc;padding:7px 10px;font:inherit;font-size:12px;box-sizing:border-box;resize:none"></textarea>
+        <button class="btn" onclick="bstpSaveInstructions()" style="margin-top:4px;padding:4px 12px;font-size:11px">Save Instructions</button>
+        <span id="bstp-instr-status" style="font-size:11px;color:#555;margin-left:8px"></span>
+      </div>
+
+      <!-- C: Action Launcher -->
+      <div style="padding:12px 14px;border-right:1px solid #1a1a1a">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">C — Action Launcher</div>
+        <div style="font-size:12px;color:#666;margin-bottom:8px">Right-click a TASK element on the canvas to send it to:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button class="btn" onclick="bstpLaunchSelected('goal')" style="padding:4px 12px;font-size:11px" title="Send selected task to AAFL goal.txt">&#x25B6; AAFL</button>
+          <button class="btn" onclick="bstpLaunchSelected('kanban')" style="padding:4px 12px;font-size:11px" title="Add selected task to Kanban todo">&#x1f4cb; Kanban</button>
+          <button class="btn" onclick="bstpLaunchSelected('clac')" style="padding:4px 12px;font-size:11px" title="Generate CLAC block for selected task">&#x1f4bb; CLAC</button>
+        </div>
+        <div id="bstp-action-result" style="font-size:11px;color:#4a4;margin-top:6px"></div>
+      </div>
+
+      <!-- D: Plan History -->
+      <div style="padding:12px 14px">
+        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">D — Plan History</div>
+        <button class="btn" onclick="bstpLoadHistory()" style="padding:4px 12px;font-size:11px;margin-bottom:6px">&#x1f4dc; Show Saved Plans</button>
+        <div id="bstp-history-list" style="font-size:11px;color:#666;max-height:80px;overflow-y:auto"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
 
 <!-- ── OCB RUNNER TAB ── -->
 
@@ -22295,6 +22471,56 @@ function mccEmergencyReset() {
 }
 </script>
 
+<script>
+// ── ANCOREG + BSTP: auto-generated JS stubs (full logic below) ─────────────
+function ancoregRunDiagnosis(force){var now=Date.now();if(!force&&window._ancoregCache&&(now-window._ancoregCacheTime)<60000){ancoregRenderDiagnosis(window._ancoregCache);return;}var st=document.getElementById('ancoreg-diag-status');if(st)st.textContent='Running diagnosis...';fetch('/api/ancoreg/diagnosis').then(function(r){return r.json();}).then(function(d){window._ancoregCache=d;window._ancoregCacheTime=Date.now();if(st)st.textContent='Done: '+new Date().toLocaleTimeString();ancoregRenderDiagnosis(d);}).catch(function(e){if(st)st.textContent='Error: '+e.message;});}
+function ancoregRenderDiagnosis(d){var g=document.getElementById('ancoreg-diag-grid');if(!g)return;var health=d.health||[];var det=d.detective||[];var html='';health.slice(0,40).forEach(function(h){var c=h.status==='PASS'||h.status==='healthy'?'#2d8':h.status==='AMBER'?'#fa0':'#f44';html+='<div style="background:#0d0d0d;border:1px solid '+c+'44;border-radius:4px;padding:6px 8px;font-size:11px"><span style="color:'+c+'">●</span> <span style="color:#ccc">'+esc(h.id||'')+'</span><div style="color:#555;font-size:10px">'+esc(h.detail||'')+'</div></div>';});if(!health.length){det.slice(0,20).forEach(function(f){html+='<div style="background:#111;border:1px solid #333;border-radius:4px;padding:6px 8px;font-size:11px;color:#aaa">['+esc(f.severity||'INFO')+'] '+esc(f.description||'')+'</div>';});}if(!html)html='<div style="color:#555;font-size:12px">No data yet. Run MOT first.</div>';g.innerHTML=html;}
+function ancoregLoadFixes(){fetch('/api/ancoreg/fixes').then(function(r){return r.json();}).then(function(d){var w=document.getElementById('ancoreg-fix-table');if(!w)return;var s=d.solutions||[];if(!s.length){w.innerHTML='<div style="color:#555;font-size:12px;padding:8px">No fixes yet.</div>';return;}var html='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="color:#555;border-bottom:1px solid #222"><th style="padding:4px 8px;text-align:left">Problem</th><th style="padding:4px 8px;text-align:left">Fix</th><th style="padding:4px 8px">Date</th><th style="padding:4px 8px">Used</th></tr>';s.forEach(function(sol,i){html+='<tr class="ancoreg-fix-row" onclick="ancoregToggleFix('+i+')" style="cursor:pointer;border-bottom:1px solid #111" data-problem="'+esc((sol.name||'').toLowerCase())+'"><td style="padding:4px 8px;color:#ccc">'+esc((sol.name||'').substring(0,50))+'</td><td style="padding:4px 8px;color:#888">'+esc(((sol.fix_steps||[])[0]||'').substring(0,40))+'</td><td style="padding:4px 8px;color:#555;text-align:center">'+esc(sol.date_found||'')+'</td><td style="padding:4px 8px;color:#555;text-align:center">'+(sol.times_used||0)+'</td></tr><tr id="ancoreg-fd-'+i+'" style="display:none"><td colspan="4" style="padding:6px 12px;background:#050505;color:#888;font-size:11px">'+esc((sol.fix_steps||[]).join(' | '))+(sol.notes?'<br>'+esc(sol.notes):'')+'</td></tr>';});html+='</table>';w.innerHTML=html;});}
+function ancoregToggleFix(i){var el=document.getElementById('ancoreg-fd-'+i);if(el)el.style.display=el.style.display==='none'?'table-row':'none';}
+function ancoregFilterFixes(){var q=(document.getElementById('ancoreg-fix-search').value||'').toLowerCase();document.querySelectorAll('.ancoreg-fix-row').forEach(function(r){r.style.display=(r.dataset.problem||'').includes(q)?'':'none';});}
+function ancoregShowAddFix(){var m=document.getElementById('ancoreg-add-fix-modal');if(m)m.style.display=m.style.display==='none'?'block':'none';}
+function ancoregSubmitFix(){var p=(document.getElementById('ancoreg-new-problem').value||'').trim();var f=(document.getElementById('ancoreg-new-fix').value||'').trim();if(!p||!f){alert('Problem and fix required');return;}fetch('/api/ancoreg/add-fix',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({problem:p,fix:f})}).then(function(r){return r.json();}).then(function(d){if(d.ok){document.getElementById('ancoreg-new-problem').value='';document.getElementById('ancoreg-new-fix').value='';document.getElementById('ancoreg-add-fix-modal').style.display='none';ancoregLoadFixes();}else{alert('Error: '+d.error);}});}
+function ancoregValidateSave(){var el=document.getElementById('ancoreg-save-checks');if(el)el.innerHTML='<span style="color:#555">Validating...</span>';fetch('/api/ancoreg/validate-save').then(function(r){return r.json();}).then(function(d){var c=d.checks||{};var html='';Object.values(c).forEach(function(v){var ic=v.status==='PASS'?'<span style="color:#2d8">✓</span>':v.status==='AMBER'?'<span style="color:#fa0">⚠</span>':'<span style="color:#f44">✗</span>';html+='<div style="display:flex;gap:8px;padding:3px 0">'+ic+'<span style="color:#ccc">'+esc(v.check||'')+'</span><span style="color:#666"> — '+esc(v.detail||'')+'</span></div>';});html+='<div style="margin-top:6px;font-size:11px;color:#555">'+(d.pass_count||0)+'/'+(d.total||0)+' passed</div>';if(el)el.innerHTML=html;}).catch(function(e){if(el)el.innerHTML='<span style="color:#f44">Error: '+esc(e.message)+'</span>';});}
+function ancoregRunSave(){var el=document.getElementById('ancoreg-save-checks');if(el)el.innerHTML='<span style="color:#555">Running save...</span>';fetch('/api/ancoreg/run-save',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(r){return r.json();}).then(function(d){if(el)el.innerHTML=d.ok?'<span style="color:#2d8">Save completed</span>':'<span style="color:#f44">Failed: '+esc(d.error||d.stderr||'')+'</span>';});}
+function ancoregPreviewDiff(){var pre=document.getElementById('ancoreg-diff-preview');if(!pre)return;if(pre.style.display==='none'){pre.style.display='block';pre.textContent='Loading...';fetch('/wccs/versions').then(function(r){return r.json();}).then(function(d){pre.textContent=JSON.stringify(d,null,2).substring(0,2000);}).catch(function(e){pre.textContent='Not available: '+e.message;});}else{pre.style.display='none';}}
+function ancoregRunMOT(){var st=document.getElementById('ancoreg-mot-status');var sc=document.getElementById('ancoreg-mot-score');var gr=document.getElementById('ancoreg-mot-grid');if(st)st.textContent='Running MOT...';if(sc)sc.textContent='';if(gr)gr.innerHTML='<span style="color:#555;font-size:12px">Running...</span>';fetch('/api/ancoreg/mot').then(function(r){return r.json();}).then(function(d){var res=d.results||[];var p=d.passed||0;var t=d.total||res.length;if(sc)sc.textContent=p+'/'+t;if(st)st.textContent='Done '+new Date().toLocaleTimeString()+' — '+(p===t?'ALL CLEAR':(t-p)+' FAILED');if(gr){window._ancoregMOT=res;gr.innerHTML=res.map(function(r,i){var c=r.status==='PASS'?'#2a5a2a':'#5a2a2a';var b=r.status==='PASS'?'#2d8':'#f44';return'<div title="'+esc(r.name+': '+(r.detail||''))+'" onclick="ancoregShowMOTDetail('+i+')" style="width:14px;height:14px;background:'+c+';border:1px solid '+b+';border-radius:2px;cursor:pointer"></div>';}).join('')||'<span style="color:#555">No results</span>';}}).catch(function(e){if(st)st.textContent='Error: '+e.message;});}
+function ancoregShowMOTDetail(i){var r=(window._ancoregMOT||[])[i];if(!r)return;var el=document.getElementById('ancoreg-mot-detail');if(el)el.textContent=r.name+' ['+r.group+'] — '+r.status+': '+(r.detail||'OK');}
+function ancoregLoadTimeline(){fetch('/api/ancoreg/error-timeline').then(function(r){return r.json();}).then(function(d){var tl=document.getElementById('ancoreg-timeline');if(!tl)return;var items=d.timeline||[];if(!items.length){tl.innerHTML='<span style="color:#555;font-size:12px">No error history yet</span>';return;}tl.innerHTML=items.slice(0,30).map(function(item){var used=item.times_used||0;var col=used>0?'#1a3a1a':'#3a1a1a';var brd=used>0?'#2d8':'#f44';return'<div onclick="alert(\''+esc(item.label)+' | Date: '+(item.date_found||'?')+' | Used: '+used+'\')" title="'+esc(item.label)+'" style="background:'+col+';border:1px solid '+brd+';border-radius:4px;padding:6px 8px;min-width:80px;cursor:pointer;font-size:10px;color:#ccc;text-align:center"><div style="width:8px;height:8px;background:'+brd+';border-radius:50%;margin:0 auto 3px"></div>'+esc(item.label.substring(0,25))+'<div style="color:#555;font-size:9px">'+(item.date_found||'')+'</div></div><div style="color:#333">→</div>';}).join('');});}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-tab="ancoreg"]');if(b){setTimeout(function(){ancoregRunDiagnosis();ancoregLoadFixes();ancoregLoadTimeline();},200);}});
+
+// BSTP
+var _bstpElements=[],_bstpArrows=[],_bstpSelected=null,_bstpUndoStack=[],_bstpRedoStack=[],_bstpZoom=1.0,_bstpConnecting=null;
+function bstpDragStart(ev,t){ev.dataTransfer.setData('bstp-type',t);}
+function bstpDrop(ev){ev.preventDefault();var t=ev.dataTransfer.getData('bstp-type');if(!t)return;var w=document.getElementById('bstp-canvas-wrap');var r=w.getBoundingClientRect();var x=(ev.clientX-r.left)/_bstpZoom,y=(ev.clientY-r.top)/_bstpZoom;var id='el_'+Date.now();_bstpElements.push({id:id,type:t,x:x,y:y,title:t+' '+(_bstpElements.length+1),description:'',status:'planned',assigned_to:'Manual'});_bstpPush();bstpRender();}
+function bstpRender(){var c=document.getElementById('bstp-elements');if(!c)return;c.innerHTML='';_bstpElements.forEach(function(el){var d=document.createElement('div');d.id='bstp-el-'+el.id;d.dataset.elid=el.id;var styles={TASK:'background:#1a2a3a;border:2px solid #2a6aaa;color:#6af;',DECISION:'background:#2a2a0a;border:2px solid #8a8a1a;color:#ff8;',MILESTONE:'background:#0a2a1a;border:2px solid #1a8a3a;color:#4d8;',SPLITTER:'background:#2a1a0a;border:2px solid #8a4a1a;color:#f94;',NOTE:'background:#1a1a1a;border:1px dashed #3a3a3a;color:#888;'};d.style.cssText='position:absolute;left:'+el.x+'px;top:'+el.y+'px;min-width:100px;cursor:move;user-select:none;z-index:10;border-radius:4px;padding:8px 10px;font-size:12px;'+(styles[el.type]||styles.NOTE)+(_bstpSelected===el.id?'outline:2px solid #fa0;':'');var icons={TASK:'▣',DECISION:'◆',MILESTONE:'⬡',SPLITTER:'▲',NOTE:'📝'};d.innerHTML='<div style="font-size:10px;opacity:0.6;margin-bottom:2px">'+(icons[el.type]||'▣')+' '+el.type+'</div><div ondblclick="bstpInlineEdit(\''+el.id+'\')" style="font-weight:bold">'+esc(el.title)+'</div>'+(el.status!=='planned'?'<div style="font-size:10px;opacity:0.7">● '+el.status+'</div>':'')+'<div style="display:flex;gap:4px;margin-top:4px"><div onclick="bstpStartConnect(\''+el.id+'\',event)" style="width:8px;height:8px;background:#555;border-radius:50%;cursor:crosshair" title="Connect"></div></div>';d.addEventListener('mousedown',function(e){bstpStartDrag(el.id,e);});d.addEventListener('contextmenu',function(e){e.preventDefault();bstpCtxMenu(el.id,e);});d.addEventListener('click',function(e){e.stopPropagation();bstpSelect(el.id);});c.appendChild(d);});bstpRenderSVG();}
+function bstpRenderSVG(){var svg=document.getElementById('bstp-svg');if(!svg)return;var h='<defs><marker id="arr" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#555"/></marker></defs>';_bstpArrows.forEach(function(a){var f=_bstpElements.find(function(e){return e.id===a.from;});var t=_bstpElements.find(function(e){return e.id===a.to;});if(!f||!t)return;var da=a.type==='OR'?'5,3':a.type==='PARALLEL'?'2,2':'none';h+='<line x1="'+(f.x+55)+'" y1="'+(f.y+20)+'" x2="'+(t.x+55)+'" y2="'+(t.y+20)+'" stroke="#555" stroke-width="2" stroke-dasharray="'+da+'" marker-end="url(#arr)"/>';if(a.label)h+='<text x="'+((f.x+t.x)/2+55)+'" y="'+((f.y+t.y)/2+20-4)+'" fill="#888" font-size="10">'+esc(a.label)+'</text>';});svg.innerHTML=h;}
+function bstpSelect(id){_bstpSelected=id;bstpRender();bstpShowProps(id);}
+function bstpShowProps(id){var el=_bstpElements.find(function(e){return e.id===id;});if(!el)return;var panel=document.getElementById('bstp-props');var body=document.getElementById('bstp-props-body');if(!panel||!body)return;panel.style.display='block';body.innerHTML='<label style="display:block;margin-bottom:6px">Title<br><input type="text" value="'+esc(el.title)+'" onchange="bstpUpdateProp(\''+el.id+'\',\'title\',this.value)" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:3px;color:#ccc;padding:4px 7px;font:inherit;font-size:12px;box-sizing:border-box"/></label>'+'<label style="display:block;margin-bottom:6px">Status<br><select onchange="bstpUpdateProp(\''+el.id+'\',\'status\',this.value)" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:3px;color:#ccc;padding:4px 7px;font:inherit;font-size:12px"><option'+(el.status==='planned'?' selected':'')+'>planned</option><option'+(el.status==='active'?' selected':'')+'>active</option><option'+(el.status==='done'?' selected':'')+'>done</option></select></label>'+'<label style="display:block;margin-bottom:6px">Assigned<br><select onchange="bstpUpdateProp(\''+el.id+'\',\'assigned_to\',this.value)" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:3px;color:#ccc;padding:4px 7px;font:inherit;font-size:12px"><option'+(el.assigned_to==='CLAC'?' selected':'')+'>CLAC</option><option'+(el.assigned_to==='AAFL'?' selected':'')+'>AAFL</option><option'+(el.assigned_to==='Manual'?' selected':'')+'>Manual</option><option'+(el.assigned_to==='Scout'?' selected':'')+'>Scout</option></select></label>'+'<button class="btn" onclick="bstpDeleteElement(\''+el.id+'\')" style="width:100%;padding:5px;font-size:11px;background:#2a1010;margin-top:4px">Delete</button>';}
+function bstpUpdateProp(id,k,v){var el=_bstpElements.find(function(e){return e.id===id;});if(el){el[k]=v;bstpRender();}}
+function bstpDeleteElement(id){_bstpElements=_bstpElements.filter(function(e){return e.id!==id;});_bstpArrows=_bstpArrows.filter(function(a){return a.from!==id&&a.to!==id;});_bstpSelected=null;var p=document.getElementById('bstp-props');if(p)p.style.display='none';_bstpPush();bstpRender();}
+function bstpInlineEdit(id){var el=_bstpElements.find(function(e){return e.id===id;});if(!el)return;var d=document.getElementById('bstp-el-'+id);if(!d)return;var inp=document.createElement('input');inp.type='text';inp.value=el.title;inp.style.cssText='background:#000;border:1px solid #555;color:#ccc;font:inherit;font-size:12px;font-weight:bold;width:100%';inp.onblur=function(){bstpUpdateProp(id,'title',inp.value);};inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();};var td=d.querySelector('div[ondblclick]');if(td){td.innerHTML='';td.appendChild(inp);inp.focus();}}
+function bstpStartDrag(id,ev){ev.stopPropagation();var el=_bstpElements.find(function(e){return e.id===id;});if(!el)return;var sx=ev.clientX,sy=ev.clientY,ox=el.x,oy=el.y;function mv(e){el.x=ox+(e.clientX-sx)/_bstpZoom;el.y=oy+(e.clientY-sy)/_bstpZoom;var d=document.getElementById('bstp-el-'+id);if(d){d.style.left=el.x+'px';d.style.top=el.y+'px';}bstpRenderSVG();}function up(){document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);_bstpPush();}document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);}
+function bstpStartConnect(fromId,ev){ev.stopPropagation();_bstpConnecting=fromId;var w=document.getElementById('bstp-canvas-wrap');if(w)w.style.cursor='crosshair';}
+document.addEventListener('click',function(e){if(_bstpConnecting){var t=e.target.closest('[data-elid]');if(t&&t.dataset.elid!==_bstpConnecting){_bstpArrows.push({id:'arr_'+Date.now(),from:_bstpConnecting,to:t.dataset.elid,type:'THEN',label:''});_bstpPush();bstpRenderSVG();}_bstpConnecting=null;var w=document.getElementById('bstp-canvas-wrap');if(w)w.style.cursor='';}});
+function bstpCtxMenu(id,ev){var m=document.getElementById('bstp-ctx');if(!m){m=document.createElement('div');m.id='bstp-ctx';m.style.cssText='position:fixed;background:#111;border:1px solid #333;border-radius:4px;padding:4px 0;z-index:9999;font-size:12px;min-width:140px';document.body.appendChild(m);document.addEventListener('click',function(){m.style.display='none';});}m.innerHTML='<div onclick="bstpLaunchEl(\''+id+'\',\'goal\')" style="padding:6px 14px;cursor:pointer;color:#ccc">▶ Send to AAFL</div><div onclick="bstpLaunchEl(\''+id+'\',\'kanban\')" style="padding:6px 14px;cursor:pointer;color:#ccc">📋 Send to Kanban</div><div onclick="bstpLaunchEl(\''+id+'\',\'clac\')" style="padding:6px 14px;cursor:pointer;color:#ccc">💻 Send to CLAC</div><hr style="border:none;border-top:1px solid #222;margin:4px 0"/><div onclick="bstpDeleteElement(\''+id+'\')" style="padding:6px 14px;cursor:pointer;color:#f44">Delete</div>';m.style.display='block';m.style.left=ev.clientX+'px';m.style.top=ev.clientY+'px';}
+function bstpLaunchEl(id,target){var el=_bstpElements.find(function(e){return e.id===id;});if(el)bstpSendAction(target,el);}
+function bstpLaunchSelected(target){if(!_bstpSelected){var r=document.getElementById('bstp-action-result');if(r)r.textContent='Select an element first';return;}var el=_bstpElements.find(function(e){return e.id===_bstpSelected;});if(el)bstpSendAction(target,el);}
+function bstpSendAction(target,el){fetch('/api/bstp/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({target:target,task:el})}).then(function(r){return r.json();}).then(function(d){var r=document.getElementById('bstp-action-result');if(r){r.textContent=d.ok?'Sent to '+target:(d.error||'Error');r.style.color=d.ok?'#2d8':'#f44';setTimeout(function(){r.textContent='';},4000);}});}
+function _bstpPush(){_bstpUndoStack.push({elements:JSON.parse(JSON.stringify(_bstpElements)),arrows:JSON.parse(JSON.stringify(_bstpArrows))});if(_bstpUndoStack.length>50)_bstpUndoStack.shift();_bstpRedoStack=[];}
+function bstpUndo(){if(!_bstpUndoStack.length)return;_bstpRedoStack.push({elements:JSON.parse(JSON.stringify(_bstpElements)),arrows:JSON.parse(JSON.stringify(_bstpArrows))});var s=_bstpUndoStack.pop();_bstpElements=s.elements;_bstpArrows=s.arrows;bstpRender();}
+function bstpRedo(){if(!_bstpRedoStack.length)return;_bstpUndoStack.push({elements:JSON.parse(JSON.stringify(_bstpElements)),arrows:JSON.parse(JSON.stringify(_bstpArrows))});var s=_bstpRedoStack.pop();_bstpElements=s.elements;_bstpArrows=s.arrows;bstpRender();}
+function bstpClearCanvas(){if(!confirm('Clear all elements?'))return;_bstpElements=[];_bstpArrows=[];_bstpSelected=null;_bstpPush();bstpRender();var p=document.getElementById('bstp-props');if(p)p.style.display='none';}
+function bstpZoom(f){_bstpZoom=Math.min(3,Math.max(0.3,_bstpZoom*f));var c=document.getElementById('bstp-elements');if(c)c.style.transform='scale('+_bstpZoom+')';var s=document.getElementById('bstp-svg');if(s)s.style.transform='scale('+_bstpZoom+')';}
+function bstpFullscreen(){var w=document.getElementById('bstp-canvas-wrap');if(!w)return;document.fullscreenElement?document.exitFullscreen&&document.exitFullscreen():w.requestFullscreen&&w.requestFullscreen();}
+function bstpSavePlan(){var n=document.getElementById('bstp-plan-name');var nm=n?n.textContent:'Plan';fetch('/api/bstp/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:nm,elements:_bstpElements,arrows:_bstpArrows})}).then(function(r){return r.json();}).then(function(d){var st=document.getElementById('bstp-save-status');if(st){st.textContent=d.ok?'Saved v'+d.version:'Error: '+d.error;st.style.color=d.ok?'#2d8':'#f44';}});}
+function bstpLoadPlanDialog(){fetch('/api/bstp/plans').then(function(r){return r.json();}).then(function(d){var h=document.getElementById('bstp-history-list');if(!h)return;var s=d.snapshots||[];h.innerHTML=s.length?s.map(function(p){return'<div onclick="bstpLoadPlan(\''+esc(p.file)+'\''+')" style="padding:3px 0;cursor:pointer;color:#8af;font-size:11px">'+esc(p.name||'Plan')+' — '+esc(p.saved_at||'')+' ('+((p.element_count||0))+' els)</div>';}).join(''):'<span style="color:#555">No saved plans</span>';});}
+function bstpLoadPlan(f){fetch('/api/bstp/plan/'+encodeURIComponent(f)).then(function(r){return r.json();}).then(function(d){if(d.error){alert(d.error);return;}_bstpElements=d.elements||[];_bstpArrows=d.arrows||[];_bstpPush();bstpRender();var n=document.getElementById('bstp-plan-name');if(n)n.textContent=d.name||'Loaded';;});}
+function bstpLoadHistory(){bstpLoadPlanDialog();}
+function bstpSaveInstructions(){var c=(document.getElementById('bstp-instructions')||{}).value||'';fetch('/api/bstp/instructions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:c})}).then(function(r){return r.json();}).then(function(d){var st=document.getElementById('bstp-instr-status');if(st){st.textContent=d.ok?'Saved':'Error: '+d.error;st.style.color=d.ok?'#2d8':'#f44';setTimeout(function(){st.textContent='';},3000);}});}
+function bstpStatusToggleChange(){var on=document.getElementById('bstp-status-toggle').checked;var p=document.getElementById('bstp-status-preview');if(p)p.style.display=on?'block':'none';}
+function bstpUndoStatusWrite(){alert('Restore from STATUS.md.bak in project root');}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-tab="bstp"]');if(b){setTimeout(function(){fetch('/api/bstp/current').then(function(r){return r.json();}).then(function(d){if(d.elements&&d.elements.length){_bstpElements=d.elements;_bstpArrows=d.arrows||[];_bstpPush();bstpRender();var n=document.getElementById('bstp-plan-name');if(n)n.textContent=d.name||'Current Plan';}});fetch('/api/bstp/instructions').then(function(r){return r.json();}).then(function(d){var t=document.getElementById('bstp-instructions');if(t&&d.content)t.value=d.content;});},200);}});
+</script>
 <!-- MOT stubs: missing function declarations -->
 <script>
 function Summary() {}

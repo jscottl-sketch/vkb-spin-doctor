@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n---\n\n## 3. Build the SITL binary\n\nPX4 provides a convenience script `make` that builds for the selected target. The X‑Plane backend is selectable through the `sim_xplane` target.\n\n", "goal": "not json at all }{", "timestamp": "2026-06-02_08-09"}
