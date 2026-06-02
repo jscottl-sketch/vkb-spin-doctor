@@ -1105,6 +1105,7 @@ body.theme-light .tip-box{background:rgba(255,255,255,0.99);color:rgba(0,0,0,0.9
 .hs-tab-btn.active{background:#1a2a3a;border-color:#4af;color:#4af}
 .hs-pane{display:none}
 .hs-pane.active{display:block;padding-top:60px}
+.acca-info-box{background:#111;border:.5px solid #2a2a2a;border-radius:6px;padding:4px 10px;font-size:11px;color:#666;margin-bottom:8px;display:inline-block}
 
 /* Work Checker panels */
 .wc-panel{background:#111;border:1px solid #1a1a1a;border-radius:6px;margin-bottom:10px;overflow:visible}
@@ -1862,8 +1863,6 @@ body{padding-bottom:28px}
 <div class="tab-bar" id="main-tab-bar">
   <button class="btn tab-scroll-arrow" id="tab-scroll-left" onclick="tabBarScroll(-1)" style="display:none;padding:0 8px;font-size:14px;border-radius:0;border:none;border-right:1px solid #222;background:#161616;color:#888;flex-shrink:0">◀</button>
   <button class="tab-btn active" data-tab="wccs" data-tip="HITSAV — History, Ideas, Save & Vehicle history" data-tooltip="HITSAV — save sessions, capture ideas, track vehicle history, manage checklists and CLAC sessions">💾 HITSAV</button>
-  <button class="tab-btn" data-tab="ancoreg" data-tip="ANCOREG — System doctor — diagnosis, fixes, save validation, error tracking" data-tooltip="ANCOREG (Autonomous Node Condition Registry) — system doctor: live diagnosis, fix database, save validator, MOT dashboard, error timeline">🩺 ANCOREG</button>
-  <button class="tab-btn" data-tab="bstp" data-tip="BSTP — Brainstorm Planner — visual workflow planning, rules, instructions" data-tooltip="BSTP (Brainstorm Planner) — drag-and-drop canvas for planning tasks, decisions and milestones; send to AAFL, Kanban or CLAC">🧠 BSTP</button>
   <button class="tab-btn" data-tab="ocb-runner" data-tip="OCB Runner — paste an OCB build block and run it inside MCC" data-tooltip="OCB Runner — paste an OCB build block and run it safely inside MCC with pre-flight checks">⚙️ OCB Runner</button>
   <button class="tab-btn" data-tab="scout" data-tip="Scout Swarm — enter a question and Scout searches multiple sources in parallel with AI synthesis" data-tooltip="Scout Swarm — run web research across 5 parallel strategies: DDG, Reddit, GitHub, YouTube, Forum with AI synthesis">🔭 Scout Swarm</button>
   <button class="tab-btn" data-tab="aafl-control" data-tip="Run and configure the AAFL AI engine — set goals, pick providers, run workflows" data-tooltip="AAFL Control — run and configure the AI feedback loop, set goals, pick providers and run workflows">⚙️ AAFL Control</button>
@@ -2130,7 +2129,8 @@ body{padding-bottom:28px}
     </div>
 
     <!-- CLACHR Relay — Task Dispatch (OCB-J Task 3) -->
-    <div class="wccs-section-title" style="margin-top:18px">CLACHR Relay — Task Dispatch</div>
+    <div class="acca-info-box" style="margin-top:14px;margin-bottom:4px">CLACHR = CLACH Relay — Claude Chat dispatches work to free AI via MCC</div>
+    <div class="wccs-section-title" style="margin-top:4px">CLACHR Relay — Task Dispatch</div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px;margin-top:-4px">Paste tasks from Claude Chat. Each line = one task. Free AI labourers do the work.</div>
     <div style="font-size:11px;color:#4af;margin-bottom:8px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:4px;padding:6px 10px">
       <b style="color:#6f6">Step 1</b> — Paste tasks below (one per line) &nbsp;→&nbsp;
@@ -2181,6 +2181,8 @@ body{padding-bottom:28px}
      ============================================================ -->
 <div class="tab-pane active" id="tab-wccs" style="background:#0d0d0d">
   <div class="pane-scroll" style="position:relative">
+    <div class="acca-info-box" style="margin-top:10px;margin-bottom:4px">HISAV = Handover, Ideas, Screenshots, Archive, Vehicle history</div>
+    <div class="acca-info-box" style="margin-bottom:8px">WCCS = Write Claude Code Save — end-of-session save to disk</div>
 
     <!-- ═══ 3-STEP SAVE FLOW ═══ -->
     <div class="hitsav-sticky-tb" id="hitsav-sticky-tb">
@@ -2362,6 +2364,7 @@ body{padding-bottom:28px}
 
       <!-- STORM Feed panel (live scroll of all detective/WCCS entries) -->
       <div class="storm-feed-wrap" id="det-storm-panel">
+        <div class="acca-info-box" style="margin-bottom:4px">STORM = deduplication engine — removes duplicate entries across project files</div>
         <div class="storm-feed-title">
           ⚡ STORM Feed
           <span style="font-size:10px;font-weight:normal;color:#445;margin-left:auto">Auto-refresh 30s</span>
@@ -2670,7 +2673,8 @@ body{padding-bottom:28px}
     </div>
 
     <!-- ── CHIEF DETECTIVE + MCCM ── -->
-    <div class="wccs-section-title" style="margin-top:24px">🔍 Chief Detective + MCCM</div>
+    <div class="acca-info-box" style="margin-top:14px;margin-bottom:4px">MCCM = Mission Control Centre Manager — auto-updates missions from SESOMs</div>
+    <div class="wccs-section-title" style="margin-top:4px">🔍 Chief Detective + MCCM</div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:10px">Scan all project sources for gaps, cross-reference dates, and propose STATUS.md updates</div>
 
     <!-- Row 1: Action buttons -->
@@ -2754,6 +2758,7 @@ body{padding-bottom:28px}
               <button class="htl-filter-btn" data-zoom="compact" onclick="htlZoom(this,'compact')">Compact</button>
               <button class="htl-filter-btn" data-zoom="expanded" onclick="htlZoom(this,'expanded')">Expanded</button>
               <button class="htl-filter-btn" onclick="htlJumpToToday()" style="background:#1a2a1a;color:#6f6;border-color:#2a4a2a">↓ Today</button>
+              <button class="htl-filter-btn" id="grrice-toggle-btn" onclick="griceToggle()" title="GRRICE = living changelog — show build/fix/decision dots on timeline" style="background:#1a1a2a;color:#aaf;border-color:#2a2a5a">📋 GRRICE</button>
             </div>
 
             <!-- Timeline wrapper: position:relative so popup positions absolutely within it -->
@@ -3028,6 +3033,7 @@ body{padding-bottom:28px}
         </div>
         <div class="hitsav-body" id="hitsav-body-s10">
           <div class="hitsav-body-inner">
+            <div class="acca-info-box" style="margin-bottom:6px">WENTO = Whatever Else Not Thought Of — capture any idea instantly</div>
             <div style="font-size:11px;color:#556;margin-bottom:8px">Whatever Else Not Thought Of — capture anything that doesn't fit elsewhere.</div>
             <div style="display:flex;gap:6px;margin-bottom:10px">
               <textarea id="wento-input" class="hitsav-idea-ta" style="height:54px;flex:1" placeholder="Note anything here — half-formed, tangential, future idea…" spellcheck="false"></textarea>
@@ -5414,177 +5420,8 @@ window.pwccsCopyPath = function(ev){
 <!-- Provider Health: access via Home tab → Provider Health gauge → Show Details -->
 
 
-<!-- ===================================================
-     TAB: ANCOREG (System Doctor)
-     =================================================== -->
-<div class="tab-pane" id="tab-ancoreg" data-tab="ancoreg" style="display:none">
-<div class="pane-scroll" style="padding:14px 18px">
-  <div style="font-size:13px;font-weight:bold;color:#ccc;letter-spacing:1px;margin-bottom:14px">&#x1fa7a; ANCOREG — Autonomous Node Condition Registry</div>
-
-  <!-- Section 1: Live Diagnosis -->
-  <div class="aafl-acc" style="margin-bottom:14px">
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x1 Section 1 — Live Diagnosis</div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
-      <button class="btn" onclick="ancoregRunDiagnosis()" style="padding:6px 16px;font-size:12px">&#x25B6; Run Diagnosis</button>
-      <span id="ancoreg-diag-status" style="font-size:11px;color:#555">Auto-runs on tab open (cached 60s)</span>
-    </div>
-    <div id="ancoreg-diag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:6px"></div>
-  </div>
-
-  <!-- Section 2: Fix Database -->
-  <div class="aafl-acc" style="margin-bottom:14px">
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x2 Section 2 — Fix Database</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <input id="ancoreg-fix-search" type="text" placeholder="Search fixes..." onkeyup="ancoregFilterFixes()" style="flex:1;background:#111;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px"/>
-      <button class="btn" onclick="ancoregShowAddFix()" style="padding:6px 14px;font-size:12px">+ Add Fix</button>
-    </div>
-    <div id="ancoreg-fix-table" style="overflow-x:auto"></div>
-    <!-- Add Fix modal -->
-    <div id="ancoreg-add-fix-modal" style="display:none;background:#111;border:1px solid #333;border-radius:6px;padding:14px;margin-top:10px">
-      <div style="font-size:12px;color:#aaa;margin-bottom:8px;font-weight:bold">Add New Fix Entry</div>
-      <input id="ancoreg-new-problem" type="text" placeholder="Problem description..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box"/>
-      <textarea id="ancoreg-new-fix" rows="3" placeholder="Fix steps..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box;resize:vertical"></textarea>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="ancoregSubmitFix()" style="padding:6px 14px;font-size:12px">Save Fix</button>
-        <button class="btn" onclick="document.getElementById('ancoreg-add-fix-modal').style.display='none'" style="padding:6px 14px;font-size:12px;background:#1a1a1a">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 3: Save Validator -->
-  <div class="aafl-acc" style="margin-bottom:14px">
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x3 Section 3 — Save Validator</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-      <button class="btn" onclick="ancoregValidateSave()" style="padding:6px 16px;font-size:12px">&#x2713; Validate Save System</button>
-      <button class="btn" onclick="ancoregRunSave()" style="padding:6px 16px;font-size:12px">&#x1f4be; Run Save Now</button>
-      <button class="btn" onclick="ancoregPreviewDiff()" style="padding:6px 14px;font-size:12px">&#x1f4c4; Preview Diff</button>
-    </div>
-    <div id="ancoreg-save-checks" style="font-size:12px;line-height:1.8"></div>
-    <pre id="ancoreg-diff-preview" style="display:none;background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:10px;font-size:11px;color:#8bc;max-height:200px;overflow:auto;margin-top:8px"></pre>
-  </div>
-
-  <!-- Section 4: MOT Dashboard -->
-  <div class="aafl-acc" style="margin-bottom:14px">
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x4 Section 4 — MOT Dashboard</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
-      <button class="btn" onclick="ancoregRunMOT()" style="padding:6px 16px;font-size:12px">&#x25B6; Run MOT</button>
-      <span id="ancoreg-mot-status" style="font-size:11px;color:#555">Click Run MOT to start</span>
-    </div>
-    <div id="ancoreg-mot-score" style="font-size:22px;font-weight:bold;color:#4a4;margin-bottom:8px"></div>
-    <div id="ancoreg-mot-grid" style="display:flex;flex-wrap:wrap;gap:3px;max-width:700px"></div>
-    <div id="ancoreg-mot-detail" style="font-size:11px;color:#888;margin-top:6px"></div>
-  </div>
-
-  <!-- Section 5: Error Timeline -->
-  <div class="aafl-acc" style="margin-bottom:14px">
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">&#x5 Section 5 — Error Timeline</div>
-    <div id="ancoreg-timeline-wrap" style="overflow-x:auto;padding-bottom:8px">
-      <div id="ancoreg-timeline" style="display:flex;gap:10px;min-width:max-content;padding:10px 0;align-items:center"></div>
-    </div>
-  </div>
-
-</div>
-</div>
 
 
-<!-- ===================================================
-     TAB: BSTP (Brainstorm Planner)
-     =================================================== -->
-<div class="tab-pane" id="tab-bstp" data-tab="bstp" style="display:none">
-<div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
-
-  <!-- Canvas area + palette -->
-  <div style="display:flex;flex:1;overflow:hidden;border-bottom:1px solid #1a1a1a">
-
-    <!-- Element palette -->
-    <div style="width:110px;flex-shrink:0;background:#0d0d0d;border-right:1px solid #1a1a1a;padding:10px 6px;overflow-y:auto">
-      <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:center">Elements</div>
-      <div class="bstp-palette-item" data-type="TASK" draggable="true" ondragstart="bstpDragStart(event,'TASK')" title="TASK — a thing to do" style="background:#1a2a3a;border:1px solid #2a5a8a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#6af">&#x25a0; TASK</div>
-      <div class="bstp-palette-item" data-type="DECISION" draggable="true" ondragstart="bstpDragStart(event,'DECISION')" title="DECISION — a choice point" style="background:#2a2a0a;border:1px solid #7a7a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#ff8;transform:rotate(0deg)">&#x25c6; DECISION</div>
-      <div class="bstp-palette-item" data-type="MILESTONE" draggable="true" ondragstart="bstpDragStart(event,'MILESTONE')" title="MILESTONE — a checkpoint" style="background:#0a2a1a;border:1px solid #1a7a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#4d8">&#x2b22; MILESTONE</div>
-      <div class="bstp-palette-item" data-type="SPLITTER" draggable="true" ondragstart="bstpDragStart(event,'SPLITTER')" title="SPLITTER — parallel tracks" style="background:#2a1a0a;border:1px solid #7a4a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#f94">&#x25b2; SPLITTER</div>
-      <div class="bstp-palette-item" data-type="NOTE" draggable="true" ondragstart="bstpDragStart(event,'NOTE')" title="NOTE — freeform text" style="background:#1a1a1a;border:1px solid #3a3a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#888">&#x1f4dd; NOTE</div>
-    </div>
-
-    <!-- Canvas -->
-    <div id="bstp-canvas-wrap" style="flex:1;position:relative;overflow:hidden;background:#0a0a0a"
-         ondragover="event.preventDefault()" ondrop="bstpDrop(event)">
-      <svg id="bstp-svg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1"></svg>
-      <div id="bstp-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2">
-        <div id="bstp-elements" style="position:relative;width:100%;height:100%"></div>
-      </div>
-    </div>
-
-    <!-- Properties panel -->
-    <div id="bstp-props" style="width:220px;flex-shrink:0;background:#0d0d0d;border-left:1px solid #1a1a1a;padding:12px;overflow-y:auto;display:none">
-      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Properties</div>
-      <div id="bstp-props-body" style="font-size:12px;color:#ccc"></div>
-    </div>
-  </div>
-
-  <!-- Canvas toolbar -->
-  <div style="background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:6px 10px;display:flex;gap:8px;align-items:center;flex-shrink:0">
-    <button class="btn" onclick="bstpSavePlan()" style="padding:4px 12px;font-size:11px" title="Save plan">&#x1f4be; Save</button>
-    <button class="btn" onclick="bstpLoadPlanDialog()" style="padding:4px 12px;font-size:11px" title="Load plan">&#x1f4c2; Load</button>
-    <button class="btn" onclick="bstpClearCanvas()" style="padding:4px 12px;font-size:11px;background:#2a1010" title="Clear canvas">&#x1f5d1; Clear</button>
-    <button class="btn" onclick="bstpUndo()" style="padding:4px 10px;font-size:11px" title="Undo (Ctrl+Z)">&#x21a9; Undo</button>
-    <button class="btn" onclick="bstpRedo()" style="padding:4px 10px;font-size:11px" title="Redo (Ctrl+Y)">&#x21aa; Redo</button>
-    <button class="btn" onclick="bstpZoom(1.2)" style="padding:4px 8px;font-size:13px">+</button>
-    <button class="btn" onclick="bstpZoom(0.8)" style="padding:4px 8px;font-size:13px">-</button>
-    <button class="btn" onclick="bstpFullscreen()" style="padding:4px 10px;font-size:11px" title="Fullscreen">&#x26f6;</button>
-    <span id="bstp-plan-name" style="margin-left:10px;font-size:12px;color:#888;flex:1">New Plan</span>
-    <span id="bstp-save-status" style="font-size:11px;color:#555"></span>
-  </div>
-
-  <!-- Control Panel -->
-  <div style="background:#0d0d0d;overflow-y:auto;max-height:260px;border-top:1px solid #1a1a1a;flex-shrink:0">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-
-      <!-- A: STATUS.md Toggle -->
-      <div style="padding:12px 14px;border-right:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">A — STATUS.md Write</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <label class="toggle-label" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa;cursor:pointer">
-            <input type="checkbox" id="bstp-status-toggle" onchange="bstpStatusToggleChange()" style="width:14px;height:14px"/>
-            Write to STATUS.md
-          </label>
-        </div>
-        <div id="bstp-status-preview" style="font-size:11px;color:#555;display:none;background:#050505;border:1px solid #1a1a1a;border-radius:4px;padding:6px;margin-top:4px;font-family:monospace"></div>
-        <button id="bstp-status-undo" class="btn" onclick="bstpUndoStatusWrite()" style="display:none;margin-top:6px;padding:4px 12px;font-size:11px">&#x21a9; Undo Last Write</button>
-      </div>
-
-      <!-- B: Instruction Pad -->
-      <div style="padding:12px 14px;border-bottom:1px solid #1a1a1a">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">B — Instruction Pad</div>
-        <textarea id="bstp-instructions" rows="4" placeholder="Write project instructions / narrative here. These get injected into AAFL/Scout context..." style="width:100%;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;color:#ccc;padding:7px 10px;font:inherit;font-size:12px;box-sizing:border-box;resize:none"></textarea>
-        <button class="btn" onclick="bstpSaveInstructions()" style="margin-top:4px;padding:4px 12px;font-size:11px">Save Instructions</button>
-        <span id="bstp-instr-status" style="font-size:11px;color:#555;margin-left:8px"></span>
-      </div>
-
-      <!-- C: Action Launcher -->
-      <div style="padding:12px 14px;border-right:1px solid #1a1a1a">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">C — Action Launcher</div>
-        <div style="font-size:12px;color:#666;margin-bottom:8px">Right-click a TASK element on the canvas to send it to:</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
-          <button class="btn" onclick="bstpLaunchSelected('goal')" style="padding:4px 12px;font-size:11px" title="Send selected task to AAFL goal.txt">&#x25B6; AAFL</button>
-          <button class="btn" onclick="bstpLaunchSelected('kanban')" style="padding:4px 12px;font-size:11px" title="Add selected task to Kanban todo">&#x1f4cb; Kanban</button>
-          <button class="btn" onclick="bstpLaunchSelected('clac')" style="padding:4px 12px;font-size:11px" title="Generate CLAC block for selected task">&#x1f4bb; CLAC</button>
-        </div>
-        <div id="bstp-action-result" style="font-size:11px;color:#4a4;margin-top:6px"></div>
-      </div>
-
-      <!-- D: Plan History -->
-      <div style="padding:12px 14px">
-        <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">D — Plan History</div>
-        <button class="btn" onclick="bstpLoadHistory()" style="padding:4px 12px;font-size:11px;margin-bottom:6px">&#x1f4dc; Show Saved Plans</button>
-        <div id="bstp-history-list" style="font-size:11px;color:#666;max-height:80px;overflow-y:auto"></div>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-</div>
 
 
 <!-- ── OCB RUNNER TAB ── -->
@@ -5598,10 +5435,11 @@ window.pwccsCopyPath = function(ev){
   <!-- Pinned toolbar -->
   <div style="position:sticky;top:0;z-index:100;
     background:var(--bg-secondary);border-bottom:1px solid var(--border);
-    padding:10px 16px;display:flex;gap:10px;align-items:center">
+    padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <span style="font-weight:bold;font-size:1.1rem">⚙️ OCB Runner</span>
     <span style="font-size:0.8rem;color:var(--text-muted)">
       Paste an OCB block and run it inside MCC</span>
+    <div class="acca-info-box" style="margin-left:auto;margin-bottom:0">OCB = One Complete Build — full Claude Code build cycle</div>
     <div id="ocb2-status-badge" style="margin-left:auto;
       padding:4px 10px;border-radius:12px;font-size:0.8rem;
       background:var(--bg-tertiary);color:var(--text-muted)">
@@ -5780,6 +5618,7 @@ Find mission_control.html..."
   <div class="pane-scroll">
 
     <!-- ⚡ UNIFIED QUERY BAR — Ask or Search (Scout) -->
+    <div class="acca-info-box" style="margin-bottom:6px">Scout Swarm = parallel web research — 5 strategies run simultaneously</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:#555">Scout Swarm — parallel web research</span><button class="tip-btn mcc-popup-safe" data-instruction-id="section_scout_swarm" onclick="showInstructions('section_scout_swarm',this)" title="What is Scout Swarm?">?</button></div>
     <div class="uq-bar" id="scout-uq-bar">
       <div class="uq-input-row">
@@ -6004,6 +5843,7 @@ Find mission_control.html..."
   <div class="pane-scroll">
 
     <!-- ── ALP — Allowance Preservation (moved from standalone tab) ── -->
+    <div class="acca-info-box" style="margin-top:8px;margin-bottom:6px">ALP = Allowance Preservation — Rule No.1. Free providers first, always</div>
     <div class="section-title" style="margin-top:0;margin-bottom:6px">## ALP — Allowance Preservation</div>
     <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px">Rule No.1 — Log every time AAFL saves you time or money. Accrued Learning Points track the value this project delivers.</div>
     <div class="home-ctrl" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
@@ -6118,6 +5958,7 @@ Find mission_control.html..."
   <div class="pane-scroll">
 
     <!-- ⚡ UNIFIED QUERY BAR — Ask or Search (AAFL Control) -->
+    <div class="acca-info-box" style="margin-bottom:6px">AAFL = AI Agent Feedback Loop — routes tasks through free AI providers</div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:#555">AAFL Control — Autonomous AI Feedback Loop</span><button class="tip-btn mcc-popup-safe" data-instruction-id="section_aafl_control" onclick="showInstructions('section_aafl_control',this)" title="What is AAFL Control?">?</button></div>
     <div class="uq-bar" id="aafl-uq-bar">
       <div class="uq-input-row">
@@ -6413,6 +6254,7 @@ Find mission_control.html..."
         <span class="acc-arrow">▼</span>
       </div>
       <div class="aafl-acc-body">
+        <div class="acca-info-box" style="margin-bottom:6px">LLOW = Logic Layout Operation Workflow — drag-drop task flow designer</div>
         <div style="font-size:0.8em;opacity:0.6;margin-bottom:8px" title="Drag elements from the left panel. Connect them with arrows to define flow. Export as CLACR to get a ready-to-paste CLAC block, or Run Loop to execute directly.">Design your loop visually — drag elements onto the canvas, draw arrows between them, then export or run.</div>
 
         <!-- TOP BAR -->
@@ -6978,6 +6820,118 @@ Find mission_control.html..."
      ============================================================ -->
 <div class="tab-pane" id="tab-missions">
   <div class="pane-scroll">
+
+    <!-- ── Mission Mode Selector ────────────────────────────────────── -->
+    <div style="background:#0a0d0a;border:1px solid #1a3a1a;border-radius:6px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font-size:11px;color:#4f4;font-weight:bold;white-space:nowrap">🎯 Active Mission:</span>
+      <select id="mission-mode-selector" onchange="missionModeSet(this.value)" style="background:#0d0d0d;border:1px solid #2a4a2a;border-radius:4px;color:#ccc;padding:4px 10px;font:inherit;font-size:12px;flex:1;max-width:280px">
+        <option value="all">All (no filter)</option>
+        <option value="war-thunder">War Thunder Fix</option>
+        <option value="star-citizen">Star Citizen Benchmark</option>
+        <option value="aafl-engine">AAFL Engine</option>
+        <option value="spin-doctor">Spin Doctor</option>
+      </select>
+      <label style="font-size:11px;color:#666;display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="mission-global-monitors" checked onchange="missionToggleGlobalMonitors(this.checked)" style="width:12px;height:12px"/>
+        Global monitors always visible
+      </label>
+      <button class="btn" onclick="missionModeSet(document.getElementById('mission-mode-selector').value)" style="font-size:11px;padding:3px 10px">Apply</button>
+    </div>
+    <div id="mission-mode-banner" style="display:none;background:#1a2a0a;border:1px solid #2a5a1a;border-radius:4px;padding:6px 12px;font-size:11px;color:#8f8;margin-bottom:10px"></div>
+
+    <!-- ── BSTP accordion (moved from standalone tab) ── -->
+    <div class="aafl-acc open" id="missions-bstp-acc" style="margin-bottom:14px">
+      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('missions-bstp-acc')">
+        🧠 BSTP — Brainstorm Planner <span class="acc-arrow">▼</span>
+      </div>
+      <div class="aafl-acc-body">
+        <div class="acca-info-box">BSTP = Brainstorm Planner — visual workflow canvas with action launcher</div>
+        <div style="display:flex;flex-direction:column;height:520px;overflow:hidden;border:1px solid #1a1a1a;border-radius:4px">
+
+          <!-- Canvas area + palette -->
+          <div style="display:flex;flex:1;overflow:hidden;border-bottom:1px solid #1a1a1a">
+            <!-- Element palette -->
+            <div style="width:110px;flex-shrink:0;background:#0d0d0d;border-right:1px solid #1a1a1a;padding:10px 6px;overflow-y:auto">
+              <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;text-align:center">Elements</div>
+              <div class="bstp-palette-item" data-type="TASK" draggable="true" ondragstart="bstpDragStart(event,'TASK')" title="TASK — a thing to do" style="background:#1a2a3a;border:1px solid #2a5a8a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#6af">&#x25a0; TASK</div>
+              <div class="bstp-palette-item" data-type="DECISION" draggable="true" ondragstart="bstpDragStart(event,'DECISION')" title="DECISION — a choice point" style="background:#2a2a0a;border:1px solid #7a7a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#ff8;transform:rotate(0deg)">&#x25c6; DECISION</div>
+              <div class="bstp-palette-item" data-type="MILESTONE" draggable="true" ondragstart="bstpDragStart(event,'MILESTONE')" title="MILESTONE — a checkpoint" style="background:#0a2a1a;border:1px solid #1a7a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#4d8">&#x2b22; MILESTONE</div>
+              <div class="bstp-palette-item" data-type="SPLITTER" draggable="true" ondragstart="bstpDragStart(event,'SPLITTER')" title="SPLITTER — parallel tracks" style="background:#2a1a0a;border:1px solid #7a4a1a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#f94">&#x25b2; SPLITTER</div>
+              <div class="bstp-palette-item" data-type="NOTE" draggable="true" ondragstart="bstpDragStart(event,'NOTE')" title="NOTE — freeform text" style="background:#1a1a1a;border:1px solid #3a3a3a;border-radius:4px;padding:8px 4px;margin-bottom:6px;text-align:center;cursor:grab;font-size:11px;color:#888">&#x1f4dd; NOTE</div>
+            </div>
+            <!-- Canvas -->
+            <div id="bstp-canvas-wrap" style="flex:1;position:relative;overflow:hidden;background:#0a0a0a"
+                 ondragover="event.preventDefault()" ondrop="bstpDrop(event)">
+              <svg id="bstp-svg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1"></svg>
+              <div id="bstp-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2">
+                <div id="bstp-elements" style="position:relative;width:100%;height:100%"></div>
+              </div>
+            </div>
+            <!-- Properties panel -->
+            <div id="bstp-props" style="width:220px;flex-shrink:0;background:#0d0d0d;border-left:1px solid #1a1a1a;padding:12px;overflow-y:auto;display:none">
+              <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Properties</div>
+              <div id="bstp-props-body" style="font-size:12px;color:#ccc"></div>
+            </div>
+          </div>
+
+          <!-- Canvas toolbar -->
+          <div style="background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:6px 10px;display:flex;gap:8px;align-items:center;flex-shrink:0">
+            <button class="btn" onclick="bstpSavePlan()" style="padding:4px 12px;font-size:11px" title="Save plan">&#x1f4be; Save</button>
+            <button class="btn" onclick="bstpLoadPlanDialog()" style="padding:4px 12px;font-size:11px" title="Load plan">&#x1f4c2; Load</button>
+            <button class="btn" onclick="bstpClearCanvas()" style="padding:4px 12px;font-size:11px;background:#2a1010" title="Clear canvas">&#x1f5d1; Clear</button>
+            <button class="btn" onclick="bstpUndo()" style="padding:4px 10px;font-size:11px" title="Undo (Ctrl+Z)">&#x21a9; Undo</button>
+            <button class="btn" onclick="bstpRedo()" style="padding:4px 10px;font-size:11px" title="Redo (Ctrl+Y)">&#x21aa; Redo</button>
+            <button class="btn" onclick="bstpZoom(1.2)" style="padding:4px 8px;font-size:13px">+</button>
+            <button class="btn" onclick="bstpZoom(0.8)" style="padding:4px 8px;font-size:13px">-</button>
+            <button class="btn" onclick="bstpFullscreen()" style="padding:4px 10px;font-size:11px" title="Fullscreen">&#x26f6;</button>
+            <span id="bstp-plan-name" style="margin-left:10px;font-size:12px;color:#888;flex:1">New Plan</span>
+            <span id="bstp-save-status" style="font-size:11px;color:#555"></span>
+          </div>
+
+          <!-- Control Panel -->
+          <div style="background:#0d0d0d;overflow-y:auto;max-height:200px;border-top:1px solid #1a1a1a;flex-shrink:0">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+              <!-- A: STATUS.md Toggle -->
+              <div style="padding:10px 12px;border-right:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a">
+                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">A — STATUS.md Write</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+                  <label class="toggle-label" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#aaa;cursor:pointer">
+                    <input type="checkbox" id="bstp-status-toggle" onchange="bstpStatusToggleChange()" style="width:14px;height:14px"/>
+                    Write to STATUS.md
+                  </label>
+                </div>
+                <div id="bstp-status-preview" style="font-size:11px;color:#555;display:none;background:#050505;border:1px solid #1a1a1a;border-radius:4px;padding:6px;margin-top:4px;font-family:monospace"></div>
+                <button id="bstp-status-undo" class="btn" onclick="bstpUndoStatusWrite()" style="display:none;margin-top:6px;padding:4px 12px;font-size:11px">&#x21a9; Undo Last Write</button>
+              </div>
+              <!-- B: Instruction Pad -->
+              <div style="padding:10px 12px;border-bottom:1px solid #1a1a1a">
+                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">B — Instruction Pad</div>
+                <textarea id="bstp-instructions" rows="3" placeholder="Write project instructions / narrative here..." style="width:100%;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;color:#ccc;padding:7px 10px;font:inherit;font-size:12px;box-sizing:border-box;resize:none"></textarea>
+                <button class="btn" onclick="bstpSaveInstructions()" style="margin-top:4px;padding:4px 12px;font-size:11px">Save Instructions</button>
+                <span id="bstp-instr-status" style="font-size:11px;color:#555;margin-left:8px"></span>
+              </div>
+              <!-- C: Action Launcher -->
+              <div style="padding:10px 12px;border-right:1px solid #1a1a1a">
+                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">C — Action Launcher</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <button class="btn" onclick="bstpLaunchSelected('goal')" style="padding:4px 12px;font-size:11px" title="Send selected task to AAFL goal.txt">&#x25B6; AAFL</button>
+                  <button class="btn" onclick="bstpLaunchSelected('kanban')" style="padding:4px 12px;font-size:11px" title="Add selected task to Kanban todo">&#x1f4cb; Kanban</button>
+                  <button class="btn" onclick="bstpLaunchSelected('clac')" style="padding:4px 12px;font-size:11px" title="Generate CLAC block for selected task">&#x1f4bb; CLAC</button>
+                </div>
+                <div id="bstp-action-result" style="font-size:11px;color:#4a4;margin-top:6px"></div>
+              </div>
+              <!-- D: Plan History -->
+              <div style="padding:10px 12px">
+                <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">D — Plan History</div>
+                <button class="btn" onclick="bstpLoadHistory()" style="padding:4px 12px;font-size:11px;margin-bottom:6px">&#x1f4dc; Show Saved Plans</button>
+                <div id="bstp-history-list" style="font-size:11px;color:#666;max-height:80px;overflow-y:auto"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- Header -->
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
@@ -8644,6 +8598,77 @@ Find mission_control.html..."
       </div>
     </div>
     <div id="bm-tooltip" class="bm-tooltip"></div>
+
+    <!-- ── ANCOREG accordion (moved from standalone tab) ── -->
+    <div class="aafl-acc" id="hs-ancoreg-acc" style="margin-top:14px">
+      <div class="aafl-acc-hdr" onclick="toggleAaflAcc('hs-ancoreg-acc');if(document.getElementById('hs-ancoreg-acc').classList.contains('open')){ancoregRunDiagnosis();ancoregLoadFixes();ancoregLoadTimeline();}">
+        🩺 ANCOREG — System Doctor <span class="acc-arrow">▶</span>
+      </div>
+      <div class="aafl-acc-body">
+        <div class="acca-info-box">ANCOREG = Analysis Correction Error buG — the MCC system doctor</div>
+
+        <!-- Section 1: Live Diagnosis -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Section 1 — Live Diagnosis</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
+            <button class="btn" onclick="ancoregRunDiagnosis()" style="padding:6px 16px;font-size:12px">&#x25B6; Run Diagnosis</button>
+            <span id="ancoreg-diag-status" style="font-size:11px;color:#555">Auto-runs on open (cached 60s)</span>
+          </div>
+          <div id="ancoreg-diag-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:6px"></div>
+        </div>
+
+        <!-- Section 2: Fix Database -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Section 2 — Fix Database</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <input id="ancoreg-fix-search" type="text" placeholder="Search fixes..." onkeyup="ancoregFilterFixes()" style="flex:1;background:#111;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px"/>
+            <button class="btn" onclick="ancoregShowAddFix()" style="padding:6px 14px;font-size:12px">+ Add Fix</button>
+          </div>
+          <div id="ancoreg-fix-table" style="overflow-x:auto"></div>
+          <div id="ancoreg-add-fix-modal" style="display:none;background:#111;border:1px solid #333;border-radius:6px;padding:14px;margin-top:10px">
+            <div style="font-size:12px;color:#aaa;margin-bottom:8px;font-weight:bold">Add New Fix Entry</div>
+            <input id="ancoreg-new-problem" type="text" placeholder="Problem description..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box"/>
+            <textarea id="ancoreg-new-fix" rows="3" placeholder="Fix steps..." style="width:100%;background:#0d0d0d;border:1px solid #222;border-radius:4px;color:#ccc;padding:6px 10px;font:inherit;font-size:12px;margin-bottom:6px;box-sizing:border-box;resize:vertical"></textarea>
+            <div style="display:flex;gap:8px">
+              <button class="btn" onclick="ancoregSubmitFix()" style="padding:6px 14px;font-size:12px">Save Fix</button>
+              <button class="btn" onclick="document.getElementById('ancoreg-add-fix-modal').style.display='none'" style="padding:6px 14px;font-size:12px;background:#1a1a1a">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Save Validator -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Section 3 — Save Validator</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <button class="btn" onclick="ancoregValidateSave()" style="padding:6px 16px;font-size:12px">&#x2713; Validate Save System</button>
+            <button class="btn" onclick="ancoregRunSave()" style="padding:6px 16px;font-size:12px">&#x1f4be; Run Save Now</button>
+            <button class="btn" onclick="ancoregPreviewDiff()" style="padding:6px 14px;font-size:12px">&#x1f4c4; Preview Diff</button>
+          </div>
+          <div id="ancoreg-save-checks" style="font-size:12px;line-height:1.8"></div>
+          <pre id="ancoreg-diff-preview" style="display:none;background:#0a0a0a;border:1px solid #222;border-radius:4px;padding:10px;font-size:11px;color:#8bc;max-height:200px;overflow:auto;margin-top:8px"></pre>
+        </div>
+
+        <!-- Section 4: MOT Dashboard -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Section 4 — MOT Dashboard</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <button class="btn" onclick="ancoregRunMOT()" style="padding:6px 16px;font-size:12px">&#x25B6; Run MOT</button>
+            <span id="ancoreg-mot-status" style="font-size:11px;color:#555">Click Run MOT to start</span>
+          </div>
+          <div id="ancoreg-mot-score" style="font-size:22px;font-weight:bold;color:#4a4;margin-bottom:8px"></div>
+          <div id="ancoreg-mot-grid" style="display:flex;flex-wrap:wrap;gap:3px;max-width:700px"></div>
+          <div id="ancoreg-mot-detail" style="font-size:11px;color:#888;margin-top:6px"></div>
+        </div>
+
+        <!-- Section 5: Error Timeline -->
+        <div style="margin-bottom:8px">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Section 5 — Error Timeline</div>
+          <div id="ancoreg-timeline-wrap" style="overflow-x:auto;padding-bottom:8px">
+            <div id="ancoreg-timeline" style="display:flex;gap:10px;min-width:max-content;padding:10px 0;align-items:center"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -22552,6 +22577,71 @@ function hitsavStep2() {}
 <div id="det-prog-0" style="display:none"></div>
 <div id="hs-pane-0" style="display:none"></div>
 <div id="pd-0" style="display:none"></div>
+
+<script>
+// ── GRRICE (living changelog on timeline) ─────────────────────────────────
+var _grriceOn = false;
+var _grriceEntries = [];
+function griceToggle() {
+  _grriceOn = !_grriceOn;
+  var btn = document.getElementById('grrice-toggle-btn');
+  if (btn) {
+    btn.style.background = _grriceOn ? '#2a2a5a' : '#1a1a2a';
+    btn.style.color = _grriceOn ? '#ccf' : '#aaf';
+  }
+  if (_grriceOn) {
+    fetch('/api/grrice/entries').then(function(r){return r.json();}).then(function(d){
+      _grriceEntries = d.entries || [];
+      _grriceRenderDots();
+    }).catch(function(){});
+  } else {
+    document.querySelectorAll('.grrice-dot').forEach(function(el){el.remove();});
+  }
+}
+function _grriceRenderDots() {
+  document.querySelectorAll('.grrice-dot').forEach(function(el){el.remove();});
+  if (!_grriceOn || !_grriceEntries.length) return;
+  var track = document.getElementById('htl-track');
+  if (!track) return;
+  var colours = {built:'#2d8',fixed:'#fa0',decided:'#4af',added:'#8f8',removed:'#f44',planned:'#666'};
+  _grriceEntries.slice(-30).forEach(function(e) {
+    var dot = document.createElement('div');
+    dot.className = 'grrice-dot';
+    dot.title = (e.change_type||'') + ': ' + (e.description||'') + '\n' + (e.timestamp||'');
+    var col = colours[e.change_type] || '#888';
+    dot.style.cssText = 'position:absolute;bottom:-8px;width:8px;height:8px;border-radius:50%;background:'+col+';border:1px solid '+col+'88;cursor:pointer;z-index:20';
+    track.appendChild(dot);
+  });
+}
+
+// ── Mission Mode ──────────────────────────────────────────────────────────
+var _activeMission = 'all';
+function missionModeSet(val) {
+  _activeMission = val;
+  var banner = document.getElementById('mission-mode-banner');
+  var names = {'war-thunder':'War Thunder Fix','star-citizen':'Star Citizen Benchmark','aafl-engine':'AAFL Engine','spin-doctor':'Spin Doctor'};
+  if (val === 'all') {
+    if (banner) { banner.style.display='none'; }
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.style.opacity='';b.style.pointerEvents='';});
+  } else {
+    var label = names[val] || val;
+    if (banner) { banner.style.display=''; banner.textContent='Mission: '+label+' — showing relevant data only'; }
+    var relevantTabs = ['wccs','health-suite','missions','scout','aafl-control'];
+    var globalMonitors = document.getElementById('mission-global-monitors');
+    if (globalMonitors && globalMonitors.checked) relevantTabs.push('rrice');
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(function(b){
+      var tab = b.dataset.tab;
+      var relevant = relevantTabs.indexOf(tab) >= 0;
+      b.style.opacity = relevant ? '' : '0.4';
+      b.style.pointerEvents = relevant ? '' : 'none';
+    });
+    fetch('/api/missions/set-active',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mission:val})}).catch(function(){});
+  }
+}
+function missionToggleGlobalMonitors(on) {
+  if (_activeMission !== 'all') missionModeSet(_activeMission);
+}
+</script>
 
 </body>
 </html>

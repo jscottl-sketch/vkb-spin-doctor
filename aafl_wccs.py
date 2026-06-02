@@ -283,6 +283,38 @@ def main():
         warn = " *** SLOW >10s ***" if step_elapsed > 10 else ""
         print(f"[WCCS] {label}: step={step_elapsed:.1f}s total={elapsed:.1f}s{warn}")
 
+    def _write_session_log(chat_text, dry):
+        """Write session log directly to session_logs/ — no AI call needed."""
+        _sl_t0 = _time.time()
+        if dry:
+            print("[DRY] Would write session log to session_logs/ (direct write)")
+            return
+        try:
+            session_dir = ROOT / "session_logs"
+            session_dir.mkdir(exist_ok=True)
+            today = dt.date.today().isoformat()
+            existing = sorted(session_dir.glob(f"{today}-cc*.md"), reverse=True)
+            n = 1
+            if existing:
+                try:
+                    n = int(existing[0].stem.split("cc")[-1]) + 1
+                except Exception:
+                    n = len(existing) + 1
+            log_path = session_dir / f"{today}-cc{n}.md"
+            content = f"# Session Log {today} CC{n}\n\n{chat_text.strip()}\n"
+            tmp = log_path.with_suffix(".tmp")
+            tmp.write_text(content, encoding="utf-8")
+            written = tmp.read_text(encoding="utf-8")
+            if written.strip():
+                tmp.replace(log_path)
+                sl_elapsed = _time.time() - _sl_t0
+                print(f"[WCCS] Session log saved in {sl_elapsed:.2f}s (direct write, no AI call) → {log_path.name}")
+            else:
+                tmp.unlink(missing_ok=True)
+                print("[WARN] Session log write verification failed — skipped")
+        except Exception as e:
+            print(f"[WARN] Session log write failed (non-fatal): {e}")
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--chat", default=str(CHAT_LATEST))
     parser.add_argument("--dry-run", action="store_true")
@@ -388,6 +420,8 @@ def main():
         except Exception as _hist_err:
             _log_wccs_error(f"HISTORY append crashed: {_hist_err}")
             print(f"[WARN] HISTORY.md append failed — see wccs_errors.log. {_hist_err}")
+    _write_session_log(chat_text, args.dry_run)
+    _elapsed("session log (direct write)")
     new_codes = extract_acca_codes(chat_text)
     if new_codes:
         existing = read_text(ACCA).upper()

@@ -815,6 +815,14 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_bstp_plan_get(path[len("/api/bstp/plan/"):])
             elif path == "/api/bstp/instructions":
                 self._handle_bstp_instructions_get()
+            # ── GRRICE: living changelog ──────────────────────────────────────
+            elif path == "/api/grrice/entries":
+                self._handle_grrice_entries_get()
+            # ── Mission Mode ──────────────────────────────────────────────────
+            elif path == "/api/missions/list":
+                self._handle_missions_list_get()
+            elif path == "/api/missions/active":
+                self._handle_missions_active_get()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -1169,6 +1177,15 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
                 self._handle_bstp_instructions_post()
             elif path == "/api/bstp/status-write":
                 self._handle_bstp_status_write_post()
+            # ── GRRICE: living changelog ──────────────────────────────────────
+            elif path == "/api/grrice/add":
+                self._handle_grrice_add_post()
+            # ── Mission Mode ──────────────────────────────────────────────────
+            elif path == "/api/missions/set-active":
+                self._handle_missions_set_active_post()
+            # ── ACCA Command endpoint ─────────────────────────────────────────
+            elif path == "/api/acca/command":
+                self._handle_acca_command_post()
             else:
                 self._send_json({"error": "Not found"}, 404)
         except Exception as exc:
@@ -10009,8 +10026,14 @@ def _handle_ancoreg_run_save_post(self):
             [PYTHON, str(wccs_path)],
             capture_output=True, text=True, cwd=str(HERE), timeout=120
         )
+        ok = result.returncode == 0
+        if ok:
+            try:
+                _grrice_append("built", "WCCS save completed via ANCOREG", source="wccs")
+            except Exception:
+                pass
         self._send_json({
-            "ok": result.returncode == 0,
+            "ok": ok,
             "stdout": result.stdout[-2000:],
             "stderr": result.stderr[-500:],
             "returncode": result.returncode,
@@ -10034,6 +10057,11 @@ def _handle_ancoreg_mot_get(self):
         if report_path.exists():
             try:
                 report = json.loads(report_path.read_text(encoding="utf-8"))
+                score_str = f"{report.get('passed',0)}/{report.get('total',0)}"
+                try:
+                    _grrice_append("fixed", f"MOT score: {score_str}", source="mot")
+                except Exception:
+                    pass
                 self._send_json(report)
                 return
             except Exception:
@@ -10268,6 +10296,207 @@ def _handle_bstp_status_write_post(self):
         self._send_json({"error": str(exc)}, 500)
 
 MCCHandler._handle_bstp_status_write_post = _handle_bstp_status_write_post  # type: ignore[attr-defined]
+
+
+# ── GRRICE: living changelog ─────────────────────────────────────────────────
+_GRRICE_FILE = HERE / "data" / "grrice.json"
+
+
+def _grrice_load():
+    if not _GRRICE_FILE.exists():
+        return {"entries": []}
+    try:
+        return json.loads(_GRRICE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {"entries": []}
+
+
+def _grrice_save(data):
+    tmp = _GRRICE_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    tmp.replace(_GRRICE_FILE)
+
+
+def _grrice_append(change_type, description, mission="", source="mcc"):
+    data = _grrice_load()
+    entries = data.get("entries", [])
+    entries.append({
+        "timestamp": _now_iso(),
+        "change_type": change_type,
+        "description": description,
+        "mission": mission,
+        "source": source,
+    })
+    if len(entries) > 500:
+        entries = entries[-500:]
+    data["entries"] = entries
+    _grrice_save(data)
+
+
+def _handle_grrice_entries_get(self):
+    """GET /api/grrice/entries — return grrice.json."""
+    try:
+        self._send_json(_grrice_load())
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_grrice_entries_get = _handle_grrice_entries_get  # type: ignore[attr-defined]
+
+
+def _handle_grrice_add_post(self):
+    """POST /api/grrice/add — append a GRRICE entry."""
+    try:
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8"))
+        _grrice_append(
+            body.get("change_type", "added"),
+            body.get("description", ""),
+            body.get("mission", ""),
+            body.get("source", "manual"),
+        )
+        self._send_json({"ok": True})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_grrice_add_post = _handle_grrice_add_post  # type: ignore[attr-defined]
+
+
+# ── Mission Mode ──────────────────────────────────────────────────────────────
+_MISSION_NAMES = [
+    {"id": "all",           "label": "All (no filter)"},
+    {"id": "war-thunder",   "label": "War Thunder Fix"},
+    {"id": "star-citizen",  "label": "Star Citizen Benchmark"},
+    {"id": "aafl-engine",   "label": "AAFL Engine"},
+    {"id": "spin-doctor",   "label": "Spin Doctor"},
+]
+
+
+def _handle_missions_list_get(self):
+    """GET /api/missions/list — return mission names."""
+    try:
+        self._send_json({"missions": _MISSION_NAMES})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_missions_list_get = _handle_missions_list_get  # type: ignore[attr-defined]
+
+
+def _handle_missions_active_get(self):
+    """GET /api/missions/active — return active mission from mcc_settings.json."""
+    try:
+        settings = {}
+        if MCC_SETTINGS_FILE.exists():
+            try:
+                settings = json.loads(MCC_SETTINGS_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        self._send_json({"active_mission": settings.get("active_mission", "all")})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_missions_active_get = _handle_missions_active_get  # type: ignore[attr-defined]
+
+
+def _handle_missions_set_active_post(self):
+    """POST /api/missions/set-active — persist active mission to mcc_settings.json."""
+    try:
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8"))
+        mission = body.get("mission", "all")
+        settings = {}
+        if MCC_SETTINGS_FILE.exists():
+            try:
+                settings = json.loads(MCC_SETTINGS_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                pass
+        settings["active_mission"] = mission
+        tmp = MCC_SETTINGS_FILE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(settings, indent=2, ensure_ascii=False), encoding="utf-8")
+        tmp.replace(MCC_SETTINGS_FILE)
+        self._send_json({"ok": True, "active_mission": mission})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_missions_set_active_post = _handle_missions_set_active_post  # type: ignore[attr-defined]
+
+
+# ── ACCA Command endpoint ─────────────────────────────────────────────────────
+def _handle_acca_command_post(self):
+    """POST /api/acca/command — execute an ACCA shorthand command."""
+    try:
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8"))
+        cmd = (body.get("command") or "").strip()
+        if not cmd:
+            self._send_json({"error": "command required"}, 400)
+            return
+        upper = cmd.upper()
+        action_taken = ""
+        result = ""
+
+        if upper == "WCCS":
+            proc = subprocess.run(
+                [sys.executable, str(HERE / "aafl_wccs.py")],
+                cwd=str(HERE), capture_output=True, text=True, timeout=120,
+            )
+            action_taken = "Triggered aafl_wccs.py"
+            result = (proc.stdout + proc.stderr)[-2000:]
+
+        elif upper.startswith("SCOUT "):
+            goal = cmd[6:].strip()
+            proc = subprocess.run(
+                [sys.executable, str(HERE / "chief_scout.py"), "--goal", goal],
+                cwd=str(HERE), capture_output=True, text=True, timeout=120,
+            )
+            action_taken = f"Launched chief_scout.py with goal: {goal}"
+            result = (proc.stdout + proc.stderr)[-2000:]
+
+        elif upper == "ALP AUDIT":
+            try:
+                import ancoreg_validator as _av
+                res = _av.validate_save_system()
+                action_taken = "Ran ancoreg_validator.validate_save_system()"
+                result = json.dumps(res, indent=2, ensure_ascii=False)
+            except Exception as e:
+                result = f"Error: {e}"
+
+        elif upper == "ANCOREG RUN":
+            proc = subprocess.run(
+                [sys.executable, "-c",
+                 "import ancoreg_validator as v; import json; print(json.dumps(v.validate_save_system(),indent=2))"],
+                cwd=str(HERE), capture_output=True, text=True, timeout=60,
+            )
+            action_taken = "Ran full ANCOREG diagnosis"
+            result = (proc.stdout + proc.stderr)[-2000:]
+
+        elif upper == "BSTP LOAD":
+            if _BSTP_CURRENT.exists():
+                result = _BSTP_CURRENT.read_text(encoding="utf-8")[:2000]
+                action_taken = "Returned bstp_current.json"
+            else:
+                result = "{}"
+                action_taken = "bstp_current.json not found"
+
+        elif upper.startswith("EBJA "):
+            task = cmd[5:].strip()
+            task_lower = task.lower()
+            if any(w in task_lower for w in ["code","build","fix","debug"]):
+                rec = "mistral_code (Codestral) — best free code AI"
+            elif any(w in task_lower for w in ["search","research","scout","find"]):
+                rec = "gemini_flash — good for research and summarisation"
+            elif any(w in task_lower for w in ["write","draft","plan","analyse"]):
+                rec = "cerebras — fast, good for reasoning tasks"
+            else:
+                rec = "auto — let AAFL pick the best free provider"
+            action_taken = f"EBJA recommendation for: {task}"
+            result = rec
+
+        else:
+            self._send_json({"error": f"Unknown command: {cmd}"}, 400)
+            return
+
+        self._send_json({"result": result, "action_taken": action_taken, "command": cmd})
+    except Exception as exc:
+        self._send_json({"error": str(exc)}, 500)
+
+MCCHandler._handle_acca_command_post = _handle_acca_command_post  # type: ignore[attr-defined]
 
 
 def main():
