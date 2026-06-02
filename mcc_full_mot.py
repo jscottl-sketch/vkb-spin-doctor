@@ -390,8 +390,8 @@ def test_group_g():
         sys.path.insert(0, str(HERE))
         from task_router import classify
         res = classify("search the web for joystick spin fix information")
-        ok  = "tier" in res and res["tier"] in ("AAFL", "CLAC", "SONNET", "OPUS")
-        _record("G", "task_router.classify()", ok, f"tier={res.get('tier','?')}")
+        ok  = bool(res) and "tier" in res and res["tier"] in ("AAFL", "CLAC", "SONNET", "OPUS")
+        _record("G", "task_router.classify()", ok, f"tier={(res or {}).get('tier', '?')}")
     except Exception as e:
         _record("G", "task_router.classify()", False, str(e)[:80])
 
@@ -400,8 +400,8 @@ def test_group_g():
     try:
         from evaluator import evaluate
         sc = evaluate("This is a test result about joystick spin fix", "joystick spin")
-        ok = "overall" in sc and isinstance(sc["overall"], (int, float))
-        _record("G", "evaluator.evaluate()", ok, f"score={sc.get('overall','?')}")
+        ok = bool(sc) and "overall" in sc and isinstance(sc["overall"], (int, float))
+        _record("G", "evaluator.evaluate()", ok, f"score={(sc or {}).get('overall', '?')}")
     except Exception as e:
         _record("G", "evaluator.evaluate()", False, str(e)[:80])
 
