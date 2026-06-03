@@ -5,22 +5,15 @@
       "phase_name": "SAFE TEST",
       "status": "PENDING",
       "tasks_done": 0,
-      "tasks_total": 0
-    },
-    {
-      "phase_num": 2,
-      "phase_name": "VERIFY",
-      "status": "PENDING",
-      "tasks_done": 0,
-      "tasks_total": 0
+      "tasks_total": 1
     }
   ],
   "phase_current": 0,
   "phase_name": "",
-  "phase_total": 2,
+  "phase_total": 1,
   "percent": 0,
   "status": "CANCELLED",
   "current_stage": "committing",
-  "mot_score": "VERDICT: ALL CLEAR",
-  "updated_at": "2026-06-03T15:03:07"
+  "mot_score": "SKIPPED (skip_mot=True)",
+  "updated_at": "2026-06-03T15:13:33"
 }
