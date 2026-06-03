@@ -2759,8 +2759,8 @@ select:focus {
     <!-- B2-18 END -->
 
     <div class="wccs-top-row">
-      <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()" data-tip="Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.">💾 Save Session Now</button>
-      <button id="copyStatusBtn" onclick="copyStatusForClaude()" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;" data-tip="Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context">📋 Copy STATUS.md for Claude</button>
+      <button class="btn-save-lg" id="btn-wccs-hub" onclick="this.textContent='⏳ Saving...';this.style.opacity='0.6';fetch('/api/hisav/save-session',{method:'POST'}).then(function(r){return r.json();}).then(function(){var b=document.getElementById('btn-wccs-hub');b.textContent='✅ Saved';b.style.background='#155724';b.style.opacity='1';document.getElementById('hisav-arrow').style.color='#28a745';var b2=document.getElementById('copyStatusBtn');b2.style.opacity='1';b2.style.pointerEvents='auto';b2.style.boxShadow='0 0 10px #1a6fb5';document.getElementById('hisav-lastsaved').textContent='Last saved: '+new Date().toLocaleTimeString();}).catch(function(){var b=document.getElementById('btn-wccs-hub');b.textContent='❌ Error';b.style.background='#721c24';b.style.opacity='1';});" data-tip="Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.">💾 Save Session Now</button>
+      <button id="copyStatusBtn" onclick="var b=this;b.textContent='⏳ Copying...';b.style.background='#664d00';setTimeout(function(){fetch('/api/status').then(function(r){return r.text();}).then(function(t){navigator.clipboard.writeText(t).then(function(){b.textContent='✅ Copied';b.style.background='#0d3d6b';b.style.border='2px solid #1a6fb5';var p=document.getElementById('hisav-pip');if(p){p.style.background='#28a745';p.style.boxShadow='0 0 10px #28a745';}document.getElementById('hisav-arrow').style.color='#28a745';}).catch(function(){b.textContent='❌ Clipboard blocked';b.style.background='#721c24';});}).catch(function(){b.textContent='❌ Error';b.style.background='#721c24';});},100);" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;" data-tip="Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context">📋 Copy STATUS.md for Claude</button>
       <span id="copyStatusMsg" style="margin-left:12px; font-weight:bold;"></span>
       <button class="tip-btn mcc-popup-safe" data-instruction-id="section_wccs" onclick="showInstructions('section_wccs',this)" title="What is the WCCS tab?">?</button>
       <div class="wccs-auto-status">
@@ -22912,6 +22912,27 @@ function missionModeSet(val) {
 function missionToggleGlobalMonitors(on) {
   if (_activeMission !== 'all') missionModeSet(_activeMission);
 }
+</script>
+
+<script>
+(function(){
+  var s = document.getElementById('btn-wccs-hub');
+  var c = document.getElementById('copyStatusBtn');
+  if(s){
+    s.addEventListener('click', function(){
+      s.textContent = '⏳ Saving...';
+      s.style.background = '#664d00';
+      s.style.color = '#fff';
+    });
+  }
+  if(c){
+    c.addEventListener('click', function(){
+      c.textContent = '⏳ Copying...';
+      c.style.background = '#664d00';
+      c.style.color = '#fff';
+    });
+  }
+})();
 </script>
 
 </body>

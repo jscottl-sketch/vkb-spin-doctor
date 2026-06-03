@@ -19,8 +19,8 @@
   "phase_name": "VERIFY",
   "phase_total": 2,
   "percent": 100,
-  "status": "RUNNING",
-  "current_stage": "committing",
+  "status": "DONE",
+  "current_stage": "locking",
   "mot_score": "VERDICT: ALL CLEAR",
   "updated_at": "2026-06-03T15:26:37"
 }
