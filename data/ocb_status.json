@@ -1,19 +1,22 @@
 {
   "run_id": "lifeguard_test",
-  "started_at": "2026-06-03T15:15:21",
-  "status": "CANCELLED",
+  "started_at": "2026-06-03T15:17:10",
+  "status": "RUNNING",
   "current_stage": "committing",
   "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[15:15:21] Startup: cleared stale abort flag",
-    "[15:15:21] [STAGE:locking] checking .ocb_running lock file",
-    "[15:15:21] GUARD 1 PASS: lock file clear",
-    "[15:15:21] [STAGE:stashing] checking git working tree",
-    "[15:15:21] GUARD 2: dirty tree stashed (OCB-Runner-20260603_151521)",
-    "[15:15:21] [STAGE:phase_running] starting phase execution",
-    "[15:15:21] \u26d4 Aborted by user before Phase 1: SAFE TEST",
-    "[15:15:21] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[15:15:21] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[15:17:10] Startup: cleared stale abort flag",
+    "[15:17:10] [STAGE:locking] checking .ocb_running lock file",
+    "[15:17:10] GUARD 1 PASS: lock file clear",
+    "[15:17:10] [STAGE:stashing] checking git working tree",
+    "[15:17:11] GUARD 2: dirty tree stashed (OCB-Runner-20260603_151710)",
+    "[15:17:11] [STAGE:phase_running] starting phase execution",
+    "[15:17:11] [STAGE:phase_running] Phase 1: SAFE TEST",
+    "[15:17:11] Phase 1: SAFE TEST",
+    "[15:17:11]   Task 1: Create a file called ocb_lifeguard_result.txt with content: OCB Runner",
+    "[15:17:11]   DONE: created ocb_lifeguard_result.txt (16 chars)",
+    "[15:17:11] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
+    "[15:17:11] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -42,18 +45,20 @@
       "skipped": true
     }
   },
-  "files_changed": [],
+  "files_changed": [
+    "ocb_lifeguard_result.txt"
+  ],
   "git_diff_stat": "",
   "rollback_available": false,
   "error": "",
-  "stash_ref": "OCB-Runner-20260603_151521",
-  "current_phase": 0,
+  "stash_ref": "OCB-Runner-20260603_151710",
+  "current_phase": 1,
   "mot_score": "SKIPPED (skip_mot=True)",
   "phases": [
     {
       "phase_num": 1,
       "phase_name": "SAFE TEST",
-      "status": "PENDING",
+      "status": "DONE",
       "tasks": [
         {
           "num": 1,

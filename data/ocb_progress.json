@@ -3,17 +3,17 @@
     {
       "phase_num": 1,
       "phase_name": "SAFE TEST",
-      "status": "PENDING",
+      "status": "DONE",
       "tasks_done": 0,
       "tasks_total": 1
     }
   ],
-  "phase_current": 0,
-  "phase_name": "",
+  "phase_current": 1,
+  "phase_name": "SAFE TEST",
   "phase_total": 1,
-  "percent": 0,
-  "status": "CANCELLED",
+  "percent": 100,
+  "status": "RUNNING",
   "current_stage": "committing",
   "mot_score": "SKIPPED (skip_mot=True)",
-  "updated_at": "2026-06-03T15:15:21"
+  "updated_at": "2026-06-03T15:17:11"
 }
