@@ -2,18 +2,18 @@
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "Create Brain Test File",
+      "phase_name": "ECHO TEST",
       "status": "DONE",
       "tasks_done": 0,
       "tasks_total": 1
     }
   ],
   "phase_current": 1,
-  "phase_name": "Create Brain Test File",
+  "phase_name": "ECHO TEST",
   "phase_total": 1,
   "percent": 100,
-  "status": "DONE",
-  "current_stage": "locking",
-  "mot_score": "SKIPPED (skip_mot=True)",
-  "updated_at": "2026-06-02T06:31:17"
+  "status": "RUNNING",
+  "current_stage": "committing",
+  "mot_score": "exit 0",
+  "updated_at": "2026-06-03T14:28:56"
 }
