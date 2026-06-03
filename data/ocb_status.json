@@ -1,22 +1,22 @@
 {
-  "run_id": "test_brain_203020",
-  "started_at": "2026-06-03T20:30:20",
+  "run_id": "lifeguard_test",
+  "started_at": "2026-06-03T20:34:08",
   "status": "RUNNING",
   "current_stage": "committing",
   "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[20:30:20] Startup: cleared stale abort flag",
-    "[20:30:20] [STAGE:locking] checking .ocb_running lock file",
-    "[20:30:20] GUARD 1 PASS: lock file clear",
-    "[20:30:20] [STAGE:stashing] checking git working tree",
-    "[20:30:21] GUARD 2: dirty tree stashed (OCB-Runner-20260603_203020)",
-    "[20:30:21] [STAGE:phase_running] starting phase execution",
-    "[20:30:21] [STAGE:phase_running] Phase 1: Create Brain Test File",
-    "[20:30:21] Phase 1: Create Brain Test File",
-    "[20:30:21]   Task 1: create a file ocb_brain_test.txt content: OCB Runner AI brain wired 20",
-    "[20:30:21]   DONE: created ocb_brain_test.txt (36 chars)",
-    "[20:30:21] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[20:30:21] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[20:34:08] Startup: cleared stale abort flag",
+    "[20:34:08] [STAGE:locking] checking .ocb_running lock file",
+    "[20:34:08] GUARD 1 PASS: lock file clear",
+    "[20:34:08] [STAGE:stashing] checking git working tree",
+    "[20:34:08] GUARD 2: dirty tree stashed (OCB-Runner-20260603_203408)",
+    "[20:34:08] [STAGE:phase_running] starting phase execution",
+    "[20:34:08] [STAGE:phase_running] Phase 1: SAFE TEST",
+    "[20:34:08] Phase 1: SAFE TEST",
+    "[20:34:08]   Task 1: Create a file called ocb_lifeguard_result.txt with content: OCB Runner",
+    "[20:34:08]   DONE: created ocb_lifeguard_result.txt (16 chars)",
+    "[20:34:08] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
+    "[20:34:08] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -46,23 +46,23 @@
     }
   },
   "files_changed": [
-    "ocb_brain_test.txt"
+    "ocb_lifeguard_result.txt"
   ],
   "git_diff_stat": "",
   "rollback_available": false,
   "error": "",
-  "stash_ref": "OCB-Runner-20260603_203020",
+  "stash_ref": "OCB-Runner-20260603_203408",
   "current_phase": 1,
   "mot_score": "SKIPPED (skip_mot=True)",
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "Create Brain Test File",
+      "phase_name": "SAFE TEST",
       "status": "DONE",
       "tasks": [
         {
           "num": 1,
-          "text": "create a file ocb_brain_test.txt content: OCB Runner AI brain wired 2026-06-02",
+          "text": "Create a file called ocb_lifeguard_result.txt with content: OCB Runner alive",
           "status": "PENDING"
         }
       ]
