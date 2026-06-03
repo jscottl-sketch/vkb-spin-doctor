@@ -815,7 +815,7 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
             result = subprocess.run(
                 [sys.executable, str(MOT_SCRIPT)],
                 capture_output=True, text=True, encoding="utf-8", errors="replace",
-                timeout=180, cwd=str(HERE),
+                timeout=60, cwd=str(HERE),
             )
             mot_returncode = result.returncode
             output = (result.stdout or "") + (result.stderr or "")
@@ -832,6 +832,9 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
             if not mot_score:
                 mot_score = f"exit {result.returncode}"
             _log_entry(status, 0, 0, f"MOT: {mot_score}")
+        except subprocess.TimeoutExpired:
+            mot_score = "MOT timed out — check mcc_full_mot.py manually"
+            _log_entry(status, 0, 0, mot_score)
         except Exception as exc:
             mot_score = f"MOT error: {str(exc)[:60]}"
             _log_entry(status, 0, 0, mot_score)
@@ -1101,7 +1104,7 @@ def _run_mot_check() -> tuple:
     try:
         r      = subprocess.run([sys.executable, str(MOT_SCRIPT)],
                                 capture_output=True, text=True, encoding="utf-8",
-                                errors="replace", timeout=180, cwd=str(HERE))
+                                errors="replace", timeout=60, cwd=str(HERE))
         output = (r.stdout or "") + (r.stderr or "")
         score  = ""
         for line in output.splitlines():
@@ -1114,6 +1117,8 @@ def _run_mot_check() -> tuple:
         if not score:
             score = f"exit {r.returncode}"
         return r.returncode == 0 or "all clear" in score.lower(), score
+    except subprocess.TimeoutExpired:
+        return False, "MOT timed out — check mcc_full_mot.py manually"
     except Exception as exc:
         return False, f"MOT error: {str(exc)[:80]}"
 
@@ -1149,6 +1154,20 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
         stream_log(msg)
         obj["live_output"] = list(_live_output)
         _write_status(obj)
+
+    # Startup cleanup — clear stale abort flag and lock file before every new run
+    try:
+        if OCB_ABORT_FILE.exists():
+            OCB_ABORT_FILE.write_text('{"abort": false}', encoding="utf-8")
+            _sl("Startup: cleared stale abort flag")
+    except Exception:
+        pass
+    try:
+        if _LOCK_FILE.exists():
+            _LOCK_FILE.unlink(missing_ok=True)
+            _sl("Startup: cleared stale lock file")
+    except Exception:
+        pass
 
     # GUARD 1 — Lock file
     set_status("locking", "checking .ocb_running lock file")
