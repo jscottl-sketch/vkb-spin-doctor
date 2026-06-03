@@ -2,18 +2,25 @@
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "ECHO TEST",
+      "phase_name": "SAFE TEST",
       "status": "DONE",
       "tasks_done": 0,
-      "tasks_total": 1
+      "tasks_total": 0
+    },
+    {
+      "phase_num": 2,
+      "phase_name": "VERIFY",
+      "status": "DONE",
+      "tasks_done": 0,
+      "tasks_total": 0
     }
   ],
-  "phase_current": 1,
-  "phase_name": "ECHO TEST",
-  "phase_total": 1,
+  "phase_current": 2,
+  "phase_name": "VERIFY",
+  "phase_total": 2,
   "percent": 100,
   "status": "RUNNING",
   "current_stage": "committing",
-  "mot_score": "exit 0",
-  "updated_at": "2026-06-03T14:28:56"
+  "mot_score": "VERDICT: ALL CLEAR",
+  "updated_at": "2026-06-03T14:34:13"
 }
