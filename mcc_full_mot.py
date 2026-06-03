@@ -515,7 +515,7 @@ def main():
         print("="*62)
     else:
         print(f"[LIVE] MCC FULL MOT starting — {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", flush=True)
-        print("[LIVE] TOTAL_CHECKS=108", flush=True)
+        print("[LIVE] TOTAL_CHECKS=109", flush=True)
 
     test_group_a()
     test_group_b()

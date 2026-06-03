@@ -681,9 +681,11 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
                 _write_status(status)
                 try:
                     cmd = [sys.executable, str(script_path)] if script_path.suffix == ".py" else [str(script_path)]
-                    res = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
+                    res = subprocess.run(cmd, capture_output=True, text=True,
+                                        encoding="utf-8", errors="replace",
+                                        timeout=120, cwd=str(HERE))
                     _log_entry(status, phase["phase_num"], task["num"],
-                               f"exit={res.returncode} | {(res.stdout+res.stderr).strip()[:200]}")
+                               f"exit={res.returncode} | {((res.stdout or '')+(res.stderr or '')).strip()[:200]}")
                     status["phases"][pi]["tasks"][ti]["status"] = "DONE" if res.returncode == 0 else "FAILED"
                     if res.returncode != 0:
                         phase_ok = False
@@ -812,10 +814,11 @@ def run_all(ocb_text: str, run_id: str, max_retries: int = 3,
         try:
             result = subprocess.run(
                 [sys.executable, str(MOT_SCRIPT)],
-                capture_output=True, text=True, timeout=180, cwd=str(HERE),
+                capture_output=True, text=True, encoding="utf-8", errors="replace",
+                timeout=180, cwd=str(HERE),
             )
             mot_returncode = result.returncode
-            output = result.stdout + result.stderr
+            output = (result.stdout or "") + (result.stderr or "")
             # Try to extract the concise score line
             for line in output.splitlines():
                 if "passed" in line.lower() and ("failed" in line.lower() or "/" in line):
@@ -1097,8 +1100,9 @@ def _run_mot_check() -> tuple:
     """CHECK D — MOT. Returns (ok, score_str)."""
     try:
         r      = subprocess.run([sys.executable, str(MOT_SCRIPT)],
-                                capture_output=True, text=True, timeout=180, cwd=str(HERE))
-        output = r.stdout + r.stderr
+                                capture_output=True, text=True, encoding="utf-8",
+                                errors="replace", timeout=180, cwd=str(HERE))
+        output = (r.stdout or "") + (r.stderr or "")
         score  = ""
         for line in output.splitlines():
             if "passed" in line.lower() and ("failed" in line.lower() or "/" in line):
@@ -1250,8 +1254,10 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
                     _sl(f"  Run Script: {_sname}")
                     try:
                         _cmd = [sys.executable, str(_spath)] if _spath.suffix == ".py" else [str(_spath)]
-                        _sr = subprocess.run(_cmd, capture_output=True, text=True, timeout=120, cwd=str(HERE))
-                        _sl(f"  exit={_sr.returncode} | {(_sr.stdout+_sr.stderr).strip()[:200]}")
+                        _sr = subprocess.run(_cmd, capture_output=True, text=True,
+                                            encoding="utf-8", errors="replace",
+                                            timeout=120, cwd=str(HERE))
+                        _sl(f"  exit={_sr.returncode} | {((_sr.stdout or '')+(_sr.stderr or '')).strip()[:200]}")
                         if _sr.returncode != 0:
                             failed_reason = f"Script {_sname} exited {_sr.returncode}"
                             _sl(f"  FAIL: {failed_reason}")
