@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-03T15:18:45.274536",
+  "timestamp": "2026-06-03T15:19:39.385055",
   "total": 109,
   "passed": 109,
   "failed": 0,
@@ -617,7 +617,7 @@
       "group": "G",
       "name": "memory_bank.store()",
       "status": "PASS",
-      "detail": "uid=5767143d-851f-42"
+      "detail": "uid=c4e6bc31-0aa8-49"
     },
     {
       "group": "G",
@@ -659,7 +659,7 @@
       "group": "H",
       "name": "No handover files in root",
       "status": "PASS",
-      "detail": "⚠️ WARNING: 5 handover file(s) in root — should be in archive_dead/: VKB_SpinDoctor_Handover_v92.md, VKB_SpinDoctor_Handover_v94.md, VKB_SpinDoctor_Handover_v95.md (+2 more)"
+      "detail": "⚠️ WARNING: 6 handover file(s) in root — should be in archive_dead/: VKB_SpinDoctor_Handover_v92.md, VKB_SpinDoctor_Handover_v94.md, VKB_SpinDoctor_Handover_v95.md (+3 more)"
     }
   ]
 }
