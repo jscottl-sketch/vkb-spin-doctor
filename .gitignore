@@ -31,3 +31,5 @@ aafl_output/
 # Electron
 electron/node_modules/
 electron/dist/
+
+data/ocb_abort.json

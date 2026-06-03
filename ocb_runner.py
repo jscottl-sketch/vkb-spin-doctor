@@ -1231,6 +1231,11 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
             obj["guard_results"]["stash"] = True
             _sl("GUARD 2: clean tree — no stash needed")
         print("[THREAD] Git stash done")
+        # Re-clear abort flag: git stash may have restored a committed abort=true
+        try:
+            OCB_ABORT_FILE.write_text('{"abort": false}', encoding="utf-8")
+        except Exception:
+            pass
 
         # GUARD 3 — Phase execution (sequential, stop on first fail)
         set_status("phase_running", "starting phase execution")
