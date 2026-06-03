@@ -218,6 +218,14 @@
 | WENTO Queue | HISAV Section 10 — standalone WENTO capture with timestamp list. GET/POST /api/hisav/wento. data/wento_queue.json. Built 2026-05-31. |
 | OCB Runner safety layer | git stash + HTML syntax check + auto-rollback on fail. Run Script task type. run_ocb() callable via /api/ocb/run. HISAV Section 11 panel. Built 2026-05-31. |
 | OCB Runner MOT fix | NoneType+str crash in run_all/_run_mot_check fixed at source: (stdout or "")+(stderr or "") guards + encoding="utf-8" on all MOT/script subprocess calls. TOTAL_CHECKS hardcode 108→109. Echo test PASS end to end 2026-06-03. |
+| OCB-R+: Reality Report | reality_check.py — 21-section standalone health report (A-U). docs/REALITY_REPORT.md + archive. No server required. Built 2026-06-03. |
+| OCB-R+: Error Database | error_logger.py — FFUEM drop-in. data/errors_db.json. File-locked atomic writes. Rotation at 1000 entries. Wired into mcc_server, aafl_core, aafl_wccs. Built 2026-06-03. |
+| OCB-R+: Test Suite | tests/ — 5 standalone scripts (test_files, test_endpoints, test_imports, test_providers, test_wccs). POST /api/ocb/run-test-suite. Built 2026-06-03. |
+| OCB-R+: New Endpoints | /api/reality/export, /api/errors/recent, /api/errors/clear, /api/ocb/run-test-suite, /api/ocb/test-status, /api/status-pip. Via mcc_ocbr_handlers.py. Built 2026-06-03. |
+| OCB-R+: HISAV Export Button | "EXPORT REALITY REPORT" amber button in HITSAV sticky toolbar. hisavExportReality() downloads REALITY_REPORT.md. Built 2026-06-03. |
+| OCB-R+: Error DB Panel | Detective Panel B sub-panel — Error Database (last 50), filter by component, 30s auto-refresh. Built 2026-06-03. |
+| OCB-R+: Test Suite Runner | OCB Runner tab — Test Suite section with RUN ALL TESTS button, live colour badges (green/amber/red), output drill-down. Built 2026-06-03. |
+| OCB-R+: Bottom Status Pip | Fixed bottom-left pip bar — 5 colour-coded pills (Providers/MOT/WCCS/Errors/Report). Click → popup. 60s auto-refresh. z-index 9998. Built 2026-06-03. |
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
