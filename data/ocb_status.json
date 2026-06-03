@@ -1,5 +1,5 @@
 {
-  "run_id": "lifeguard_test",
+  "run_id": "test_brain_205820",
   "started_at": "2026-06-03T20:58:20",
   "status": "RUNNING",
   "current_stage": "committing",
@@ -9,14 +9,14 @@
     "[20:58:20] [STAGE:locking] checking .ocb_running lock file",
     "[20:58:20] GUARD 1 PASS: lock file clear",
     "[20:58:20] [STAGE:stashing] checking git working tree",
-    "[20:58:20] GUARD 2: dirty tree stashed (OCB-Runner-20260603_205820)",
-    "[20:58:20] [STAGE:phase_running] starting phase execution",
-    "[20:58:20] [STAGE:phase_running] Phase 1: SAFE TEST",
-    "[20:58:20] Phase 1: SAFE TEST",
-    "[20:58:20]   Task 1: Create a file called ocb_lifeguard_result.txt with content: OCB Runner",
-    "[20:58:20]   DONE: created ocb_lifeguard_result.txt (16 chars)",
-    "[20:58:20] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[20:58:20] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[20:58:21] GUARD 2: dirty tree stashed (OCB-Runner-20260603_205820)",
+    "[20:58:21] [STAGE:phase_running] starting phase execution",
+    "[20:58:21] [STAGE:phase_running] Phase 1: Create Brain Test File",
+    "[20:58:21] Phase 1: Create Brain Test File",
+    "[20:58:21]   Task 1: create a file ocb_brain_test.txt content: OCB Runner AI brain wired 20",
+    "[20:58:21]   DONE: created ocb_brain_test.txt (36 chars)",
+    "[20:58:21] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
+    "[20:58:21] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -46,7 +46,7 @@
     }
   },
   "files_changed": [
-    "ocb_lifeguard_result.txt"
+    "ocb_brain_test.txt"
   ],
   "git_diff_stat": "",
   "rollback_available": false,
@@ -57,12 +57,12 @@
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "SAFE TEST",
+      "phase_name": "Create Brain Test File",
       "status": "DONE",
       "tasks": [
         {
           "num": 1,
-          "text": "Create a file called ocb_lifeguard_result.txt with content: OCB Runner alive",
+          "text": "create a file ocb_brain_test.txt content: OCB Runner AI brain wired 2026-06-02",
           "status": "PENDING"
         }
       ]
