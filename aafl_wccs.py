@@ -495,6 +495,7 @@ def main():
         _elapsed("bridge post")
     _total = _time.time() - _t0
     print(f"[DONE] WCCS complete {'(dry run)' if args.dry_run else ''} — TOTAL: {_total:.1f}s")
+    _wlog_event("aafl_wccs", f"WCCS run complete in {_total:.1f}s {'(dry-run)' if args.dry_run else ''}")
 
 
 def _uprint(msg):
