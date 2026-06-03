@@ -66,6 +66,7 @@ KNOWN_FILES = [
 
 OCB_STATUS_FILE  = HERE / "data" / "ocb_status.json"
 OCB_ABORT_FILE   = HERE / "data" / "ocb_abort.json"
+_OCB_TEMP_DIR    = HERE / "temp"
 CLACHR_RESPONSE  = HERE / "data" / "clachr_response.json"
 MOT_SCRIPT       = HERE / "mcc_full_mot.py"
 
@@ -126,6 +127,20 @@ def _body_tasks(body_lines: list) -> list:
     return tasks
 
 
+def _extract_python_blocks(body: str) -> list:
+    """Extract Python code blocks: triple-backtick fences or lines after 'Run this Python:'."""
+    blocks = []
+    for m in re.finditer(r'```(?:python)?\s*\n(.*?)```', body, re.DOTALL | re.IGNORECASE):
+        code = m.group(1).strip()
+        if code:
+            blocks.append(code)
+    for m in re.finditer(r'Run\s+this\s+Python\s*:\s*\n((?:(?!```).+\n?)+)', body, re.IGNORECASE):
+        code = m.group(1).strip()
+        if code and code not in blocks:
+            blocks.append(code)
+    return blocks
+
+
 def _parse_ocb_block_inner(text: str) -> list:
     """
     O(n) line-scan parser. Four passes:
@@ -145,7 +160,7 @@ def _parse_ocb_block_inner(text: str) -> list:
         s = raw.strip()
         if _is_sep_line(s):
             if cur_num is not None:
-                phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+                phases.append({"phase_num": cur_num, "phase_name": cur_name, "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
             nm = _PH_NUM_RE.search(s)
             try:
                 cur_num = int(nm.group(1))
@@ -159,7 +174,7 @@ def _parse_ocb_block_inner(text: str) -> list:
             cur_body.append(raw)
 
     if cur_num is not None:
-        phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+        phases.append({"phase_num": cur_num, "phase_name": cur_name, "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
 
     if phases:
         return phases
@@ -172,7 +187,7 @@ def _parse_ocb_block_inner(text: str) -> list:
         m = _bare.match(raw)
         if m:
             if cur_num is not None:
-                phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+                phases.append({"phase_num": cur_num, "phase_name": cur_name, "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
             try:
                 cur_num = int(m.group(1))
                 cur_name = m.group(2).strip()
@@ -182,7 +197,7 @@ def _parse_ocb_block_inner(text: str) -> list:
         elif cur_num is not None:
             cur_body.append(raw)
     if cur_num is not None:
-        phases.append({"phase_num": cur_num, "phase_name": cur_name, "tasks": _body_tasks(cur_body)})
+        phases.append({"phase_num": cur_num, "phase_name": cur_name, "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
 
     if phases:
         return phases
@@ -196,7 +211,7 @@ def _parse_ocb_block_inner(text: str) -> list:
         m = _forgiving_sep.match(raw)
         if m:
             if cur_num > 0 and cur_body:
-                phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "tasks": _body_tasks(cur_body)})
+                phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
             cur_num += 1
             # Use the matched text as both phase name and first task
             label = m.group(2) or m.group(3) or raw.strip()
@@ -206,13 +221,13 @@ def _parse_ocb_block_inner(text: str) -> list:
             cur_body.append(raw)
 
     if cur_num > 0 and cur_body:
-        phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "tasks": _body_tasks(cur_body)})
+        phases.append({"phase_num": cur_num, "phase_name": cur_name or f"Phase {cur_num}", "body": "\n".join(cur_body), "tasks": _body_tasks(cur_body)})
 
     if phases:
         return phases
 
     # Pass 4: treat entire text as one phase
-    return [{"phase_num": 1, "phase_name": "Task Block", "tasks": _body_tasks(lines)}]
+    return [{"phase_num": 1, "phase_name": "Task Block", "body": "\n".join(lines), "tasks": _body_tasks(lines)}]
 
 
 def parse_ocb_block(text: str) -> list:
@@ -1005,6 +1020,7 @@ def parse_ocb(text: str) -> list:
         result.append({
             "phase":          p["phase_num"],
             "phase_name":     p["phase_name"],
+            "body":           p.get("body", ""),
             "tasks":          p["tasks"],
             "task_type":      "code_edit",
             "files_affected": files_affected,
@@ -1259,6 +1275,39 @@ def run_safe(parsed: list, run_id: str = "", dry_run: bool = False,
                 obj["phases"][ph_idx]["status"] = "RUNNING"
             set_status("phase_running", f"Phase {phase['phase']}: {phase.get('phase_name','')}")
             _sl(f"Phase {phase['phase']}: {phase.get('phase_name','')}")
+
+            # Execute Python code blocks embedded in the phase body
+            _phase_body = phase.get("body", "")
+            _py_blocks = _extract_python_blocks(_phase_body)
+            for _pycode in _py_blocks:
+                _OCB_TEMP_DIR.mkdir(exist_ok=True)
+                _pytmp = _OCB_TEMP_DIR / f"ocb_phase_{phase['phase']}_{datetime.now().strftime('%H%M%S%f')}.py"
+                _pytmp.write_text(_pycode, encoding="utf-8")
+                _sl(f"  [PyBlock] Executing: {_pytmp.name}")
+                try:
+                    _pyr = subprocess.run(
+                        [sys.executable, str(_pytmp)],
+                        capture_output=True, text=True, encoding="utf-8", errors="replace",
+                        timeout=30, cwd=str(HERE),
+                    )
+                    _py_out = ((_pyr.stdout or "") + (_pyr.stderr or "")).strip()
+                    _sl(f"  [PyBlock] exit={_pyr.returncode} | {_py_out[:200]}")
+                    if _pyr.returncode != 0:
+                        failed_reason = f"Python block exited {_pyr.returncode}"
+                except subprocess.TimeoutExpired:
+                    failed_reason = "Python block timed out after 30s"
+                    _sl(f"  [PyBlock] TIMEOUT")
+                except Exception as _pye:
+                    failed_reason = f"Python block error: {str(_pye)[:80]}"
+                    _sl(f"  [PyBlock] ERROR: {failed_reason}")
+                finally:
+                    try:
+                        _pytmp.unlink(missing_ok=True)
+                    except Exception:
+                        pass
+                if failed_reason:
+                    break
+
             for task in phase.get("tasks", []):
                 if failed_reason:
                     break
