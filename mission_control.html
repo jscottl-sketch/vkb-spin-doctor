@@ -221,16 +221,27 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0d0d0d
 .hitsav-tb-save{background:#1a3a1a!important;border-color:#2a6a2a!important;color:#6f6!important}
 .hitsav-tb-save:hover{background:#1d5a1d!important}
 .hitsav-tb-last{font-size:11px;color:#556;margin-left:auto;white-space:nowrap}
-/* ── 3-STEP SAVE FLOW ── */
-.hitsav-step-btn{font-size:15px;font-weight:bold;padding:12px 20px;border-radius:7px;cursor:pointer;min-width:158px;transition:.2s;letter-spacing:.2px;border:2px solid}
+/* ── 2-STEP SAVE FLOW ── */
+.hitsav-step-btn{font-size:15px;font-weight:bold;padding:12px 20px;border-radius:7px;cursor:pointer;min-width:158px;transition:background .2s,border-color .2s,color .2s,box-shadow .2s;letter-spacing:.2px;border:2px solid}
 .hitsav-step-btn:disabled{opacity:.38;cursor:not-allowed;filter:grayscale(.5)}
 .hitsav-step-green{background:#1a3a1a;border-color:#2a7a2a;color:#6f6}
 .hitsav-step-green:not(:disabled):hover{background:#1d5a1d}
 .hitsav-step-blue{background:#0a1a3a;border-color:#2a4a8a;color:#4af}
 .hitsav-step-blue:not(:disabled):hover{background:#0a2050}
-.hitsav-step-amber{background:#2a1a00;border-color:#7a4a00;color:#fa0}
-.hitsav-step-amber:not(:disabled):hover{background:#3a2800}
-.hitsav-step-done{background:#1a1a1a!important;border-color:#3a3a3a!important;color:#555!important;cursor:default!important}
+.hitsav-step-done{background:#0a2a0a!important;border-color:#22c55e!important;color:#22c55e!important;cursor:default!important}
+.hitsav-step-flash-ok{background:#0a3a1a!important;border-color:#22c55e!important;box-shadow:0 0 12px #22c55e88!important;color:#22c55e!important}
+.hitsav-step-flash-err{background:#2a0a0a!important;border-color:#f44!important;box-shadow:0 0 12px #f44888!important;color:#f44!important}
+/* ── Flow arrow between steps ── */
+.hitsav-flow-arrow{font-size:22px;color:#2a3a4a;transition:color .35s,text-shadow .35s;user-select:none;flex-shrink:0;line-height:1}
+.hitsav-flow-arrow.lit{color:#22c55e;text-shadow:0 0 10px #22c55e;animation:hsArrowPulse .6s ease-out}
+@keyframes hsArrowPulse{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
+/* ── Status pip ── */
+.hitsav-pip{width:12px;height:12px;border-radius:50%;background:#2a3a4a;flex-shrink:0;transition:background .4s,box-shadow .4s}
+.hitsav-pip.pip-done{background:#22c55e;box-shadow:0 0 8px #22c55e;animation:hsPipPulse 1.2s ease-in-out 4}
+@keyframes hsPipPulse{0%,100%{box-shadow:0 0 6px #22c55e}50%{box-shadow:0 0 18px #22c55e,0 0 30px #22c55e66}}
+/* ── Step 2 glow when step 1 complete ── */
+.hitsav-step-next{box-shadow:0 0 0 2px #4af,0 0 12px #4af44!important;animation:hsNextGlow 1.4s ease-in-out infinite alternate}
+@keyframes hsNextGlow{0%{box-shadow:0 0 4px #4af4}100%{box-shadow:0 0 16px #4af,0 0 28px #4af44}}
 .hitsav-summary-panel{display:none;background:#080c10;border:1px solid #1e2a3a;border-top:none;padding:12px 14px}
 /* ── POST-WCCS CHECKLIST ── */
 .pwccs-row{width:100%;display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid #1e2a3a;flex-wrap:nowrap;overflow-x:auto}
@@ -2428,20 +2439,18 @@ select:focus {
     <div class="acca-info-box" style="margin-top:10px;margin-bottom:4px">HISAV = Handover, Ideas, Screenshots, Archive, Vehicle history</div>
     <div class="acca-info-box" style="margin-bottom:8px">WCCS = Write Claude Code Save — end-of-session save to disk</div>
 
-    <!-- ═══ 3-STEP SAVE FLOW ═══ -->
+    <!-- ═══ 2-STEP SAVE FLOW ═══ -->
     <div class="hitsav-sticky-tb" id="hitsav-sticky-tb">
       <button id="hitsav-step1-btn" class="hitsav-step-btn hitsav-step-green"
         onclick="hitsavStep1()" title="Step 1: Save session — runs WCCS to update STATUS.md and HISTORY.md">
-        ① Save Session
+        Save Session
       </button>
+      <span class="hitsav-flow-arrow" id="hitsav-flow-arrow" aria-hidden="true">→</span>
       <button id="hitsav-step2-btn" class="hitsav-step-btn hitsav-step-blue"
         onclick="hitsavStep2()" title="Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files">
-        ② Copy STATUS.md
+        Copy STATUS.md
       </button>
-      <button id="hitsav-step3-btn" class="hitsav-step-btn hitsav-step-amber"
-        onclick="hitsavStep3()" disabled title="Step 3: Go to Claude.ai and paste the STATUS.md into Project Files">
-        ③ Go to Claude
-      </button>
+      <span class="hitsav-pip" id="hitsav-pip" title="Both steps complete when green"></span>
       <button id="hitsav-autostatus-btn" class="hitsav-tb-btn"
         onclick="hitsavAutoUpdateStatus()"
         title="Auto-Update STATUS.md — scans session logs, cross-checks timeline, sends to AI to update BUILT table and priorities"
@@ -4530,61 +4539,92 @@ select:focus {
   });
 })();
 
-// ── 3-STEP SAVE FLOW ──────────────────────────────────────────────────────────
+// ── 2-STEP SAVE FLOW ──────────────────────────────────────────────────────────
+
+function _hsFlashBtn(btn, state, tempText, revertText, revertClass, duration){
+  if(!btn) return;
+  btn.className = 'hitsav-step-btn ' + (state==='ok' ? 'hitsav-step-flash-ok' : 'hitsav-step-flash-err');
+  btn.textContent = tempText;
+  btn.disabled = true;
+  setTimeout(function(){
+    btn.className = 'hitsav-step-btn ' + revertClass;
+    btn.textContent = revertText;
+    btn.disabled = false;
+  }, duration);
+}
 
 window.hitsavStep1 = async function(){
   var btn1 = document.getElementById('hitsav-step1-btn');
+  var arrow = document.getElementById('hitsav-flow-arrow');
+  var btn2  = document.getElementById('hitsav-step2-btn');
   if(btn1){ btn1.disabled=true; btn1.textContent='⏳ Saving…'; }
-  // Hide post-save banner first so we can detect a fresh success
   var banner = document.getElementById('post-save-banner');
   if(banner) banner.style.display='none';
   try {
     await saveSession();
     var savedOk = banner && banner.style.display==='block';
     if(savedOk){
-      if(btn1){ btn1.className='hitsav-step-btn hitsav-step-done'; btn1.textContent='① Save Session ✅'; btn1.disabled=true; }
-      var btn2 = document.getElementById('hitsav-step2-btn');
-      if(btn2) btn2.disabled=false;
+      // Flash green then settle to done style
+      if(btn1){
+        btn1.className='hitsav-step-btn hitsav-step-flash-ok';
+        btn1.textContent='Done ✓';
+        btn1.disabled=true;
+        setTimeout(function(){
+          if(btn1){ btn1.className='hitsav-step-btn hitsav-step-done'; btn1.textContent='Save Session ✓'; }
+        }, 2000);
+      }
+      // Update last-saved timestamp
+      var tsEl = document.getElementById('hitsav-tb-ts');
+      if(tsEl){ var now=new Date(); tsEl.textContent=now.toLocaleTimeString(); }
+      // Light the arrow
+      if(arrow) arrow.classList.add('lit');
+      // Highlight step 2 as next
+      if(btn2){ btn2.disabled=false; btn2.classList.add('hitsav-step-next'); }
     } else {
-      if(btn1){ btn1.disabled=false; btn1.textContent='① Save Session'; }
+      _hsFlashBtn(btn1,'err','❌ Save failed — retry','Save Session','hitsav-step-green',3000);
     }
   } catch(e){
-    if(btn1){ btn1.disabled=false; btn1.textContent='① Save Session'; }
+    _hsFlashBtn(btn1,'err','❌ Error — retry','Save Session','hitsav-step-green',3000);
   }
 };
 
 window.hitsavStep2 = async function(){
-  var btn2 = document.getElementById('hitsav-step2-btn');
-  if(btn2){ btn2.disabled=true; btn2.textContent='⏳ Copying…'; }
+  var btn1  = document.getElementById('hitsav-step1-btn');
+  var btn2  = document.getElementById('hitsav-step2-btn');
+  var arrow = document.getElementById('hitsav-flow-arrow');
+  var pip   = document.getElementById('hitsav-pip');
+  if(btn2){ btn2.disabled=true; btn2.classList.remove('hitsav-step-next'); btn2.textContent='⏳ Copying…'; }
   try {
     var text = await (await fetch('/api/status')).text();
     await navigator.clipboard.writeText(text);
-    if(btn2){ btn2.className='hitsav-step-btn hitsav-step-done'; btn2.textContent='② Copy STATUS.md ✅'; btn2.disabled=true; }
-    var btn3 = document.getElementById('hitsav-step3-btn');
-    if(btn3) btn3.disabled=false;
-    typeof toast==='function'&&toast('Copied','ok',3000);
+    // Flash then settle to done
+    if(btn2){
+      btn2.className='hitsav-step-btn hitsav-step-flash-ok';
+      btn2.textContent='Done ✓';
+      btn2.disabled=true;
+      setTimeout(function(){
+        if(btn2){ btn2.className='hitsav-step-btn hitsav-step-done'; btn2.textContent='Copy STATUS.md ✓'; }
+      }, 2000);
+    }
+    // Both steps done — light everything up
+    if(arrow){ arrow.classList.add('lit'); }
+    if(pip){ pip.classList.add('pip-done'); }
+    typeof toast==='function'&&toast('Session saved — ready for Claude ✓','ok',5000);
+    // Reset flow after 60s for next session
+    setTimeout(function(){
+      var b1=document.getElementById('hitsav-step1-btn');
+      var b2=document.getElementById('hitsav-step2-btn');
+      var ar=document.getElementById('hitsav-flow-arrow');
+      var pp=document.getElementById('hitsav-pip');
+      if(b1){ b1.className='hitsav-step-btn hitsav-step-green'; b1.textContent='Save Session'; b1.disabled=false; }
+      if(b2){ b2.className='hitsav-step-btn hitsav-step-blue'; b2.textContent='Copy STATUS.md'; b2.disabled=false; }
+      if(ar){ ar.classList.remove('lit'); }
+      if(pp){ pp.classList.remove('pip-done'); }
+    }, 60000);
   } catch(e){
-    if(btn2){ btn2.disabled=false; btn2.textContent='② Copy STATUS.md'; }
+    _hsFlashBtn(btn2,'err','❌ Copy failed','Copy STATUS.md','hitsav-step-blue',3000);
     typeof toast==='function'&&toast('Copy failed — is MCC server running?','error',4000);
   }
-};
-
-window.hitsavStep3 = function(){
-  typeof toast==='function'&&toast(
-    '📋 STATUS.md is on your clipboard.\n Go to claude.ai → Project Files → Remove old STATUS.md → Paste new one. ✅ You\'re done!',
-    'ok', 10000
-  );
-  var btn3 = document.getElementById('hitsav-step3-btn');
-  if(btn3){ btn3.textContent='③ Go to Claude ✅'; }
-  // Reset all steps after a 60s delay so the flow is ready for next session
-  setTimeout(function(){
-    var b1=document.getElementById('hitsav-step1-btn');
-    var b2=document.getElementById('hitsav-step2-btn');
-    var b3=document.getElementById('hitsav-step3-btn');
-    if(b1){ b1.className='hitsav-step-btn hitsav-step-green'; b1.textContent='① Save Session'; b1.disabled=false; }
-    if(b2){ b2.className='hitsav-step-btn hitsav-step-blue';  b2.textContent='② Copy STATUS.md'; b2.disabled=true; }
-    if(b3){ b3.className='hitsav-step-btn hitsav-step-amber'; b3.textContent='③ Go to Claude'; b3.disabled=true; }
-  }, 60000);
 };
 </script>
 
