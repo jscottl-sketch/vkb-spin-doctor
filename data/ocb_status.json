@@ -1,26 +1,23 @@
 {
-  "run_id": "20260603_152100",
-  "started_at": "2026-06-03T15:21:00",
-  "status": "DONE",
-  "current_stage": "locking",
-  "stage_detail": "",
+  "run_id": "20260603_152613",
+  "started_at": "2026-06-03T15:26:13",
+  "status": "RUNNING",
+  "current_stage": "committing",
+  "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[15:21:00] [STAGE:locking] checking .ocb_running lock file",
-    "[15:21:00] GUARD 1 PASS: lock file clear",
-    "[15:21:00] [STAGE:stashing] checking git working tree",
-    "[15:21:01] GUARD 2: dirty tree stashed (OCB-Runner-20260603_152101)",
-    "[15:21:01] [STAGE:phase_running] starting phase execution",
-    "[15:21:01] [STAGE:phase_running] Phase 1: TOOLBAR FIX",
-    "[15:21:01] Phase 1: TOOLBAR FIX",
-    "[15:21:01] [STAGE:phase_running] Phase 2: VERIFY",
-    "[15:21:01] Phase 2: VERIFY",
-    "[15:21:01] [STAGE:mot_running] running mcc_full_mot.py",
-    "[15:21:01] Running MOT check\u2026",
-    "[15:21:24] CHECK D (MOT): PASS \u2014 VERDICT: ALL CLEAR",
-    "[15:21:24] [STAGE:committing] MOT passed \u2014 committing changes",
-    "[15:21:24] [STAGE:complete] MOT VERDICT: ALL CLEAR",
-    "[15:21:24] All guards passed \u2014 changes committed",
-    "[15:21:24] Lock file released"
+    "[15:26:13] [STAGE:locking] checking .ocb_running lock file",
+    "[15:26:13] GUARD 1 PASS: lock file clear",
+    "[15:26:13] [STAGE:stashing] checking git working tree",
+    "[15:26:13] GUARD 2: dirty tree stashed (OCB-Runner-20260603_152613)",
+    "[15:26:13] [STAGE:phase_running] starting phase execution",
+    "[15:26:13] [STAGE:phase_running] Phase 1: REMOVE EXTRA BUTTON",
+    "[15:26:13] Phase 1: REMOVE EXTRA BUTTON",
+    "[15:26:13] [STAGE:phase_running] Phase 2: VERIFY",
+    "[15:26:13] Phase 2: VERIFY",
+    "[15:26:13] [STAGE:mot_running] running mcc_full_mot.py",
+    "[15:26:13] Running MOT check\u2026",
+    "[15:26:37] CHECK D (MOT): PASS \u2014 VERDICT: ALL CLEAR",
+    "[15:26:37] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -49,16 +46,16 @@
     }
   },
   "files_changed": [],
-  "git_diff_stat": " aafl_log.txt                        |   1 +\n data/knowledge_engine.db            | Bin 294912 -> 294912 bytes\n data/ocb_progress.json              |   4 +--\n data/ocb_status.json                |  34 +++++++++++------------\n health_results/full_mot_report.json |   4 +--\n session_logs/2026-06-03-cc1.md      |  52 ++++++++++++++++++++++++++++++++++++\n 6 files changed, 74 insertions(+), 21 deletions(-)\n",
+  "git_diff_stat": "",
   "rollback_available": false,
   "error": "",
-  "stash_ref": "OCB-Runner-20260603_152101",
+  "stash_ref": "OCB-Runner-20260603_152613",
   "current_phase": 2,
   "mot_score": "VERDICT: ALL CLEAR",
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "TOOLBAR FIX",
+      "phase_name": "REMOVE EXTRA BUTTON",
       "status": "DONE",
       "tasks": []
     },
@@ -68,6 +65,5 @@
       "status": "DONE",
       "tasks": []
     }
-  ],
-  "completed_at": "2026-06-03T15:21:24"
+  ]
 }
