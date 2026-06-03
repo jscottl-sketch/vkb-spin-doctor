@@ -2,14 +2,14 @@
   "phases": [
     {
       "phase_num": 1,
-      "phase_name": "SAFE TEST",
+      "phase_name": "Create Brain Test File",
       "status": "DONE",
       "tasks_done": 0,
       "tasks_total": 1
     }
   ],
   "phase_current": 1,
-  "phase_name": "SAFE TEST",
+  "phase_name": "Create Brain Test File",
   "phase_total": 1,
   "percent": 100,
   "status": "RUNNING",
