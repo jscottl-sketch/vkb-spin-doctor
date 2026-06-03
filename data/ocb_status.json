@@ -1,19 +1,19 @@
 {
   "run_id": "lifeguard_test",
-  "started_at": "2026-06-03T15:15:03",
+  "started_at": "2026-06-03T15:15:21",
   "status": "CANCELLED",
   "current_stage": "committing",
   "stage_detail": "MOT passed \u2014 committing changes",
   "live_output": [
-    "[15:15:03] Startup: cleared stale abort flag",
-    "[15:15:03] [STAGE:locking] checking .ocb_running lock file",
-    "[15:15:03] GUARD 1 PASS: lock file clear",
-    "[15:15:03] [STAGE:stashing] checking git working tree",
-    "[15:15:03] GUARD 2: dirty tree stashed (OCB-Runner-20260603_151503)",
-    "[15:15:03] [STAGE:phase_running] starting phase execution",
-    "[15:15:03] \u26d4 Aborted by user before Phase 1: SAFE TEST",
-    "[15:15:03] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
-    "[15:15:03] [STAGE:committing] MOT passed \u2014 committing changes"
+    "[15:15:21] Startup: cleared stale abort flag",
+    "[15:15:21] [STAGE:locking] checking .ocb_running lock file",
+    "[15:15:21] GUARD 1 PASS: lock file clear",
+    "[15:15:21] [STAGE:stashing] checking git working tree",
+    "[15:15:21] GUARD 2: dirty tree stashed (OCB-Runner-20260603_151521)",
+    "[15:15:21] [STAGE:phase_running] starting phase execution",
+    "[15:15:21] \u26d4 Aborted by user before Phase 1: SAFE TEST",
+    "[15:15:21] CHECK D (MOT): SKIPPED \u2014 non-HTML task flag set",
+    "[15:15:21] [STAGE:committing] MOT passed \u2014 committing changes"
   ],
   "guard_results": {
     "lock": true,
@@ -46,7 +46,7 @@
   "git_diff_stat": "",
   "rollback_available": false,
   "error": "",
-  "stash_ref": "OCB-Runner-20260603_151503",
+  "stash_ref": "OCB-Runner-20260603_151521",
   "current_phase": 0,
   "mot_score": "SKIPPED (skip_mot=True)",
   "phases": [
