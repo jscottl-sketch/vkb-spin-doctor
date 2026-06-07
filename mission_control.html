@@ -22934,7 +22934,10 @@ function missionToggleGlobalMonitors(on) {
 </script>
 
 <script>
-window.addEventListener('load', function(){
+(function(){
+  // Runs immediately — script sits at end of <body> so btn-wccs-hub already
+  // exists in the DOM. window 'load' never fires if an external resource
+  // (e.g. the Monaco CDN script) hangs/fails offline, which left this dead.
   var s = document.getElementById('btn-wccs-hub');
   var c = document.getElementById('copyStatusBtn');
   if(s){
@@ -22977,7 +22980,7 @@ window.addEventListener('load', function(){
         .catch(function(e){ c.textContent = '❌ ' + e.message; c.style.background = '#721c24'; setTimeout(function(){ c.textContent = cOrig; c.style.background = ''; }, 4000); });
     };
   }
-});
+})();
 </script>
 
 </body>
