@@ -1,5 +1,5 @@
 # STATUS — VKB Spin Doctor
-**Last updated:** 2026-06-03 (OCB Runner MOT bug fixed + echo test passing) | **Updated by:** claude_code
+**Last updated:** 2026-06-07 (OCB Runner MOT bug fixed + echo test passing) | **Updated by:** aafl_wccs.py
 **Companion files:** INDEX.md | HISTORY.md | ACCA.md
 
 ---
@@ -226,6 +226,7 @@
 | OCB-R+: Error DB Panel | Detective Panel B sub-panel — Error Database (last 50), filter by component, 30s auto-refresh. Built 2026-06-03. |
 | OCB-R+: Test Suite Runner | OCB Runner tab — Test Suite section with RUN ALL TESTS button, live colour badges (green/amber/red), output drill-down. Built 2026-06-03. |
 | OCB-R+: Bottom Status Pip | Fixed bottom-left pip bar — 5 colour-coded pills (Providers/MOT/WCCS/Errors/Report). Click → popup. 60s auto-refresh. z-index 9998. Built 2026-06-03. |
+| OCB
 
 ## CURRENT STATUS — PENDING
 | Component | Notes |
@@ -327,3 +328,7 @@ Still to sign up (8): xAI Grok, NVIDIA NIM, SambaNova, GitHub Models, Ollama, To
 9. Electron wrapper for packaging
 
 <!-- END_OF_FILE -->
+
+---
+## Session Note — 2026-06-07 09:21:40
+SAVE PATH TEST 2026-06-07
