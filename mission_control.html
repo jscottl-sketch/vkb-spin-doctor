@@ -2436,6 +2436,12 @@ select:focus {
      ============================================================ -->
 <div class="tab-pane active" id="tab-wccs" style="background:#0d0d0d">
   <div class="pane-scroll" style="position:relative">
+    <button id="btn-save-v2" type="button"
+      style="display:block;width:100%;padding:18px;margin:6px 0 14px 0;font-size:20px;font-weight:bold;color:#fff;background:#2ecc40;border:none;border-radius:8px;cursor:pointer"
+      onclick="this.textContent='Saving...'; this.style.background='#f1c40f'; const btn=this; fetch('/api/hisav/save-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'Session save '+new Date().toISOString()})}).then(r=>r.json().then(data=>{if(r.ok){btn.textContent='Saved ✓ ('+data.bytes+' bytes)'; btn.style.background='#2ecc40';}else{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', data);}})).catch(err=>{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', err);}).finally(()=>{setTimeout(()=>{btn.textContent='SAVE MY WORK'; btn.style.background='#2ecc40';},5000);});">
+      SAVE MY WORK
+    </button>
+
     <div class="acca-info-box" style="margin-top:10px;margin-bottom:4px">HISAV = Handover, Ideas, Screenshots, Archive, Vehicle history</div>
     <div class="acca-info-box" style="margin-bottom:8px">WCCS = Write Claude Code Save — end-of-session save to disk</div>
 
