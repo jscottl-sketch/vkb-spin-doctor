@@ -22272,7 +22272,7 @@ function _accaUpdateLabel() {
 
 async function _accaVersionPoll() {
   try {
-    const d = await apiFetch('/acca/version');
+    const d = await apiFetch('/api/acca/version');
     const mtime = d.last_modified || 0;
     if (mtime && mtime !== _accaLastModified) {
       if (_accaLastModified !== 0) {
