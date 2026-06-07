@@ -22938,24 +22938,43 @@ window.addEventListener('load', function(){
   var s = document.getElementById('btn-wccs-hub');
   var c = document.getElementById('copyStatusBtn');
   if(s){
+    var sOrig = s.textContent;
     s.onclick = function(){
+      var chatEl = document.getElementById('wccs-chat-input');
+      var chatText = chatEl ? chatEl.value.trim() : '';
       s.textContent = '⏳ Saving...';
       s.style.background = '#664d00';
-      fetch('/api/hisav/save-session',{method:'POST'})
+      s.style.color = '#fff';
+      fetch('/api/hisav/save-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:chatText})})
         .then(function(r){return r.json();})
-        .then(function(){ s.textContent='✅ Saved'; s.style.background='#155724'; })
-        .catch(function(e){ s.textContent='❌ '+e.message; s.style.background='#721c24'; });
+        .then(function(d){
+          if(d.ok){
+            s.textContent = '✅ Saved (' + d.bytes + 'B)';
+            s.style.background = '#155724';
+          } else {
+            s.textContent = '❌ ' + (d.error || 'Save failed');
+            s.style.background = '#721c24';
+          }
+          setTimeout(function(){ s.textContent = sOrig; s.style.background = ''; s.style.color = ''; }, 4000);
+        })
+        .catch(function(e){
+          s.textContent = '❌ ' + e.message;
+          s.style.background = '#721c24';
+          setTimeout(function(){ s.textContent = sOrig; s.style.background = ''; s.style.color = ''; }, 4000);
+        });
     };
   }
   if(c){
+    var cOrig = c.textContent;
     c.onclick = function(){
       c.textContent = '⏳ Copying...';
       c.style.background = '#664d00';
+      var _txt = '';
       fetch('/api/status')
         .then(function(r){return r.text();})
-        .then(function(t){ return navigator.clipboard.writeText(t); })
-        .then(function(){ c.textContent='✅ Copied'; c.style.background='#0d3d6b'; })
-        .catch(function(e){ c.textContent='❌ '+e.message; c.style.background='#721c24'; });
+        .then(function(t){ _txt = t; return navigator.clipboard.writeText(t); })
+        .then(function(){ c.textContent = '✅ Copied (' + _txt.length + 'B)'; c.style.background = '#0d3d6b'; setTimeout(function(){ c.textContent = cOrig; c.style.background = ''; }, 4000); })
+        .catch(function(e){ c.textContent = '❌ ' + e.message; c.style.background = '#721c24'; setTimeout(function(){ c.textContent = cOrig; c.style.background = ''; }, 4000); });
     };
   }
 });

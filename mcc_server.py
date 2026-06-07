@@ -8725,21 +8725,26 @@ MCCHandler._handle_hisav_wento_post = _handle_hisav_wento_post  # type: ignore[a
 # ── HITSAV: Direct session save (no AI, no subprocess) ───────────────────────
 
 def _handle_hitsav_save_session_direct(self):
-    """POST /api/hisav/save-session — write session text straight to session_logs/ with timestamp. No AI."""
+    """POST /api/hisav/save-session — append session note to STATUS.md. No AI, no provider calls."""
     try:
         body = json.loads(self._read_body() or "{}")
         text = (body.get("text") or "").strip()
         now = datetime.datetime.now()
-        fname = now.strftime("%Y-%m-%d-mcc-%H%M%S.md")
-        dest = HERE / "session_logs" / fname
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        lines = [f"# MCC Session Save — {now.strftime('%Y-%m-%d %H:%M:%S')}\n"]
+        stamp = now.strftime("%Y-%m-%d %H:%M:%S")
+        # Build session note entry
+        entry = f"\n\n---\n## Session Note — {stamp}\n"
         if text:
-            lines.append(f"\n## Summary\n{text}\n")
-        dest.write_text("".join(lines), encoding="utf-8")
-        self._send_json({"ok": True, "file": "session_logs/" + fname})
+            entry += f"{text}\n"
+        # Direct write to STATUS.md — no AI, no subprocess
+        existing = STATUS_FILE.read_text(encoding="utf-8", errors="replace") if STATUS_FILE.exists() else ""
+        new_content = existing + entry
+        tmp = HERE / "_status_save.tmp"
+        tmp.write_text(new_content, encoding="utf-8")
+        tmp.replace(STATUS_FILE)
+        byte_count = len(new_content.encode("utf-8"))
+        self._send_json({"ok": True, "path": "STATUS.md", "bytes": byte_count})
     except Exception as exc:
-        self._send_json({"error": str(exc)}, 500)
+        self._send_json({"ok": False, "error": str(exc)}, 500)
 
 MCCHandler._handle_hitsav_save_session_direct = _handle_hitsav_save_session_direct  # type: ignore[attr-defined]
 
