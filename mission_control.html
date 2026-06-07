@@ -2067,7 +2067,6 @@ select:focus {
         <button class="sb-action-btn" onclick="runHealthCheck()" title="Run provider health check (~30s)">🏥 Health Check</button>
         <button class="sb-action-btn" onclick="homeStartScout()" title="Start recurring Scout web research">🔭 Start Scout</button>
         <button class="sb-action-btn" onclick="homeRunAafl()" title="Prompt for a goal and queue it for AAFL">🔄 Run AAFL Goal</button>
-        <button class="sb-action-btn" onclick="saveSession()" title="Save session to STATUS.md and HISTORY.md">💾 Save WCCS</button>
         <button class="sb-action-btn" onclick="goToTab('health-suite')" title="Open Health Suite tab">💊 Health Suite</button>
         <button class="sb-action-btn" onclick="goToTab('design')" title="Open Design tab">🎨 Design</button>
       </div>
@@ -2270,7 +2269,6 @@ select:focus {
       <button class="btn home-act-btn" onclick="runHealthCheck()" data-tip="Runs provider_health.py (~30s) — checks all AI providers and updates the health gauge">🏥 Run Health Check</button>
       <button class="btn home-act-btn" onclick="homeStartScout()" data-tip="Starts a recurring Scout web-research run for the default VKB goal — repeats every 30 min">🔭 Start Scout</button>
       <button class="btn home-act-btn" onclick="homeRunAafl()" data-tip="Prompts you to type a goal, then adds it to goal_queue.txt for the AAFL AI engine to process">🔄 Run AAFL Goal</button>
-      <button class="btn home-act-btn" onclick="saveSession()" data-tip="Saves your session to STATUS.md and HISTORY.md right now — same as Save Session Now on the WCCS tab">💾 Save WCCS</button>
       <button class="btn home-act-btn" id="ibr-scan-btn" onclick="runIbrScan()" data-tip="IBR Scan — full project health audit: file integrity, sessions, ACCA codes, dead files, ALP, providers">🔍 IBR Scan</button>
     </div>
 
@@ -2437,8 +2435,8 @@ select:focus {
 <div class="tab-pane active" id="tab-wccs" style="background:#0d0d0d">
   <div class="pane-scroll" style="position:relative">
     <button id="btn-save-v2" type="button"
-      style="display:block;width:100%;padding:18px;margin:6px 0 14px 0;font-size:20px;font-weight:bold;color:#fff;background:#2ecc40;border:none;border-radius:8px;cursor:pointer"
-      onclick="this.textContent='Saving...'; this.style.background='#f1c40f'; const btn=this; fetch('/api/hisav/save-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'Session save '+new Date().toISOString()})}).then(r=>r.json().then(data=>{if(r.ok){btn.textContent='Saved ✓ ('+data.bytes+' bytes)'; btn.style.background='#2ecc40';}else{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', data);}})).catch(err=>{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', err);}).finally(()=>{setTimeout(()=>{btn.textContent='SAVE MY WORK'; btn.style.background='#2ecc40';},5000);});">
+      style="display:block;width:100%;padding:6px 16px;margin:6px 0 14px 0;font-size:13px;font-weight:bold;color:#fff;background:#2e7d32;border:none;border-radius:8px;cursor:pointer"
+      onclick="this.textContent='Saving...'; this.style.background='#f1c40f'; const btn=this; fetch('/api/hisav/save-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'Session save '+new Date().toISOString()})}).then(r=>r.json().then(data=>{if(r.ok){btn.textContent='Saved ✓ ('+data.bytes+' bytes)'; btn.style.background='#2e7d32';}else{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', data);}})).catch(err=>{btn.textContent='Error - try again'; btn.style.background='#e74c3c'; console.log('btn-save-v2 error', err);}).finally(()=>{setTimeout(()=>{btn.textContent='SAVE MY WORK'; btn.style.background='#2e7d32';},5000);});">
       SAVE MY WORK
     </button>
 
@@ -2471,7 +2469,6 @@ select:focus {
       <textarea id="wccs-chat-input" class="hitsav-idea-ta" style="height:80px" placeholder="Paste summary of what was done this session…" spellcheck="false" oninput="document.getElementById('wccs-chat-meta').textContent=this.value.length+' chars'"></textarea>
       <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
         <span id="wccs-chat-meta" style="font-size:11px;color:#556">0 chars</span>
-        <button class="hitsav-tb-btn hitsav-tb-save" onclick="saveSession()" style="padding:4px 12px;font-size:11px">💾 Save with summary</button>
       </div>
     </div>
 
@@ -2765,8 +2762,7 @@ select:focus {
     <!-- B2-18 END -->
 
     <div class="wccs-top-row">
-      <button class="btn-save-lg" id="btn-wccs-hub" onclick="saveSession()" data-tip="Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.">💾 Save Session Now</button>
-      <button id="copyStatusBtn" onclick="copyStatusForClaude()" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;" data-tip="Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context">📋 Copy STATUS.md for Claude</button>
+      <button id="copyStatusBtn" type="button" style="padding:12px 24px; font-size:16px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer; margin-left:12px;" data-tip="Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context" onclick="this.textContent='Copying...'; this.style.background='#f1c40f'; const btn=this; fetch('/api/status').then(r=>r.text()).then(text=>navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied ✓'; btn.style.background='#2ecc40';})).catch(err=>{btn.textContent='Error'; btn.style.background='#e74c3c'; console.log('copyStatusBtn error', err);}).finally(()=>{setTimeout(()=>{btn.textContent='📋 Copy STATUS.md for Claude'; btn.style.background='#2563eb';},5000);});">📋 Copy STATUS.md for Claude</button>
       <span id="copyStatusMsg" style="margin-left:12px; font-weight:bold;"></span>
       <button class="tip-btn mcc-popup-safe" data-instruction-id="section_wccs" onclick="showInstructions('section_wccs',this)" title="What is the WCCS tab?">?</button>
       <div class="wccs-auto-status">
