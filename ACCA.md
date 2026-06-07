@@ -82,3 +82,5 @@
 | DND | Drag and Drop | 2026-05-29 |
 
 <!-- END_OF_FILE -->
+| CD | UNCONFIRMED — from SESUM 2026-06-07 | 2026-06-07 |
+| CI | UNCONFIRMED — from SESUM 2026-06-07 | 2026-06-07 |
