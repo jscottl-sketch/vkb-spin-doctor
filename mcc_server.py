@@ -758,6 +758,9 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
             # ── Detective endpoints ─────────────────────────────────────────────
             elif path == "/api/detective/report":
                 self._handle_detective_report_get()
+            # ── OCB-L Phase 7: MCC State Report (self-analysis) ──────────────
+            elif path == "/api/mcc-state-report":
+                self._handle_mcc_state_report()
             elif path == "/api/detective/learning-db":
                 self._handle_detective_learning_db_get()
             elif path == "/api/timeline/full":
@@ -6650,6 +6653,26 @@ def _handle_provider_health_enriched(self):
     except Exception:
         pass
 
+    # OCB-L Phase 7: FREE-ONLY status — allow_paid flag + running session cost
+    allow_paid = False
+    try:
+        if AAFL_SETTINGS.exists():
+            cfg_data = json.loads(AAFL_SETTINGS.read_text(encoding="utf-8"))
+            allow_paid = bool(cfg_data.get("allow_paid", False))
+    except Exception:
+        pass
+
+    session_cost_gbp = 0.0
+    try:
+        if COST_LOG.exists():
+            import re as _re2
+            tail = COST_LOG.read_text(encoding="utf-8", errors="replace")[-4000:]
+            costs = _re2.findall(r"running=£([\d.]+)", tail)
+            if costs:
+                session_cost_gbp = float(costs[-1])
+    except Exception:
+        pass
+
     _LOCATION_MAP = {1: "LOCAL_GPU", 2: "CLOUD_FREE", 3: "CLOUD_FREE", 99: "CLOUD_PAID"}
     enriched = []
     for p in provider_defs:
@@ -6690,17 +6713,25 @@ def _handle_provider_health_enriched(self):
             else:
                 st = "UNKNOWN"
 
+        # OCB-L Phase 7: Working/Idle state + cost label (per-provider, derived from real data)
+        state = "Working" if st == "LIVE" else ("Idle" if st in ("NO_KEY", "UNKNOWN") else "Offline")
+        cost_label = "FREE" if tier < 99 else (f"£{session_cost_gbp:.4f}" if session_cost_gbp else "£0.00")
+
         enriched.append({
             "id":           pid,
             "name":         p.get("label", pid),
             "status":       st,
+            "state":        state,
             "latency_ms":   latency_map.get(pid, 0),
             "location":     loc,
             "model_loaded": model_name,
             "vram_mb":      vram_mb,
             "tier":         tier,
             "task_types":   p.get("task_types", []),
+            "cost_label":   cost_label,
         })
+
+    free_only = (not allow_paid) and not any(p["tier"] == 99 and p["status"] == "LIVE" for p in enriched)
 
     self._send_json({
         "providers":       enriched,
@@ -6709,6 +6740,9 @@ def _handle_provider_health_enriched(self):
         "gpu_name":        gpu_name,
         "gpu_vram_used_mb":  gpu_vram_used_mb,
         "gpu_vram_total_mb": gpu_vram_total_mb,
+        "allow_paid":      allow_paid,
+        "free_only":       free_only,
+        "session_cost_gbp": session_cost_gbp,
         "generated_at":    datetime.datetime.now().isoformat(timespec="seconds"),
     })
 
@@ -8598,6 +8632,342 @@ def _handle_timeline_node_get(self, node_id):
 
 
 MCCHandler._handle_timeline_node_get = _handle_timeline_node_get  # type: ignore[attr-defined]
+
+
+# ── OCB-L Phase 7: MCC State Report — self-analysis of the build's own state ──
+MCC_STATE_REPORT_PATH = HERE / "docs" / "MCC_STATE_REPORT_latest.md"
+
+_MSR_KEY_ENDPOINTS = [
+    "/api/status", "/api/health", "/api/provider-health",
+    "/api/detective/report", "/api/hisav/data", "/api/ocb/status",
+    "/api/session-state", "/api/project-awareness",
+]
+_MSR_KEY_FUNCTIONS = [
+    "_handle_provider_health_enriched", "_handle_detective_report_get",
+    "_handle_hisav_data_get", "_handle_ocb_status", "_handle_api_wccs",
+    "_handle_mcc_state_report",
+]
+_MSR_SHORT_WORD_WHITELIST = {
+    "a", "an", "to", "of", "in", "on", "at", "by", "or", "is", "db", "ui",
+    "ai", "os", "id", "ok", "go", "no", "up", "it", "v2", "v3", "py", "js",
+}
+
+
+def _msr_check_endpoints():
+    """Section a (part 1): ping key endpoints over loopback, classify verified vs not."""
+    import urllib.request as _ur3
+    verified, unverified = [], []
+    for ep in _MSR_KEY_ENDPOINTS:
+        try:
+            req = _ur3.Request(f"http://127.0.0.1:{PORT}{ep}", method="GET")
+            with _ur3.urlopen(req, timeout=4) as resp:
+                body = resp.read()
+                if resp.status == 200 and len(body) > 2:
+                    verified.append(f"{ep} — HTTP 200, {len(body)} bytes")
+                else:
+                    unverified.append(f"{ep} — HTTP {resp.status}, {len(body)} bytes (suspect)")
+        except Exception as exc:
+            unverified.append(f"{ep} — UNREACHABLE ({exc})")
+    return verified, unverified
+
+
+def _msr_check_functions(src_text):
+    """Section a (part 2): confirm key handler functions exist and are non-empty."""
+    import re as _re_msr
+    out = []
+    for fn in _MSR_KEY_FUNCTIONS:
+        m = _re_msr.search(rf"def {fn}\(self[^)]*\):\n((?:[ \t]+.*\n|[ \t]*\n)+)", src_text)
+        if not m:
+            out.append(f"{fn}() — CLAIMED but NOT FOUND in mcc_server.py")
+            continue
+        body = _re_msr.sub(r"#.*", "", m.group(1)).strip()
+        if body in ("pass", "...", "") or len(body) < 15:
+            out.append(f"{fn}() — STUB (empty/near-empty body)")
+        else:
+            out.append(f"{fn}() — present, ~{len(m.group(1).splitlines())} lines")
+    return out
+
+
+def _msr_analyse_commits():
+    """Section b: last 10 commits, flagged COMPLETE vs INTERRUPTED."""
+    import re as _re_msr
+    import ast as _ast_msr
+    results = []
+    try:
+        log_out = subprocess.run(
+            ["git", "log", "-10", "--format=%H%x1f%s%x1f%ci"],
+            cwd=str(HERE), capture_output=True, text=True, timeout=20,
+        ).stdout.strip()
+    except Exception as exc:
+        return [{"hash": "?", "subject": f"git log failed: {exc}", "date": "",
+                 "verdict": "UNKNOWN", "flags": []}]
+
+    for line in log_out.splitlines():
+        parts = line.split("\x1f")
+        if len(parts) != 3:
+            continue
+        h, subj, when = parts
+        msg = subj.strip()
+        flags = []
+
+        if not msg:
+            flags.append("empty commit message")
+        if _re_msr.match(r"^OCB-Runner:\s*$", msg):
+            flags.append("'OCB-Runner:' with no description")
+
+        last_word = _re_msr.findall(r"[A-Za-z]+$", msg)
+        if last_word and not msg.endswith((".", "!", "?", ":", ")", "]", '"', "'")):
+            w = last_word[0].lower()
+            if len(w) <= 3 and w not in _MSR_SHORT_WORD_WHITELIST:
+                flags.append(f"message may end mid-word (trailing fragment '{w}')")
+
+        files = []
+        try:
+            fout = subprocess.run(
+                ["git", "show", "--name-only", "--format=", h],
+                cwd=str(HERE), capture_output=True, text=True, timeout=15,
+            ).stdout
+            files = [f.strip() for f in fout.splitlines() if f.strip()]
+        except Exception:
+            pass
+
+        bad_files = []
+        for f in files:
+            if f.endswith(".py"):
+                fp = HERE / f
+                if fp.exists():
+                    try:
+                        _ast_msr.parse(fp.read_text(encoding="utf-8", errors="replace"))
+                    except SyntaxError as se:
+                        bad_files.append(f"{f} (line {se.lineno}: {se.msg})")
+        if bad_files:
+            flags.append(f"touches file(s) with CURRENT syntax errors: {', '.join(bad_files)}")
+
+        results.append({
+            "hash": h[:8], "subject": msg or "(empty)", "date": when,
+            "verdict": "INTERRUPTED" if flags else "COMPLETE",
+            "flags": flags, "files_changed": len(files),
+        })
+    return results
+
+
+def _msr_correlation_check():
+    """Section c: does STATUS.md / project_awareness.json match what's actually on disk?"""
+    import re as _re_msr
+    status_text = ""
+    awareness_text = ""
+    try:
+        if STATUS_FILE.exists():
+            status_text = STATUS_FILE.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+    try:
+        aw = HERE / "data" / "project_awareness.json"
+        if aw.exists():
+            awareness_text = aw.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+    combined = status_text + "\n" + awareness_text
+    claimed = set(_re_msr.findall(r"`?([A-Za-z0-9_./-]+\.(?:py|html|json|md|js))`?", combined))
+    claimed_but_missing = sorted(
+        f for f in claimed
+        if "/" not in f.replace("\\", "/") and not (HERE / f).exists()
+    )
+
+    SKIP_DIRS = {"archive_dead", "backups", "__pycache__", "node_modules", ".git"}
+    disk_py = sorted(
+        f.name for f in HERE.glob("*.py")
+        if f.name not in SKIP_DIRS
+    )
+    present_but_not_logged = sorted(
+        name for name in disk_py if name not in combined
+    )
+    return {
+        "claimed_but_missing": claimed_but_missing[:20],
+        "present_but_not_logged": present_but_not_logged[:20],
+    }
+
+
+def _msr_is_stub_body(body, _ast_msr):
+    """True if a function body is just a docstring + pass/Ellipsis (empty stub)."""
+    b = body
+    if b and isinstance(b[0], _ast_msr.Expr) and isinstance(
+            getattr(b[0], "value", None), _ast_msr.Constant) and isinstance(
+            getattr(b[0].value, "value", None), str):
+        b = b[1:]
+    return len(b) == 1 and (
+        isinstance(b[0], _ast_msr.Pass) or
+        (isinstance(b[0], _ast_msr.Expr) and
+         getattr(getattr(b[0], "value", None), "value", None) is Ellipsis)
+    )
+
+
+def _msr_scan_scope(node, path, fp_name, dup_funcs, empty_stubs, _ast_msr):
+    """Recursively scan a class/function/module body — duplicates only flagged
+    within the SAME scope (so __init__ in different classes isn't a false positive)."""
+    names = {}
+    for child in node.body:
+        if isinstance(child, (_ast_msr.FunctionDef, _ast_msr.AsyncFunctionDef)):
+            names.setdefault(child.name, []).append(child.lineno)
+            if _msr_is_stub_body(child.body, _ast_msr):
+                empty_stubs.append(f"{fp_name}:{child.lineno} def {child.name}()")
+            _msr_scan_scope(child, path + [child.name], fp_name, dup_funcs, empty_stubs, _ast_msr)
+        elif isinstance(child, _ast_msr.ClassDef):
+            _msr_scan_scope(child, path + [child.name], fp_name, dup_funcs, empty_stubs, _ast_msr)
+    for name, lines in names.items():
+        if len(lines) > 1:
+            scope_label = ".".join(path) if path else "(module)"
+            dup_funcs.append(f"{fp_name}: {scope_label}.{name}() defined at lines {lines}")
+
+
+def _msr_incomplete_work_scan():
+    """Section d: scan top-level .py files for syntax errors, dup defs, stubs, TODO/FIXME."""
+    import re as _re_msr
+    import ast as _ast_msr
+    syntax_errors, dup_funcs, empty_stubs, todo_fixme = [], [], [], []
+    SKIP = {"archive_dead", "backups"}
+    for fp in sorted(HERE.glob("*.py")):
+        if fp.parent.name in SKIP:
+            continue
+        try:
+            text = fp.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        for m in _re_msr.finditer(r"#\s*(TODO|FIXME)[:\s]?(.{0,80})", text):
+            todo_fixme.append(f"{fp.name}: {m.group(1)} {m.group(2).strip()[:80]}".strip())
+        try:
+            tree = _ast_msr.parse(text)
+        except SyntaxError as se:
+            syntax_errors.append(f"{fp.name}: line {se.lineno} — {se.msg}")
+            continue
+        _msr_scan_scope(tree, [], fp.name, dup_funcs, empty_stubs, _ast_msr)
+    return {
+        "syntax_errors": syntax_errors[:15],
+        "duplicate_functions": dup_funcs[:15],
+        "empty_stubs": empty_stubs[:15],
+        "todo_fixme": todo_fixme[:15],
+    }
+
+
+def _msr_open_findings():
+    """Section e: count of open items in detective_report.json, by severity."""
+    total = 0
+    by_sev = {}
+    try:
+        if _DETECTIVE_REPORT.exists():
+            det = json.loads(_DETECTIVE_REPORT.read_text(encoding="utf-8"))
+            for f in det.get("findings", []):
+                if f.get("status") == "open":
+                    total += 1
+                    sev = f.get("severity", "unknown")
+                    by_sev[sev] = by_sev.get(sev, 0) + 1
+    except Exception:
+        pass
+    return total, by_sev
+
+
+def _msr_build_report_text(now_iso, endpoints_ok, endpoints_bad, func_status,
+                           commits, correlation, incomplete, open_total, open_by_sev):
+    lines = []
+    lines.append("=" * 70)
+    lines.append("MCC STATE REPORT — self-analysis of the build's own current state")
+    lines.append(f"Generated: {now_iso}")
+    lines.append("=" * 70)
+    lines.append("")
+
+    lines.append("── a. CURRENT STATE — verified vs claimed-but-unverified ──")
+    lines.append(f"VERIFIED working ({len(endpoints_ok)} endpoints responded live):")
+    for e in endpoints_ok:
+        lines.append(f"  [OK]  {e}")
+    lines.append(f"CLAIMED but UNVERIFIED ({len(endpoints_bad)} endpoints failed/suspect):")
+    for e in endpoints_bad:
+        lines.append(f"  [??]  {e}")
+    lines.append("Key handler functions:")
+    for f in func_status:
+        lines.append(f"  {f}")
+    lines.append("")
+
+    lines.append("── b. LAST 10 MCC UPDATES — interrupted-session detection ──")
+    n_interrupted = sum(1 for c in commits if c["verdict"] == "INTERRUPTED")
+    lines.append(f"{n_interrupted} of {len(commits)} commits flagged as possibly INTERRUPTED")
+    for c in commits:
+        lines.append(f"  [{c['verdict']:>11}] {c['hash']}  {c['date']}  \"{c['subject']}\"")
+        for fl in c["flags"]:
+            lines.append(f"               ⚠ {fl}")
+    lines.append("")
+
+    lines.append("── c. CORRELATION CHECK — STATUS.md/project_awareness.json vs disk ──")
+    cbm = correlation["claimed_but_missing"]
+    pbnl = correlation["present_but_not_logged"]
+    lines.append(f"Claimed-but-missing ({len(cbm)}): " + (", ".join(cbm) if cbm else "none — all claimed files exist"))
+    lines.append(f"Present-but-not-logged ({len(pbnl)}): " + (", ".join(pbnl) if pbnl else "none — all top-level .py files referenced"))
+    lines.append("")
+
+    lines.append("── d. INCOMPLETE-WORK FLAGS — half-written code scan (top-level .py) ──")
+    lines.append(f"Syntax errors ({len(incomplete['syntax_errors'])}): " + ("; ".join(incomplete["syntax_errors"]) or "none"))
+    lines.append(f"Duplicate function defs ({len(incomplete['duplicate_functions'])}): " + ("; ".join(incomplete["duplicate_functions"]) or "none"))
+    lines.append(f"Empty stub functions ({len(incomplete['empty_stubs'])}): " + ("; ".join(incomplete["empty_stubs"]) or "none"))
+    lines.append(f"TODO/FIXME left mid-edit ({len(incomplete['todo_fixme'])}): " + ("; ".join(incomplete["todo_fixme"]) or "none"))
+    lines.append("")
+
+    lines.append("── e. OPEN FINDINGS — detective_report.json ──")
+    sev_str = ", ".join(f"{k}={v}" for k, v in sorted(open_by_sev.items())) or "none"
+    lines.append(f"Open findings: {open_total}  (by severity: {sev_str})")
+    lines.append("")
+    lines.append("=" * 70)
+    lines.append("End of report — paste into Claude.ai Project Files or download as .md")
+    return "\n".join(lines)
+
+
+def _handle_mcc_state_report(self):
+    """GET /api/mcc-state-report — self-contained build self-analysis.
+    Generates ONE paste-ready report covering: (a) verified vs claimed state,
+    (b) interrupted-commit detection, (c) STATUS.md/disk correlation,
+    (d) incomplete-work scan, (e) open detective findings. Writes the report
+    to docs/MCC_STATE_REPORT_latest.md on every run."""
+    try:
+        now_iso = datetime.datetime.now().isoformat(timespec="seconds")
+
+        src_text = ""
+        try:
+            src_text = (HERE / "mcc_server.py").read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
+        endpoints_ok, endpoints_bad = _msr_check_endpoints()
+        func_status = _msr_check_functions(src_text)
+        commits = _msr_analyse_commits()
+        correlation = _msr_correlation_check()
+        incomplete = _msr_incomplete_work_scan()
+        open_total, open_by_sev = _msr_open_findings()
+
+        report_text = _msr_build_report_text(
+            now_iso, endpoints_ok, endpoints_bad, func_status,
+            commits, correlation, incomplete, open_total, open_by_sev,
+        )
+
+        MCC_STATE_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        MCC_STATE_REPORT_PATH.write_text(report_text, encoding="utf-8")
+
+        self._send_json({
+            "ok": True,
+            "generated_at": now_iso,
+            "report_text": report_text,
+            "saved_to": str(MCC_STATE_REPORT_PATH.relative_to(HERE)),
+            "sections": {
+                "a_current_state": {"verified": endpoints_ok, "unverified": endpoints_bad, "functions": func_status},
+                "b_last_10_commits": commits,
+                "c_correlation": correlation,
+                "d_incomplete_work": incomplete,
+                "e_open_findings": {"total": open_total, "by_severity": open_by_sev},
+            },
+        })
+    except Exception as exc:
+        self._send_json({"ok": False, "error": str(exc)}, 500)
+
+
+MCCHandler._handle_mcc_state_report = _handle_mcc_state_report  # type: ignore[attr-defined]
 
 
 # ── OCB-Q: Detective report — fallback to dated file ─────────────────────────

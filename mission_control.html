@@ -2440,6 +2440,12 @@ select:focus {
       SAVE MY WORK
     </button>
 
+    <button id="btn-mcc-state-report" type="button"
+      style="display:block;width:100%;padding:6px 16px;margin:0 0 14px 0;font-size:13px;font-weight:bold;color:#fff;background:#1565c0;border:none;border-radius:8px;cursor:pointer"
+      onclick="runMccStateReport(this)" title="Self-analysis: scans the MCC's own current state — verified vs claimed features, last 10 commits for interrupted sessions, STATUS.md correlation, half-written code, open detective findings. Generates one paste-ready report (also downloadable).">
+      📊 MCC STATE REPORT
+    </button>
+
     <div class="acca-info-box" style="margin-top:10px;margin-bottom:4px">HISAV = Handover, Ideas, Screenshots, Archive, Vehicle history</div>
     <div class="acca-info-box" style="margin-bottom:8px">WCCS = Write Claude Code Save — end-of-session save to disk</div>
 
@@ -4533,6 +4539,43 @@ select:focus {
 })();
 
 // ── 2-STEP SAVE FLOW ──────────────────────────────────────────────────────────
+
+// ── OCB-L Phase 7: MCC STATE REPORT — self-contained, calls /api/mcc-state-report only ──
+async function runMccStateReport(btn) {
+  const orig = btn.textContent;
+  const origBg = btn.style.background;
+  btn.textContent = 'Analysing build state…';
+  btn.style.background = '#f1c40f';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/mcc-state-report');
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || ('HTTP ' + res.status));
+
+    // Paste-ready: copy full report text to clipboard
+    try { await navigator.clipboard.writeText(data.report_text); } catch (e) { /* clipboard may be unavailable */ }
+
+    // Downloadable: trigger a .md file download
+    const blob = new Blob([data.report_text], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'MCC_STATE_REPORT_' + data.generated_at.replace(/[:T]/g, '-').slice(0, 19) + '.md';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✓ Report copied + downloaded (saved to ' + data.saved_to + ')';
+    btn.style.background = '#2e7d32';
+  } catch (err) {
+    btn.textContent = '❌ Error — ' + err.message;
+    btn.style.background = '#e74c3c';
+    console.log('runMccStateReport error', err);
+  } finally {
+    setTimeout(() => { btn.textContent = orig; btn.style.background = origBg; btn.disabled = false; }, 6000);
+  }
+}
 
 function _hsFlashBtn(btn, state, tempText, revertText, revertClass, duration){
   if(!btn) return;
@@ -17312,6 +17355,8 @@ function hsSortProviders(key) { hsRenderProviderCards(key); }
 // ── OCB-L Phase 3: Enriched AI Status Bar ────────────────────────────────────
 let _aiBarProviders = [];
 let _aiBarTimer = null;
+let _aiBarFreeOnly = true;
+let _aiBarSessionCost = 0;
 
 const _LOC_BADGE = {
   LOCAL_GPU: ['GPU', '#0d2a0d', '#4f4'],
@@ -17331,6 +17376,8 @@ async function updateAiStatusBar() {
   try {
     const d = await apiFetch('/api/provider-health');
     _aiBarProviders = d.providers || [];
+    _aiBarFreeOnly = d.free_only !== false;
+    _aiBarSessionCost = d.session_cost_gbp || 0;
   } catch(e) {
     // Fallback to _hsProviders if enriched endpoint fails
     if (_hsProviders.length && !_aiBarProviders.length) {
@@ -17347,10 +17394,10 @@ async function updateAiStatusBar() {
   const cards = _aiBarProviders.map((p, idx) => {
     const st = p.status || 'UNKNOWN';
     const lat_ms = p.latency_ms || 0;
-    // Pulse dot: green <500ms, amber <2000ms, red >2000ms or offline
-    const pulseCol = st !== 'LIVE' ? '#555' : lat_ms < 500 ? '#4f4' : lat_ms < 2000 ? '#fa0' : '#f44';
+    // OCB-L Phase 7: Health dot per spec — green=fast&working, amber=slow, red=failed/auth/quota
+    const healthCol = st === 'LIVE' ? (lat_ms < 500 ? '#4f4' : '#fa0') : '#f44';
     const dotAnim  = st === 'LIVE' ? `animation:aiPulse 2s ease-in-out infinite` : '';
-    const pulse    = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${pulseCol};${dotAnim};flex-shrink:0"></span>`;
+    const pulse    = `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${healthCol};${dotAnim};flex-shrink:0"></span>`;
     const lat      = lat_ms ? lat_ms + 'ms' : '';
     const latCol   = lat_ms < 500 ? '#4f4' : lat_ms < 2000 ? '#fa0' : '#f44';
     const modelShort = (p.model_loaded || '').replace(/^[^/]+\//, '').slice(0, 20);
@@ -17358,19 +17405,48 @@ async function updateAiStatusBar() {
     const vramBar  = (p.location === 'LOCAL_GPU' && p.vram_mb != null)
       ? `<div style="height:3px;background:#1a1a1a;border-radius:1px;width:60px;margin-top:2px"><div style="height:100%;width:${Math.min(100, p.vram_mb/32768*100).toFixed(0)}%;background:#fa0;border-radius:1px"></div></div>`
       : '';
+    // OCB-L Phase 7: Working/Idle state chip + last-call duration & cost
+    const state    = p.state || (st === 'LIVE' ? 'Working' : 'Idle');
+    const stateCol = state === 'Working' ? '#4f4' : state === 'Offline' ? '#666' : '#fa0';
+    const costLabel = p.cost_label || (p.tier < 99 ? 'FREE' : '£0.00');
+    const costCol   = costLabel === 'FREE' ? '#4af' : '#f66';
     return `<span class="ai-prov-chip" onclick="aiBarCardClick(${idx}, event)"
       style="display:inline-flex;flex-direction:column;justify-content:center;padding:3px 8px;min-height:38px;cursor:pointer;opacity:${st==='OFFLINE'?0.5:1}"
-      title="${p.name} — ${st}${lat ? ' · ' + lat : ''}">
+      title="${p.name} — ${st} · ${state}${lat ? ' · last call ' + lat : ''} · ${costLabel}">
       <div style="display:flex;align-items:center;gap:3px;white-space:nowrap">
-        ${pulse}<strong style="font-size:10px">${(p.name||'?').split(' ').slice(-1)[0].toUpperCase()}</strong>${locBadge}${lat ? `<span style="font-size:9px;color:${latCol};margin-left:4px">${lat}</span>` : ''}
+        ${pulse}<strong style="font-size:10px">${(p.name||'?').split(' ').slice(-1)[0].toUpperCase()}</strong>${locBadge}
+        <span style="font-size:8px;color:${stateCol};margin-left:3px">${state}</span>
       </div>
-      ${modelShort ? `<div style="font-size:9px;color:#555;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis">${modelShort}</div>` : ''}
+      <div style="font-size:9px;color:#555;white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis">
+        ${modelShort || (p.task_types||[]).slice(0,2).join('/') || ''}
+        ${lat ? `<span style="color:${latCol};margin-left:4px">${lat}</span>` : ''}
+        <span style="color:${costCol};margin-left:4px">${costLabel}</span>
+      </div>
       ${vramBar}
     </span>`;
   });
 
   const all = cards.concat(cards);
   inner.innerHTML = all.join('<span style="color:#1a2a1a;padding:0 4px;line-height:44px">·</span>');
+
+  // OCB-L Phase 7: single FREE-ONLY indicator in the fixed right-hand segment of the existing bar
+  const modelBox = document.getElementById('ai-status-model');
+  if (modelBox) {
+    let badge = document.getElementById('ai-free-only-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.id = 'ai-free-only-badge';
+      badge.style.cssText = 'margin-right:10px;font-size:9px;font-weight:bold;padding:2px 6px;border-radius:3px;letter-spacing:0.5px';
+      modelBox.insertBefore(badge, modelBox.firstChild);
+    }
+    const freeOnly = _aiBarFreeOnly !== false;
+    badge.textContent = freeOnly ? 'FREE-ONLY ✓' : 'PAID ACTIVE ⚠';
+    badge.style.background = freeOnly ? '#0d2a0d' : '#2a0a0a';
+    badge.style.color = freeOnly ? '#4f4' : '#f66';
+    badge.title = freeOnly
+      ? 'No paid providers are running — allow_paid is OFF'
+      : `Paid provider active — session cost £${(_aiBarSessionCost||0).toFixed(4)}`;
+  }
   const totalW = inner.scrollWidth / 2;
   inner.style.animation = 'none';
   const ks = document.getElementById('ai-status-keyframes') || document.createElement('style');
