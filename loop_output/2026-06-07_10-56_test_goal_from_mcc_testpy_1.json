@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "$ ls -R\n./\n├── HISTORY.md\n├── STATUS.md\n├── mcc_full_mot.py\n├── provider_health.py\n├── source_library_manager.py\n├── requirements.txt\n├── tests\n│   ├── __init__.py\n│   └── mcc_test.py\n└── README.md\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-56"}

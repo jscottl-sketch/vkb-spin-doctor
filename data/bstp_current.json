@@ -1,7 +1,6 @@
 {
-  "name": "Test Plan",
-  "elements": [],
-  "arrows": [],
-  "saved_at": "2026-06-02T08:30:23",
+  "_diag": true,
+  "content": "DIAG_PROBE",
+  "saved_at": "2026-06-07T10:34:45",
   "version": 1
 }

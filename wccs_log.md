@@ -108,3 +108,13 @@
 | 93 | 2026-06-02 | v96 -> v97 | WCCS-only consolidation — no new code; handover v97 created to keep save record current after ANCOREG Observer build | None |
 | 94 | 2026-06-03 | v97 -> v98 | OCB Runner encoding fix (utf-8 subprocess, stdout/stderr guards, TOTAL_CHECKS 108→109) + false-abort fix (ocb_abort.json gitignored, double-clear, MOT timeout 180s→60s); Lifeguard echo test PASS; 109/109 MOT ALL CLEAR | None |
 | 95 | 2026-06-03 | v98 -> v99 | HITSAV save+copy button feedback fix: inline onclick+IIFE double-binding stripped; clean window.load listener added; fetch→visual state for btn-wccs-hub+copyStatusBtn; /api/hisav/save-session confirmed present; 109/109 MOT ALL CLEAR | None |
+| WATCHDOG | 2026-06-07 10:44 | - | Capture: CLAC | FAIL |
+| WATCHDOG | 2026-06-07 10:55 | - | Capture: none | FAIL |
+| WATCHDOG | 2026-06-07 11:05 | - | Capture: CLAC | FAIL |
+| WATCHDOG | 2026-06-07 11:16 | - | Capture: CHAT_MCC | FAIL |
+| WATCHDOG | 2026-06-07 11:26 | - | Capture: none | FAIL |
+| WATCHDOG | 2026-06-07 11:37 | - | Capture: CLAC | FAIL |
+| 96 | 2026-06-07 | legacy | {} | None |
+| 97 | 2026-06-07 | legacy | test chat text for recovery check | None |
+| 98 | 2026-06-07 | legacy | test chat text for recovery check | None |
+| WATCHDOG | 2026-06-07 11:48 | - | Capture: none | FAIL |

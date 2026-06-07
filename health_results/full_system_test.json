@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-05-23T13:06:57.492368",
+  "timestamp": "2026-06-03T21:20:14.994802",
   "total": 85,
-  "passed": 85,
-  "failed": 0,
-  "verdict": "SYSTEM HEALTHY",
+  "passed": 82,
+  "failed": 3,
+  "verdict": "SYSTEM HAS ISSUES (non-critical)",
   "critical_stop": false,
   "results": [
     {
@@ -369,13 +369,13 @@
     {
       "group": "F",
       "name": "Home tab is first tab",
-      "passed": true,
+      "passed": false,
       "reason": ""
     },
     {
       "group": "F",
       "name": "Provider Health tab exists",
-      "passed": true,
+      "passed": false,
       "reason": ""
     },
     {
@@ -387,7 +387,7 @@
     {
       "group": "F",
       "name": "AAFL Runs tab exists",
-      "passed": true,
+      "passed": false,
       "reason": ""
     },
     {

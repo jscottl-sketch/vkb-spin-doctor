@@ -1,0 +1,127 @@
+{
+  "generated_at": "2026-06-03T21:22:07",
+  "summary": {
+    "total": 6,
+    "pass": 2,
+    "warn": 4,
+    "fail": 0
+  },
+  "checks": [
+    {
+      "name": "Check 1 — File Integrity",
+      "items": [
+        {
+          "check": "STATUS.md exists",
+          "status": "PASS",
+          "detail": "32713 bytes"
+        },
+        {
+          "check": "INDEX.md exists",
+          "status": "PASS",
+          "detail": "2747 bytes"
+        },
+        {
+          "check": "HISTORY.md exists",
+          "status": "PASS",
+          "detail": "133322 bytes"
+        },
+        {
+          "check": "ACCA.md exists",
+          "status": "PASS",
+          "detail": "4756 bytes"
+        },
+        {
+          "check": "STATUS.md line count",
+          "status": "PASS",
+          "detail": "321 lines (baseline 276, 116%)"
+        },
+        {
+          "check": "Files in STATUS built list",
+          "status": "PASS",
+          "detail": "All referenced files found"
+        }
+      ],
+      "overall": "PASS"
+    },
+    {
+      "name": "Check 2 — Session Log Health",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "Session log count",
+          "status": "PASS",
+          "detail": "96 .md files in session_logs/"
+        },
+        {
+          "check": "Date range",
+          "status": "PASS",
+          "detail": "Oldest: 2026-05-25  Newest: 2026-06-03"
+        },
+        {
+          "check": "Truncated session logs (<10 lines)",
+          "status": "WARN",
+          "detail": "ocb_beacon_WCCS-autosave_COMPLETE_2026-05-30.md (5 lines), ocb_beacon_WCCS-autosave_COMPLETE_2026-05-31.md (5 lines), ocb_beacon_WCCS-autosave_COMPLETE_2026-06-02.md (5 lines)"
+        }
+      ]
+    },
+    {
+      "name": "Check 3 — ACCA Code Consistency",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "Registered ACCA codes",
+          "status": "PASS",
+          "detail": "0 codes in ACCA.md"
+        },
+        {
+          "check": "Unregistered codes found",
+          "status": "WARN",
+          "detail": "HC-01, HC-10"
+        }
+      ]
+    },
+    {
+      "name": "Check 4 — Dead File Check",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "Orphan files in root",
+          "status": "WARN",
+          "detail": "156 files not mentioned in STATUS.md: AAFL_Overnight_Task.xml, ACCA.md, ALP_Database.md, CLAUDE.md, DESIGN_RULES.md, END_SESSION.bat, GIT_BACKUP.bat, GIT_INIT.bat, GOODNIGHT.bat, HISTORY.md, HOW_TO_INTEGRATE_DIAGNOSTIC.py, INDEX.md, Knowledge_Engine_Schema_v1.md, RUN_OVERNIGHT.bat, RUN_VKB.bat"
+        }
+      ]
+    },
+    {
+      "name": "Check 5 — ALP Database",
+      "overall": "PASS",
+      "items": [
+        {
+          "check": "ALP entry count",
+          "status": "PASS",
+          "detail": "80 entries found"
+        },
+        {
+          "check": "Last ALP entry age",
+          "status": "PASS",
+          "detail": "Last entry: 2026-06-02 — within 7 days"
+        }
+      ]
+    },
+    {
+      "name": "Check 6 — Provider Health Snapshot",
+      "overall": "WARN",
+      "items": [
+        {
+          "check": "MCC server reachable",
+          "status": "PASS",
+          "detail": "Connected to http://127.0.0.1:8080"
+        },
+        {
+          "check": "Provider health snapshot",
+          "status": "WARN",
+          "detail": "3/14 providers healthy"
+        }
+      ]
+    }
+  ]
+}

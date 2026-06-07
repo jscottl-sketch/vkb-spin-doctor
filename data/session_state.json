@@ -3,10 +3,10 @@
   "started_at": "",
   "current_task": {
     "type": "AAFL",
-    "description": "not json at all }{",
+    "description": "__int_test_goal_1780824802__",
     "subsystem": "loop_manager",
     "status": "running",
-    "started_at": "2026-06-02T08:09:00"
+    "started_at": "2026-06-07T11:49:50"
   },
   "last_result": {
     "task": "not json at all }{",
@@ -16,18 +16,20 @@
     "completed_at": "2026-05-30T15:47:29"
   },
   "provider_health": {
-    "healthy_count": 3,
+    "healthy_count": 1,
     "total": 14,
-    "last_checked": "2026-06-02T08:07:03"
+    "last_checked": "2026-06-07T11:48:31"
   },
-  "watchdog_status": "OFF",
+  "watchdog_status": "ON",
   "last_save": {
-    "type": "",
-    "timestamp": "",
-    "file": ""
+    "type": "wccs",
+    "timestamp": "2026-06-07T11:37:27",
+    "file": "STATUS.md"
   },
   "aafl_score": null,
   "cost_7d": null,
   "active_ocb_run_id": "",
-  "next_priority": ""
+  "next_priority": "",
+  "_diag": true,
+  "content": "DIAG_PROBE"
 }

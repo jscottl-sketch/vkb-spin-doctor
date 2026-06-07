@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n---\n\n#### 5. Integrate Tests into CI/CD Pipeline\n1. **Add test execution steps to the pipeline definition** (`.github/workflows/ci.yml` or equivalent):\n   ", "goal": "__int_test_goal_1780010672__", "timestamp": "2026-06-07_11-36"}

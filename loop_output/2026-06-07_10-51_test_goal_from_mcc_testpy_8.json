@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nIf any test fails, the traceback will be displayed in the console (see step 7).\n\n---\n\n## 6️⃣ Capture structured reports (useful for CI/CD)\n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-51"}

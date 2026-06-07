@@ -1,4 +1,11 @@
 {
-  "entries": [],
-  "last_updated": null
+  "entries": [
+    {
+      "_diag": true,
+      "content": "DIAG_PROBE",
+      "timestamp": "2026-06-07T10:34:03",
+      "resolved": false
+    }
+  ],
+  "last_updated": "2026-06-07T10:34:03"
 }

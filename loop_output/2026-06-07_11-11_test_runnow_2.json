@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n- `run_id` extracted (`8c7b3e1a-5d4f-4a2c-9f1e-3e7b9c6d4a11`) – a valid UUID.  \n- Connectivity confirmed.\n\n---\n\n## 3️⃣ Execute the “run‑now” test\n\n### 3a – POST real payload\n\n", "goal": "test runNow", "timestamp": "2026-06-07_11-11"}

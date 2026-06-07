@@ -106,6 +106,14 @@
     },
     {
       "id": "9f1b04fd"
+    },
+    {
+      "_diag": true,
+      "content": "DIAG_PROBE",
+      "id": "3979753a"
+    },
+    {
+      "id": "f82c746b"
     }
   ],
   "archived": []

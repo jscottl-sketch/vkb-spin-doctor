@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nYou should now see `(.venv)` at the beginning of your prompt.\n\n---\n\n## 3️⃣ Install dependencies\n\nFirst look for a dependency manifest:\n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-51"}

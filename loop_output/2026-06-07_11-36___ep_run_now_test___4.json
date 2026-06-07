@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n5. **Export environment variables:**\n   Create a `.env.test` file with the following content:\n   ", "goal": "__ep_run_now_test__", "timestamp": "2026-06-07_11-36"}

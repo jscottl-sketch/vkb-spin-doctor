@@ -1,23 +1,11 @@
 {
-  "generated_at": "2026-06-02T08:05:54",
+  "generated_at": "2026-06-07T11:47:32",
   "tabs": [
     {
       "id": "wccs",
       "label": "",
       "title": "",
       "classes": "tab-btn active"
-    },
-    {
-      "id": "ancoreg",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
-    },
-    {
-      "id": "bstp",
-      "label": "",
-      "title": "",
-      "classes": "tab-btn"
     },
     {
       "id": "ocb-runner",
@@ -406,7 +394,7 @@
       "data-tip": "Step 1: Save session — runs WCCS to update STATUS.md and HISTORY.md",
       "onclick": "hitsavStep1()",
       "parent_tab": "tab-wccs",
-      "label": "① Save Session"
+      "label": "Save Session"
     },
     {
       "id": "hitsav-step2-btn",
@@ -415,16 +403,7 @@
       "data-tip": "Step 2: Copy STATUS.md to clipboard — then paste into Claude.ai Project Files",
       "onclick": "hitsavStep2()",
       "parent_tab": "tab-wccs",
-      "label": "② Copy STATUS.md"
-    },
-    {
-      "id": "hitsav-step3-btn",
-      "type": "button",
-      "classes": "hitsav-step-btn hitsav-step-amber",
-      "data-tip": "Step 3: Go to Claude.ai and paste the STATUS.md into Project Files",
-      "onclick": "hitsavStep3()",
-      "parent_tab": "tab-wccs",
-      "label": "③ Go to Claude"
+      "label": "Copy STATUS.md"
     },
     {
       "id": "hitsav-autostatus-btn",
@@ -890,7 +869,7 @@
       "type": "button",
       "classes": "btn-save-lg",
       "data-tip": "Save your session now — runs aafl_wccs.py to update STATUS.md and HISTORY.md. Shortcut: none — use the button.",
-      "onclick": "saveSession()",
+      "onclick": "",
       "parent_tab": "tab-wccs",
       "label": "💾 Save Session Now"
     },
@@ -899,7 +878,7 @@
       "type": "button",
       "classes": "",
       "data-tip": "Copy STATUS.md to clipboard — paste into Claude.ai Project Files to update Claude's context",
-      "onclick": "copyStatusForClaude()",
+      "onclick": "",
       "parent_tab": "tab-wccs",
       "label": "📋 Copy STATUS.md for Claude"
     },
@@ -1154,6 +1133,15 @@
       "onclick": "htlJumpToToday()",
       "parent_tab": "tab-wccs",
       "label": "↓ Today"
+    },
+    {
+      "id": "grrice-toggle-btn",
+      "type": "button",
+      "classes": "htl-filter-btn",
+      "data-tip": "GRRICE = living changelog — show build/fix/decision dots on timeline",
+      "onclick": "griceToggle()",
+      "parent_tab": "tab-wccs",
+      "label": "📋 GRRICE"
     },
     {
       "id": "",
@@ -1482,204 +1470,6 @@
     {
       "id": "",
       "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregRunDiagnosis()",
-      "parent_tab": "tab-ancoreg",
-      "label": "▶ Run Diagnosis"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregShowAddFix()",
-      "parent_tab": "tab-ancoreg",
-      "label": "+ Add Fix"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregSubmitFix()",
-      "parent_tab": "tab-ancoreg",
-      "label": "Save Fix"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "document.getElementById('ancoreg-add-fix-modal').style.display='none'",
-      "parent_tab": "tab-ancoreg",
-      "label": "Cancel"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregValidateSave()",
-      "parent_tab": "tab-ancoreg",
-      "label": "✓ Validate Save System"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregRunSave()",
-      "parent_tab": "tab-ancoreg",
-      "label": "💾 Run Save Now"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregPreviewDiff()",
-      "parent_tab": "tab-ancoreg",
-      "label": "📄 Preview Diff"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "ancoregRunMOT()",
-      "parent_tab": "tab-ancoreg",
-      "label": "▶ Run MOT"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Save plan",
-      "onclick": "bstpSavePlan()",
-      "parent_tab": "tab-bstp",
-      "label": "💾 Save"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Load plan",
-      "onclick": "bstpLoadPlanDialog()",
-      "parent_tab": "tab-bstp",
-      "label": "📂 Load"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Clear canvas",
-      "onclick": "bstpClearCanvas()",
-      "parent_tab": "tab-bstp",
-      "label": "🗑 Clear"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Undo (Ctrl+Z)",
-      "onclick": "bstpUndo()",
-      "parent_tab": "tab-bstp",
-      "label": "↩ Undo"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Redo (Ctrl+Y)",
-      "onclick": "bstpRedo()",
-      "parent_tab": "tab-bstp",
-      "label": "↪ Redo"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "bstpZoom(1.2)",
-      "parent_tab": "tab-bstp",
-      "label": "+"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "bstpZoom(0.8)",
-      "parent_tab": "tab-bstp",
-      "label": "-"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Fullscreen",
-      "onclick": "bstpFullscreen()",
-      "parent_tab": "tab-bstp",
-      "label": "⛶"
-    },
-    {
-      "id": "bstp-status-undo",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "bstpUndoStatusWrite()",
-      "parent_tab": "tab-bstp",
-      "label": "↩ Undo Last Write"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "bstpSaveInstructions()",
-      "parent_tab": "tab-bstp",
-      "label": "Save Instructions"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Send selected task to AAFL goal.txt",
-      "onclick": "bstpLaunchSelected('goal')",
-      "parent_tab": "tab-bstp",
-      "label": "▶ AAFL"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Add selected task to Kanban todo",
-      "onclick": "bstpLaunchSelected('kanban')",
-      "parent_tab": "tab-bstp",
-      "label": "📋 Kanban"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "Generate CLAC block for selected task",
-      "onclick": "bstpLaunchSelected('clac')",
-      "parent_tab": "tab-bstp",
-      "label": "💻 CLAC"
-    },
-    {
-      "id": "",
-      "type": "button",
-      "classes": "btn",
-      "data-tip": "",
-      "onclick": "bstpLoadHistory()",
-      "parent_tab": "tab-bstp",
-      "label": "📜 Show Saved Plans"
-    },
-    {
-      "id": "",
-      "type": "button",
       "classes": "",
       "data-tip": "",
       "onclick": "ocb2Parse()",
@@ -1730,6 +1520,24 @@
       "onclick": "ocb2CopyLog()",
       "parent_tab": "tab-ocb-runner",
       "label": "📋 Copy"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocbRunTestSuite()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "▶ RUN ALL TESTS"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "",
+      "data-tip": "",
+      "onclick": "ocbLoadTestStatus()",
+      "parent_tab": "tab-ocb-runner",
+      "label": "↻ Refresh"
     },
     {
       "id": "",
@@ -2932,6 +2740,141 @@
       "id": "",
       "type": "button",
       "classes": "btn",
+      "data-tip": "",
+      "onclick": "missionModeSet(document.getElementById('mission-mode-selector').value)",
+      "parent_tab": "tab-missions",
+      "label": "Apply"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Save plan",
+      "onclick": "bstpSavePlan()",
+      "parent_tab": "tab-missions",
+      "label": "💾 Save"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Load plan",
+      "onclick": "bstpLoadPlanDialog()",
+      "parent_tab": "tab-missions",
+      "label": "📂 Load"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Clear canvas",
+      "onclick": "bstpClearCanvas()",
+      "parent_tab": "tab-missions",
+      "label": "🗑 Clear"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Undo (Ctrl+Z)",
+      "onclick": "bstpUndo()",
+      "parent_tab": "tab-missions",
+      "label": "↩ Undo"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Redo (Ctrl+Y)",
+      "onclick": "bstpRedo()",
+      "parent_tab": "tab-missions",
+      "label": "↪ Redo"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpZoom(1.2)",
+      "parent_tab": "tab-missions",
+      "label": "+"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpZoom(0.8)",
+      "parent_tab": "tab-missions",
+      "label": "-"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Fullscreen",
+      "onclick": "bstpFullscreen()",
+      "parent_tab": "tab-missions",
+      "label": "⛶"
+    },
+    {
+      "id": "bstp-status-undo",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpUndoStatusWrite()",
+      "parent_tab": "tab-missions",
+      "label": "↩ Undo Last Write"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpSaveInstructions()",
+      "parent_tab": "tab-missions",
+      "label": "Save Instructions"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Send selected task to AAFL goal.txt",
+      "onclick": "bstpLaunchSelected('goal')",
+      "parent_tab": "tab-missions",
+      "label": "▶ AAFL"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Add selected task to Kanban todo",
+      "onclick": "bstpLaunchSelected('kanban')",
+      "parent_tab": "tab-missions",
+      "label": "📋 Kanban"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "Generate CLAC block for selected task",
+      "onclick": "bstpLaunchSelected('clac')",
+      "parent_tab": "tab-missions",
+      "label": "💻 CLAC"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "bstpLoadHistory()",
+      "parent_tab": "tab-missions",
+      "label": "📜 Show Saved Plans"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
       "data-tip": "Add a custom mission to your registry — give it a name, icon, description, and a linked tab",
       "onclick": "showAddMissionForm()",
       "parent_tab": "tab-missions",
@@ -3669,6 +3612,78 @@
     {
       "id": "",
       "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunDiagnosis()",
+      "parent_tab": "tab-health-suite",
+      "label": "▶ Run Diagnosis"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregShowAddFix()",
+      "parent_tab": "tab-health-suite",
+      "label": "+ Add Fix"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregSubmitFix()",
+      "parent_tab": "tab-health-suite",
+      "label": "Save Fix"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "document.getElementById('ancoreg-add-fix-modal').style.display='none'",
+      "parent_tab": "tab-health-suite",
+      "label": "Cancel"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregValidateSave()",
+      "parent_tab": "tab-health-suite",
+      "label": "✓ Validate Save System"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunSave()",
+      "parent_tab": "tab-health-suite",
+      "label": "💾 Run Save Now"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregPreviewDiff()",
+      "parent_tab": "tab-health-suite",
+      "label": "📄 Preview Diff"
+    },
+    {
+      "id": "",
+      "type": "button",
+      "classes": "btn",
+      "data-tip": "",
+      "onclick": "ancoregRunMOT()",
+      "parent_tab": "tab-health-suite",
+      "label": "▶ Run MOT"
+    },
+    {
+      "id": "",
+      "type": "button",
       "classes": "tip-btn",
       "data-tip": "",
       "onclick": "b3ShowTip(this,'Change how MCC looks. All changes apply live — you see them instantly. Save as a preset to keep your design. Reset to Default restores the original look.')",
@@ -3983,27 +3998,6 @@
       "placeholder": "Send a message to bridge…",
       "classes": "",
       "parent_tab": "tab-wccs"
-    },
-    {
-      "id": "ancoreg-fix-search",
-      "type": "text",
-      "placeholder": "Search fixes...",
-      "classes": "",
-      "parent_tab": "tab-ancoreg"
-    },
-    {
-      "id": "ancoreg-new-problem",
-      "type": "text",
-      "placeholder": "Problem description...",
-      "classes": "",
-      "parent_tab": "tab-ancoreg"
-    },
-    {
-      "id": "bstp-status-toggle",
-      "type": "checkbox",
-      "placeholder": "",
-      "classes": "",
-      "parent_tab": "tab-bstp"
     },
     {
       "id": "kanban-new-title",
@@ -4545,6 +4539,20 @@
       "parent_tab": "tab-memory"
     },
     {
+      "id": "mission-global-monitors",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
+      "id": "bstp-status-toggle",
+      "type": "checkbox",
+      "placeholder": "",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
       "id": "mc-scout-goal",
       "type": "text",
       "placeholder": "Quick scout goal…",
@@ -4776,6 +4784,20 @@
       "parent_tab": "tab-health-suite"
     },
     {
+      "id": "ancoreg-fix-search",
+      "type": "text",
+      "placeholder": "Search fixes...",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
+      "id": "ancoreg-new-problem",
+      "type": "text",
+      "placeholder": "Problem description...",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
+    },
+    {
       "id": "rrice-acca-search",
       "type": "text",
       "placeholder": "Search codes...",
@@ -4928,20 +4950,8 @@
       "parent_tab": "tab-wccs"
     },
     {
-      "id": "ancoreg-new-fix",
-      "placeholder": "Fix steps...",
-      "classes": "",
-      "parent_tab": "tab-ancoreg"
-    },
-    {
-      "id": "bstp-instructions",
-      "placeholder": "Write project instructions / narrative here. These get injected into AAFL/Scout context...",
-      "classes": "",
-      "parent_tab": "tab-bstp"
-    },
-    {
       "id": "ocb2-input",
-      "placeholder": "Paste your OCB block here...\nExample:\n═══ PHASE 1 — Fix popup ═══\nFind mission_control.html...",
+      "placeholder": "Read STATUS.md. Count the lines in the BUILT AND WORKING table. Report the number only.",
       "classes": "",
       "parent_tab": "tab-ocb-runner"
     },
@@ -4952,10 +4962,22 @@
       "parent_tab": "tab-code-editor"
     },
     {
+      "id": "bstp-instructions",
+      "placeholder": "Write project instructions / narrative here...",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
       "id": "mf-notes",
       "placeholder": "Freeform notes, context, next steps...",
       "classes": "",
       "parent_tab": "tab-missions"
+    },
+    {
+      "id": "ancoreg-new-fix",
+      "placeholder": "Fix steps...",
+      "classes": "",
+      "parent_tab": "tab-health-suite"
     }
   ],
   "selects": [
@@ -5095,6 +5117,11 @@
       "parent_tab": "tab-aafl-control"
     },
     {
+      "id": "mission-mode-selector",
+      "classes": "",
+      "parent_tab": "tab-missions"
+    },
+    {
       "id": "mf-status",
       "classes": "",
       "parent_tab": "tab-missions"
@@ -5178,6 +5205,7 @@
     "/api/detective/queue",
     "/api/detective/report",
     "/api/diff",
+    "/api/grrice/entries",
     "/api/health",
     "/api/health/history",
     "/api/health/latest",
@@ -5206,6 +5234,8 @@
     "/api/medical-report",
     "/api/memory/snapshot",
     "/api/missions",
+    "/api/missions/active",
+    "/api/missions/list",
     "/api/mot/live",
     "/api/ocb/checks",
     "/api/ocb/progress",
@@ -5324,6 +5354,7 @@
     "/aafl/workflow",
     "/alp-add",
     "/api/acca/add",
+    "/api/acca/command",
     "/api/ancoreg/add-fix",
     "/api/ancoreg/run-save",
     "/api/auto-fix/approve",
@@ -5352,6 +5383,7 @@
     "/api/detective/resolve",
     "/api/detective/run",
     "/api/detective/run-all-queued",
+    "/api/grrice/add",
     "/api/help/ask",
     "/api/history/append",
     "/api/investigations/add",
@@ -5366,6 +5398,7 @@
     "/api/mccm/generate-status",
     "/api/memory/refresh",
     "/api/missions",
+    "/api/missions/set-active",
     "/api/missions/update-from-sesum",
     "/api/ocb/abort",
     "/api/ocb/clear-lock",
@@ -5508,6 +5541,19 @@
   "files_written": [],
   "dependencies": [],
   "fetch_calls_in_html": [
+    "/api/ancoreg/add-fix",
+    "/api/ancoreg/diagnosis",
+    "/api/ancoreg/error-timeline",
+    "/api/ancoreg/fixes",
+    "/api/ancoreg/mot",
+    "/api/ancoreg/run-save",
+    "/api/ancoreg/validate-save",
+    "/api/bstp/action",
+    "/api/bstp/current",
+    "/api/bstp/instructions",
+    "/api/bstp/plan/",
+    "/api/bstp/plans",
+    "/api/bstp/save",
     "/api/chat-to-sesum",
     "/api/detective/add-solution",
     "/api/detective/add-to-queue",
@@ -5521,7 +5567,9 @@
     "/api/detective/resolve",
     "/api/detective/run",
     "/api/detective/run-all-queued",
+    "/api/grrice/entries",
     "/api/help/ask",
+    "/api/hisav/save-session",
     "/api/hitsav/checklist/tick",
     "/api/hitsav/clac-session",
     "/api/hitsav/clac-sessions",
@@ -5537,6 +5585,7 @@
     "/api/mccm/status",
     "/api/missions",
     "/api/missions/",
+    "/api/missions/set-active",
     "/api/ocb/checks",
     "/api/ocb/parse",
     "/api/ocb/results",
@@ -5551,7 +5600,8 @@
     "/api/work-checker/refresh",
     "/api/work-checker/requeue",
     "/set-aafl-goal",
-    "/status"
+    "/status",
+    "/wccs/versions"
   ],
   "endpoints_get_full": [
     "/",

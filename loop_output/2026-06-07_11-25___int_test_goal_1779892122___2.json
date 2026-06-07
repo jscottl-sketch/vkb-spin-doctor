@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n*If `tests/helpers.py` already exists, the new helper functions are appended there.*\n\n---\n\n## 3. Helper Functions – `tests/int_tests/helpers.py`\n\n", "goal": "__int_test_goal_1779892122__", "timestamp": "2026-06-07_11-25"}

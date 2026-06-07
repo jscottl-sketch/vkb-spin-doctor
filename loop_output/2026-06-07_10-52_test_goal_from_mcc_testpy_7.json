@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nThe cost‑guard aborted only the `test_cost_predictor` job (as expected by the test‑suite design). No unexpected terminations occurred.\n\n---\n\n### 7️⃣ Final verification  \n\n*All required components imported successfully*  \n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-52"}

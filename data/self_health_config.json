@@ -17,6 +17,8 @@
   "auto_fix_calendar_window": null,
   "escalate_to_stuck_inbox": false,
   "escalate_only_when_no_fix": false,
-  "last_run": "2026-06-02T08:06:11",
-  "next_scheduled": null
+  "last_run": "2026-06-07T11:47:50",
+  "next_scheduled": null,
+  "_diag": true,
+  "content": "DIAG_PROBE"
 }

@@ -409,8 +409,8 @@ class WorkChecker:
             "watchdog_wiring":  self.check_watchdog_wiring(),
         }
         for c in system_checks.values():
-            icon = "✓" if c["status"] == "PASS" else ("⚠" if c["status"] == "WARN" else "✗")
-            print(f"[WC] {icon} {c['name']}: {c['status']} — {c['detail']}")
+            icon = "[PASS]" if c["status"] == "PASS" else ("[WARN]" if c["status"] == "WARN" else "[FAIL]")
+            print(f"[WC] {icon} {c['name']}: {c['status']} - {c['detail']}")
 
         report = {
             "report_date": datetime.date.today().isoformat(),

@@ -1,18 +1,18 @@
 {
-  "generated": "2026-05-30T17:12:52",
+  "generated": "2026-06-07T11:37:30",
   "summary": {
-    "total_commits": 107,
-    "built_items": 177,
-    "pending_items": 42,
-    "completion_ratio_pct": 80.8,
-    "acca_codes": 64,
+    "total_commits": 200,
+    "built_items": 189,
+    "pending_items": 44,
+    "completion_ratio_pct": 81.1,
+    "acca_codes": 66,
     "ocb_count": 10
   },
   "velocity": {
-    "per_day": 8.23,
-    "per_week": 57.6,
-    "total_commits": 107,
-    "span_days": 13
+    "per_day": 9.52,
+    "per_week": 66.6,
+    "total_commits": 200,
+    "span_days": 21
   },
   "milestones": [
     {
@@ -83,9 +83,147 @@
     },
     {
       "date": "2026-05-30",
+      "label": "v76",
+      "type": "version",
+      "detail": "v76: OCB-R1 global z-index fix + ? audit (30 found, 0 removed) + post-save SESUM"
+    },
+    {
+      "date": "2026-05-30",
+      "label": "v75",
+      "type": "version",
+      "detail": "v75: HISAV post-WCCS checklist + timeline popup absolute fix"
+    },
+    {
+      "date": "2026-05-30",
+      "label": "v74",
+      "type": "version",
+      "detail": "v74: OCB-Q2+Q3 detective drill-downs + STORM bridge + timeline zones"
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v83",
+      "type": "version",
+      "detail": "v83: OCB-S â€” OCB Runner fully rebuilt: O(n) parse, GIL fix, server timeout, ru"
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v82",
+      "type": "version",
+      "detail": "v82: OCB-R â€” z-index fix + OCB parse timeout + CLACR + Project Brain tokens + "
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v81",
+      "type": "version",
+      "detail": "v81: OCB-R â€” OCB Runner v4 (phase cards + ABORT) + HITSAV rename + 7-tab bar +"
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v79",
+      "type": "version",
+      "detail": "v79: Tab bar fix (data-tooltip CSS bug) + OCB Runner progress feedback + HISAV 3"
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v78",
+      "type": "version",
+      "detail": "v78: Global tooltip visibility fix â€” z-index 99999, positionTooltip() JS, tab "
+    },
+    {
+      "date": "2026-05-31",
+      "label": "v77",
+      "type": "version",
+      "detail": "v77: OCB-Runner v2 â€” parse_ocb/pre_flight/run_safe/4 guards/4 checks + HISAV S"
+    },
+    {
+      "date": "2026-06-01",
+      "label": "v87",
+      "type": "version",
+      "detail": "v87: Four fixes â€” WCCS timing, [data-tip] tooltip fix, saveSession green tick,"
+    },
+    {
+      "date": "2026-06-01",
+      "label": "v86",
+      "type": "version",
+      "detail": "v86: OCB Runner Reset MCC button blue/green + WCCS session save"
+    },
+    {
+      "date": "2026-06-01",
+      "label": "v84",
+      "type": "version",
+      "detail": "v84: CSS hotfix â€” restore missing } on .hitsav-idea-btns, 20 deleted CSS rules"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v97",
+      "type": "version",
+      "detail": "v97: WCCS-only consolidation â€” no new code; handover updated post-ANCOREG-Obse"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v96",
+      "type": "version",
+      "detail": "v96: ANCOREG Observer (ancoreg_observer.py) + OCB run pre/post hooks + observer "
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v95",
+      "type": "version",
+      "detail": "v95: toast audit â€” AI empty-response â†’ amber warning; updateAiStatusBar 10s "
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v94",
+      "type": "version",
+      "detail": "v94: HITSAV Copy STATUS.md un-disabled + OCB Runner ghost buttons + SpinDoctor D"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v93",
+      "type": "version",
+      "detail": "v93: STATUS.md PENDING (AAFL_Overnight_Task + CCR) + WCCS"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v92",
+      "type": "version",
+      "detail": "v92: ANCOREG + BSTP tabs â€” system doctor + brainstorm planner + save validator"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v91",
+      "type": "version",
+      "detail": "v91: OCB Runner AI brain wired + live progress feedback + Skip MOT in HITSAV S11"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v90",
+      "type": "version",
+      "detail": "v90: OCB skip-mot + loop JSON fix + WCCS handover + 82 garbage archived"
+    },
+    {
+      "date": "2026-06-02",
       "label": "108/108 MOT",
       "type": "mot",
-      "detail": "OCB-Q: HISAV Mega Upgrade 8 phases â€” 109/109 MOT ALL CLEAR"
+      "detail": "v89: Learning Machine â€” RAG engine (ChromaDB 91 docs/531 chunks), training pip"
+    },
+    {
+      "date": "2026-06-02",
+      "label": "v88",
+      "type": "version",
+      "detail": "v88: OCB lock stale-detect + clear-lock endpoint + Clear Lock button; HTML corru"
+    },
+    {
+      "date": "2026-06-03",
+      "label": "v99",
+      "type": "version",
+      "detail": "v99: HITSAV save+copy button feedback fix (clean load-listener replaces double-b"
+    },
+    {
+      "date": "2026-06-03",
+      "label": "v98",
+      "type": "version",
+      "detail": "v98: OCB Runner false-abort fix + MOT timeout guard"
     }
   ],
   "ocb_nodes": [
@@ -528,7 +666,7 @@
   ],
   "mot_scores": [
     {
-      "date": "2026-05-30",
+      "date": "2026-06-07",
       "passed": 109,
       "total": 109,
       "score": "109/109"
@@ -536,284 +674,284 @@
   ],
   "recent_commits": [
     {
-      "hash": "8281bf07",
-      "date": "2026-05-30",
-      "message": "STATUS.md: OCB-Q all 8 phases logged + earlier fixes (date, truncation, Scout/CLACKER entries)",
+      "hash": "ec117688",
+      "date": "2026-06-07",
+      "message": "WCCS auto-save 2026-06-07 (aafl_wccs.py)",
       "files_changed": 1
     },
     {
-      "hash": "6b4fff27",
-      "date": "2026-05-30",
-      "message": "OCB-Q: HISAV Mega Upgrade 8 phases â€” 109/109 MOT ALL CLEAR",
-      "files_changed": 71
-    },
-    {
-      "hash": "f21023e3",
-      "date": "2026-05-30",
-      "message": "Detective system + full timeline + scroll fix + deep drill-downs v75",
-      "files_changed": 7
-    },
-    {
-      "hash": "ebe33294",
-      "date": "2026-05-30",
-      "message": "HISAV Vehicle History timeline populated + visual fixes v74",
-      "files_changed": 6
-    },
-    {
-      "hash": "792dfbc4",
-      "date": "2026-05-30",
-      "message": "v73: HISAV tab + DTA data files + handover auto-archive. WCCS tab renamed HISAV. 7-section accordion (Idea Dump, Vehicle History, Checklist Health, Idea Buffer, Action Plan, CLAC Sessions). 5 DTA data files. 8 HISAV endpoints. 109/109 MOT ALL CLEAR.",
-      "files_changed": 4
-    },
-    {
-      "hash": "28cf5328",
-      "date": "2026-05-30",
-      "message": "HISAV tab + DTA data files + popup z-index fix + handover auto-archive v73",
-      "files_changed": 44
-    },
-    {
-      "hash": "35302943",
-      "date": "2026-05-30",
-      "message": "v72: OCB-P fixes â€” GET /api/provider-diagnosis, phLoadDetail diagnosis hover errors, sidebar Quick Stats from session_state. 108/108 MOT ALL CLEAR.",
-      "files_changed": 13
-    },
-    {
-      "hash": "f4298d25",
-      "date": "2026-05-29",
-      "message": "v71: OCB-P â€” CLACKER Router, session_state, Command Bar + Attention Surface, Provider Diagnosis, NEEDS_OPUS, 503 retry. 108/108 MOT ALL CLEAR.",
-      "files_changed": 333
-    },
-    {
-      "hash": "18284483",
-      "date": "2026-05-29",
-      "message": "v70: CLACKER Safety Layer â€” clacker_safety.py + clacker_validator.py, named stash, HTML parse guard, acceptance criteria, RRCLACH panel. 108/108 MOT ALL CLEAR.",
-      "files_changed": 9
-    },
-    {
-      "hash": "78f8a8ad",
-      "date": "2026-05-29",
-      "message": "v68: OCBR Lifeguard Protocol â€” status_snapshots/, STATUS_MASTER.md, ocb_wal.log, ocb_queue.json, ocb_runner.py +8 lifeguard functions + argparse CLI, aafl_wccs.py wired",
-      "files_changed": 9
-    },
-    {
-      "hash": "6f40760b",
-      "date": "2026-05-29",
-      "message": "WCCS 2026-05-29 OCB-O status update",
-      "files_changed": 3
-    },
-    {
-      "hash": "0442fc84",
-      "date": "2026-05-29",
-      "message": "WCCS auto-save 2026-05-29 (aafl_wccs.py)",
+      "hash": "b296f812",
+      "date": "2026-06-07",
+      "message": "Full diagnostic sweep 2026-06-07",
       "files_changed": 1
     },
     {
-      "hash": "458d0f44",
-      "date": "2026-05-29",
-      "message": "v67: OCB-O OCB Runner â€” ocb_runner.py (503 lines), OCB Runner panel in WCCS tab, 5 /api/ocb/* endpoints, real-time phase badges + live log + progress bar. 108/108 MOT ALL CLEAR.",
-      "files_changed": 8
-    },
-    {
-      "hash": "df3762e0",
-      "date": "2026-05-29",
-      "message": "WCCS auto-save 2026-05-29 (aafl_wccs.py)",
-      "files_changed": 1
-    },
-    {
-      "hash": "0abc5e10",
-      "date": "2026-05-29",
-      "message": "WCCS auto-save 2026-05-29 (aafl_wccs.py)",
+      "hash": "a10a8854",
+      "date": "2026-06-07",
+      "message": "WCCS auto-save 2026-06-07 (aafl_wccs.py)",
       "files_changed": 2
     },
     {
-      "hash": "a6eeda8b",
-      "date": "2026-05-29",
-      "message": "v66: MCC freeze fix â€” SyntaxError line 9899 (?.checked = false in b2RunCmpSelect) killed all JS in strict mode; fixed + fullscreen guard + localStorage safety + permanent Reset MCC button. 108/108 MOT.",
+      "hash": "b585db9b",
+      "date": "2026-06-07",
+      "message": "WCCS auto-save 2026-06-07 (aafl_wccs.py)",
+      "files_changed": 1
+    },
+    {
+      "hash": "9679f705",
+      "date": "2026-06-07",
+      "message": "WCCS auto-save 2026-06-07 (aafl_wccs.py)",
+      "files_changed": 3
+    },
+    {
+      "hash": "dda72a8b",
+      "date": "2026-06-07",
+      "message": "WCCS auto-save 2026-06-07 (aafl_wccs.py)",
+      "files_changed": 2
+    },
+    {
+      "hash": "75656d2f",
+      "date": "2026-06-07",
+      "message": "Fix dead Save button: self-contained inline onclick wired to working save endpoint",
+      "files_changed": 1
+    },
+    {
+      "hash": "2b6edeeb",
+      "date": "2026-06-07",
+      "message": "Fix save: remove AI from save path, direct file write + visible button feedback",
+      "files_changed": 2
+    },
+    {
+      "hash": "726748d2",
+      "date": "2026-06-03",
+      "message": "OCB-R+: Reality Report + Error Database + Test Suite + Status Pip",
+      "files_changed": 3
+    },
+    {
+      "hash": "d28c1eae",
+      "date": "2026-06-03",
+      "message": "fix: OCB Runner phase engine now executes Python code blocks",
+      "files_changed": 1
+    },
+    {
+      "hash": "bc303138",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "dbc09b4e",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul",
+      "files_changed": 3
+    },
+    {
+      "hash": "6f016280",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "0cb49b49",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "b361e7ca",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul",
+      "files_changed": 2
+    },
+    {
+      "hash": "e23b5ee3",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "255adfc1",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul",
       "files_changed": 5
     },
     {
-      "hash": "17a31d38",
-      "date": "2026-05-29",
-      "message": "v65: OCB-K Build 2 â€” Kanban progress bars/blocked-deps/AAFL-Goal-template/bulk-archive, Activity 12-spec-filters+Clear+date-range-export, AAFL Runs row-checkbox-compare+failure-phase-analysis+success-time-of-day. 108/108 MOT.",
-      "files_changed": 6
+      "hash": "f81f9e41",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:",
+      "files_changed": 4
     },
     {
-      "hash": "20203a60",
-      "date": "2026-05-29",
-      "message": "v64: OCB-O Code Pipeline -- Monaco Code Editor tab, AAFL bridge, CLAC generator, 3 LLOW coding workflows, 4 /api/code/* endpoints. 108/108 MOT.",
-      "files_changed": 9
+      "hash": "1fbadbec",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:",
+      "files_changed": 4
     },
     {
-      "hash": "2b7f6e9c",
-      "date": "2026-05-29",
-      "message": "v63: OCB-O â€” Safety Watchdog, Global Search (Ctrl+K), Help tab removed, LLOW Alt+drag+fullscreen fix, Leaderboard populate, AI bar 15s colour latency, Medical health.db history, ACCA colour table, AI Alloc panel, tab scroll arrows. 108/108 MOT.",
-      "files_changed": 7
+      "hash": "0fb17f07",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:",
+      "files_changed": 5
     },
     {
-      "hash": "dd34ab59",
-      "date": "2026-05-29",
-      "message": "v62: OCB-N â€” Scout Swarm LEL, Project Timeline, Work Checker 3 panels, ACCA ticker, no-handover WCCS. 108/108 MOT.",
+      "hash": "81246455",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:",
+      "files_changed": 4
+    },
+    {
+      "hash": "74b53a46",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:",
+      "files_changed": 5
+    },
+    {
+      "hash": "40203828",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "eb982421",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "834d41a8",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul",
+      "files_changed": 2
+    },
+    {
+      "hash": "4c5ddbbc",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: create a file ocb_brain_test.txt content",
+      "files_changed": 2
+    },
+    {
+      "hash": "a0124726",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul",
       "files_changed": 13
     },
     {
-      "hash": "bd7d44af",
-      "date": "2026-05-29",
-      "message": "v60: OCB-M â€” LLOW LEL dblclick fix, zone headers, GPU fix, pie nav, AI providers as LELs (11), Health drill-downs, Instructions restructure, AI Appendix, LLC to ACCA. 108/108 MOT.",
-      "files_changed": 28
+      "hash": "0df93aba",
+      "date": "2026-06-03",
+      "message": "v99: HITSAV save+copy button feedback fix (clean load-listener replaces double-bound onclick+IIFE)",
+      "files_changed": 7
     },
     {
-      "hash": "7352900c",
-      "date": "2026-05-28",
-      "message": "v58: OCB-L â€” system monitor fix, AI status bar enriched, 5 drill-down panels, Help tab, settings persistence",
-      "files_changed": 24
+      "hash": "3e6420da",
+      "date": "2026-06-03",
+      "message": "HISAV save+copy button feedback fix",
+      "files_changed": 1
     },
     {
-      "hash": "7f31443c",
-      "date": "2026-05-28",
-      "message": "WCCS auto-save 2026-05-28 (aafl_wccs.py)",
-      "files_changed": 2
+      "hash": "670da9df",
+      "date": "2026-06-03",
+      "message": "HISAV: click feedback listeners appended",
+      "files_changed": 6
     },
     {
-      "hash": "d6a9c277",
-      "date": "2026-05-28",
-      "message": "v57: OCB-J â€” HC-01â€“HC-10 health checks, Safety Shield, CLACHR Relay, AFNA endpoint, 108/108 MOT",
-      "files_changed": 12
+      "hash": "acfd07f5",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "7d47f309",
-      "date": "2026-05-28",
-      "message": "WCCS save 2026-05-28",
-      "files_changed": 188
+      "hash": "513ebcb0",
+      "date": "2026-06-03",
+      "message": "v98: OCB Runner false-abort fix + MOT timeout guard"
     },
     {
-      "hash": "6e6f85f5",
-      "date": "2026-05-28",
-      "message": "WCCS auto-save 2026-05-28 (aafl_wccs.py)",
-      "files_changed": 2
+      "hash": "6fe71c00",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "1f6faddb",
-      "date": "2026-05-28",
-      "message": "v56: mcc-instructions-keeper â€” instructions_db.json (132 entries) + 2 endpoints + 7 ? help buttons in MCC",
-      "files_changed": 8
+      "hash": "e478e0bc",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "a8139fbd",
-      "date": "2026-05-28",
-      "message": "OCB-I complete: LLOW deep fix + MCC section reorganiser â€” 11 phases",
-      "files_changed": 3
+      "hash": "589da3d3",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "e568b2a9",
-      "date": "2026-05-28",
-      "message": "WCCS auto-save 2026-05-28 (aafl_wccs.py)",
-      "files_changed": 3
+      "hash": "e75ba1ff",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul"
     },
     {
-      "hash": "5a45aa42",
-      "date": "2026-05-28",
-      "message": "OCB-H complete: MCC Full Revamp â€” 12 phases",
-      "files_changed": 3
+      "hash": "d734ded9",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul"
     },
     {
-      "hash": "3448eb15",
-      "date": "2026-05-28",
-      "message": "OCB-G complete: LLOW full rebuild â€” CONNECTORS + Junction Boxes + Preset Load + Colour Strategy"
+      "hash": "6aaf013c",
+      "date": "2026-06-03",
+      "message": "fix: OCB Runner false abort â€” second abort-flag clear after git stash"
     },
     {
-      "hash": "640f93b3",
-      "date": "2026-05-28",
-      "message": "v53: OCB-G complete â€” LLOW arrow drop fix + colour strategy visibility"
+      "hash": "db4e1243",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul"
     },
     {
-      "hash": "da5742ff",
-      "date": "2026-05-28",
-      "message": "OCB-F complete: LLOW arrow drag-drop fix + Colour Strategy Settings"
+      "hash": "5c9b1f1c",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul"
     },
     {
-      "hash": "e374f0ec",
-      "date": "2026-05-28",
-      "message": "OCB-E complete: LLOW init fix + disk I/O snapshot + MOT 108/108"
+      "hash": "1b5747c3",
+      "date": "2026-06-03",
+      "message": "fix: OCB Runner false abort (stale flag) + MOT timeout guard"
     },
     {
-      "hash": "a57b400e",
-      "date": "2026-05-28",
-      "message": "WCCS auto-save 2026-05-28 (aafl_wccs.py)"
+      "hash": "ab9b0299",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Create a file called ocb_lifeguard_resul"
     },
     {
-      "hash": "0427cb80",
-      "date": "2026-05-28",
-      "message": "OCB-D complete: LLOW Engine + Canvas UI + Endpoints + 3 Starter Workflows"
+      "hash": "cd6f5d3c",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "2fd99e3b",
-      "date": "2026-05-28",
-      "message": "OCB-C complete: Phase 4 System Monitor + STORM dedup + Combined SESUM"
+      "hash": "f15ec258",
+      "date": "2026-06-03",
+      "message": "HISAV toolbar: 2-step flow with arrows and feedback"
     },
     {
-      "hash": "0c4b87ee",
-      "date": "2026-05-27",
-      "message": "OCB-C Phase 3: Storage tab upgraded â€” pie chart, bars, dial, trend, forecast, leaderboard"
+      "hash": "85c2e38a",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "d06b8c01",
-      "date": "2026-05-27",
-      "message": "OCB-C Phase 2: Workflow+Chain Builder merged â€” flowchart, per-step settings, branching"
+      "hash": "54addf9e",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "5f7836c0",
-      "date": "2026-05-27",
-      "message": "OCB-C Phase 1: Missions tab consolidated â€” 8 mission cards, KB moved in"
+      "hash": "184d88d7",
+      "date": "2026-06-03",
+      "message": "OCB-Runner:"
     },
     {
-      "hash": "a3732898",
-      "date": "2026-05-27",
-      "message": "OCB-B: Body Map + Auto-Fix Engine + Real-Time Updates"
+      "hash": "a4711381",
+      "date": "2026-06-03",
+      "message": "fix: MOT NoneType+str bug + OCB Runner echo test passing + STATUS update"
     },
     {
-      "hash": "b46a512a",
-      "date": "2026-05-27",
-      "message": "OCB-A checkpoint: PHASE_7 done â€” MOT 107/108, compile clean, all phases complete"
+      "hash": "a9e0b0fc",
+      "date": "2026-06-03",
+      "message": "OCB-Runner: Run Script: echo_test.py"
     },
     {
-      "hash": "8d11675f",
-      "date": "2026-05-27",
-      "message": "OCB-A checkpoint: PHASE_1 done â€” 9 fixes applied, SESUM updated, baseline 206"
-    },
-    {
-      "hash": "9d8be37a",
-      "date": "2026-05-27",
-      "message": "WCCS auto-save 2026-05-27 (aafl_wccs.py)"
-    },
-    {
-      "hash": "5c7c4df5",
-      "date": "2026-05-25",
-      "message": "WCCS auto-save 2026-05-25 (aafl_wccs.py)"
-    },
-    {
-      "hash": "cc251a57",
-      "date": "2026-05-25",
-      "message": "WCCS auto-save 2026-05-25 (aafl_wccs.py)"
-    },
-    {
-      "hash": "755c6c39",
-      "date": "2026-05-25",
-      "message": "Knowledge bank foundation -- test_results table + knowledge harvester"
-    },
-    {
-      "hash": "60450b52",
-      "date": "2026-05-25",
-      "message": "Housekeeping â€” MCC fix, threshold fix, dead files archived, watchdog check, meta proposals read"
-    },
-    {
-      "hash": "5e8f5bea",
-      "date": "2026-05-25",
-      "message": "Build 2 complete â€” 23 parking lot features"
-    },
-    {
-      "hash": "af5257d2",
-      "date": "2026-05-24",
-      "message": "WCCS auto-save 2026-05-24 (aafl_wccs.py)"
+      "hash": "fb6aa49c",
+      "date": "2026-06-02",
+      "message": "v97: WCCS-only consolidation â€” no new code; handover updated post-ANCOREG-Observer build"
     }
   ],
   "pending_items": [
@@ -986,46 +1124,26 @@
       "notes": "MCC↔CLACH language protocol — designed, not yet built"
     },
     {
-      "label": "Screenshot",
-      "date": "2026-05-30",
-      "status": "planned",
-      "type": "user_added"
+      "component": "AAFL_Overnight_Task",
+      "notes": "DISABLED — loop_output JSON bug. Re-enable only when fixed: schtasks /Change /TN \"AAFL_Overnight_Task\" /ENABLE"
+    },
+    {
+      "component": "CCR (Claude Chat Relay)",
+      "notes": "Not yet built — CLACH→MCC→free provider dispatch circuit"
     }
   ],
   "next_priorities": [
+    "Complete STORM ↔ MCCM live loop testing",
+    "Wire aafl_wccs.py SESUM output → STORM → Mission Launcher",
     "OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements (parking lot)",
     "Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)",
-    "Add GROQ + Cloudflare keys to .env (manual — security rule)",
-    "Polish AASKC for ship — README, demo video, r/LocalLLaMA post",
-    "Post on r/LocalLLaMA when Star Citizen benchmark passes"
+    "Add GROQ + Cloudflare keys to .env (manual — security rule)"
   ],
   "scout_findings": [
     {
-      "date": "2026-05-30",
+      "date": "2026-06-03",
       "file": "latest.txt",
-      "lines": 51
+      "lines": 1
     }
-  ],
-  "timeline_nodes": [
-    {"id":"origin-01","date":"2026-05-12","title":"Spin Doctor Born","subtitle":"SFL + Claude Code day 1","zone":"PAST","category":"ORIGIN","phases":["SFL path bug fixed","v2 rewrite complete","24 universal problems documented","Claude Code first launch"],"files":["sfl_agent.py","Universal_Input_Device_Database.md"],"acca_codes":[],"endpoints":[],"detail":"Project started — fix War Thunder spin bug. SFL agent v2 built from scratch. Claude Code launched for first time. 24 universal problems identified."},
-    {"id":"origin-02","date":"2026-05-13","title":"SFL Operational","subtitle":"Named snapshots, rollback, locked brief","zone":"PAST","category":"ORIGIN","phases":["Handover loading confirmed","Screenshot capture confirmed","Named evolution snapshots added","rollback N command built","Locked brief reader built"],"files":["sfl_agent.py","SFL_UPGRADE_BRIEF.md"],"acca_codes":[],"endpoints":[],"detail":"SFL agent confirmed working end-to-end. Evolution snapshots and rollback added. Two-tool strategy confirmed: Claude Code for code, SFL for visual tasks."},
-    {"id":"origin-03","date":"2026-05-14","title":"Mission Statement Locked","subtitle":"ALP → AAFL → ACCA → Spin Doctor → Promo","zone":"PAST","category":"MILESTONE","phases":["5-rule priority order formalised","ALP as Rule No.1 permanent","The loop: free engine → builds product → earns → funds upgrades"],"files":[],"acca_codes":["ALP","AAFL","FFUEM"],"endpoints":[],"detail":"The full mission statement written and locked. ALP is Rule No.1 forever. AAFL does the heavy lifting on free providers. Claude is the big brain. Money back into Claude until top tier owned."},
-    {"id":"aafl-01","date":"2026-05-15","title":"AAFL Engine Born","subtitle":"14 providers, first autonomous runs 8.07-9.33","zone":"PAST","category":"MILESTONE","phases":["aafl_core.py built","loop_manager.py Plan-Work-Verify-Store","evaluator.py 0-10 scorer","researcher.py + scout()","memory_bank.py SQLite cache hit confirmed","meta_loop.py self-improving","4 autonomous runs complete","Regression test PASS 8.83/10"],"files":["aafl_core.py","loop_manager.py","evaluator.py","researcher.py","memory_bank.py","meta_loop.py"],"acca_codes":["AAFL","SFL"],"endpoints":[],"detail":"The real project is born. AAFL runs autonomously scoring 8.07-9.33/10. Free providers do the work. Cache confirmed working — system remembers past solutions. ALP_Database.md created with first 12 entries."},
-    {"id":"scout-01","date":"2026-05-19","title":"Chief Scout + MCC Designed","subtitle":"Parallel swarm, hierarchical multi-agent","zone":"PAST","category":"MILESTONE","phases":["chief_scout.py built — 5 strategies parallel","ThreadPoolExecutor","Mistral synthesis layer","MCC Mission Control designed","Scout Control + AAFL Control panels","29 jobs compiled"],"files":["chief_scout.py"],"acca_codes":["MCC"],"endpoints":[],"detail":"Scott independently invented hierarchical multi-agent systems. Chief Scout = supervisor, 5 strategy workers (DDG/Reddit/GitHub/YouTube/Forum). $0.00116 per run. Keybinding Profile Library v0.5 planned."},
-    {"id":"crisis-01","date":"2026-05-20","title":"Handover Crisis","subtitle":"v44 truncated, NEVER-DELETE rule born","zone":"PAST","category":"CRISIS","phases":["v44 truncated at 499 vs 1003 lines","v43 nearly deleted — caught in time","NEVER-DELETE rule created","archive_dead/ folder created","Handover split architecture designed: INDEX/STATUS/HISTORY/ACCA"],"files":["VKB_SpinDoctor_Handover_v44.md (archive_dead)","VKB_SpinDoctor_Handover_v45.md"],"acca_codes":["WCCS"],"endpoints":[],"detail":"Critical failure: v44 handover truncated mid-write. Scott nearly deleted the intact v43. NEVER-DELETE rule born — files move to archive_dead/, never deleted. Handover split into 4 files saves 80% ALP permanently."},
-    {"id":"wccs-01","date":"2026-05-20","title":"aafl_wccs.py Built","subtitle":"Free Mistral saves — zero Claude burn per session","zone":"PAST","category":"MILESTONE","phases":["aafl_wccs.py built","Atomic write + read-back verify","END_OF_FILE check","90% line-count sanity","Auto git commit","merge_sessions.py + .bat built","Handover split migrated"],"files":["aafl_wccs.py","merge_sessions.py","merge_sessions.bat","INDEX.md","STATUS.md","HISTORY.md","ACCA.md"],"acca_codes":["WCCS"],"endpoints":[],"detail":"Session saves now use free Mistral — zero Claude allowance burned. Atomic write prevents mid-write corruption. Auto git commit after every save. 80% ALP saving from split structure locked in permanently."},
-    {"id":"build1-01","date":"2026-05-23","title":"Build 1 Complete","subtitle":"13 modules, 12/12 PASS, first 108/108 MOT","zone":"PAST","category":"BUILD","phases":["Plugin/module architecture","Preset system","retry_manager.py","smart_suggester.py","chain_runner.py","scout_timer.py","storage_manager.py","sources_library.json","SAVE_NOW.bat","Auto-Sunday merge","Pre-flight ALP check","mss library installed"],"files":["spin_doctor.py","module_loader.py","module_registry.json","retry_manager.py","smart_suggester.py","chain_runner.py"],"acca_codes":["OCBR"],"endpoints":["/api/status","/api/health","/api/history","/api/acca"],"detail":"First complete build sprint. 13 modules. 12/12 tests PASS. First ever 108/108 MOT ALL CLEAR. Plugin architecture means new game fixers never touch the stable core."},
-    {"id":"save-01","date":"2026-05-24","title":"Save System Sorted","subtitle":"MCC WCCS tab + Copy STATUS.md permanent workflow","zone":"PAST","category":"MILESTONE","phases":["MCC WCCS tab with Save button","Copy STATUS.md for Claude button","End-of-session workflow locked","DESIGN_RULES.md created","docs/MCC_FULL_GUIDE.md created","ALP Audit Skill v1 uploaded","Auto git push added"],"files":["mission_control.html","mcc_server.py","DESIGN_RULES.md"],"acca_codes":["SESUM"],"endpoints":["/api/status","/api/history","/api/acca","/api/health"],"detail":"The persistent saving frustration fixed permanently. Workflow: MCC → WCCS tab → Save → Copy → paste into Project Files. DESIGN_RULES.md locks FFUEM + dual workstation/API mode."},
-    {"id":"build2-01","date":"2026-05-25","title":"Build 2 Complete","subtitle":"23 parking lot features, 108/108 MOT","zone":"PAST","category":"BUILD","phases":["Dark/light theme","Keyboard shortcuts","Tutorial mode","Activity feed 12 filters","Kanban with dependencies","Cost tracking","Scout comparison","Keybind profiles","Electron wrapper (B2-23)","ALP Audit Skill v2 — SuperClaude + Mr Claude edition"],"files":["mission_control.html","mcc_server.py"],"acca_codes":["IBR"],"endpoints":[],"detail":"All 23 parking lot features built. ALP Audit Skill v2 introduces Mr Claude (model advisor) and SuperClaude (90% emergency protocol). Opus 4.7 retired for non-architecture tasks. STATUS.md truncation bug identified — aafl_wccs was rewriting from scratch without reading existing file."},
-    {"id":"build3-01","date":"2026-05-26","title":"Build 3 Complete","subtitle":"14 features, Health Suite, Design tab","zone":"PAST","category":"BUILD","phases":["Health Suite tab","Design tab","Provider Health drill-downs","Self-Diagnosis tab","IBR added as ACCA code","STATUS.md restored from git (168→195 lines)","9-fix OCB block designed"],"files":["mission_control.html","mcc_server.py"],"acca_codes":["IBR","OCB"],"endpoints":[],"detail":"14 more MCC features. Health Suite and Design tab new. STATUS.md restored from git after multiple truncation incidents. 9-fix OCB block designed to fix all outstanding issues."},
-    {"id":"ocb-sprint-01","date":"2026-05-28","title":"The Big OCB Sprint","subtitle":"OCB-A through OCB-L — biggest single day","zone":"PAST","category":"MILESTONE","phases":["OCB-A: work_checker, self_health, health.db","OCB-B: auto_fixer, Body Map SVG","OCB-C: Missions, Workflow Builder, Storage, System Monitor","OCB-D: LLOW engine born — drag-drop canvas, 35 elements, 15 arrows","OCB-E: 38 elements, popup z-index fix, visual overhaul","OCB-F: Arrow drag-drop fixed, colour strategy","OCB-G: CONNECTORS, 8 junction types, 11 presets","OCB-H: Snap Mode, AI Status Bar, Health Suite, 11 phases","OCB-I: LEL options, AI Master Control, fullscreen, section reorganiser","mcc-instructions-keeper: 132 entries","OCB-L: System monitor fix, dial drill-downs, Help tab, settings to disk","AASKC product name born"],"files":["llow_engine.py","work_checker.py","self_health.py","auto_fixer.py","system_monitor.py","mission_control.html","mcc_server.py","CLAUDE.md","data/project_awareness.json","data/mcc_settings.json","data/instructions_db.json"],"acca_codes":["LLOW","LEL","AASKC","STORM","BOBWAYF","GOEB"],"endpoints":["/api/llow/*","/api/system/*","/api/resources/*","/api/instructions/*","/api/help/*","/api/settings"],"detail":"Largest single day in the project. OCB-A through OCB-L. LLOW visual canvas born. AASKC becomes the product name. 108/108 MOT multiple times. mcc-instructions-keeper adds ? help buttons to all tabs."},
-    {"id":"ocb-n-01","date":"2026-05-29","title":"OCB-N + CLACKER + Scout","subtitle":"Timeline, Work Checker, ACCA ticker, CLACKER protocol","zone":"PAST","category":"OCB","phases":["OCB-N Phase 1: Scout Swarm LEL","OCB-N Phase 2: project_timeline_builder.py, 37 nodes","OCB-N Phase 3: Work Checker TIMELINE/CHECKLIST/ACTION PLAN panels","OCB-N Phase 4: ACCA ticker at bottom","OCB-N Phase 5: removed legacy handover writes","Scout context injection — get_project_context()","CLACKER Protocol: clacker_router/safety/validator","OCB-K Build 2: Kanban deps, Activity Feed, AAFL Runs compare, Step Mode, Pause"],"files":["chief_scout.py","clacker_router.py","clacker_safety.py","clacker_validator.py","project_timeline_builder.py","mission_control.html","mcc_server.py"],"acca_codes":["CLACHR","CLACRB","RRCLACH","RRBS","DND","WRC","CLACKER"],"endpoints":["/api/timeline-data","/api/timeline/full","/api/timeline/node/{id}"],"detail":"Scout now knows the project — context injected into every query. CLACKER protocol = full CLACH→MCC delegation circuit. OCB-K Build 2 finishes remaining parking lot items. ACCA codes ticker added to bottom of MCC."},
-    {"id":"ocb-o-01","date":"2026-05-29","title":"OCB Runner First Attempt","subtitle":"Engine works — HTML broke tabs, rolled back","zone":"PAST","category":"CRISIS","phases":["ocb_runner.py built — 503 lines","5 methods, MCC panel, 5 API endpoints","FIRST LIVE TEST: Codestral parsed + edited + MOT exit 0","PROBLEM: HTML edit broke ALL tabs","git checkout -- mission_control.html (v67 rollback)"],"files":["ocb_runner.py","mission_control.html"],"acca_codes":["OCBR","OCBRR"],"endpoints":["/api/ocb/*"],"detail":"The OCB Runner engine works — Codestral successfully parsed, edited, and MOT passed. But the HTML edit broke all tabs. Rolled back to v67. Safety layer required before next attempt."},
-    {"id":"hisav-01","date":"2026-05-30","title":"HISAV Tab","subtitle":"9 sections, 109/109 MOT ALL CLEAR","zone":"PRESENT","category":"OCB","phases":["Replaces WCCS tab","Save & Handoff sticky toolbar","Idea Dump","Vehicle History","Checklist Health","Idea Buffer","Action Plan","CLAC Sessions v2","Screenshots gallery","Work Checker moved in"],"files":["mission_control.html","mcc_server.py","data/master_checklist.json","data/idea_buffer.json","data/clac_sessions.json","data/screenshot_log.json"],"acca_codes":["HISAV"],"endpoints":["/api/hisav/*"],"detail":"HISAV replaces WCCS tab. 9 accordion sections covering every aspect of project tracking. 109/109 MOT first time. Sticky toolbar always visible at top."},
-    {"id":"storm-01","date":"2026-05-30","title":"Detective + STORM + Timeline","subtitle":"Live validator, dedup bridge, OCB-Q","zone":"PRESENT","category":"OCB","phases":["hisav_detective.py: 6-strategy validator — GHOST_FILE/DEAD_ENDPOINT/CONTRADICTION/STALE_MOT/MISSING_FROM_STATUS/PHANTOM_UI","STORM bridge: storm_bridge.py, storm_feed.json","Timeline rebuilt: 37 nodes, PAST/PRESENT/PLANNED zones, TODAY marker","OCB-Q Phases 1-8: sticky toolbar, ? button fix, 5-panel detective board, action plan v2, CLAC sessions v2, checklist filters"],"files":["hisav_detective.py","storm_bridge.py","project_timeline_builder.py","mission_control.html","mcc_server.py"],"acca_codes":["STORM","MCCM"],"endpoints":["/api/detective/*","/api/storm/*","/api/timeline/*"],"detail":"Detective validates project health across 6 strategies. STORM deduplicates across detective/WCCS/screenshots. Timeline rebuilt with 3 zones and TODAY marker. OCB-Q completes all detective improvements."},
-    {"id":"ocbrrr-01","date":"2026-05-31","title":"OCBRRR Safety Layer","subtitle":"JS integrity check — THE missing piece","zone":"PRESENT","category":"MILESTONE","phases":["git stash guard","BS4 HTML syntax check","JS function integrity check (THE fix for tab-breaking bug)","Element registry cross-check","MOT guard","Lock file","Named stash","Timeout 120s per phase","Dry-run mode","Full Reader→Runner→Reader MCC panel"],"files":["ocb_runner.py","mcc_server.py","mission_control.html"],"acca_codes":["OCBRR","CLACHRB"],"endpoints":["/api/ocb/parse","/api/ocb/run","/api/ocb/status","/api/ocb/rollback","/api/ocb/checks"],"detail":"The tab-breaking bug fixed permanently. JS integrity check verifies every function reference and every element ID still exists after any HTML edit. BS4 alone was never enough — this is the critical fix."},
-    {"id":"star-citizen-01","date":"TBD","title":"Star Citizen Benchmark","subtitle":"THE proof — r/LocalLLaMA trigger","zone":"PLANNED","category":"MILESTONE","phases":["AAFL autonomously builds Star Citizen v0.2 support","Axis binding mapped","Spin fix confirmed","Score target: 8.5+/10","r/LocalLLaMA post live when done"],"files":[],"acca_codes":[],"endpoints":[],"detail":"The moment the whole project was built toward. AAFL proves itself by autonomously fixing Star Citizen joystick issues. When this passes, the post goes live: beginner with BI builds self-improving AI agent."},
-    {"id":"revenue-01","date":"TBD","title":"Revenue + Promo","subtitle":"Ko-fi, Itch.io, r/LocalLLaMA","zone":"PLANNED","category":"MILESTONE","phases":["Ko-fi + Itch.io links live","README polished","r/LocalLLaMA post: beginner + BI + self-improving AI + proof","Every pound back into Claude until top tier owned"],"files":[],"acca_codes":[],"endpoints":[],"detail":"Proof of concept complete. Time to see if it generates. Every penny earned goes back into Claude. If it costs nothing it is fun. If it earns it is worth pursuing seriously."},
-    {"id":"5project-split-01","date":"TBD","title":"5-Project Split","subtitle":"AAFL Engine / Spin Doctor / MCC / Promo / ACCA","zone":"PLANNED","category":"MILESTONE","phases":["Separate git repos per project","MCC remains cross-cutting cockpit","AAFL engine reusable on any project","Promo project explores monetisation"],"files":[],"acca_codes":[],"endpoints":[],"detail":"Clean separation of concerns. Each project lean and focused. MCC works across all of them as the cockpit."}
   ]
 }

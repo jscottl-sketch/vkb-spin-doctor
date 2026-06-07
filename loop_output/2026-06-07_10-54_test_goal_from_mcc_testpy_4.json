@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n*Interpretation*: 100 MiB downloaded in 9.39 s → **≈ 84 Mbps** downlink.\n\n---\n\n### 3.2 Ookla Speedtest (CLI)\n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-54"}

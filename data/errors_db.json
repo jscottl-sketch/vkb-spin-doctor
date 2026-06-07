@@ -5,5 +5,103 @@
     "component": "test",
     "severity": "INFO",
     "message": "smoke test"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "lmstudio_coder: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "lmstudio_vision: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "lmstudio_reason: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "lmstudio_fast: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "cerebras: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "groq_70b: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "groq_deepseek: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "gemini_flash: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "mistral_code: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "openrouter: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "huggingface: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "cloudflare: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "cohere_embed: 'AAFLCore' object has no attribute 'call_provider'"
+  },
+  {
+    "ts": "2026-06-03T21:20:23",
+    "type": "error",
+    "component": "test_providers",
+    "severity": "PROVIDER_FAIL",
+    "message": "claude_api: 'AAFLCore' object has no attribute 'call_provider'"
   }
 ]

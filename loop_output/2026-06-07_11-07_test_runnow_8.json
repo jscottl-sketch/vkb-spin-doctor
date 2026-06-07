@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n---\n\n**Step 4 – Monitor the test run**\n\nBelow is a tiny Python script that polls the status endpoint every 5 seconds until the run is no longer in a transient state (`queued` or `running`). It prints progress and the final outcome.\n\n", "goal": "test runNow", "timestamp": "2026-06-07_11-07"}

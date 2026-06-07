@@ -1,3 +1,12 @@
 {
-  "ideas": []
+  "ideas": [
+    {
+      "id": "255bf7d8",
+      "text": "test 1",
+      "tags": [],
+      "created_at": "2026-06-07T10:18:37+00:00",
+      "status": "open",
+      "days_old": 0
+    }
+  ]
 }

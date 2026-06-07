@@ -553,3 +553,13 @@ timestamp,provider_name,response_time_seconds,estimated_cost_usd,success
 2026-06-02T08:07:02.871466,mistral_code,0.0,0.0,true
 2026-06-02T08:07:03.144925,openrouter,0.27,0.0,false
 2026-06-02T08:07:03.624619,huggingface,0.48,0.0,false
+2026-06-07T11:46:41.898518,lmstudio_coder,0.24,0.0,false
+2026-06-07T11:47:28.230922,lmstudio_vision,46.33,0.0,false
+2026-06-07T11:48:14.663421,lmstudio_reason,46.43,0.0,false
+2026-06-07T11:48:27.885224,lmstudio_fast,13.22,0.0,false
+2026-06-07T11:48:29.703543,cerebras,1.82,0.0,false
+2026-06-07T11:48:29.990131,gemini_flash,0.28,0.0,false
+2026-06-07T11:48:30.582688,mistral_code,0.41,0.0,true
+2026-06-07T11:48:30.584976,mistral_code,0.0,0.0,true
+2026-06-07T11:48:30.690262,openrouter,0.1,0.0,false
+2026-06-07T11:48:31.225016,huggingface,0.53,0.0,false

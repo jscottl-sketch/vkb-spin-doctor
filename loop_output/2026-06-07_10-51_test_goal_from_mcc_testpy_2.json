@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nIf the file is found, open it briefly to confirm it contains the test suite you want to run (look for a doc‑string or comment that describes the “test goal”).\n\n---\n\n## 2️⃣ Create an isolated virtual environment\n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-51"}

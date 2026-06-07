@@ -1,40 +1,48 @@
 [
   {
-    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model is",
-    "provider": "lmstudio_coder",
-    "first_seen": "2026-05-30T21:38:09",
-    "count": 1,
+    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model un",
+    "provider": "lmstudio_reason",
+    "first_seen": "2026-06-07T11:48:27",
+    "count": 3,
     "last_fix": null,
     "fix_worked": null
   },
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_fast",
-    "first_seen": "2026-06-02T08:09:25",
-    "count": 17,
+    "first_seen": "2026-06-07T11:49:42",
+    "count": 4,
     "last_fix": null,
     "fix_worked": null
   },
   {
     "error_signature": "litellm.ratelimiterror: litellm.ratelimiterror: geminiexception - {\n  \"error\": {",
     "provider": "gemini_flash",
-    "first_seen": "2026-06-02T08:08:31",
-    "count": 9,
+    "first_seen": "2026-06-07T11:49:53",
+    "count": 30,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.ratelimiterror: ratelimiterror: cerebrasexception - requests per hour li",
+    "provider": "cerebras",
+    "first_seen": "2026-06-07T11:49:55",
+    "count": 30,
+    "last_fix": null,
+    "fix_worked": null
+  },
+  {
+    "error_signature": "litellm.authenticationerror: authenticationerror: openrouterexception - {\"error\"",
+    "provider": "openrouter",
+    "first_seen": "2026-06-07T11:49:55",
+    "count": 25,
     "last_fix": null,
     "fix_worked": null
   },
   {
     "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model un",
-    "provider": "lmstudio_coder",
-    "first_seen": "2026-05-30T21:39:54",
-    "count": 1,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model is",
     "provider": "lmstudio_fast",
-    "first_seen": "2026-05-30T21:39:54",
+    "first_seen": "2026-06-07T11:48:27",
     "count": 1,
     "last_fix": null,
     "fix_worked": null
@@ -42,40 +50,16 @@
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_reason",
-    "first_seen": "2026-06-02T08:09:05",
-    "count": 15,
+    "first_seen": "2026-06-07T11:49:53",
+    "count": 20,
     "last_fix": null,
     "fix_worked": null
   },
   {
     "error_signature": "litellm.badrequesterror: openaiexception - no models loaded. please load a model",
     "provider": "lmstudio_coder",
-    "first_seen": "2026-06-02T08:09:25",
-    "count": 16,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model is",
-    "provider": "lmstudio_reason",
-    "first_seen": "2026-06-02T08:05:35",
-    "count": 1,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.badrequesterror: openaiexception - error code: 400 - {'error': 'model un",
-    "provider": "lmstudio_fast",
-    "first_seen": "2026-06-02T08:07:00",
-    "count": 1,
-    "last_fix": null,
-    "fix_worked": null
-  },
-  {
-    "error_signature": "litellm.serviceunavailableerror: geminiexception - {\n  \"error\": {\n    \"code\": 50",
-    "provider": "gemini_flash",
-    "first_seen": "2026-06-02T08:08:11",
-    "count": 1,
+    "first_seen": "2026-06-07T11:49:42",
+    "count": 3,
     "last_fix": null,
     "fix_worked": null
   }

@@ -567,8 +567,8 @@ class SelfHealthRunner:
             self.check_cost_cap(),
         ]
         for c in checks:
-            icon = "✓" if c["status"] == "PASS" else ("⚠" if c["status"] == "WARN" else "✗")
-            print(f"[HC] {icon} {c['name']}: {c['status']} — {c['detail']}")
+            icon = "[PASS]" if c["status"] == "PASS" else ("[WARN]" if c["status"] == "WARN" else "[FAIL]")
+            print(f"[HC] {icon} {c['name']}: {c['status']} - {c['detail']}")
         return checks
 
 

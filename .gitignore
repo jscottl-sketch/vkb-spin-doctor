@@ -33,3 +33,4 @@ electron/node_modules/
 electron/dist/
 
 data/ocb_abort.json
+mcc_datadump.txt

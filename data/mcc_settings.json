@@ -37,5 +37,8 @@
   "bg_color": "#0d0d0d",
   "border_radius": "4",
   "last_active_tab": "wccs",
-  "active_theme": "SpinDoctor Dark"
+  "active_theme": "SpinDoctor Dark",
+  "_diag": true,
+  "content": "DIAG_PROBE",
+  "active_mission": "all"
 }

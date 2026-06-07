@@ -5019,7 +5019,11 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
 
 
 class ThreadingServer(http.server.ThreadingHTTPServer):
-    pass
+    # Windows lets multiple processes bind the same port when SO_REUSEADDR is set
+    # (http.server.HTTPServer sets it by default) — that's how two stale MCC
+    # servers ended up sharing 127.0.0.1:8080 and randomly answering requests
+    # with old code. Disabling it makes double-binding impossible.
+    allow_reuse_address = False
 
 
 def _qa_startup_test():
@@ -5061,87 +5065,98 @@ def _qa_startup_test():
         print(f"[MCC] Quick Ask test: SETUP ERROR -> {exc}", flush=True)
 
 
-    # ── Work Checker endpoints ────────────────────────────────────────────────
+# ── Work Checker endpoints — monkey-patched onto MCCHandler ──────────────────
 
-    def _wc_run_checker(self):
-        py = FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable)
-        if not WORK_CHECKER.exists():
-            return None, "work_checker.py not found"
-        try:
-            res = subprocess.run(
-                [str(py), str(WORK_CHECKER)],
-                capture_output=True, text=True, timeout=60, cwd=str(HERE),
-            )
-            if res.returncode != 0:
-                return None, (res.stderr or res.stdout).strip()
-            if WORK_REPORT.exists():
-                return json.loads(WORK_REPORT.read_text(encoding="utf-8")), None
-            return None, "work_report.json not written"
-        except Exception as exc:
-            return None, str(exc)
-
-    def _handle_wc_report(self):
+def _wc_run_checker(self):
+    py = FULL_PYTHON if FULL_PYTHON.exists() else Path(sys.executable)
+    if not WORK_CHECKER.exists():
+        return None, "work_checker.py not found"
+    try:
+        res = subprocess.run(
+            [str(py), str(WORK_CHECKER)],
+            capture_output=True, text=True, timeout=60, cwd=str(HERE),
+        )
+        if res.returncode != 0:
+            return None, (res.stderr or res.stdout).strip()
         if WORK_REPORT.exists():
-            age = datetime.datetime.now().timestamp() - WORK_REPORT.stat().st_mtime
-            if age < 300:
-                try:
-                    self._send_json(json.loads(WORK_REPORT.read_text(encoding="utf-8")))
-                    return
-                except Exception:
-                    pass
-        report, err = self._wc_run_checker()
-        if report:
-            self._send_json(report)
-        else:
-            self._send_json({"error": err or "Unknown error"}, 500)
+            return json.loads(WORK_REPORT.read_text(encoding="utf-8")), None
+        return None, "work_report.json not written"
+    except Exception as exc:
+        return None, str(exc)
 
-    def _handle_wc_refresh(self):
-        report, err = self._wc_run_checker()
-        if report:
-            self._send_json(report)
-        else:
-            self._send_json({"ok": False, "error": err or "Unknown error"}, 500)
 
-    def _handle_wc_requeue(self):
-        report = None
-        if WORK_REPORT.exists():
+def _handle_wc_report(self):
+    if WORK_REPORT.exists():
+        age = datetime.datetime.now().timestamp() - WORK_REPORT.stat().st_mtime
+        if age < 300:
             try:
-                report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
+                self._send_json(json.loads(WORK_REPORT.read_text(encoding="utf-8")))
+                return
             except Exception:
                 pass
-        if not report:
-            report, _ = self._wc_run_checker()
-        if not report:
-            body = b"work_report.json not found"
-            self.send_response(500)
-            self._cors()
-            self.send_header("Content-Type", "text/plain; charset=utf-8")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
-            return
-        text = report.get("requeue_block", "No requeue block found.")
-        body = text.encode("utf-8")
-        self.send_response(200)
+    report, err = self._wc_run_checker()
+    if report:
+        self._send_json(report)
+    else:
+        self._send_json({"error": err or "Unknown error"}, 500)
+
+
+def _handle_wc_refresh(self):
+    report, err = self._wc_run_checker()
+    if report:
+        self._send_json(report)
+    else:
+        self._send_json({"ok": False, "error": err or "Unknown error"}, 500)
+
+
+def _handle_wc_requeue(self):
+    report = None
+    if WORK_REPORT.exists():
+        try:
+            report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    if not report:
+        report, _ = self._wc_run_checker()
+    if not report:
+        body = b"work_report.json not found"
+        self.send_response(500)
         self._cors()
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+        return
+    text = report.get("requeue_block", "No requeue block found.")
+    body = text.encode("utf-8")
+    self.send_response(200)
+    self._cors()
+    self.send_header("Content-Type", "text/plain; charset=utf-8")
+    self.send_header("Content-Length", str(len(body)))
+    self.end_headers()
+    self.wfile.write(body)
 
-    def _handle_wc_orphaned(self):
-        report = None
-        if WORK_REPORT.exists():
-            try:
-                report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
-            except Exception:
-                pass
-        if not report:
-            report, _ = self._wc_run_checker()
-        if not report:
-            self._send_json({"error": "work_report.json not found"}, 500)
-            return
-        self._send_json(report.get("orphaned_plans", []))
+
+def _handle_wc_orphaned(self):
+    report = None
+    if WORK_REPORT.exists():
+        try:
+            report = json.loads(WORK_REPORT.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    if not report:
+        report, _ = self._wc_run_checker()
+    if not report:
+        self._send_json({"error": "work_report.json not found"}, 500)
+        return
+    self._send_json(report.get("orphaned_plans", []))
+
+
+MCCHandler._wc_run_checker   = _wc_run_checker    # type: ignore[attr-defined]
+MCCHandler._handle_wc_report   = _handle_wc_report   # type: ignore[attr-defined]
+MCCHandler._handle_wc_refresh  = _handle_wc_refresh  # type: ignore[attr-defined]
+MCCHandler._handle_wc_requeue  = _handle_wc_requeue  # type: ignore[attr-defined]
+MCCHandler._handle_wc_orphaned = _handle_wc_orphaned # type: ignore[attr-defined]
 
 
 # ── OCB-A: Self-Health handlers — monkey-patched onto MCCHandler ──────────────
@@ -5946,7 +5961,7 @@ def _handle_api_instructions(self):
         if not INSTRUCTIONS_DB.exists():
             self._send_json({"error": "instructions_db.json not found"}, 404)
             return
-        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8"))
+        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8-sig"))
         self._send_json(data)
     except Exception as exc:
         self._send_json({"error": str(exc)}, 500)
@@ -5958,7 +5973,7 @@ def _handle_api_instructions_element(self, element_id: str):
         if not INSTRUCTIONS_DB.exists():
             self._send_json({"error": "instructions_db.json not found"}, 404)
             return
-        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8"))
+        data = json.loads(INSTRUCTIONS_DB.read_text(encoding="utf-8-sig"))
         elements = data.get("elements", {})
         if element_id not in elements:
             self._send_json({"error": "not found", "element_id": element_id}, 404)
@@ -9894,7 +9909,7 @@ def _handle_acca_codes_get(self):
         if not _ACCA_CODES_FILE.exists():
             self._send_json({"codes": {}, "version": "0", "count": 0})
             return
-        data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8"))
+        data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8-sig"))
         data["count"] = len(data.get("codes", {}))
         self._send_json(data)
     except Exception as exc:
@@ -9917,7 +9932,7 @@ def _handle_acca_add_post(self):
         data = {}
         if _ACCA_CODES_FILE.exists():
             try:
-                data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8"))
+                data = json.loads(_ACCA_CODES_FILE.read_text(encoding="utf-8-sig"))
             except Exception:
                 data = {"version": "1.0", "codes": {}}
         data.setdefault("codes", {})[code] = {
@@ -10093,7 +10108,7 @@ def _handle_ancoreg_mot_get(self):
             [PYTHON, str(MOT_SCRIPT)],
             capture_output=True, text=True, cwd=str(HERE), timeout=180
         )
-        report_path = HEALTH_DIR / "full_mot_report.json"
+        report_path = HEALTH_RESULTS / "full_mot_report.json"
         if report_path.exists():
             try:
                 report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -10539,9 +10554,56 @@ def _handle_acca_command_post(self):
 MCCHandler._handle_acca_command_post = _handle_acca_command_post  # type: ignore[attr-defined]
 
 
+def _ensure_single_instance(host, port):
+    """Make it impossible for two MCC servers to serve stale code at once.
+
+    Finds any process already LISTENING on `port` and kills it, then proves
+    the port is actually free with a clean bind/close before the real server
+    starts. If it still can't get exclusive use of the port, refuses to start
+    with a clear message instead of silently double-binding (the Windows
+    SO_REUSEADDR behaviour that caused PID 3108 + PID 28540 to both answer
+    requests on 2026-06-07).
+    """
+    my_pid = os.getpid()
+    try:
+        import psutil
+        for conn in psutil.net_connections(kind="tcp"):
+            if (conn.laddr and conn.laddr.port == port
+                    and conn.status == psutil.CONN_LISTEN
+                    and conn.pid and conn.pid != my_pid):
+                try:
+                    proc = psutil.Process(conn.pid)
+                    print(f"[MCC] Found stale server PID {conn.pid} ({proc.name()}) "
+                          f"already bound to port {port} -- killing it...", flush=True)
+                    proc.terminate()
+                    proc.wait(timeout=5)
+                except Exception as exc:
+                    print(f"[MCC] Could not kill PID {conn.pid}: {exc}", flush=True)
+    except ImportError:
+        pass
+
+    import socket as _socket
+    import time as _time
+    for _attempt in range(6):
+        probe = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
+        probe.setsockopt(_socket.SOL_SOCKET, _socket.SO_REUSEADDR, 0)
+        try:
+            probe.bind((host, port))
+            probe.close()
+            return
+        except OSError:
+            probe.close()
+            _time.sleep(0.5)
+
+    print(f"[MCC] REFUSING TO START -- {host}:{port} already in use -- kill it.", flush=True)
+    sys.exit(1)
+
+
 def main():
+    _ensure_single_instance(HOST, PORT)
     threading.Thread(target=_qa_startup_test, daemon=True).start()
     server = ThreadingServer((HOST, PORT), MCCHandler)
+    print(f"[MCC] bound to {PORT} (single instance confirmed)", flush=True)
     print(f"[MCC] MCC Server running at http://{HOST}:{PORT}", flush=True)
     print(f"[MCC] Project folder: {HERE}", flush=True)
     print(f"[MCC] chat_latest.txt: {CHAT}", flush=True)

@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nNo “COST_EXCEEDED” entry appeared (the mock run uses a zero budget), confirming that the watchdog can be started and will log cost‑guard events when they occur.\n\n---\n\n## 4️⃣ Run the “goal” test (`mcc_test.py`)  \n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_11-00"}

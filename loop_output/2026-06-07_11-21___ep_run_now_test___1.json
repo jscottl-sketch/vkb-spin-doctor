@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "def run_now(goal_id: str) -> Result:\n    \"\"\"Immediately execute the goal identified by ``goal_id`` and return a Result\n    object describing success/failure and any payload.\"\"\"\n", "goal": "__ep_run_now_test__", "timestamp": "2026-06-07_11-21"}

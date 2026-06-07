@@ -1,5 +1,5 @@
 # MCC WMBW Report — Per-Element Scrutiny
-Generated: 2026-06-02 08:05:54
+Generated: 2026-06-07 11:47:33
 
 WMBW = What Makes it Better? (3 improvements + web best-practice + WENTO score)
 

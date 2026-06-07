@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nNo import errors; the watchdog is now running in the background.  \n(If the project also ships a `cost_guard.py`, it is imported by the watchdog and is active.)\n\n---\n\n### 5️⃣ Run the MCC test suite  \n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-52"}

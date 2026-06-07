@@ -1,1 +1,18 @@
-{"entries": []}
+{
+  "entries": [
+    {
+      "timestamp": "2026-06-07T10:34:45",
+      "change_type": "added",
+      "description": "",
+      "mission": "",
+      "source": "manual"
+    },
+    {
+      "timestamp": "2026-06-07T11:46:31",
+      "change_type": "fixed",
+      "description": "MOT score: 109/109",
+      "mission": "",
+      "source": "mot"
+    }
+  ]
+}

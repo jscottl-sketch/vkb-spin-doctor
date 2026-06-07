@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nThe test will automatically set up the temporary DB and clean up afterwards.\n\n---\n\n## 2️⃣ Test Implementation (tests/integration/test_int_1779892122.py)\n\n", "goal": "__int_test_goal_1779892122__", "timestamp": "2026-06-07_11-26"}

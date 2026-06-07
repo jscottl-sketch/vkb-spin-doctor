@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\n2. Verify the test runs in the CI environment by triggering a manual test run (e.g., GitHub Actions workflow).\n\n---\n\n## 7. Document the Test Suite\n\n1. Add a section to `docs/testing.md`:\n   ", "goal": "__ep_run_now_test__", "timestamp": "2026-06-07_11-49"}

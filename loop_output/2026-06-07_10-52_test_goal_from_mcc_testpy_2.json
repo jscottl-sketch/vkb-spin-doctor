@@ -1,0 +1,1 @@
+{"type": "code_block", "valid_json": false, "raw_output": "\nBoth variables are now present in the environment (checked with `echo %GROQ_API_KEY%`).\n\n---\n\n### 3️⃣ Start the MCC server (separate terminal)\n\n", "goal": "test goal from mcc_test.py", "timestamp": "2026-06-07_10-52"}

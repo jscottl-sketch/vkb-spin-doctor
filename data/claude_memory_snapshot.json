@@ -1,6 +1,6 @@
 {
   "project_overview": {
-    "last_updated": "2026-05-31 (OCB-Q+P: STORM bridge + WENTO queue + Timeline zones + OCB Runner safety) | **Updated by:** aafl_wccs.py",
+    "last_updated": "2026-06-07 (OCB Runner MOT bug fixed + echo test passing) | **Updated by:** aafl_wccs.py",
     "built_components": [
       {
         "component": "---",
@@ -725,6 +725,42 @@
       {
         "component": "OCB Runner safety layer",
         "notes": "git stash + HTML syntax check + auto-rollback on fail. Run Script task type. run_ocb() callable via /api/ocb/run. HISAV Section 11 panel. Built 2026-05-31."
+      },
+      {
+        "component": "OCB Runner MOT fix",
+        "notes": "NoneType+str crash in run_all/_run_mot_check fixed at source: (stdout or \"\")+(stderr or \"\") guards + encoding=\"utf-8\" on all MOT/script subprocess calls. TOTAL_CHECKS hardcode 108→109. Echo test PASS end to end 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Reality Report",
+        "notes": "reality_check.py — 21-section standalone health report (A-U). docs/REALITY_REPORT.md + archive. No server required. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Error Database",
+        "notes": "error_logger.py — FFUEM drop-in. data/errors_db.json. File-locked atomic writes. Rotation at 1000 entries. Wired into mcc_server, aafl_core, aafl_wccs. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Test Suite",
+        "notes": "tests/ — 5 standalone scripts (test_files, test_endpoints, test_imports, test_providers, test_wccs). POST /api/ocb/run-test-suite. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: New Endpoints",
+        "notes": "/api/reality/export, /api/errors/recent, /api/errors/clear, /api/ocb/run-test-suite, /api/ocb/test-status, /api/status-pip. Via mcc_ocbr_handlers.py. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: HISAV Export Button",
+        "notes": "\"EXPORT REALITY REPORT\" amber button in HITSAV sticky toolbar. hisavExportReality() downloads REALITY_REPORT.md. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Error DB Panel",
+        "notes": "Detective Panel B sub-panel — Error Database (last 50), filter by component, 30s auto-refresh. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Test Suite Runner",
+        "notes": "OCB Runner tab — Test Suite section with RUN ALL TESTS button, live colour badges (green/amber/red), output drill-down. Built 2026-06-03."
+      },
+      {
+        "component": "OCB-R+: Bottom Status Pip",
+        "notes": "Fixed bottom-left pip bar — 5 colour-coded pills (Providers/MOT/WCCS/Errors/Report). Click → popup. 60s auto-refresh. z-index 9998. Built 2026-06-03."
       }
     ]
   },
@@ -766,7 +802,17 @@
     "13. Spin Doctor games are not end goal — AAFL is",
     "14. Spin Doctor success = AAFL success"
   ],
-  "pending_items": [],
+  "pending_items": [
+    "1. Complete STORM ↔ MCCM live loop testing",
+    "2. Wire aafl_wccs.py SESUM output → STORM → Mission Launcher",
+    "3. OCB-K Build 3 — Costs tab, Scout improvements, LLOW enhancements (parking lot)",
+    "4. Star Citizen v0.2 benchmark via AAFL autonomous run (proof of concept #2)",
+    "5. Add GROQ + Cloudflare keys to .env (manual — security rule)",
+    "6. Polish AASKC for ship — README, demo video, r/LocalLLaMA post",
+    "7. Post on r/LocalLLaMA when Star Citizen benchmark passes",
+    "8. LiteLLM full integration — replace direct provider calls with LiteLLM router",
+    "9. Electron wrapper for packaging"
+  ],
   "timeline_position": "| Component | Notes |\n|---|---|\n| v0.1 spin fix | War Thunder confirmed working |\n| spin_doctor.py | ~1057 lines, 3 tabs (Fix / Conductor / KB) |\n| sfl_agent.py v3 | ~920 lines, ACP v1, handover injection, call_aafl() |\n| aafl_core.py | 14 providers, Cerebras=gpt-oss-120b, reasoning_content fallback",
-  "generated_at": "2026-06-02T04:23:43"
+  "generated_at": "2026-06-07T10:34:21"
 }
