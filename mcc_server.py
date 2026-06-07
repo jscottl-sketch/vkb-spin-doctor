@@ -834,9 +834,14 @@ class MCCHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         path = self.path.split("?")[0]
         try:
-            if path == "/wccs":
-                self._handle_wccs()
-            elif path == "/capture":
+            # FFUEM 2026-06-07: /wccs unwired — wccs_runner.py is "legacy support
+            # only" (its own docstring) and nothing in the UI calls this route.
+            # btn-save-v2 -> /api/hisav/save-session is the one live save path.
+            # File kept (move-not-delete rule); do not re-wire without confirming
+            # mcu_optimizer.py / dashboard_builder.py triggers are migrated first.
+            # if path == "/wccs":
+            #     self._handle_wccs()
+            if path == "/capture":
                 self._handle_capture()
             elif path == "/run-scout":
                 self._handle_run_scout()

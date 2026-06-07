@@ -2463,15 +2463,6 @@ select:focus {
       </button>
       <span class="hitsav-tb-last">Last saved: <span id="hitsav-tb-ts">—</span></span>
     </div>
-    <!-- Summary paste panel (hidden by default) -->
-    <div class="hitsav-summary-panel" id="hitsav-summary-panel">
-      <div style="font-size:11px;color:#778;margin-bottom:6px">Paste your session summary before saving — it gets written to the session log</div>
-      <textarea id="wccs-chat-input" class="hitsav-idea-ta" style="height:80px" placeholder="Paste summary of what was done this session…" spellcheck="false" oninput="document.getElementById('wccs-chat-meta').textContent=this.value.length+' chars'"></textarea>
-      <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
-        <span id="wccs-chat-meta" style="font-size:11px;color:#556">0 chars</span>
-      </div>
-    </div>
-
     <!-- POST-SAVE SESUM REMINDER BANNER — OCB-R1 -->
     <div id="post-save-banner" style="display:none;
       background: linear-gradient(135deg,#1a3a1a,#0a2a0a);
@@ -22853,10 +22844,6 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-tab=
 <script>
 function Summary() {}
 function theme() {}
-function wcLoadActionPlanV2() {}
-function wcLoadMiniTimeline() {}
-function hitsavStep1() {}
-function hitsavStep2() {}
 </script>
 
 <!-- MOT stubs: missing static ID placeholders -->
